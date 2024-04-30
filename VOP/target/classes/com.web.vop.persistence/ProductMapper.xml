@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mapper namespace="com.web.vop.persistence.ProductMapper">
+
+   <resultMap type="com.web.vop.domain.ProductVO"
+      id="ProductResultMap">
+      
+      <id property="productId" column="PRODUCT_ID" /> 
+      <result property="memberId" column="MEMBER_ID" />
+      <result property="productName" column="PRODUCT_NAME"/>
+      <result property="productPrice" column="PRODUCT_PRICE"/>
+      <result property="reviewNum" column="REVIEW_NUM"/>
+      <result property="productRemains" column="PRODUCT_REMAINS"/>
+      <result property="productPlace" column="PRODUCT_PLACE"/>
+      <result property="productState" column="PRODUCT_STATE"/>
+   </resultMap>
+
+</mapper>

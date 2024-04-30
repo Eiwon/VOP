@@ -7,7 +7,10 @@
       
       <id property="memberId" column="MEMBER_ID" /> 
       <result property="memberPw" column="MEMBER_PW" />
-      
+      <result property="memberName" column="MEMBER_NAME"/>
+      <result property="memberEmail" column="MEMBER_EMAIL"/>
+      <result property="memberPhone" column="MEMBER_PHONE"/>
+      <result property="memberAuth" column="MEMBER_AUTH"/>
    </resultMap>
 
 </mapper>
