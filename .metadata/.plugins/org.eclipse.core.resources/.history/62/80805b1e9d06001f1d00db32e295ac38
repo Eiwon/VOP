@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mapper namespace="com.web.vop.persistence.MemberMapper">
+
+   <resultMap type="com.we.domain.AttachVO"
+      id="attachResultMap">
+      
+      <id property="attachId" column="ATTACH_ID" /> 
+      <result property="boardId" column="BOARD_ID" />
+      <result property="attachPath" column="ATTACH_PATH" />
+      <result property="attachRealName" column="ATTACH_REAL_NAME" />
+      <result property="attachChgName" column="ATTACH_CHG_NAME" />
+      <result property="attachExtension" column="ATTACH_EXTENSION"/>
+      <result property="attachDateCreated" column="ATTACH_DATE_CREATED"/>
+   </resultMap>
+
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mapper namespace="com.web.vop.persistence.MemberMapper">
+
+   <resultMap type="com.web.vop.domain.MemberVO"
+      id="MemberResultMap">
+      
+      <id property="memberId" column="MEMBER_ID" /> 
+      <result property="memberPw" column="MEMBER_PW" />
+      
+   </resultMap>
+
+</mapper>

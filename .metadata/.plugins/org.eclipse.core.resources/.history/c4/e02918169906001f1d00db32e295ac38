@@ -1,0 +1,12 @@
+package com.web.vop.domain;
+
+public class ProductVO {
+	private int productId;
+	private String memberId;
+	private String productName;
+	private int productPrice;
+	private int review_num;
+	private int product_remains;
+	private String product_place;
+	private String product_state;
+}
