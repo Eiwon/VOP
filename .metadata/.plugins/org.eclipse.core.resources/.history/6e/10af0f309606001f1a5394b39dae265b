@@ -1,0 +1,5 @@
+package com.web.vop.config;
+
+public class WebConfig {
+
+}
