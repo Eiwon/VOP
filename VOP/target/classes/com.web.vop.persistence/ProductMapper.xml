@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="com.web.vop.persistence.MemberMapper">
+
+   <resultMap type="com.web.vop.domain.ProductVO"
+      id="ProductResultMap">
+      
+      <id property="paymentId" column="PAYMENT_ID" /> 
+      <result property="memberId" column="MEMBER_ID" />
+      <result property="deliveryAddress" column="DELIVERY_ADDRESS" />
+      <result property="receiverName" column="RECEIVER_NAME" />
+      <result property="receiverPhone" column="RECEIVER_PHONE" />
+      
+   </resultMap>
+
+</mapper>
