@@ -13,5 +13,11 @@
       <result property="productPlace" column="PRODUCT_PLACE"/>
       <result property="productState" column="PRODUCT_STATE"/>
    </resultMap>
+   
+    // 클릭한 상품 조회, 상품ID로 조회
+   <select id="productSelect" resultMap="productResultMap">
+   		SELECT * FROM PRODUCT
+   		WHERE PRODUCT_ID = #{productId}
+   </select>
 
 </mapper>
