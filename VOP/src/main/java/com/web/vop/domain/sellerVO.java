@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class SellerVO {
+public class SellerVO{
 	private String memberId; // 회원 Id
 	private String businessName; // 사업체 이름
 	private String requestTime; // 요청 시간
