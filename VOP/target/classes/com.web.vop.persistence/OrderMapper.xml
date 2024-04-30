@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mapper namespace="com.web.vop.persistence.OrderMapper">
+
+   <resultMap type="com.web.vop.domain.OrderVO"
+      id="OrderResultMap">
+      
+      <id property="orderId" column="ORDER_ID" /> 
+      <result property="paymentId" column="PAYMENT_ID" />
+      <result property="productId" column="PRODUCT_ID"/>
+      <result property="productName" column="PRODUCT_NAME"/>
+      <result property="productPrice" column="PRODUCT_PRICE"/>
+      <result property="purchaseNum" column="PURCHASE_NUM"/>
+      <result property="expectDeliveryDate" column="EXPECT_DELIVERY_DATE"/>
+   </resultMap>
+
+</mapper>

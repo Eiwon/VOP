@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class regularPurchaseVO {
+public class RegularPurchaseVO {
 	private int paymentId; // 결제 내역 Id
 	private int deliveryInterval; // 정기 배송 기간
 }
