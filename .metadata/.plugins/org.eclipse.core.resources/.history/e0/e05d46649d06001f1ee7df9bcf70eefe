@@ -1,0 +1,5 @@
+package com.web.vop.domain;
+
+public class BasketVO {
+
+}
