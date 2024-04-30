@@ -1,0 +1,10 @@
+package com.web.vop.domain;
+
+import java.util.Date;
+
+public class AppointmentVO {
+	private int appointmentId;
+	private int productId;
+	private String memberId;
+	private Date appointmentDateCreated;
+}

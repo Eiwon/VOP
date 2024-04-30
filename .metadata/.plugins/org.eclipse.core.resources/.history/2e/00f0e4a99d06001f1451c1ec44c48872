@@ -1,0 +1,12 @@
+package com.web.vop.domain;
+
+import java.util.Date;
+
+public class InquiryVO {
+	private int inquiryId;
+	private String memberId;
+	private int productId;
+	private String inquiryContent;
+	private Date inquiryDateCreated;
+	private int parentId;
+}

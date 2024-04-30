@@ -1,0 +1,6 @@
+package com.web.vop.domain;
+
+public class ReviewVO {
+	private int reviewId;
+	private String memberId;
+}
