@@ -14,11 +14,14 @@ public class ProductServiceImple implements ProductService{
 	
 	@Autowired
 	private ProductMapper productMapper;
-		
+	
+	// 상품 상세 정보 검색
 	@Override
 	public ProductVO getProductById(int productId) {
 		log.info("getProductById()");
-		return productMapper.porductSelect(productId);
-	}
+		ProductVO result = productMapper.selectProduct(productId);
+		log.info("상품 상세 정보 : " + result.toString());
+		return result;
+	} // end getProductById()
 	
 }

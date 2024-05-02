@@ -16,8 +16,8 @@ public class ProductVO {
 	private String memberId;
 	private String productName;
 	private int productPrice;
-	private int review_num;
-	private int product_remains;
-	private String product_place;
-	private String product_state;
+	private int reviewNum;
+	private int productRemains;
+	private String productPlace;
+	private String productState;
 }

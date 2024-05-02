@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.web.vop.persistence.ReviewMapper">
+
+	<resultMap type="com.web.vop.domain.ReviewVO"
+      id="reviewResultMap">
+      
+      <id property="reviewId" column="REVIEW_ID" /> 
+      <result property="memberId" column="MEMBER_ID" />
+      <result property="productId" column="PRODUCT_ID" />
+      <result property="reviewContent" column="REVIEW_CONTENT" />
+      <result property="reviewDateCreated" column="REVIEW_DATE_CREATED" />
+      <result property="reviewStar" column="REVIEW_STAR"/>
+      <result property="reviewLike" column="REVIEW_LIKE"/>
+      <result property="imgId" column="IMG_ID"/>
+      
+      </resultMap>
+   
+   <!-- 댓글(리뷰) 입력 -->
+   <insert id="insertReview">
+      INSERT INTO REVIEW (REVIEW_ID, MEMBER_ID, PRODUCT_ID, REVIEW_CONTENT
+      , REVIEW_DATE_CREATED, REVIEW_STAR, REVIEW_LIKE, IMG_ID)
+      VALUES (REVIEW_SEQ.NEXTVAL, #{memberId}, #{productId}, #{replyContent}
+      , #{reviewDateCreated}, #{reviewStar}, #{reviewLike}, #{imgId})
+   </insert>
+   
+   <!-- 댓글(리뷰) 전체 검색 -->
+   <select id="selectListByProductId" resultMap="replyResultMap">
+      SELECT * FROM REVIEW
+      WHERE PRODUCT_ID = #{productId}
+      ORDER BY REVIEW_ID = #{replyId}
+   </select>
+   
+   <!-- 댓글(리뷰) 상세 검색(제작 예정) -->
+   
+   <!-- 댓글(리뷰) 수정 -->
+   <update id="updateReview">
+      UPDATE REVIEW
+      SET REVIEW_CONTENT = #{reviewContent},
+      REVIEW_STAR = #{reviewStar}, 
+      IMG_ID = #{imgId}
+      WHERE REVIEW_ID = #{reviewId}
+   </update>
+   
+   <!-- 댓글(리뷰) 삭제 -->
+   <delete id="deleteReview">
+      DELETE FROM REVIEW
+      WHERE REVIEW_ID = #{reviewId}
+   </delete>
+    
+    
+</mapper>

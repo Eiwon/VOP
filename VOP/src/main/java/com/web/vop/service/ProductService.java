@@ -1,8 +1,12 @@
 package com.web.vop.service;
 
+import org.springframework.stereotype.Service;
+
 import com.web.vop.domain.ProductVO;
 
-//선택한 상품을 productId로 조회하는 Mapper 메소드
+@Service
 public interface ProductService {
+	
+	// 상품 상세 조회
 	ProductVO getProductById(int productId);
 }
