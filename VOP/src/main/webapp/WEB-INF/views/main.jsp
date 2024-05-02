@@ -156,8 +156,8 @@
 
 	<div class="container2">
     <div class="user-links2">
-        <a href="#">로그인</a>
-        <a href="#">회원가입</a>
+        <a href="member/login">로그인</a>
+        <a href="member/register">회원가입</a>
     </div>
     
 	<div class="category">
@@ -182,7 +182,14 @@
 	</div>
 
 	<!-- VOP 링크 추가 -->
-    <a href="#" class="vop-link">VOP</a>
+    <a href="main" class="vop-link">VOP</a>
+    
+    <!--  JavaScript를 사용하여 페이지를 새로고침 -->
+    <script>
+    	document.querySelector('.vop-link').addEventListener('click', function() {
+        	location.reload();
+   	 });
+	</script>
     
     <!-- 검색창 추가 -->
     <div class="search-container">
@@ -213,14 +220,14 @@
         <!-- 검색 버튼 -->
         <button class="search-button">검색</button>
     </div>
-		<!-- 마이페이지, 장바구니 링크 -->
+		<!-- 마이페이지(mypage), 장바구니(basket) 링크 -->
     	<div class="user-links">
-        	<a href="#">마이페이지</a>
-        	<a href="#">장바구니</a>
+        	<a href="mypage">마이페이지</a>
+        	<a href="basket">장바구니</a>
     </div>
+</div>
 
 	
-</div>
 
 </body>
 </html>
