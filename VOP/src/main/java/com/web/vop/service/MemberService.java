@@ -1,10 +1,7 @@
 package com.web.vop.service;
 
-import org.springframework.stereotype.Service;
-
 import com.web.vop.domain.MemberVO;
 
-@Service
 public interface MemberService {
 
 	// 회원 등록
@@ -33,5 +30,8 @@ public interface MemberService {
 	
 	// 회원 탈퇴
 	public int deleteMember(String memberId);
+	
+	// 이름, 전화번호로 아이디 검색
+	public String findByNameAndPhone(String memberName, String memberPhone);
 	
 }

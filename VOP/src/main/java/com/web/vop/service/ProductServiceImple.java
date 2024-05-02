@@ -18,7 +18,7 @@ public class ProductServiceImple implements ProductService{
 	@Override
 	public ProductVO getProductById(int productId) {
 		log.info("getProductById()");
-		return productMapper.porductSelect(productId);
+		return productMapper.productSelect(productId);
 	}
 	
 }

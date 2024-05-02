@@ -42,7 +42,7 @@ public class MemberServiceImple implements MemberService{
 	@Override
 	public String checkLogin(String memberId, String memberPw) { // 로그인
 		log.info("Member Service checkLogin()");
-		String result = memberMapper.selectMemberWithPw(memberId, memberPw);
+		String result = memberMapper.selectMemberIdWithPw(memberId, memberPw);
 		log.info("로그인 시도 결과 : " + result);
 		return result;
 	} // end checkLogin
@@ -65,7 +65,7 @@ public class MemberServiceImple implements MemberService{
 	
 	@Override
 	public String getIdByPhone(String memberPhone) { // 전화번호로 ID 검색
-		log.info("Member Service getIdByPhone()");
+		log.info("Member Service getIdByPhone() : " + memberPhone);
 		String result = memberMapper.selectByPhone(memberPhone);
 		log.info("전화번호로 검색 결과 : " + result);
 		return result;
@@ -81,10 +81,18 @@ public class MemberServiceImple implements MemberService{
 
 	@Override
 	public int deleteMember(String memberId) { // 회원 탈퇴
-		log.info("Member Service DeleteMember()");
+		log.info("Member Service deleteMember()");
 		int res = memberMapper.deleteMember(memberId);
 		log.info(res + "행 삭제 성공");
 		return res;
 	} // end deleteMember
+
+	@Override
+	public String findByNameAndPhone(String memberName, String memberPhone) {
+		log.info("Member Service selectByNameAndPhone()");
+		String result = memberMapper.selectByNameAndPhone(memberName, memberPhone);
+		log.info("검색 결과 : " + result);
+		return result;
+	} // end selectByNameAndPhone
 
 }

@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="com.web.vop.persistence.ProductMapper">
    <resultMap type="com.web.vop.domain.ProductVO"
-      id="ProductResultMap">
+      id="productResultMap">
       <id property="productId" column="PRODUCT_ID" /> 
       <result property="memberId" column="MEMBER_ID" />
       <result property="productName" column="PRODUCT_NAME"/>
