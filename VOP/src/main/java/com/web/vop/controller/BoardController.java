@@ -13,7 +13,7 @@ import lombok.extern.log4j.Log4j;
 
 @Controller
 @Log4j
-public class MainController {// 메인 페이지 구현 컨트롤러
+public class BoardController {// 메인 페이지 구현 컨트롤러
 
 	@GetMapping("/main") 
 	public void mainGET() {
@@ -45,8 +45,11 @@ public class MainController {// 메인 페이지 구현 컨트롤러
 	@PostMapping("/mypage")
 	public String mypagePOST() {
 		log.info("mypagePOST()");
-		
-		return "redirect:/board/register";
+		//if () {
+			
+		//}else {			
+			return "redirect:/board/register";
+		//}
 	}
 	
 	
