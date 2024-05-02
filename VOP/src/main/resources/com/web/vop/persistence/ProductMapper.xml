@@ -3,8 +3,8 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-
 <mapper namespace="com.web.vop.persistence.ProductMapper">
+
    <resultMap type="com.web.vop.domain.ProductVO"
       id="productResultMap">
       <id property="productId" column="PRODUCT_ID" /> 
@@ -17,10 +17,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="productState" column="PRODUCT_STATE"/>
    </resultMap>
    
-   
-   <select id="productSelect" resultMap="productResultMap">
+   <!-- productId통해 상품 조회 -->
+   <select id="selectProduct" resultMap="productResultMap">
    		SELECT * FROM PRODUCT
    		WHERE PRODUCT_ID = #{productId}
    </select>
+   
+   
+   
 
 </mapper>

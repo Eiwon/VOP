@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.web.vop.persistence.ImageMapper">
+
+   <resultMap type="com.web.vop.domain.ImageVO"
+      id="imageResultMap">
+      
+      <id property="imgId" column="IMG_ID" /> 
+      <result property="productId" column="PRODUCT_ID" />
+      <result property="imgPath" column="IMG_PATH"/>
+      <result property="imgRealName" column="IMG_REAL_NAME"/>
+      <result property="imgChangeName" column="IMG_CHANGE_NAME"/>
+      <result property="imgExtension" column="IMG_EXTENSION"/>
+      <result property="imgDateCreated" column="IMG_DATE_CREATED"/>
+      <result property="reviewId" column="REVIEW_ID"/>
+      
+   </resultMap>
+   
+   <!-- imgId로 이미지 검색  검색 -->
+   <select id="selectByimgId" resultMap="imageResultMap">
+      SELECT * FROM IMAGE
+      WHERE IMG_ID = #{imgId}
+   </select>
+       
+</mapper>

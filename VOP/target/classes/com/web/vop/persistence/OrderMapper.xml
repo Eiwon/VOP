@@ -16,4 +16,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="expectDeliveryDate" column="EXPECT_DELIVERY_DATE"/>
    </resultMap>
 
+	<!-- 오더 id 로 전체 조회 -->
+	<select id="selectByOrderId">
+		SELECT * FROM ORDER WHERE ORDER_ID = #{orderId}
+	</select>
+
+	<select id="selectExpectDate" resultMap="OrderResultMap">
+	<!--  배송 예정일 조회  -->
+	SELECT * FROM ORDER WHERE EXPECT_DELIVERY_DATE = #{expectDeliveryDate}
+	</select>
+	
+	
 </mapper>

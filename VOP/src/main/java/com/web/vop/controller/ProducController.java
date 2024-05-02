@@ -23,10 +23,13 @@ public class ProducController {
 	@GetMapping("/productDetail")
 	public void productDetail(Model model, Integer productId) {
 		log.info("productDetail()");
+		
 		// productId에 해당하는 상품 조회 
 		ProductVO productVO = productService.getProductById(productId);
-		
+		log.info("/product/detail get");
 		model.addAttribute("productVO", productVO);
-	}
+	} // end productDetail()
+	
+	
 	
 }
