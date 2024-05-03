@@ -2,6 +2,7 @@ package com.web.vop.domain;
 
 import java.util.Date;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,5 +22,4 @@ public class ReviewVO {
 	private Date reviewDateCreated;
 	private float reviewStar;
 	private int reviewLike;
-	private int imgId;
 }

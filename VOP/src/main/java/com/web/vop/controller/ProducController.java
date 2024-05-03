@@ -12,7 +12,7 @@ import com.web.vop.service.ProductService;
 import lombok.extern.log4j.Log4j;
 
 @Controller
-@RequestMapping
+@RequestMapping("/product")
 @Log4j
 public class ProducController {
 	
@@ -20,7 +20,7 @@ public class ProducController {
 	// ProductService 클래스에 있는 기능을 사용하기위해 생성
 	private ProductService productService;
 	
-	@GetMapping("/productDetail")
+	@GetMapping("/detail")
 	public void productDetail(Model model, Integer productId) {
 		log.info("productDetail()");
 		

@@ -18,5 +18,4 @@ public class ImageVO {
 	private String imgChangeName;
 	private String imgExtension;
 	private Date imgDateCreated;
-	private int reviewId;
 }

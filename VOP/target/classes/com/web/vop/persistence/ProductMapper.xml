@@ -15,6 +15,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="productRemains" column="PRODUCT_REMAINS"/>
       <result property="productPlace" column="PRODUCT_PLACE"/>
       <result property="productState" column="PRODUCT_STATE"/>
+      <result property="imgPath" column="IMG_PATH"/>
+      <result property="imgRealName" column="IMG_REAL_NAME"/>
+      <result property="imgChangeName" column="IMG_CHANGE_NAME"/>
+      <result property="imgExtension" column="IMG_EXTENSION"/>
+      <result property="imgDateCreated" column="IMG_DATE_CREATED"/>
    </resultMap>
    
    <!-- productId통해 상품 조회 -->
