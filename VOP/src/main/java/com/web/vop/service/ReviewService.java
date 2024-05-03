@@ -15,7 +15,7 @@ public interface ReviewService {
 	List<ReviewVO> getAllReview(int productId);
 		 
 	// ´ñ±Û(¸®ºä) ¼öÁ¤
-	int updateReview(int reviewId, String reviewContent, float reviewStar, int imgId);
+	int updateReview(int reviewId, String reviewContent, float reviewStar);
 		 
 	// ´ñ±Û(¸®ºä) »èÁ¦
 	int deleteReview(int reviewId, int productId);

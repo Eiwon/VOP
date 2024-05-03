@@ -22,16 +22,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <!-- 댓글(리뷰) 입력 -->
    <insert id="insertReview">
       INSERT INTO REVIEW (REVIEW_ID, MEMBER_ID, PRODUCT_ID, REVIEW_CONTENT
-      , REVIEW_DATE_CREATED, REVIEW_STAR, REVIEW_LIKE, IMG_ID)
-      VALUES (REVIEW_SEQ.NEXTVAL, #{memberId}, #{productId}, #{replyContent}
-      , #{reviewDateCreated}, #{reviewStar}, #{reviewLike}, #{imgId})
+      , REVIEW_DATE_CREATED, REVIEW_STAR, REVIEW_LIKE)
+      VALUES (REVIEW_SEQ.NEXTVAL, #{memberId}, #{productId}, #{reviewContent}
+      , SYSDATE, #{reviewStar}, #{reviewLike})
    </insert>
    
    <!-- 댓글(리뷰) 전체 검색 -->
-   <select id="selectListByProductId" resultMap="reviewResultMap">
+   <select id="selectListByReview" resultMap="reviewResultMap">
       SELECT * FROM REVIEW
       WHERE PRODUCT_ID = #{productId}
-      ORDER BY REVIEW_ID = #{replyId}
+      ORDER BY REVIEW_ID
    </select>
    
    <!-- 댓글(리뷰) 상세 검색(제작 예정) -->
@@ -40,8 +40,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <update id="updateReview">
       UPDATE REVIEW
       SET REVIEW_CONTENT = #{reviewContent},
-      REVIEW_STAR = #{reviewStar}, 
-      IMG_ID = #{imgId}
+      REVIEW_STAR = #{reviewStar}
       WHERE REVIEW_ID = #{reviewId}
    </update>
    

@@ -22,7 +22,7 @@ import com.web.vop.service.ReviewService;
 import lombok.extern.log4j.Log4j;
 
 @RestController
-@RequestMapping
+@RequestMapping("/review")
 @Log4j
 public class ReviewRESTController {
 	@Autowired
@@ -59,8 +59,7 @@ public class ReviewRESTController {
 	   public ResponseEntity<Integer> updateReview(
 	         @PathVariable("reviewId") int reviewId,
 	         @RequestBody String reviewContent,
-	         @RequestBody float reviewStar,
-	         @RequestBody int imgId
+	         @RequestBody float reviewStar
 	         ){
 	      log.info("updateReply()");
 	      
@@ -68,7 +67,7 @@ public class ReviewRESTController {
 	      log.info("reviewId = " + reviewId);
 	      
 	      // reviewId에 해당하는 댓글(리뷰)의 reviewContent, reviewStar, imgId의 내용을 수정 할 수 있습니다.
-	      int result = reviewService.updateReview(reviewId, reviewContent, reviewStar, imgId);
+	      int result = reviewService.updateReview(reviewId, reviewContent, reviewStar);
 	      
 	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);

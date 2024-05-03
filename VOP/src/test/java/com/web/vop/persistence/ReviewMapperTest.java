@@ -21,22 +21,43 @@ public class ReviewMapperTest {
 	
 	@Test
 	public void test() {
-		testReviewInsert();
+//		testReviewList(); // 테스트 완료
+		testReviewInsert(); // 테스트 완료
+//		testReviewUpdate(); // 테스트 완료
+//		testBoarDelete(); // 테스트 완료 
 	}
 	
+	// 댓글(리뷰) 등록 테스트
 	private void testReviewInsert() {
-		ReviewVO vo = new ReviewVO();
-		ReviewVO reviewVO = new ReviewVO();
-		// 코드 마저 작성 해야함
-		int result = reviewMapper.insertReview(reviewVO);
+		// 작성 중
+		ReviewVO vo = new ReviewVO(35, "test", 2, "This", null, 3.5f, 10);
+		int result = reviewMapper.insertReview(vo);
 		log.info(result + "행 삽입");
 	} 
 	
+	// 댓글(리뷰) 전체 검색
 	private void testReviewList() {
-		for(ReviewVO reviewVO : reviewMapper.selectListByReview(1)) {
+		for(ReviewVO reviewVO : reviewMapper.selectListByReview(4)) {
 			log.info(reviewVO);
 		}
 	}
+	
+	// 댓글(리뷰) 수정
+	private void testReviewUpdate() {
+		ReviewVO reviewVO = new ReviewVO();
+		reviewVO.setReviewId(17);
+		reviewVO.setReviewContent("test");
+		reviewVO.setReviewStar(3.1f);
+		int result = reviewMapper.updateReview(reviewVO);
+		log.info(result + "행 수정");
+	}
+	
+	// 댓글(리뷰) 삭제
+	private void testBoarDelete() {
+		int result = reviewMapper.deleteReview(17);
+		log.info(result + "행 삭제");
+	}
+	
 
 	
 

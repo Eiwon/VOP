@@ -21,7 +21,7 @@ public class ProductMapperTest {
 	
 	@Test
 	public void test() {
-		testProductByProductId();
+		testProductByProductId();// 테스트 완료
 	}
 	
 	// 상품 상세 검색 테스트

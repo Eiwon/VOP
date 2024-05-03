@@ -41,14 +41,13 @@ public class ReviewServiceImple implements ReviewService{
 	}
 
 	@Override
-	public int updateReview(int reviewId, String reviewContent, float reviewStar, int imgId) {
+	public int updateReview(int reviewId, String reviewContent, float reviewStar) {
 		log.info("updateReview()");
 		ReviewVO reviewVO = new ReviewVO();
 		// reviewVO에 각 변경사항 변수들 저장
 		reviewVO.setReviewId(reviewId);
 		reviewVO.setReviewContent(reviewContent);
 		reviewVO.setReviewStar(reviewStar);
-		reviewVO.setImgId(imgId);
 		int updateRes = reviewMapper.updateReview(reviewVO);
 		log.info(updateRes + "행 댓글이 수정되었습니다.");
 		return updateRes;

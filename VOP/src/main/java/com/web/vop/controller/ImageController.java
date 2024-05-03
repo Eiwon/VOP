@@ -18,7 +18,7 @@ public class ImageController {
 	private ImageService imageService;
 	
 	// 첨부 파일 상세 정보 조회(GET)
-    @GetMapping("/detail")
+    @GetMapping("/product/detail")
     public void detail(int imgId, Model model) {
         log.info("detail()");
         log.info("imgId : " + imgId);
