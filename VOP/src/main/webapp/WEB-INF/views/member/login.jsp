@@ -13,7 +13,7 @@
 			<input type="password" name="memberPw" placeholder="비밀번호"><br>
 		</form>
 		<div>
-			<a href="">아이디 비밀번호 찾기</a>
+			<a href="findAccount">아이디 비밀번호 찾기</a>
 		</div>
 		<div>
 			<input type="submit" value="로그인"><br>

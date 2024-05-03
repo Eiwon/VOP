@@ -19,7 +19,6 @@ import com.zaxxer.hikari.HikariDataSource;
 // root-context.xml과 동일
 @Configuration
 @ComponentScan(basePackages = {"com.web.vop.service"})
-@ComponentScan(basePackages = {"com.web.vop.aspect"})
 @EnableAspectJAutoProxy
 @MapperScan(basePackages = {"com.web.vop.persistence"})
 @EnableTransactionManagement // 트랜잭션 관리 활성화
