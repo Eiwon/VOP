@@ -16,11 +16,11 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class DeliveryController {
 	
-	@Autowired
-	private OrderVO orderVO;
+	//@Autowired
+	//private OrderVO orderVO;
 	
-	@Autowired
-	private MemberVO memberVO;
+	//@Autowired
+	//private MemberVO memberVO;
 	
 	// 배송 예정일(OrderVO - expectDeliveryDate)을 조회한 결과를 배송조회 페이지에 전송
 	// 예상배송일이 지났을 경우 ‘도착완료’ 업데이트
