@@ -156,8 +156,8 @@
 
 	<div class="container2">
     <div class="user-links2">
-        <a href="member/login">로그인</a>
-        <a href="member/register">회원가입</a>
+        <a href="../member/login">로그인</a>
+        <a href="../member/register">회원가입</a>
     </div>
     
 	<div class="category">

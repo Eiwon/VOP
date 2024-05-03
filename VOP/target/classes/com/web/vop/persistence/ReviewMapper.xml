@@ -28,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </insert>
    
    <!-- 댓글(리뷰) 전체 검색 -->
-   <select id="selectListByProductId" resultMap="replyResultMap">
+   <select id="selectListByProductId" resultMap="reviewResultMap">
       SELECT * FROM REVIEW
       WHERE PRODUCT_ID = #{productId}
       ORDER BY REVIEW_ID = #{replyId}

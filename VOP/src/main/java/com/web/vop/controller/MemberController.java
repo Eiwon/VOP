@@ -77,5 +77,9 @@ public class MemberController {
 		return "redirect:/";
 	} // end logout
 	
+	@GetMapping("/modify")
+	public void modifyGET() {
+		log.info("내 정보 수정 페이지 요청");
+	} // end modifyGET
 	
 }

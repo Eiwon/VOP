@@ -33,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<!-- ID, PW 유효성 확인 -->
-	<select id="selectMemberIdWithPw" resultMap="memberResultMap">
+	<select id="selectMemberIdWithPw" resultType="String">
 		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_ID = #{memberId} AND MEMBER_PW = #{memberPw}
 	</select>
 	
