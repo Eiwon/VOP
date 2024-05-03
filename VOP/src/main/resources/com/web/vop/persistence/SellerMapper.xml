@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.web.vop.persistence.SellerMapper">
 
    <resultMap type="com.web.vop.domain.SellerVO"
-      id="SellerResultMap">
+      id="sellerResultMap">
       
       <id property="memberId" column="MEMBER_ID" /> 
       <result property="businessName" column="BUSINESS_NAME" />
@@ -18,37 +18,43 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </resultMap>
    
    <!-- 모든 판매자 권한 요청 조회 -->
-   <select id="selectAllRequest" resultMap="SellerResultMap">
+   <select id="selectAllRequest" resultMap="sellerResultMap">
    		SELECT MEMBER_ID, BUSINESS_NAME, REQUEST_TIME, REQUEST_CONTENT FROM (
    		SELECT SELLER.*, ROW_NUMBER() OVER(ORDER BY REQUEST_TIME) AS RN FROM SELLER
-   		WHERE REQUEST_STATE = "승인 대기중"
+   		WHERE REQUEST_STATE = '승인 대기중'
    		) WHERE RN BETWEEN #{start} AND #{end}
    </select>
    
+   <!-- 모든 판매자 권한 요청 수 조회 -->
+   <select id="selectRequestCount" resultType="Integer">
+   		SELECT COUNT(MEMBER_ID) FROM SELLER WHERE REQUEST_STATE = '승인 대기중'
+   </select>
+   
    <!-- 자신의 권한 요청 조회 -->
-   <select id="selectRequestById">
+   <select id="selectRequestById" resultMap="sellerResultMap">
    		SELECT * FROM SELLER WHERE MEMBER_ID = #{memberId}
    </select>
    
    <!-- 요청 등록 -->
    <insert id="insertRequest">
-   		INSERT INTO SELLER VALUES (#{memberId}, #{businessName}, SYSDATE, #{requestContent}, "승인 대기중", NULL)
+   		INSERT INTO SELLER VALUES (#{memberId}, #{businessName}, SYSDATE, #{requestContent}, '승인 대기중', NULL)
    </insert>
    
    <!-- 요청 수정(유저) -->
    <update id="updateMemberContent">
    		UPDATE SELLER SET BUSINESS_NAME = #{businessName}, REQUEST_TIME = SYSDATE, 
-   		REQUEST_CONTENT = #{requestContent}, REQUEST_STATE = "승인 대기중" WHERE MEMBER_ID = #{memberId}
+   		REQUEST_CONTENT = #{requestContent}, REQUEST_STATE = '승인 대기중' WHERE MEMBER_ID = #{memberId}
    </update>
    
    <!-- 승인 거부 -->
    <update id="updateAdminContent">
-   		UPDATE SELLER SET REQUEST_STATE = "승인 거부됨", REFUSE_MSG = #{refuseMsg} WHERE MEMBER_ID = #{memberId}
+   		UPDATE SELLER SET REQUEST_STATE = '승인 거부됨', REFUSE_MSG = #{refuseMsg} WHERE MEMBER_ID = #{memberId}
    </update>
    
    <!-- 요청 삭제 -->
    <delete id="deleteRequest">
    		DELETE SELLER WHERE MEMBER_ID = #{memberId}
    </delete>
+   
    
 </mapper>

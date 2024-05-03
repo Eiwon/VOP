@@ -1,16 +1,19 @@
 package com.web.vop.controller;
 
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.web.vop.service.MemberService;
 
 import lombok.extern.log4j.Log4j;
 
-
+@RequestMapping("/board")
 @Controller
 @Log4j
 public class BoardController {// 메인 페이지 구현 컨트롤러
@@ -29,13 +32,22 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 		return "redirect:/board/main";
 	}
 	
-	
-	
 	// 마이페이지 호출하기 -> 세션이 있을 경우 이동, 없으면 로그인 페이지로 이동
 	@GetMapping("/mypage") 
-	public void mypageGET() {
+	public String mypageGET(HttpServletRequest request) {
 		System.out.println("mypage.jsp 이동");
+		String path = "";
 		log.info("mypageGET()");
+		
+		String memberId = (String)request.getSession().getAttribute("memberId");
+		log.info("유저 아이디 : " + memberId);
+		
+		if(memberId == null) {
+			path = "redirect:../member/login";
+		}else {
+			path = "board/mypage";
+		}
+		return path;
 	}//end mypageGET()
 	
 	

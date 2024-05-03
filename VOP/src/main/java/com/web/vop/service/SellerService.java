@@ -9,6 +9,8 @@ public interface SellerService {
 
 	public List<SellerVO> getAllRequest(Pagination pagination);
 
+	public int getRequestCount();
+	
 	public SellerVO getMyRequest(String memberId);
 	
 	public int registerRequest(SellerVO sellerVO);

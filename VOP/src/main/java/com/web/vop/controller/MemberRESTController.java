@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,5 +67,25 @@ public class MemberRESTController {
 		int res = memberService.updatePw(memberId, memberPw);
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end resetPassword
+	
+	@PostMapping("/checkMember")
+	public ResponseEntity<Integer> checkMember(@RequestParam String memberId, @RequestParam String memberPw){
+		log.info("비밀번호 확인");
+		String checkedId = memberService.checkLogin(memberId, memberPw);
+		
+		int res = (checkedId == null) ? 0 : 1;
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+	} // end checkMember
+	
+	
+	@PutMapping("/auth")
+	public ResponseEntity<Integer> updateAuth(
+			@RequestParam String memberId, @RequestParam String auth){
+		log.info("권한 변경");
+		int res = memberService.updateAuth(memberId, memberId);
+		
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+	} // end updateAuth
+	
 	
 }

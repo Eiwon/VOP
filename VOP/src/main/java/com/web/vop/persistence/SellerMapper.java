@@ -13,6 +13,8 @@ public interface SellerMapper {
 
 	public List<SellerVO> selectAllRequest(Pagination pagination);
 	
+	public int selectRequestCount();
+	
 	public SellerVO selectRequestById(String memberId);
 	
 	public int insertRequest(SellerVO sellerVO);
