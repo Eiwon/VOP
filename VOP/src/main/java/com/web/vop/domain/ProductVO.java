@@ -1,5 +1,7 @@
 package com.web.vop.domain;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,4 +22,10 @@ public class ProductVO {
 	private int productRemains;
 	private String productPlace;
 	private String productState;
+	private String category;
+	private String imgPath;
+	private String imgRealName;
+	private String imgChangeName;
+	private String imgExtension;
+	private Date imgDateCreated;
 }

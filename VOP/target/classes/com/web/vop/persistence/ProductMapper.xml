@@ -15,6 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="productRemains" column="PRODUCT_REMAINS"/>
       <result property="productPlace" column="PRODUCT_PLACE"/>
       <result property="productState" column="PRODUCT_STATE"/>
+      <result property="category" column="CATEGORY"/>
       <result property="imgPath" column="IMG_PATH"/>
       <result property="imgRealName" column="IMG_REAL_NAME"/>
       <result property="imgChangeName" column="IMG_CHANGE_NAME"/>
@@ -28,7 +29,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		WHERE PRODUCT_ID = #{productId}
    </select>
    
+	<!-- 상품 등록 -->
+	<insert id="insertProduct">
+   		INSERT INTO PRODUCT VALUES (
+   		PRODUCT_SEQ.NEXTVAL, #{memberId}, #{productName}, #{productPrice},
+   		0, #{productRemains}, #{productPlace}, '승인 대기중', #{category}, 
+   		#{imgPath}, #{imgRealName}, #{imgChangeName}, #{imgExtension}, #{imgDateCreated} 
+   		)
+	</insert>
    
-   
+	<!-- 상품 카테고리로 검색 (페이징) -->
+	<select id="selectByCategory" resultMap="productResultMap">
+   		SELECT * FROM (
+   		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
+   		FROM PRODUCT
+ 		WHERE CATEGORY = #{category}
+   		) WHERE RN BETWEEN #{start} AND #{end}
+	</select>
 
+	<!-- 상품 이름으로 검색 (페이징) -->
+	<select id="selectByName" resultMap="productResultMap">
+   		SELECT * FROM (
+   		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
+   		FROM PRODUCT
+   		WHERE PRODUCT_NAME LIKE #{productName}
+   		) WHERE RN BETWEEN #{start} AND #{end}
+   	</select>	
+
+	<!-- 카테고리를 선택하여 이름으로 검색 (페이징) -->
+	<select id="selectByNameInCategory" resultMap="productResultMap">
+		SELECT * FROM (
+   		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
+   		FROM PRODUCT
+ 		WHERE CATEGORY = #{category} AND PRODUCT_NAME LIKE #{productName}
+   		) WHERE RN BETWEEN #{start} AND #{end}
+	</select>
 </mapper>
