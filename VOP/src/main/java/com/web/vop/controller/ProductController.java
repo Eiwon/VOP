@@ -14,7 +14,7 @@ import lombok.extern.log4j.Log4j;
 @Controller
 @RequestMapping("/product")
 @Log4j
-public class ProducController {
+public class ProductController {
 	
 	@Autowired
 	// ProductService 클래스에 있는 기능을 사용하기위해 생성
@@ -30,6 +30,10 @@ public class ProducController {
 		model.addAttribute("productVO", productVO);
 	} // end productDetail()
 	
-	
+	@GetMapping("/register")
+	public void productRegister() {
+		log.info("productRegister()");
+		
+	} // end productRegister()
 	
 }

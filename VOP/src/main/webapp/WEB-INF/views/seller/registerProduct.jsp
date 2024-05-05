@@ -4,6 +4,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>상품 등록</title>
 </head>
 <body>
@@ -29,7 +30,12 @@
 			<input type="text" id="product_place" name="productPlace" placeholder="배송 지점" onblur="expChk('email', this)">
 			<div></div>
 		</div>
-		
+		<div>
+			<form id="imgForm" action="thumbnail" method="post" enctype="multipart/form-data">
+      			<input id="imgFile" type="file" name="file"> 
+      			<input type="submit" value="업로드">
+   			</form>
+		</div>
 	</div>
 	<div>
 		<input type="button" onclick="register()" value="등록">
@@ -41,7 +47,9 @@
 		let productCategory = $('#category');
 		let productRemains = $('#product_remains');
 		let productPlace = $('#product_place');
-
+		const blockedExtension = new RegExp("exe|sh|php|jsp|aspx|zip|alz");
+		// 이미지 확장자 필터
+		
 		let expMap = {};
 		expMap['id'] = {
 			exp : new RegExp("^[a-zA-Z][a-zA-Z0-9]{5,19}$"),
@@ -69,6 +77,7 @@
 			success : "올바른 입력 형식입니다.",
 			fail : "잘못된 입력 형식입니다"
 		};
+		
 	
 		const chkList = [
 			'id', 'pw', 'checkPw', 'name', 'email', 'phone'
@@ -80,6 +89,32 @@
 			validChkList[chkList[x]] = false;
 		} // 맵 초기화
 	
+		$("#imgForm").submit(function(event) {
+            let fileInput = $("input[name='file']"); // File input 요소 참조
+            let file = fileInput.prop('files')[0]; // file 객체 참조
+            let fileName = fileInput.val();   
+            
+            if (!file) { // file이 없는 경우
+               alert("파일을 선택하세요.");
+               event.preventDefault();
+               return;
+            }
+            
+            if (blockedExtensions.test(fileName)) { // 차단된 확장자인 경우
+               alert("이 확장자의 파일은 첨부할 수 없습니다.");
+               event.preventDefault();
+               return;
+            }
+
+            let maxSize = 10 * 1024 * 1024; // 10 MB 
+            if (file.size > maxSize) {
+               alert("파일 크기가 너무 큽니다. 최대 크기는 10MB입니다.");
+               event.preventDefault();
+            }
+         });
+      });
+		
+		
 		</script>
 	
 </body>

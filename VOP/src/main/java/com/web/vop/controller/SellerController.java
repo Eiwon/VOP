@@ -17,7 +17,8 @@ public class SellerController {
 	} // end sellerRequestGET
 	
 	@GetMapping("registerProduct")
-	public void registerProductGET() {
+	public String registerProductGET() {
 		log.info("상품 등록 페이지로 이동");
+		return "redirect:../product/register";
 	} // end registerProductGET
 }
