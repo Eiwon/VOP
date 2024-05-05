@@ -33,7 +33,6 @@ public class ProductController {
 	@GetMapping("/register")
 	public void productRegister() {
 		log.info("productRegister()");
-		
 	} // end productRegister()
 	
 }
