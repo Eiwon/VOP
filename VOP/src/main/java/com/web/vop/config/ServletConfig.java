@@ -35,9 +35,14 @@ public class ServletConfig implements WebMvcConfigurer {
    
    // 파일을 저장할 경로 bean 생성
    @Bean
-   public String uploadPath() {
+   public String uploadPath() { // 상품 상세정보 이미지 저장 경로
       //return "C:\\upload\\ex04";
-	   return "C:\\upload\\thumbnail_p";
+	  return "C:\\upload\\productDetail";
+   }
+   
+   @Bean
+   public String thumbnailUploadPath() { // 상품 섬네일 이미지 저장 경로
+	  return "C:\\upload\\productThumbnail";
    }
    
    // MultipartResolver bean 생성

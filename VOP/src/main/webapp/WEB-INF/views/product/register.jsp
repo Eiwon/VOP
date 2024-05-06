@@ -9,37 +9,35 @@
 </head>
 <body>
 	<div>
-		<div>
-			<input type="text" id="product_name" name="productName" placeholder="상품명" onblur="">
-			<div></div>
-		</div>
-		<div>
-			<input type="text" id="product_price" name="productPrice" placeholder="가격" onblur="expChk('pw', this)">
-			<div></div>
-		</div>
-		<div>
-        	<span>카테고리</span>
-        	<div id="category">
-        	</div>
-		</div>
-		<div>
-			<input type="number" id="product_remains" name="productRemains" placeholder="수량" onblur="expChk('name', this)">
-			<div></div>
-		</div>
-		<div>
-			<input type="text" id="product_place" name="productPlace" placeholder="배송 지점" onblur="expChk('email', this)">
-			<div></div>
-		</div>
-		<div>
-			<form id="imgForm" action="thumbnail" method="post" enctype="multipart/form-data">
-      			<input id="imgFile" type="file" name="file"> 
-      			<input type="submit" value="업로드">
-   			</form>
-		</div>
+		<form id="productForm" action="register" method="post" enctype="multipart/form-data">
+			<div>
+				<input type="text" id="product_name" name="productName" placeholder="상품명" onblur="">
+				<div></div>
+			</div>
+			<div>
+				<input type="text" id="product_price" name="productPrice" placeholder="가격" onblur="expChk('pw', this)">
+				<div></div>
+			</div>
+			<div>
+        		<span>카테고리</span>
+        		<div id="category">
+        		</div>
+			</div>
+			<div>
+				<input type="number" id="product_remains" name="productRemains" placeholder="수량" onblur="expChk('name', this)">
+				<div></div>
+			</div>
+			<div>
+				<input type="text" id="product_place" name="productPlace" placeholder="배송 지점" onblur="expChk('email', this)">
+				<div></div>
+			</div>
+			<div>
+				<input id="imgFile" type="file" name="file"> 
+			</div>
+			<input type="submit" value="등록">
+		</form>
 	</div>
-	<div>
-		<input type="button" onclick="register()" value="등록">
-	</div>
+	
 	
 	<script type="text/javascript">
 		let productName = $('#product_name');
@@ -61,7 +59,6 @@
 			success : "올바른 입력 형식 입니다.",
 			fail : "비밀번호는 8~20자의 알파벳, 숫자, 한글이여야 합니다."
 		};
-	
 		expMap['name'] = {
 			exp : new RegExp("^[a-zA-Z가-힣]{2,20}$"),
 			success : "올바른 입력 형식입니다.",
@@ -78,7 +75,6 @@
 			fail : "잘못된 입력 형식입니다"
 		};
 		
-	
 		const chkList = [
 			'id', 'pw', 'checkPw', 'name', 'email', 'phone'
 			];
@@ -89,7 +85,7 @@
 			validChkList[chkList[x]] = false;
 		} // 맵 초기화
 	
-		$("#imgForm").submit(function(event) {
+		$("#productForm").submit(function(event) {
             let fileInput = $("input[name='file']"); // File input 요소 참조
             let file = fileInput.prop('files')[0]; // file 객체 참조
             let fileName = fileInput.val();   
@@ -111,11 +107,10 @@
                alert("파일 크기가 너무 큽니다. 최대 크기는 10MB입니다.");
                event.preventDefault();
             }
-         });
-      });
+         }); //end imgForm.submit
 		
-		
-		</script>
+         
+	</script>
 	
 </body>
 </html>

@@ -1,10 +1,14 @@
 package com.web.vop.controller;
 
+import java.io.File;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.web.vop.domain.ProductVO;
 import com.web.vop.service.ProductService;
@@ -31,8 +35,17 @@ public class ProductController {
 	} // end productDetail()
 	
 	@GetMapping("/register")
-	public void productRegister() {
-		log.info("productRegister()");
+	public void registerGET() {
+		log.info("registerGET()");
 	} // end productRegister()
+	
+	@PostMapping("/register")
+	public void registerPOST(ProductVO productVO, MultipartFile file) {
+		log.info("registerPOST()");
+		log.info(productVO);
+		log.info("ÆÄÀÏ ¸í : " + file.getOriginalFilename());
+		
+	} // end registerPOST
+	
 	
 }

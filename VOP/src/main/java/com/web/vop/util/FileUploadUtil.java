@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
+import javax.swing.ImageIcon;
+
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,32 +46,6 @@ public class FileUploadUtil {
         return extension;
     }
     
-    /**
-     * 파일이 저장되는 폴더 이름을 날짜 형식(yyyy/MM/dd)으로 생성
-     * 
-     * @return 날짜 형식의 폴더 이름
-     */
-    public static String makeDatePath() {
-        Calendar calendar = Calendar.getInstance();
-        
-        String yearPath = String.valueOf(calendar.get(Calendar.YEAR));
-        log.info("yearPath: " + yearPath);
-        
-        String monthPath = yearPath
-                + File.separator
-                + new DecimalFormat("00")
-                    .format(calendar.get(Calendar.MONTH) + 1);
-        log.info("monthPath: " + monthPath);
-        
-        
-        String datePath = monthPath
-                + File.separator
-                + new DecimalFormat("00")
-                    .format(calendar.get(Calendar.DATE));
-        log.info("datePath: " + datePath);
-        
-        return datePath;
-    }
     
     /**
      * 파일을 저장
@@ -80,7 +56,7 @@ public class FileUploadUtil {
      */
     public static void saveFile(String uploadPath, MultipartFile file, String uuid) {
         
-        File realUploadPath = new File(uploadPath, makeDatePath());
+        File realUploadPath = new File(uploadPath);
         if (!realUploadPath.exists()) {
             realUploadPath.mkdirs();
             log.info(realUploadPath.getPath() + " successfully created.");
@@ -125,4 +101,11 @@ public class FileUploadUtil {
             System.out.println(fullPath + " file not found.");
         }
     }
+    
+    public ImageIcon convToIcon(File imageFile) { // 이미지 파일을 아이콘으로 변환
+		System.out.println("convToIcon()");
+		ImageIcon icon = new ImageIcon(imageFile.getPath());
+		icon = new ImageIcon(icon.getImage().getScaledInstance(95, 95, 100));
+		return icon;
+	} // end convToIcon
 }
