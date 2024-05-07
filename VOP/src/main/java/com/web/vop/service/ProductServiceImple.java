@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.persistence.ProductMapper;
 import com.web.vop.util.Pagination;
@@ -26,6 +27,31 @@ public class ProductServiceImple implements ProductService{
 		log.info("상품 상세 정보 : " + result.toString());
 		return result;
 	} // end getProductById()
+	
+	// 댓글 총 갯수 검색
+	@Override
+	public int selectReviewByCount(int productId) {
+		log.info("selectReviewByCount()");
+		int res = productMapper.selectReviewCount(productId);
+		return res;
+	}
+	
+	// 상품 리뷰 총 합 검색
+	@Override
+	public int selectReviewByStar(int productId) {
+		log.info("selectReviewByCount()");
+		int res = productMapper.selectReviewStar(productId);
+		return res;
+	}
+	
+//	// 이미지 상세 정보 검색
+//	@Override
+//	public ProductVO selectByMainImg(int productId) {
+//		log.info("selectByMainImg()");
+//		ProductVO result = productMapper.selectByMainImg(productId);
+//		log.info("이미지 검색 : " + result.toString()); //우선 로그 만들었습니다.
+//		return result;
+//	}// end getImageById()
 
 	@Override
 	public int registerProduct(ProductVO productVO) {
@@ -91,7 +117,6 @@ public class ProductServiceImple implements ProductService{
 		log.info("deleteProduct");
 		return productMapper.deleteProduct(productId);
 	} // end deleteProduct
-
 
 	
 }

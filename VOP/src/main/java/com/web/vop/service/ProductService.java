@@ -2,7 +2,6 @@ package com.web.vop.service;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import com.web.vop.domain.ProductVO;
@@ -13,6 +12,16 @@ public interface ProductService {
 	
 	// 상품 상세 조회
 	ProductVO getProductById(int productId);
+	
+	// 댓글 총 갯수 조회 
+	int selectReviewByCount(int productId);
+	
+	
+//	// 이미지 검색 (상품 메인)
+//	ProductVO selectByMainImg(int productId);
+	
+	// 상품 리뷰(별) 총합 조회
+	int selectReviewByStar(int productId);
 	
 	// 상품 등록
 	int registerProduct(ProductVO productVO);
