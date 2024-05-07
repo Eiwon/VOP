@@ -23,13 +23,9 @@ public class ImageMapperTest {
 	
 	@Test
 	public void test() {
-		testImageByImageId(); // 테스트 성공
+
 	}
 	
-	// 이미지 상세 검색 테스트
-	private void testImageByImageId() {
-		ImageVO imageVO = imageMapper.selectByImgId(1);
-		log.info("testImageByImageId()" + imageVO);
-	}
+	
 	
 }

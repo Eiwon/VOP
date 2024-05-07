@@ -15,13 +15,6 @@ public class ImageServiceImple implements ImageService{
 	@Autowired
 	private ImageMapper imageMapper;
 	
-	// 이미지 상세 정보 검색
-	@Override
-	public ImageVO getImageById(int imgId) {
-		log.info("getImageById()");
-		ImageVO result = imageMapper.selectByImgId(imgId);
-		log.info("이미지 검색 : " + result.toString()); //우선 로그 만들었습니다.
-		return result;
-	}// end getImageById()
+	
 	
 }

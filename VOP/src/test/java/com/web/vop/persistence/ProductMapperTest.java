@@ -7,6 +7,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.web.vop.config.RootConfig;
+import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductVO;
 
 import lombok.extern.log4j.Log4j;
@@ -21,7 +22,10 @@ public class ProductMapperTest {
 	
 	@Test
 	public void test() {
-		testProductByProductId();// 테스트 완료
+//		testProductByProductId(); // 테스트 완료
+//		testSelectReviewByCount(); // 테스트 완료
+		testSelectReviewByStar(); // 테스트 완료
+//		testSelectByMainImg(); // 없어도 되는 코드
 	}
 	
 	// 상품 상세 검색 테스트
@@ -29,5 +33,22 @@ public class ProductMapperTest {
 		ProductVO productVO = productMapper.selectProduct(1);
 		log.info("testProductByProductId() : " + productVO);
 	}
+	
+	// 댓글 총 갯수 조회 테스트
+	private void testSelectReviewByCount() {
+		int res = productMapper.selectReviewCount(4);
+		log.info("testSelectReviewByCount() : " + res);
+	}
+	
+	private void testSelectReviewByStar() {
+		int res = productMapper.selectReviewStar(2);
+		log.info("testSelectReviewByStar() : " + res);
+	}
+	
+//	// 이미지 상세 검색 테스트
+//	private void testSelectByMainImg() {
+//		ProductVO ProductVO = productMapper.selectByMainImg(2);
+//		log.info("testImageByImageId()" + ProductVO);
+//	}
 	
 }
