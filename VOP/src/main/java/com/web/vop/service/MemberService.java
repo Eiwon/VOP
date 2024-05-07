@@ -22,6 +22,9 @@ public interface MemberService {
 	// 회원 권한 변경
 	public int updateAuth(String memberId, String memberAuth);
 	
+	// 회원 권한 조회
+	public String getMemberAuth(String memberId);
+	
 	// 전화번호로 아이디 검색
 	public String getIdByPhone(String memberPhone);
 	

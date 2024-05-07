@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.vop.domain.SellerVO;
+import com.web.vop.service.ProductService;
 import com.web.vop.service.SellerService;
 import com.web.vop.util.PageMaker;
 
@@ -29,6 +30,9 @@ public class SellerRESTController {
 
 	@Autowired
 	SellerService sellerService;
+	
+	@Autowired
+	ProductService productService;
 	
 	// 판매자 권한 요청 조회
 	@GetMapping("/all/{page}")
@@ -94,5 +98,27 @@ public class SellerRESTController {
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end deleteRequest
+	
+	
+	// 상품 삭제 요청
+	@PostMapping("/delReqProduct")
+	public ResponseEntity<Integer> deleteRequestProduct(String productId){
+		log.info("상품 삭제 요청 : " + productId);
+		int pid = Integer.parseInt(productId);
+		// 판매 중인 상품이면 삭제 대기중 상태로 전환, (판매 중, 삭제 대기중) 상태가 아니라면 즉시 삭제
+		String productState = productService.selectStateByProductId(pid);
+		log.info("현재 상태 : " + productState);
+		
+		int res = 0;
+		if(productState.equals("판매중")) {
+			if(productService.setProductState("삭제 대기중", pid) == 1)
+				res = 1;
+		}else if(!productState.equals("삭제 대기중")){
+			if(productService.deleteProduct(pid) == 1)
+				res = 2;
+		}
+		
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+	} // end deleteRequestProduct
 	
 }

@@ -20,6 +20,8 @@ public interface MemberMapper {
 	
 	public int updateMemberAuth(@Param("memberId") String memberId, @Param("memberAuth") String memberAuth);
 	
+	public String selectAuthById(String memberId);
+	
 	public String selectByPhone(String memberPhone);
 	
 	public int updateMemberPw(@Param("memberId") String memberId, @Param("memberPw") String memberPw);

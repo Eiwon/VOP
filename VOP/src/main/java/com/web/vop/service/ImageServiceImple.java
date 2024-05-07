@@ -23,5 +23,12 @@ public class ImageServiceImple implements ImageService{
 		log.info("이미지 검색 : " + result.toString()); //우선 로그 만들었습니다.
 		return result;
 	}// end getImageById()
+
+	@Override
+	public int registerImage(ImageVO imageVO) {
+		log.info("registerImage() : " + imageVO.getImgRealName());
+		int res = imageMapper.insertImg(imageVO);
+		return res;
+	} // end registerImage
 	
 }

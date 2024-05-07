@@ -9,4 +9,8 @@ public interface ImageMapper {
 	
 	// 상품 메인 이미지 검색 
 	ImageVO selectByImgId(int imgId);
+	
+	// 이미지 등록
+	int insertImg(ImageVO imageVO);
+	
 }

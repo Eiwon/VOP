@@ -10,18 +10,42 @@ import com.web.vop.util.Pagination;
 
 @Mapper
 public interface ProductMapper {
+	
 	// 상품 상세 정보 검색
 	ProductVO selectProduct(int productId);
 	
+	// 상품 등록
 	int insertProduct(ProductVO productVO);
 	
+	// 방금 등록한 상품 id 검색
+	int selectLastInsertId();
+	
+	// 카테고리로 검색
 	List<ProductVO> selectByCategory(
-			@Param("category") String category, Pagination pagination);
+			@Param("category") String category, @Param("pagination") Pagination pagination);
 	
+	// 이름에 검색어가 포함된 상품 검색
 	List<ProductVO> selectByName(
-			@Param("productName") String productName, Pagination pagination);
+			@Param("productName") String productName, @Param("pagination") Pagination pagination);
 	
+	// 카테고리 내에서, 이름에 검색어가 포함된 상품 검색
 	List<ProductVO> selectByNameInCategory(
 			@Param("category") String category, @Param("productName") String productName,
-			Pagination pagination);
+			@Param("pagination") Pagination pagination);
+	
+	// memberId로 상품 조회
+	List<ProductVO> selectByMemberId(@Param("memberId") String memberId, @Param("pagination") Pagination pagination);
+	
+	// memberId로 상품 갯수 조회
+	int selectByMemberIdCnt(String memberId);
+	
+	// productId로 상품 상태 변경
+	int updateState(@Param("productState") String productState, @Param("productId") int productId);
+	
+	// productId로 상품 상태 검색
+	String selectStateByProductId(int productId);
+	
+	// productId로 상품 삭제
+	int deleteProduct(int productId);
+	
 }

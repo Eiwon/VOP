@@ -10,8 +10,9 @@
 
 	<div> 
 		<strong>내 정보</strong>
-		<a href="../member/modify">내 정보 확인 / 수정</a>
-		<a href="../seller/sellerRequest">입점 신청</a>
+		<a href="myInfo">내 정보 확인 / 수정</a>
+		<a href="seller">판매자 페이지</a>
+		<a href="admin">관리자 페이지</a>
 	</div>
 
 	<script type="text/javascript">
