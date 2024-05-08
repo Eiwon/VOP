@@ -6,8 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.web.vop.domain.MemberVO;
-import com.web.vop.domain.OrderVO;
+import com.web.vop.domain.DeliveryVO;
 import com.web.vop.persistence.OrderMapper;
 
 import lombok.extern.log4j.Log4j;
@@ -20,21 +19,42 @@ public class OrderServiceImple implements OrderService {
 	OrderMapper orderMapper;
 	
 	@Override
-	public OrderVO selectAllOrder(int orderId) { //오더id로 주문 전체 조회
-		log.info("OrderService selectAllOrder()");
-		
+	public Date getExpectDateByPaymentId(int paymentId) {
+		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
-	public Date getExpectDate(Date expectDeliveryDate) { //배송 예정일 조회
-		log.info("OrderService getExpectDate()");
-		Date result = orderMapper.selectByExpectDeliveryDate(expectDeliveryDate);
-		log.info("배송예정일 : " + result);
-		
-		return result;
+	public int getPaymentId(int paymentId) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
+	@Override
+	public DeliveryVO getMemberId(String memberId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int registerDelivery(DeliveryVO deliveryVo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int updateDelivery(DeliveryVO deliveryVo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int deleteDelivery(int deliveryId) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	
 	
 
 }

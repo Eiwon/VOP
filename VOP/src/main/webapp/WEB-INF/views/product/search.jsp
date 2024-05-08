@@ -52,16 +52,26 @@
 					<div>${productVO.productPlace }</div>
 					<div>${productVO.category }</div>
 					<img alt="등록된 이미지가 없습니다." 
-					src="showImg?productId=${productVO.productId }">
+					src="showImg?imgId=${productVO.imgId }">
 			</div>
-		
 		</c:forEach>
 	</div>   
+	<div id="pageSelector">
+      	<c:if test="${pageMaker.isPrev() }">
+         	<li><a href="search?category=${category }&word=${word }&pageNum=${pageMaker.startNum - 1}">이전</a></li>
+      	</c:if>
+      	<c:forEach begin="${pageMaker.startNum }" end="${pageMaker.endNum }" var="num">
+         	<li><a href="search?category=${category }&word=${word }&pageNum=${num }">${num }</a></li>
+      	</c:forEach>
+      	<c:if test="${pageMaker.isNext() }">
+         	<li><a href="search?category=${category }&word=${word }&pageNum=${pageMaker.endNum + 1}">다음</a></li>
+      	</c:if>
+	</div>
+	
 	<script type="text/javascript">
 		let boxCategory = $('#boxCategory');
 		let inputSearch = $('.search-input');
 		let btnSearch = $('.search-button');
-		
 		btnSearch.click(function(){
 			console.log("선택된 카테고리 : " + boxCategory.val());
 			console.log("입력된 검색어 : " + inputSearch.val());

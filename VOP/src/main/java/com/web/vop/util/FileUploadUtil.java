@@ -6,6 +6,14 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.log4j.Log4j;
@@ -127,10 +135,22 @@ public class FileUploadUtil {
 		}
     } // end saveIcon
     
-    public static File getFile(String imgPath, String changedName, String extension) { // 저장된 파일 불러오기
-    	String fullPath = imgPath + File.pathSeparator + changedName + File.pathSeparator + extension;
-    	File file = new File(fullPath);
-    	return file;
+    
+    // @param imgPath : 파일 업로드 경로
+    // @param changedName : 파일명
+    // @param extension : 확장자 명
+    // @GetMapping(value = "/요청 경로", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	// @ResponseBody
+	// public ResponseEntity<Resource> 메소드 이름(){} 로 비동기 메소드 만들고, 이 메소드 실행 결과를 리턴하면 됩니다.
+    // 클라이언트 측은 <img src="요청 경로?검색 대상 정보"> 로 비동기 요청 보내면 됩니다.
+    public static ResponseEntity<Resource> getFile(String imgPath, String changedName, String extension) { // 저장된 파일 불러오기
+    	String fullPath = imgPath + File.separator + changedName;
+    	Resource resource = new FileSystemResource(fullPath);
+        // 다운로드할 파일 이름을 헤더에 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" 
+              + fullPath + "." + extension);
+        return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
     } // end getFile
     
 }

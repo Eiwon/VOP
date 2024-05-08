@@ -23,8 +23,28 @@
 				<div></div>
 			</div>
 			<div>
-        		<span>카테고리</span>
-        		<input type="text" name="category">
+        		<span>카테고리</span> 
+        		<select id="boxCategory" name="category">
+					<option value="여성패션">여성패션</option>
+					<option value="남성패션">남성패션</option>
+					<option value="남녀 공용 의류">남녀 공용 의류</option>
+					<option value="유아동 패션">유아동 패션</option>
+					<option value="뷰티">뷰티</option>
+					<option value="출산/유아동">출산/유아동</option>
+					<option value="식품">식품</option>
+					<option value="주방용품">주방용품</option>
+					<option value="생활용품">생활용품</option>
+					<option value="홈인테리어">홈인테리어</option>
+					<option value="가전디지털">가전디지털</option>
+					<option value="스포츠/레저">스포츠/레저</option>
+					<option value="자동차 용품">자동차 용품</option>
+					<option value="도서/음반/DVD">도서/음반/DVD</option>
+					<option value="완구/취미">완구/취미</option>
+					<option value="문구/오피스">문구/오피스</option>
+					<option value="반려동물용품">반려동물용품</option>
+					<option value="헬스/건강식품">헬스/건강식품</option>
+				</select> 
+				<!-- <input type="text" name="category"> -->
 			</div>
 			<div>
 				<input type="number" id="product_remains" name="productRemains" placeholder="수량">
@@ -55,7 +75,7 @@
 	<script type="text/javascript">
 		let productName = $('#product_name');
 		let productPrice = $('#product_price');
-		let productCategory = $('#category');
+		//let productCategory = $('#category');
 		let productRemains = $('#product_remains');
 		let productPlace = $('#product_place');
 		const blockedExtension = new RegExp("exe|sh|php|jsp|aspx|zip|alz");

@@ -1,5 +1,7 @@
 package com.web.vop.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +32,16 @@ public class ImageServiceImple implements ImageService{
 		int res = imageMapper.insertImg(imageVO);
 		return res;
 	} // end registerImage
-	
+
+	@Override
+	public int getRecentImgId() {
+		log.info("getRecentImgId()");
+		return imageMapper.selectRecentImgId();
+	} // end getRecentImgId
+
+	@Override
+	public List<ImageVO> getByProductId(int productId) {
+		log.info("getByProductId()");
+		return imageMapper.selectByProductId(productId);
+	} // end getByProductId
 }

@@ -42,20 +42,20 @@ public class ReviewRESTController {
 	
 //	// productController쪽으로 이동
 //	// 경로 ../all 인것 같다.
-//	@GetMapping("/all/{productId}") // GET : 댓글(리뷰) 선택(all)
-//	public ResponseEntity<List<ReviewVO>> readAllReview(
-//			@PathVariable("productId") int productId){
-//		log.info("readAllReview()");
-//		
-//		// productId 확인 로그
-//		log.info("productId = " + productId);
-//		
-//		// productId에 해당하는 댓글(리뷰) list을 전체 검색
-//		List<ReviewVO> list = reviewService.getAllReview(productId);
-//		
-//		// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
-//		return new ResponseEntity<List<ReviewVO>>(list, HttpStatus.OK);
-//	}
+	@GetMapping("/all/{productId}") // GET : 댓글(리뷰) 선택(all)
+	public ResponseEntity<List<ReviewVO>> readAllReview(
+			@PathVariable("productId") int productId){
+		log.info("readAllReview()");
+		
+		// productId 확인 로그
+		log.info("productId = " + productId);
+		
+		// productId에 해당하는 댓글(리뷰) list을 전체 검색
+		List<ReviewVO> list = reviewService.getAllReview(productId);
+		
+		// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
+		return new ResponseEntity<List<ReviewVO>>(list, HttpStatus.OK);
+	}
 	
 	 @PutMapping("/{reviewId}") // PUT : 댓글(리뷰) 수정 // replyId 가져온다.
 	   public ResponseEntity<Integer> updateReview(
