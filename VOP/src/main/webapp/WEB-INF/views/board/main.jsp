@@ -236,7 +236,7 @@
 			console.log("선택된 카테고리 : " + boxCategory.val());
 			console.log("입력된 검색어 : " + inputSearch.val());
 			
-			location.href = "searchProduct?category=" + boxCategory.val() + "&word=" + inputSearch.val();
+			location.href = "../product/search?category=" + boxCategory.val() + "&word=" + inputSearch.val();
 			
 		}); // end btnSearch.click
 	

@@ -32,12 +32,21 @@ public interface ProductService {
 	// 카테고리로 상품 검색
 	List<ProductVO> selectByCategory(String category, Pagination pagination);
 	
+	// 카테고리로 상품 검색 결과 수량
+	int selectByCategoryCnt(String category);
+	
 	// 이름으로 상품 검색
 	List<ProductVO> selectByName(String productName, Pagination pagination);
+	
+	// 이름으로 상품 검색 결과 수량
+	int selectByNameCnt(String productName);
 	
 	// 카테고리 안에서 이름으로 검색
 	List<ProductVO> selectByNameInCategory(String category, String productName,
 			Pagination pagination);
+	
+	// 카테고리 안에서 이름으로 검색 결과 수량
+	int selectByNameInCategoryCnt(String category, String productName);
 	
 	// memberId로 상품 조회
 	List<ProductVO> selectByMemberId(String memberId, Pagination pagination);

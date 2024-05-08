@@ -22,6 +22,7 @@ public class FileUploadUtil {
     public static String subStrName(String fileName) {
        // FilenameUtils.normalize() : 파일 이름 정규화 메서드
         String normalizeName = FilenameUtils.normalize(fileName);
+        log.info("fileName : " + fileName + ", normalizeName : " + normalizeName);
         int dotIndex = normalizeName.lastIndexOf('.');
 
         String realName = normalizeName.substring(0, dotIndex);

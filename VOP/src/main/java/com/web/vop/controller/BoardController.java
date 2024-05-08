@@ -116,18 +116,5 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 		log.info("관리자 페이지로 이동");
 	} // end myInfoGet
 	
-	@GetMapping("/searchProduct")
-	public String searchProductGET(String category, String word) {
-		log.info("product/search로 redirect");
-		log.info("카테고리 : " + category + " 검색어 : " + word);
-		String path = "";
-		
-		try {
-			path = URLEncoder.encode("redirect:../product/search?category=" + category + "&word=" + word, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return path;
-	} // end searchProductGET
 	
 }//end MainController

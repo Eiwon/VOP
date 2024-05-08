@@ -1,10 +1,16 @@
 package com.web.vop.controller;
 
 import java.util.UUID;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.web.vop.domain.ImageVO;
@@ -134,7 +141,8 @@ public class ProductController {
 	    int productId = productService.getRecentProductId(); 
 	    log.info("추가된 상품 id : " + productId);
 	    
-	    
+	    log.info("details 파일 수 : " + details.length);
+	    log.info("details : " + details);
 	    // details 이미지들 저장 후 IMAGE 테이블에 추가
 	    String[] detailsNames = new String[details.length];
 	    
@@ -155,28 +163,47 @@ public class ProductController {
 	@GetMapping("search")
 	public void search(Model model, String category, String word, Pagination pagination) {
 		log.info("search category : " + category + ", word : " + word);
-		
+		List<ProductVO> productList = new ArrayList<>();
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
 		
-		if(word.length() > 0) {
-			
-		}
-		
-		
 		if(category.equals("전체")) { // 카테고리가 전체, 검색어가 있는 경우
-			productService.selectByName(word, pagination);
+			log.info("검색어 검색");
+			productList = productService.selectByName(word, pagination);
+			pageMaker.setTotalCount(productService.selectByNameCnt(word));
 		}else {
 			if(word.length() > 0) { // 카테고리가 있고, 검색어도 있는 경우
-				productService.selectByNameInCategory(category, word, pagination);
+				log.info("카테고리 + 검색어 검색");
+				productList = productService.selectByNameInCategory(category, word, pagination);
+				pageMaker.setTotalCount(productService.selectByNameInCategoryCnt(category, word));
 			}else { // 카테고리가 있고, 검색어는 없는 경우
-				productService.selectByCategory(category, pagination);
+				log.info("카테고리 검색");
+				productList = productService.selectByCategory(category, pagination);
+				pageMaker.setTotalCount(productService.selectByCategoryCnt(category));
 			}
 		}
-		// 카테고리가 전체, 검색어도 없는 경우 -- 검색 실행 X
+		// 카테고리가 전체, 검색어도 없는 경우 -- 클라이언트 측에서 실행 X
+		log.info("검색결과 = 총 " + pageMaker.getTotalCount() + "개 검색");
+		model.addAttribute("productList", productList);
+		model.addAttribute("pageMaker", pageMaker);
 		
 	} // end search
 	
+	@GetMapping(value = "/showImg", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	@ResponseBody
+	public ResponseEntity<Resource> showImg(int productId){
+		log.info("showImg() : " + productId);
+		ProductVO productVO = productService.getProductById(productId);
+		
+		String imgPath = productVO.getImgPath() + File.separator + productVO.getImgChangeName();
+		// 파일 리소스 생성
+        Resource resource = new FileSystemResource(imgPath);
+        // 다운로드할 파일 이름을 헤더에 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" 
+              + imgPath + "." + productVO.getImgExtension());
+        return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+	}
   
 	
 }

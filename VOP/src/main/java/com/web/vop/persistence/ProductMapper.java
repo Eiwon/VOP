@@ -35,14 +35,23 @@ public interface ProductMapper {
 	List<ProductVO> selectByCategory(
 			@Param("category") String category, @Param("pagination") Pagination pagination);
 	
+	// 카테고리로 검색 결과 수량
+	int selectByCategoryCnt(String category);
+	
 	// 이름에 검색어가 포함된 상품 검색
 	List<ProductVO> selectByName(
 			@Param("productName") String productName, @Param("pagination") Pagination pagination);
+	
+	// 이름에 검색어가 포함된 상품 검색 결과 수량
+	int selectByNameCnt(String productName);
 	
 	// 카테고리 내에서, 이름에 검색어가 포함된 상품 검색
 	List<ProductVO> selectByNameInCategory(
 			@Param("category") String category, @Param("productName") String productName,
 			@Param("pagination") Pagination pagination);
+	
+	// 카테고리 내에서, 이름에 검색어가 포함된 상품 검색 결과 수량
+	int selectByNameInCategoryCnt(@Param("category") String category, @Param("productName") String productName);
 	
 	// memberId로 상품 조회
 	List<ProductVO> selectByMemberId(@Param("memberId") String memberId, @Param("pagination") Pagination pagination);

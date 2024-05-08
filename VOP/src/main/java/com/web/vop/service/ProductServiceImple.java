@@ -75,6 +75,12 @@ public class ProductServiceImple implements ProductService{
 	} // end selectByCategory
 
 	@Override
+	public int selectByCategoryCnt(String category) {
+		log.info("selectByCategoryCnt()");
+		return productMapper.selectByCategoryCnt(category);
+	} // end selectByCategoryCnt
+	
+	@Override
 	public List<ProductVO> selectByName(String productName, Pagination pagination) {
 		log.info("selectByName()");
 		String includeName = '%' + productName + '%';
@@ -82,12 +88,26 @@ public class ProductServiceImple implements ProductService{
 	} // end selectByName
 
 	@Override
+	public int selectByNameCnt(String productName) {
+		log.info("selectByNameCnt()");
+		String includeName = '%' + productName + '%';
+		return productMapper.selectByNameCnt(includeName);
+	} // end selectByName
+	
+	@Override
 	public List<ProductVO> selectByNameInCategory(String category, String productName, Pagination pagination) {
-		log.info("selectByNameInCategory");
+		log.info("selectByNameInCategory()");
 		String includeName = '%' + productName + '%';
 		return productMapper.selectByNameInCategory(category, includeName, pagination);
 	} // end selectByNameInCategory
 
+	@Override
+	public int selectByNameInCategoryCnt(String category, String productName) {
+		log.info("selectByNameInCategoryCnt()");
+		String includeName = '%' + productName + '%';
+		return productMapper.selectByNameInCategoryCnt(category, includeName);
+	} // end selectByNameInCategoryCnt
+	
 	@Override
 	public List<ProductVO> selectByMemberId(String memberId, Pagination pagination) {
 		log.info("selectByMemberId()");
