@@ -40,6 +40,7 @@ public class ProductMapperTest {
 		log.info("testSelectReviewByCount() : " + res);
 	}
 	
+	// ¸®ºä ÃÑ ÇÕ
 	private void testSelectReviewByStar() {
 		int res = productMapper.selectReviewStar(2);
 		log.info("testSelectReviewByStar() : " + res);

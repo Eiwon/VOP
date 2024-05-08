@@ -1,6 +1,7 @@
 package com.web.vop.controller;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +40,32 @@ public class ProductController {
 	@GetMapping("/detail")
 	public void productDetailGET(Model model, Integer productId) {
 		log.info("productDetailGET()");
-		log.info("productId : " + productId);
 		
+		// 소수점 첫 째 자리까지만 출력
+		DecimalFormat df = new DecimalFormat("#.#");
+		
+		log.info("productId : " + productId);
 		// productId에 해당하는 상품 조회 
 		ProductVO productVO = productService.getProductById(productId);
-		log.info("/product/detail get");
+		int reviewCount = productService.selectReviewByCount(productId);
+		log.info("reviewCount" + reviewCount);
+		int res = 0;
+		String reviewStar = "0";
+		if(reviewCount != 0) {
+			res = productService.selectReviewByStar(productId);
+			// 리뷰 평균 값
+			reviewStar = df.format((float)res / reviewCount);
+		}
+		log.info("res : " + res);	
+		log.info("reviewStar : " + reviewStar);
+		// 상품 조회 정보
 		model.addAttribute("productVO", productVO);
+		// 댓글 갯수 정보
+		model.addAttribute("reviewCount", reviewCount);
+		// 리뷰 평균 정보
+		model.addAttribute("reviewStar", reviewStar);
+		// 해당 경로
+		log.info("/product/detail get");
 	} // end productDetail()
 	
 //	// 첨부 파일 이미지 상세 정보 조회(GET)
@@ -61,41 +82,6 @@ public class ProductController {
 //        model.addAttribute("ProductVO", ProductVO);
 //    } // end detail()
     
-	// 댓글 총 갯수 조회
-	@GetMapping("/detail")
-	public void reviewCountGET(Model model, Integer productId) {
-		log.info("reviewCountGET()");
-		int reviewCount = productService.selectReviewByCount(productId);
-		log.info("reviewCount : " + reviewCount);
-		model.addAttribute("reviewCount", reviewCount);
-	}
-	
-	// 상품 리뷰(별) 총 합 검색
-	public void reviewStarGET(Model model, Integer productId) {
-		log.info("reviewStarGET()");
-		int res = productService.selectReviewByStar(productId);
-		int reviewCount = productService.selectReviewByCount(productId);
-		float reviewStar = res / reviewCount;
-		model.addAttribute("reviewStar", reviewStar);
-	}
-	
-	 // 댓글 전체 조회
-	 @GetMapping("/all/{productId}") // GET : 댓글(리뷰) 선택(all)
-	 public ResponseEntity<List<ReviewVO>> readAllReview(
-	 		@PathVariable("productId") int productId){
-	 	log.info("readAllReview()");
-	 		
-	 	// productId 확인 로그
-	 	log.info("productId = " + productId);
-	 		
-	 	// productId에 해당하는 댓글(리뷰) list을 전체 검색
-	 	List<ReviewVO> list = reviewService.getAllReview(productId);
-	 		
-	 	// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
-	 	return new ResponseEntity<List<ReviewVO>>(list, HttpStatus.OK);
-	 }
-	
-	
 	@GetMapping("/register")
 	public void registerGET() {
 		log.info("registerGET()");
@@ -108,8 +94,5 @@ public class ProductController {
 		log.info("파일 명 : " + file.getOriginalFilename());
 		
 	} // end registerPOST
-	
-	
-  
 	
 }
