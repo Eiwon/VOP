@@ -7,21 +7,63 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
    <resultMap type="com.web.vop.domain.BasketVO"
       id="basketResultMap">
-      
       <result property="memberId" column="MEMBER_ID" /> 
       <result property="productId" column="PRODUCT_ID" />
       <result property="productNum" column="PRODUCT_NUM"/>
    </resultMap>
    
+   <resultMap type="com.web.vop.domain.BasketDTO" 
+   	  id="basketJoinResultMap">
+   	  <result property="productId" column="PRODUCT_ID" /> 
+      <result property="memberId" column="MEMBER_ID" />
+      <result property="productName" column="PRODUCT_NAME"/>
+      <result property="productPrice" column="PRODUCT_PRICE"/>
+      <result property="reviewNum" column="REVIEW_NUM"/>
+      <result property="productRemains" column="PRODUCT_REMAINS"/>
+      <result property="productPlace" column="PRODUCT_PLACE"/>
+      <result property="productState" column="PRODUCT_STATE"/>
+      <result property="category" column="CATEGORY"/>
+      <result property="imgId" column="IMG_ID"/>
+      <result property="productDateCreated" column="PRODUCT_DATE_CREATED"/>
+      <result property="productNum" column="PRODUCT_NUM"/>
+   </resultMap>
+   
    <!-- 내 장바구니 물품 목록 조회 -->
-   <select id="selectByMemberId" resultMap="basketResultMap">
+   <select id="selectByMemberId" resultMap="basketJoinResultMap">
+   		SELECT PRODUCT.*, BK.PRODUCT_NUM FROM (
    		SELECT * FROM (
-    		SELECT * FROM (
-   				SELECT BASKET.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN FROM BASKET
-        		WHERE MEMBER_ID = #{memberId}
-    		)  WHERE RN BETWEEN #{start} AND #{end}
-		) BR JOIN PRODUCT ON BR.PRODUCT_ID = PRODUCT.PRODUCT_ID WHERE PRODUCT_STATE = '판매중'
+   		SELECT BASKET.*, ROW_NUMBER() OVER(ORDER BY PRODUCT_ID DESC) RN 
+   		FROM BASKET WHERE MEMBER_ID = #{memberId}
+   		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+   		) BK LEFT JOIN PRODUCT
+   		ON BK.PRODUCT_ID = PRODUCT.PRODUCT_ID
    </select>
    
+   <!-- 내 장바구니 물품 종류 수 조회-->
+   <select id="selectByMemberIdCnt" resultType="Integer">
+   		SELECT COUNT(PRODUCT_ID) FROM BASKET WHERE MEMBER_ID = #{memberId}
+   </select>
+   
+   <!-- 장바구니에 물품 추가 -->
+   <insert id="insertToBasket">
+   		INSERT INTO BASKET 
+   		VALUES ( #{memberId}, #{productId}, #{productNum})
+   </insert>
+   
+   <!-- 장바구니 물품 수량 변경 -->
+   <update id="updateProductNum">
+   		UPDATE BASKET SET PRODUCT_NUM = #{productNum}
+   		WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
+   </update>
+   
+   <!-- 장바구니 물품 삭제 -->
+   <delete id="deleteFromBasket">
+   		DELETE BASKET WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
+   </delete>
+   
+   <!-- 장바구니 비우기 -->
+   <delete id="deleteAll">
+   		DELETE BASKET WHERE MEMBER_ID = #{memberId}
+   </delete>
    
 </mapper>

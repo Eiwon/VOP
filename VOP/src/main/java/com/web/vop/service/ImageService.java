@@ -1,5 +1,7 @@
 package com.web.vop.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.web.vop.domain.ImageVO;
@@ -12,5 +14,11 @@ public interface ImageService {
 	
 	// 이미지 등록
 	int registerImage(ImageVO imageVO);
+	
+	// 최근에 등록한 이미지 id 검색   
+	int getRecentImgId();
+		
+	// productId로 이미지 검색
+	List<ImageVO> getByProductId(int productId);
 	
 }
