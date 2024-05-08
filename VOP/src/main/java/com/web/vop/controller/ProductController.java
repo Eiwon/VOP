@@ -189,6 +189,7 @@ public class ProductController {
 		
 	} // end search
 	
+	// 썸네일 이미지 파일 요청
 	@GetMapping(value = "/showImg", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	@ResponseBody
 	public ResponseEntity<Resource> showImg(int productId){
@@ -203,7 +204,7 @@ public class ProductController {
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" 
               + imgPath + "." + productVO.getImgExtension());
         return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
-	}
+	} // end showImg
   
 	
 }
