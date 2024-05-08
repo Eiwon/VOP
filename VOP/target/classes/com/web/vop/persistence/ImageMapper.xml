@@ -15,10 +15,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="imgChangeName" column="IMG_CHANGE_NAME"/>
       <result property="imgExtension" column="IMG_EXTENSION"/>
       <result property="imgDateCreated" column="IMG_DATE_CREATED"/>
-      <result property="reviewId" column="REVIEW_ID"/>
       
    </resultMap>
    
+   <!-- imgId로 이미지 검색  검색 -->
+   <select id="selectByImgId" resultMap="imageResultMap">
+      SELECT * FROM IMAGE
+      WHERE IMG_ID = #{imgId}
+   </select>
    
+   <!-- 이미지 등록 -->
+   <insert id="insertImg">
+   		INSERT INTO IMAGE VALUES(
+   		IMAGE_SEQ.NEXTVAL, #{productId}, #{imgPath}, #{imgRealName}, #{imgChangeName}, #{imgExtension}, SYSDATE
+   		)
+   </insert>
        
 </mapper>

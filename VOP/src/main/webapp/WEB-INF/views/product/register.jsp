@@ -11,29 +11,42 @@
 	<div>
 		<form id="productForm" action="register" method="post" enctype="multipart/form-data">
 			<div>
-				<input type="text" id="product_name" name="productName" placeholder="상품명" onblur="">
+				판매자
+				<input type="text" name="memberId" value='<%=request.getSession().getAttribute("memberId") %>' readonly>
+			</div>
+			<div>
+				<input type="text" id="product_name" name="productName" placeholder="상품명" >
 				<div></div>
 			</div>
 			<div>
-				<input type="text" id="product_price" name="productPrice" placeholder="가격" onblur="expChk('pw', this)">
+				<input type="text" id="product_price" name="productPrice" placeholder="가격" >
 				<div></div>
 			</div>
 			<div>
         		<span>카테고리</span>
-        		<div id="category">
-        		</div>
+        		<input type="text" name="category">
 			</div>
 			<div>
-				<input type="number" id="product_remains" name="productRemains" placeholder="수량" onblur="expChk('name', this)">
+				<input type="number" id="product_remains" name="productRemains" placeholder="수량">
 				<div></div>
 			</div>
 			<div>
-				<input type="text" id="product_place" name="productPlace" placeholder="배송 지점" onblur="expChk('email', this)">
+				<input type="text" id="product_place" name="productPlace" placeholder="배송 지점">
 				<div></div>
 			</div>
 			<div>
-				<input id="imgFile" type="file" name="file"> 
+				<strong>썸네일 선택</strong>
+				<input id="inputThumbnail" type="file" name="thumbnail" onchange="showThumbPreview()"> 
+				<div id="previewThumbnail">
+				</div>
 			</div>
+			<div>
+				<strong>상세정보 이미지</strong>
+				<input id="inputDetails" type="file" name="details" multiple="multiple" onchange="showDetailsPreview()">
+				<div id="previewDetails">
+				</div>
+			</div>
+			
 			<input type="submit" value="등록">
 		</form>
 	</div>
@@ -86,9 +99,9 @@
 		} // 맵 초기화
 	
 		$("#productForm").submit(function(event) {
-            let fileInput = $("input[name='file']"); // File input 요소 참조
-            let file = fileInput.prop('files')[0]; // file 객체 참조
-            let fileName = fileInput.val();   
+            let inputThumbnail = $("#inputThumbnail"); // File input 요소 참조
+            let file = inputThumbnail.prop('files')[0]; // file 객체 참조
+            let fileName = inputThumbnail.val();   
             
             if (!file) { // file이 없는 경우
                alert("파일을 선택하세요.");
@@ -107,8 +120,42 @@
                alert("파일 크기가 너무 큽니다. 최대 크기는 10MB입니다.");
                event.preventDefault();
             }
+            
+            let inputDetails = $("#imgDetails");
+            let files = inputDetails.prop('files');
+            // 유효성 체크 추가 필요
+            
          }); //end imgForm.submit
 		
+         function showThumbPreview(){
+        	 // 이미지 미리보기 (썸네일)
+        	 console.log("changed");
+        	 let inputThumbnail = $("#inputThumbnail"); // File input 요소 참조
+             let file = inputThumbnail.prop('files')[0]; // file 객체 참조
+             let previewThumbnail = $('#previewThumbnail');
+             const fileUrl = URL.createObjectURL(file);
+             let str = "";
+             
+             str = '<img src="' + fileUrl + '">';
+             
+        	 previewThumbnail.html(str);
+         } // end showThumbPreview()
+         
+         function showDetailsPreview(){
+        	 // 이미지 미리보기 (세부정보)
+        	 console.log("changed");
+        	 let previewDetails = $('#previewDetails');
+        	 
+        	 let inputDetails = $("#inputDetails");
+             let files = inputDetails.prop('files');
+             let str = "";
+             console.log(files.length);
+             for(let x = 0; x < files.length; x++){
+            	 let fileUrl = URL.createObjectURL(files[x]);
+            	 str += '<img src="' + fileUrl + '">';
+             }
+        	 previewDetails.html(str);
+         } // end showDetailsPreview()
          
 	</script>
 	

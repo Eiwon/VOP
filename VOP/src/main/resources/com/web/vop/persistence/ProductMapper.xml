@@ -57,17 +57,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		INSERT INTO PRODUCT VALUES (
    		PRODUCT_SEQ.NEXTVAL, #{memberId}, #{productName}, #{productPrice},
    		0, #{productRemains}, #{productPlace}, '승인 대기중', #{category}, 
-   		#{imgPath}, #{imgRealName}, #{imgChangeName}, #{imgExtension}, #{imgDateCreated} 
+   		#{imgPath}, #{imgRealName}, #{imgChangeName}, #{imgExtension}, SYSDATE 
    		)
 	</insert>
+	
+	<select id="selectLastInsertId" resultType="int">
+		SELECT MAX(PRODUCT_ID) FROM PRODUCT
+	</select>
    
 	<!-- 상품 카테고리로 검색 (페이징) -->
 	<select id="selectByCategory" resultMap="productResultMap">
    		SELECT * FROM (
    		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
    		FROM PRODUCT
- 		WHERE CATEGORY = #{category}
-   		) WHERE RN BETWEEN #{start} AND #{end}
+ 		WHERE CATEGORY = #{category} AND PRODUCT_STATE = '판매중'
+   		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+	</select>
+
+	<!-- 카테고리로 검색 결과 수량 -->
+	<select id="selectByCategoryCnt" resultType="Integer">
+		SELECT COUNT(PRODUCT_ID) FROM PRODUCT 
+		WHERE CATEGORY = #{category} AND PRODUCT_STATE = '판매중'
 	</select>
 
 	<!-- 상품 이름으로 검색 (페이징) -->
@@ -75,16 +85,59 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		SELECT * FROM (
    		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
    		FROM PRODUCT
-   		WHERE PRODUCT_NAME LIKE #{productName}
-   		) WHERE RN BETWEEN #{start} AND #{end}
+   		WHERE PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = '판매중'
+   		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
    	</select>	
+
+	<!-- 이름으로 검색 결과 수량 -->
+	<select id="selectByNameCnt" resultType="Integer">
+		SELECT COUNT(PRODUCT_ID) FROM PRODUCT 
+		WHERE PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = '판매중'
+	</select>
 
 	<!-- 카테고리를 선택하여 이름으로 검색 (페이징) -->
 	<select id="selectByNameInCategory" resultMap="productResultMap">
 		SELECT * FROM (
    		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
    		FROM PRODUCT
- 		WHERE CATEGORY = #{category} AND PRODUCT_NAME LIKE #{productName}
-   		) WHERE RN BETWEEN #{start} AND #{end}
+ 		WHERE CATEGORY = #{category} AND PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = '판매중'
+   		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
 	</select>
+	
+	<!-- 카테고리를 선택하여 이름으로 검색 결과 수량 -->
+	<select id="selectByNameInCategoryCnt" resultType="Integer">
+		SELECT COUNT(PRODUCT_ID) FROM PRODUCT 
+		WHERE CATEGORY = #{category} AND PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = '판매중'
+	</select>
+	
+	<!-- memberId로 상품 조회 -->
+	<select id="selectByMemberId" resultMap="productResultMap">
+		SELECT * FROM (
+		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
+		FROM PRODUCT WHERE MEMBER_ID = #{memberId}
+		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+	</select>
+	
+	<!-- memberId로 상품 갯수 조회 -->
+	<select id="selectByMemberIdCnt" resultType="Integer">
+		SELECT COUNT(PRODUCT_ID) FROM PRODUCT WHERE MEMBER_ID = #{memberId}
+	</select>
+	
+	
+	<!-- productId로 상품 상태 변경 -->
+	<update id="updateState">
+		UPDATE PRODUCT SET PRODUCT_STATE = #{productState} WHERE PRODUCT_ID = #{productId}
+	</update>
+	
+	<!-- productId로 상품 상태 검색 -->
+	<select id="selectStateByProductId" resultType="String">
+		SELECT PRODUCT_STATE FROM PRODUCT WHERE PRODUCT_ID = #{productId}
+	</select>
+	
+	<!-- productId로 상품 삭제 -->
+	<delete id="deleteProduct">
+		DELETE PRODUCT WHERE PRODUCT_ID = #{productId}
+	</delete>
+	
+	
 </mapper>

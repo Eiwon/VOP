@@ -95,4 +95,11 @@ public class MemberServiceImple implements MemberService{
 		return result;
 	} // end selectByNameAndPhone
 
+	@Override
+	public String getMemberAuth(String memberId) {
+		log.info("getMemberAuth()");
+		String auth = memberMapper.selectAuthById(memberId);
+		return auth;
+	} // end getMemberAuth
+
 }

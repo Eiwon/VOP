@@ -1,6 +1,9 @@
 package com.web.vop.controller;
 
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +98,23 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 		
 		return "redirect:/board/inquiry";
 	}
-		
-		
+	
+	@GetMapping("/myInfo")
+	public String myInfoGET() {
+		log.info("member/modify로 redirect");
+		return "redirect:../member/modify";
+	} // end myInfoGet
+	
+	@GetMapping("/seller")
+	public String sellerGET() {
+		log.info("seller/sellerRequest로 redirect");
+		return "redirect:../seller/sellerRequest";
+	} // end myInfoGet
+	
+	@GetMapping("/admin")
+	public void adminGET() {
+		log.info("관리자 페이지로 이동");
+	} // end myInfoGet
+	
+	
 }//end MainController

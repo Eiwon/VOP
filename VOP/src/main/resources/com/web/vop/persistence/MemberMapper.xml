@@ -48,6 +48,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		UPDATE MEMBER SET MEMBER_AUTH = #{memberAuth} WHERE MEMBER_ID = #{memberId}
 	</update>
 
+	<!-- 계정 권한 조회 -->
+	<select id="selectAuthById" resultType="String">
+		SELECT MEMBER_AUTH FROM MEMBER WHERE MEMBER_ID = #{memberId}
+	</select>
+
 	<!-- 휴대폰 번호로 ID 찾기 -->
 	<select id="selectByPhone" resultType="String">
 		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_PHONE = #{memberPhone}

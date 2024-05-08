@@ -21,6 +21,7 @@
 	</div>
 	<div>
 		<a href="registerProduct">상품 등록</a>
+		<a href='listProduct?memberId=<%= request.getSession().getAttribute("memberId")%>'>등록한 상품 조회</a>
 	</div>
 	
 	<script type="text/javascript">

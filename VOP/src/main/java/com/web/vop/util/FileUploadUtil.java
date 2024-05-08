@@ -1,11 +1,9 @@
 package com.web.vop.util;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.Calendar;
-
-import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +22,7 @@ public class FileUploadUtil {
     public static String subStrName(String fileName) {
        // FilenameUtils.normalize() : 파일 이름 정규화 메서드
         String normalizeName = FilenameUtils.normalize(fileName);
+        log.info("fileName : " + fileName + ", normalizeName : " + normalizeName);
         int dotIndex = normalizeName.lastIndexOf('.');
 
         String realName = normalizeName.substring(0, dotIndex);
@@ -67,14 +66,14 @@ public class FileUploadUtil {
         File saveFile = new File(realUploadPath, uuid);
         try {
             file.transferTo(saveFile);
-            log.info("file upload scuccess");
+            log.info("file upload success");
         } catch (IllegalStateException e) {
             log.error(e.getMessage());
         } catch (IOException e) {
             log.error(e.getMessage());
         } 
         
-    }
+    } // end saveFile
     
     /**
      * 파일을 삭제
@@ -102,10 +101,36 @@ public class FileUploadUtil {
         }
     }
     
-    public ImageIcon convToIcon(File imageFile) { // 이미지 파일을 아이콘으로 변환
-		System.out.println("convToIcon()");
-		ImageIcon icon = new ImageIcon(imageFile.getPath());
-		icon = new ImageIcon(icon.getImage().getScaledInstance(95, 95, 100));
-		return icon;
-	} // end convToIcon
+    
+    // file을 아이콘으로 변환하여 저장
+    public static void saveIcon(String uploadPath, MultipartFile file, String uuid) {
+        
+    	File realUploadPath = new File(uploadPath);
+        if (!realUploadPath.exists()) {
+            realUploadPath.mkdirs();
+            log.info(realUploadPath.getPath() + " successfully created.");
+        } else {
+            log.info(realUploadPath.getPath() + " already exists.");
+        }
+        
+        File thumbnail = new File(realUploadPath, uuid);
+        
+        try {
+			BufferedImage bi = ImageIO.read(file.getInputStream()); // 저장된 파일을 읽어온다
+			BufferedImage icon = new BufferedImage(95, 95, BufferedImage.TYPE_3BYTE_BGR); // icon 저장할 공간 생성
+			icon.createGraphics().drawImage(bi, 0, 0, 95, 95, null); // icon 그리기
+			ImageIO.write(icon, "jpg", thumbnail); // 그린 icon 저장
+			log.info("thumbnail 저장 성공");
+		} catch (IOException e) {
+			log.info("thumbnail 저장 실패");
+			e.printStackTrace();
+		}
+    } // end saveIcon
+    
+    public static File getFile(String imgPath, String changedName, String extension) { // 저장된 파일 불러오기
+    	String fullPath = imgPath + File.pathSeparator + changedName + File.pathSeparator + extension;
+    	File file = new File(fullPath);
+    	return file;
+    } // end getFile
+    
 }

@@ -1,24 +1,35 @@
 package com.web.vop.controller;
 
+import java.util.UUID;
 import java.io.File;
+
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-
+import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductVO;
-import com.web.vop.domain.ReviewVO;
+import com.web.vop.service.ImageService;
 import com.web.vop.service.ProductService;
+import com.web.vop.util.FileUploadUtil;
+import com.web.vop.util.PageMaker;
+import com.web.vop.util.Pagination;
+
 import com.web.vop.service.ReviewService;
 
 import lombok.extern.log4j.Log4j;
@@ -33,8 +44,14 @@ public class ProductController {
 	private ProductService productService;
 	
 	@Autowired
-	// ReviewService 클래스에 있는 기능을 사용하기위해 생성
-	private ReviewService reviewService;
+	private String thumbnailUploadPath;
+	
+	@Autowired
+	private String uploadPath;
+	
+	@Autowired
+	private ImageService imageService;
+	
 	
 	// 상품 상세 정보 조회
 	@GetMapping("/detail")
@@ -82,17 +99,97 @@ public class ProductController {
 //        model.addAttribute("ProductVO", ProductVO);
 //    } // end detail()
     
+
 	@GetMapping("/register")
 	public void registerGET() {
 		log.info("registerGET()");
 	} // end productRegister()
 	
 	@PostMapping("/register")
-	public void registerPOST(ProductVO productVO, MultipartFile file) {
+	public String registerPOST(ProductVO productVO,  MultipartFile thumbnail, MultipartFile[] details) {
 		log.info("registerPOST()");
 		log.info(productVO);
-		log.info("파일 명 : " + file.getOriginalFilename());
+		log.info("파일 명 : " + thumbnail.getOriginalFilename());
 		
+		// UUID 생성
+	    String thumbnailName = UUID.randomUUID().toString();
+	    FileUploadUtil.saveIcon(thumbnailUploadPath, thumbnail, thumbnailName);
+	    
+	    productVO.setImgPath(thumbnailUploadPath);
+	    productVO.setImgRealName(FileUploadUtil.subStrName(thumbnail.getOriginalFilename()));
+	    productVO.setImgChangeName(thumbnailName);
+	    productVO.setImgExtension(FileUploadUtil.subStrExtension(thumbnail.getOriginalFilename()));
+	    
+	    int res = productService.registerProduct(productVO);
+	    log.info("product " + res + "행 추가 성공");
+	    int productId = productService.getRecentProductId(); 
+	    log.info("추가된 상품 id : " + productId);
+	    
+	    log.info("details 파일 수 : " + details.length);
+	    log.info("details : " + details);
+	    // details 이미지들 저장 후 IMAGE 테이블에 추가
+	    String[] detailsNames = new String[details.length];
+	    
+	    for(int i = 0; i < details.length; i++) {
+	    	detailsNames[i] = UUID.randomUUID().toString();
+	    	FileUploadUtil.saveFile(uploadPath, details[i], detailsNames[i]);
+	    	ImageVO imageVO = new ImageVO(
+	    			0, productId, uploadPath, FileUploadUtil.subStrName(details[i].getOriginalFilename()),
+	    			detailsNames[i], FileUploadUtil.subStrExtension(details[i].getOriginalFilename()), null
+	    			); 
+	    	int imgRes = imageService.registerImage(imageVO);
+	    	log.info(imgRes + "행 추가 성공");
+	    }
+	    
+	    return "redirect:../seller/sellerRequest";
 	} // end registerPOST
 	
+
+	@GetMapping("search")
+	public void search(Model model, String category, String word, Pagination pagination) {
+		log.info("search category : " + category + ", word : " + word);
+		List<ProductVO> productList = new ArrayList<>();
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setPagination(pagination);
+		
+		if(category.equals("전체")) { // 카테고리가 전체, 검색어가 있는 경우
+			log.info("검색어 검색");
+			productList = productService.selectByName(word, pagination);
+			pageMaker.setTotalCount(productService.selectByNameCnt(word));
+		}else {
+			if(word.length() > 0) { // 카테고리가 있고, 검색어도 있는 경우
+				log.info("카테고리 + 검색어 검색");
+				productList = productService.selectByNameInCategory(category, word, pagination);
+				pageMaker.setTotalCount(productService.selectByNameInCategoryCnt(category, word));
+			}else { // 카테고리가 있고, 검색어는 없는 경우
+				log.info("카테고리 검색");
+				productList = productService.selectByCategory(category, pagination);
+				pageMaker.setTotalCount(productService.selectByCategoryCnt(category));
+			}
+		}
+		// 카테고리가 전체, 검색어도 없는 경우 -- 클라이언트 측에서 실행 X
+		log.info("검색결과 = 총 " + pageMaker.getTotalCount() + "개 검색");
+		model.addAttribute("productList", productList);
+		model.addAttribute("pageMaker", pageMaker);
+		
+	} // end search
+	
+	@GetMapping(value = "/showImg", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	@ResponseBody
+	public ResponseEntity<Resource> showImg(int productId){
+		log.info("showImg() : " + productId);
+		ProductVO productVO = productService.getProductById(productId);
+		
+		String imgPath = productVO.getImgPath() + File.separator + productVO.getImgChangeName();
+		// 파일 리소스 생성
+        Resource resource = new FileSystemResource(imgPath);
+        // 다운로드할 파일 이름을 헤더에 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" 
+              + imgPath + "." + productVO.getImgExtension());
+        return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+	}
+  
+	
+
 }
