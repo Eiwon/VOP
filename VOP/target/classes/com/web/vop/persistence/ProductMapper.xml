@@ -43,11 +43,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
    <!-- PRODUCT_ID 해당하는 리뷰(별) 총 합 -->
    <select id="selectReviewStar" resultType="java.lang.Integer">
-   		SELECT PRODUCT_ID, SUM(REVIEW_STAR) AS TOTAL_STAR_RATINGS
+   		SELECT SUM(REVIEW_STAR) AS TOTAL_STAR_RATINGS
 		FROM REVIEW
 		WHERE PRODUCT_ID = #{productId}
-		GROUP BY PRODUCT_ID
    </select>
+ 
    
 	<!-- 상품 등록 -->
 	<insert id="insertProduct">
