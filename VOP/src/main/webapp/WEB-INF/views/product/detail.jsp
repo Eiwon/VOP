@@ -2,6 +2,9 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!-- 세션 사용할수 있게하는 코드 -->
+<%@ page import="javax.servlet.http.HttpSession" %>
+<%@ page import="java.util.*" %>
     
 <!DOCTYPE html>
 <html>
@@ -40,6 +43,15 @@
 
 </head>
 <body>
+
+	<%
+	// 세션 객체 가져오기
+	HttpSession sessionJSP = request.getSession();
+	// 세션에 저장된 memberId 가져오기
+	String memberId = (String) sessionJSP.getAttribute("memberId");
+	%>
+
+
 	<!-- 상품 상세 페이지 제작 중 -->
 	<h2>상품 상세 페이지</h2>
 
@@ -104,18 +116,35 @@
     	<!-- 데이터 (화면에 표시되지 않음), 도착예정, 수량 작성 예정 -->
     	<input type="hidden" name="productId" value="${productVO.productId}">
     	<input type="hidden" name="quantityInput" id="quantityInput" value="1">
+    	
+    	<!-- 세션 아이디가 있는 경우 memberId를 폼에 추가 -->
+    	<c:if test="${not empty memberId}">
+        	<input type="hidden" name="memberId" value="${memberId}">
+    	</c:if>
+    	
+    	<!-- 세션 아이디가 없는 경우 메시지 표시 -->
+    	<c:if test="${empty memberId}">
+        	<p>로그인 후 가능합니다.</p>
+   	 	</c:if>
 	</form>
 
 	<button type="button" onclick="addToCart()">장바구니</button>
-	
-
     
 	<!-- 바로구매 버튼 -->
     <form action="설정 예정" method="post">
+    	<!-- 세션 아이디가 있는 경우 memberId를 폼에 추가 -->
+    	<c:if test="${not empty memberId}">
+        	<input type="hidden" name="memberId" value="${memberId}">
+    	</c:if>
+    	
+    	<!-- 세션 아이디가 없는 경우 메시지 표시 -->
+    	<c:if test="${empty memberId}">
+        	<p>로그인 후 가능합니다.</p>
+   	 	</c:if>
         <button type="submit" name="action" value="checkout">바로구매</button>
         <!-- 보낼 데이터 작성 예정 -->
     </form>
-</body>
+
      
      <!-- 댓글 화면 코드 및 가운데 정렬 -->
      <p>댓글</p>
@@ -126,12 +155,7 @@
      <!-- 좋아요 표시 제작 예정 -->
      
      <script type="text/javascript">
-     // 상품 수량 증감 코드
-     // 제작 중 아직 미완성
      
-     // 별 표시
-     // 페이지 로드될 때 실행되는 함수(별표시 먼저해주는 역할)
-    // 상품 수량 증감 코드
 
 // 페이지 로드될 때 실행되는 함수(별표시 먼저해주는 역할)
 window.onload = function() {
@@ -170,16 +194,30 @@ function updateTotalPrice(quantity) {
     document.getElementById("quantityInput").value = quantity;
 }
 
-// 장바구니로 데이터 보내주는 역할
+//장바구니로 데이터 보내는 역할
 function addToCart() {
-    let quantity = parseInt(document.getElementById("quantity").value);
-    if (quantity <= 0) {
-        alert("수량은 1 이상이어야 합니다.");
+    // 수량 가져오기
+    let quantityInput = document.getElementById("quantity");
+    let quantity = parseInt(quantityInput.value);
+
+    // 수량이 유효한지 확인
+    if (isNaN(quantity) || quantity <= 0) {
+        alert("유효한 수량을 입력하세요.");
         return;
     }
-    document.getElementById("quantityInput").value = quantity; // 수량 업데이트
-    document.getElementById("addToCartForm").submit(); // 폼 제출
+
+    // 수량 업데이트
+    let quantityInputElement = document.getElementById("quantityInput");
+    quantityInputElement.value = quantity;
+
+    // 폼 제출
+    let addToCartForm = document.getElementById("addToCartForm");
+    addToCartForm.submit();
+
+    // 세부 로그
+    console.log("장바구니에 상품 추가됨 - 수량:", quantity);
 }
+
 
 
 
@@ -191,11 +229,9 @@ $(document).ready(function() {
     // 댓글(리뷰) 전체 검색 // 이미지 및 좋아요 아직 추가 안함
     function getAllReview() {
         let productId = ${productVO.productId};
-        //let productId = "${productVO.productId}";
 
         console.log(productId);
-
-        // url 변경 해야함
+        
         let url = '../review/all/' + productId;
         console.log(url);
         $.getJSON(
@@ -215,6 +251,22 @@ $(document).ready(function() {
 
                     // 전송된 replyDateCreated는 문자열 형태이므로 날짜 형태로 변환이 필요
                     let reviewDateCreated = new Date(this.reviewDateCreated);
+                    
+                    // 날짜와 시간을 문자열로 변환하여 가져오기
+                    let dateString = reviewDateCreated.toLocaleDateString();
+                    let timeString = reviewDateCreated.toLocaleTimeString();
+
+                    
+                    // 별점 숫자를 가져와서 별 모양으로 변환
+                    let starsHTML = ''; // 별 모양 HTML을 저장할 변수
+                    let reviewStar = parseInt(this.reviewStar); // 문자열을 정수로 변환
+                    for (let i = 1; i <= 5; i++) {
+                        if (i <= reviewStar) {
+                            starsHTML += '&#9733;'; // 별 모양 HTML 코드 추가
+                        } else {
+                            starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
+                        }
+                    }
 
                     // 댓글 이미지 및 좋아요 추가 해야함
                     list += '<div>' +
@@ -224,21 +276,17 @@ $(document).ready(function() {
                         this.memberId +
                         '&nbsp;&nbsp;' // 공백
                         +
-                        '<input type="hidden" id="reviewStar" value="' + this.review + '">' // 별점 숫자만 불려와서 별 형식으로 바꾸어야함
+                        '<span>' + starsHTML + '</span>' + // 별점 표시
                         +
                         this.reviewStar +
                         '&nbsp;&nbsp;' // 공백
                         +
-                        reviewDateCreated // 작성 시간
+                        dateString + ' ' + timeString + // 작성 시간 (날짜와 시간)
                         +
                         '&nbsp;&nbsp;' +
                         '<input type="text" id="reviewContent" value="' + this.reviewContent + '">' // 내용
                         +
-                        '&nbsp;&nbsp;' // 혹시 몰라 나중에 수정 현재는 아무 의미 없는 코드
-                        // + '<button class="btn_update" >수정</button>'
-                        // 혹시 몰라 나중에 수정 현재는 아무 의미 없는 코드
-                        // + '<button class="btn_delete" >삭제</button>'
-                        // 혹시 몰라 나중에 수정 현재는 아무 의미 없는 코드
+                        '&nbsp;&nbsp;' 
                         +
                         '</pre>' +
                         '</div>';

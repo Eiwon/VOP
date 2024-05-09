@@ -23,9 +23,10 @@ public class ProductVO {
 	private String productPlace;
 	private String productState;
 	private String category;
-	private String imgPath;
-	private String imgRealName;
-	private String imgChangeName;
-	private String imgExtension;
-	private Date imgDateCreated;
+	private String imgId;
+//	private String imgPath;
+//	private String imgRealName;
+//	private String imgChangeName;
+//	private String imgExtension;
+//	private Date imgDateCreated;
 }
