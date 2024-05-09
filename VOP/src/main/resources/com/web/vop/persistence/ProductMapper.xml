@@ -16,11 +16,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="productPlace" column="PRODUCT_PLACE"/>
       <result property="productState" column="PRODUCT_STATE"/>
       <result property="category" column="CATEGORY"/>
-      <result property="imgPath" column="IMG_PATH"/>
-      <result property="imgRealName" column="IMG_REAL_NAME"/>
-      <result property="imgChangeName" column="IMG_CHANGE_NAME"/>
-      <result property="imgExtension" column="IMG_EXTENSION"/>
-      <result property="imgDateCreated" column="IMG_DATE_CREATED"/>
+      <result property="imgId" column="IMG_ID"/>
+      <result property="productDateCreated" column="PRODUCT_DATE_CREATED"/>
    </resultMap>
    
    <!-- productId통해 상품 조회 -->
@@ -56,8 +53,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="insertProduct">
    		INSERT INTO PRODUCT VALUES (
    		PRODUCT_SEQ.NEXTVAL, #{memberId}, #{productName}, #{productPrice},
-   		0, #{productRemains}, #{productPlace}, '승인 대기중', #{category}, 
-   		#{imgPath}, #{imgRealName}, #{imgChangeName}, #{imgExtension}, SYSDATE 
+   		0, #{productRemains}, #{productPlace}, '판매중', #{category}, 
+   		#{imgId}, SYSDATE 
    		)
 	</insert>
 	
@@ -123,7 +120,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT COUNT(PRODUCT_ID) FROM PRODUCT WHERE MEMBER_ID = #{memberId}
 	</select>
 	
-	
 	<!-- productId로 상품 상태 변경 -->
 	<update id="updateState">
 		UPDATE PRODUCT SET PRODUCT_STATE = #{productState} WHERE PRODUCT_ID = #{productId}
@@ -138,6 +134,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<delete id="deleteProduct">
 		DELETE PRODUCT WHERE PRODUCT_ID = #{productId}
 	</delete>
-	
 	
 </mapper>

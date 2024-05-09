@@ -70,18 +70,10 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 	
 	// 장바구니 호출하기
 	@GetMapping("/basket") 
-	public void basketGET() {
-		System.out.println("basket.jsp 이동");
-		log.info("basketGET()");
+	public String basketGET() {
+		log.info("basket.jsp 이동");
+		return "redirect:../basket/main";
 	}//end basketGET()
-	
-	
-	@PostMapping("/basket")
-	public String basketPOST() {
-		log.info("basketPOST()");
-		
-		return "redirect:/board/basket";
-	}
 	
 	
 	// 고객센터 호출하기
