@@ -43,15 +43,6 @@ public class ProductServiceImple implements ProductService{
 		int res = productMapper.selectReviewStar(productId);
 		return res;
 	}
-	
-//	// 이미지 상세 정보 검색
-//	@Override
-//	public ProductVO selectByMainImg(int productId) {
-//		log.info("selectByMainImg()");
-//		ProductVO result = productMapper.selectByMainImg(productId);
-//		log.info("이미지 검색 : " + result.toString()); //우선 로그 만들었습니다.
-//		return result;
-//	}// end getImageById()
 
 	@Override
 	public int registerProduct(ProductVO productVO) {

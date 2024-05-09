@@ -16,10 +16,6 @@ public interface ProductService {
 	// 댓글 총 갯수 조회 
 	int selectReviewByCount(int productId);
 	
-	
-//	// 이미지 검색 (상품 메인)
-//	ProductVO selectByMainImg(int productId);
-	
 	// 상품 리뷰(별) 총합 조회
 	int selectReviewByStar(int productId);
 	

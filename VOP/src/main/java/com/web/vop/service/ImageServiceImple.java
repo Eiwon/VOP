@@ -1,5 +1,7 @@
 package com.web.vop.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +17,11 @@ public class ImageServiceImple implements ImageService{
 	@Autowired
 	private ImageMapper imageMapper;
 	
-	// 이미지 상세 정보 검색
+	// 쎔네일 이미지 상세 정보 검색
 	@Override
 	public ImageVO getImageById(int imgId) {
 		log.info("getImageById()");
+		log.info("imgId : "+ imgId);
 		ImageVO result = imageMapper.selectByImgId(imgId);
 		log.info("이미지 검색 : " + result.toString()); //우선 로그 만들었습니다.
 		return result;
@@ -30,5 +33,17 @@ public class ImageServiceImple implements ImageService{
 		int res = imageMapper.insertImg(imageVO);
 		return res;
 	} // end registerImage
+
+	@Override
+	public int getRecentImgId() {
+		log.info("getRecentImgId()");
+		return imageMapper.selectRecentImgId();
+	} // end getRecentImgId
 	
+	// 설명 이미지(리스트) 검색
+	@Override
+	public List<ImageVO> getByProductId(int productId) {
+		log.info("getByProductId()");
+		return imageMapper.selectByProductId(productId);
+	} // end getByProductId
 }

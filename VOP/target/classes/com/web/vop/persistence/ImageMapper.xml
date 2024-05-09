@@ -14,11 +14,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="imgRealName" column="IMG_REAL_NAME"/>
       <result property="imgChangeName" column="IMG_CHANGE_NAME"/>
       <result property="imgExtension" column="IMG_EXTENSION"/>
-      <result property="imgDateCreated" column="IMG_DATE_CREATED"/>
-      
    </resultMap>
    
-   <!-- imgId로 이미지 검색  검색 -->
+   <!-- imgId로 이미지 검색 -->
    <select id="selectByImgId" resultMap="imageResultMap">
       SELECT * FROM IMAGE
       WHERE IMG_ID = #{imgId}
@@ -27,8 +25,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <!-- 이미지 등록 -->
    <insert id="insertImg">
    		INSERT INTO IMAGE VALUES(
-   		IMAGE_SEQ.NEXTVAL, #{productId}, #{imgPath}, #{imgRealName}, #{imgChangeName}, #{imgExtension}, SYSDATE
+   		IMAGE_SEQ.NEXTVAL, #{productId}, #{imgPath}, #{imgRealName}, #{imgChangeName}, #{imgExtension}
    		)
    </insert>
-       
+   
+   <!-- 최근에 등록한 이미지 id 검색 -->    
+   <select id="selectRecentImgId" resultType="Integer">
+   		SELECT MAX(IMG_ID) FROM IMAGE 
+   </select>
+   
+   <!-- productId로 이미지 검색 -->
+   <select id="selectByProductId" resultMap="imageResultMap">
+   		SELECT * FROM IMAGE WHERE PRODUCT_ID = #{productId}
+   </select>
+   
 </mapper>

@@ -50,7 +50,7 @@
 	// 세션에 저장된 memberId 가져오기
 	String memberId = (String) sessionJSP.getAttribute("memberId");
 	%>
-
+	
 
 	<!-- 상품 상세 페이지 제작 중 -->
 	<h2>상품 상세 페이지</h2>
@@ -59,12 +59,13 @@
       <p>카테고리 : ${productVO.category }</p>
      </div>
      
-       <!-- 우선 상품 이미지 불러오기 제작 완료-->
+       <!-- 썸네일 상품 이미지 -->
       <div>
-      	<p>이미지</p>
-      	 <p><a href="download?productId=${productVO.productId }">
-  		 ${productVO.imgRealName }.${productVO.imgExtension }</a></p>
-      </div>
+    	<p>썸네일 이미지</p>
+    	<img src="showImg?imgId=${productVO.imgId}" alt="${ImageVO.imgRealName}.${ImageVO.imgExtension}">
+	  </div>
+
+	
       
      <div>
       <p>상품 번호 : ${productVO.productId }</p>
@@ -98,7 +99,7 @@
         <p>상품 가격 : <span id="totalPrice">${productVO.productPrice}</span></p>
     </div>
      
-     <!-- 상품 증감 제작 중 -->
+     <!-- 상품 증감 -->
  
      <!-- 현재 선택된 상품 수량 -->
 	 <input type="number" id="quantity" value="1" min="1" max="99" maxlength="2">
@@ -110,41 +111,54 @@
      </div>
      
      
-     <!-- 장바구니 -->
+     <!-- 장바구니 우선 완성 했으나 테스트 해봐야함 -->
 	
 	<form id="addToCartForm" action="장바구니_처리_URL" method="post">
     	<!-- 데이터 (화면에 표시되지 않음), 도착예정, 수량 작성 예정 -->
     	<input type="hidden" name="productId" value="${productVO.productId}">
     	<input type="hidden" name="quantityInput" id="quantityInput" value="1">
+        <input type="hidden" name="memberId" value="${memberId}">
     	
-    	<!-- 세션 아이디가 있는 경우 memberId를 폼에 추가 -->
-    	<c:if test="${not empty memberId}">
-        	<input type="hidden" name="memberId" value="${memberId}">
-    	</c:if>
-    	
-    	<!-- 세션 아이디가 없는 경우 메시지 표시 -->
-    	<c:if test="${empty memberId}">
-        	<p>로그인 후 가능합니다.</p>
-   	 	</c:if>
 	</form>
+	
+	<!-- 장바구니 버튼 -->
+    <!-- 세션 아이디가 있는 경우 -->
+     <c:if test="${empty memberId}">
+    	<button type="button" onclick="addToCart()" disabled="disabled">장바구니</button>
+    	<p>로그인 후 장바구니 가능합니다.</p>
+	 </c:if>
+	<!-- 세션 아이디가 없 경우 -->
+	<c:if test="${not empty memberId}">
+    	<button type="button" onclick="addToCart()">장바구니</button>
+	</c:if>
 
-	<button type="button" onclick="addToCart()">장바구니</button>
-    
-	<!-- 바로구매 버튼 -->
+	<!-- 바로구매 버튼 제작 해야함 -->
     <form action="설정 예정" method="post">
-    	<!-- 세션 아이디가 있는 경우 memberId를 폼에 추가 -->
-    	<c:if test="${not empty memberId}">
-        	<input type="hidden" name="memberId" value="${memberId}">
-    	</c:if>
-    	
-    	<!-- 세션 아이디가 없는 경우 메시지 표시 -->
-    	<c:if test="${empty memberId}">
-        	<p>로그인 후 가능합니다.</p>
-   	 	</c:if>
-        <button type="submit" name="action" value="checkout">바로구매</button>
-        <!-- 보낼 데이터 작성 예정 -->
-    </form>
+        <input type="hidden" name="memberId" value="${memberId}">
 
+        
+    </form>
+    <!-- 세션 아이디가 있는 경우 -->
+     <c:if test="${empty memberId}">
+    	<button type="submit" name="action" value="checkout" disabled="disabled">바로구매</button>
+    	<p>로그인 후 결제 가능합니다.</p>
+	 </c:if>
+	<!-- 세션 아이디가 없 경우 -->
+	<c:if test="${not empty memberId}">
+    	<button type="submit" name="action" value="checkout">바로구매</button>
+	</c:if>
+    
+     
+     
+     
+     <!-- 상품 설명 이미지 -->
+     <p>상품 이미지 설명</p>
+     
+     <div>
+    	<c:forEach items="${imageList}" var="image">
+        	<img src="showImg?imgId=${image.imgId}" alt="${image.imgRealName}.${image.imgExtension}">
+    	</c:forEach>
+	</div>
      
      <!-- 댓글 화면 코드 및 가운데 정렬 -->
      <p>댓글</p>
@@ -152,7 +166,7 @@
       <div id="replies"></div>
      </div>
      
-     <!-- 좋아요 표시 제작 예정 -->
+     <!-- 좋아요 표시 제작 예정? -->
      
      <script type="text/javascript">
      
@@ -204,7 +218,7 @@ function addToCart() {
     if (isNaN(quantity) || quantity <= 0) {
         alert("유효한 수량을 입력하세요.");
         return;
-    }
+ }
 
     // 수량 업데이트
     let quantityInputElement = document.getElementById("quantityInput");
@@ -217,6 +231,7 @@ function addToCart() {
     // 세부 로그
     console.log("장바구니에 상품 추가됨 - 수량:", quantity);
 }
+
 
 
 
@@ -296,7 +311,57 @@ $(document).ready(function() {
             } // end function()
         ); // end getJSON()
     } // end getAllReply()
+    
+  //장바구니로 데이터 보내는 역할
+  	$(document).ready(function() {
 
+    getAllReview(); // 댓글(리뷰) 전체 검색 메소드
+
+
+    // 댓글(리뷰) 전체 검색 // 이미지 및 좋아요 아직 추가 안함
+    function getAllReview() {
+        let productId = ${productVO.productId};
+
+        console.log(productId);
+        
+        let url = '../review/all/' + productId;
+        console.log(url);
+        $.getJSON(
+            url,
+            function(data) {
+                // data : 서버에서 전송받은 list 데이터가 저장되어 있음.
+                // getJSON()에서 json 데이터는 
+                // javascript object로 자동 parsing됨.
+                console.log(data);
+
+                let list = ''; // 댓글 데이터를 HTML에 표현할 문자열 변수
+
+                // $(컬렉션).each() : 컬렉션 데이터를 반복문으로 꺼내는 함수
+                $(data).each(function() {
+                    // this : 컬렉션의 각 인덱스 데이터를 의미
+                    console.log(this);
+
+                    // 전송된 replyDateCreated는 문자열 형태이므로 날짜 형태로 변환이 필요
+                    let reviewDateCreated = new Date(this.reviewDateCreated);
+                    
+                    // 날짜와 시간을 문자열로 변환하여 가져오기
+                    let dateString = reviewDateCreated.toLocaleDateString();
+                    let timeString = reviewDateCreated.toLocaleTimeString();
+
+                    
+                    // 별점 숫자를 가져와서 별 모양으로 변환
+                    let starsHTML = ''; // 별 모양 HTML을 저장할 변수
+                    let reviewStar = parseInt(this.reviewStar); // 문자열을 정수로 변환
+                    for (let i = 1; i <= 5; i++) {
+                        if (i <= reviewStar) {
+                            starsHTML += '&#9733;'; // 별 모양 HTML 코드 추가
+                        } else {
+                            starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
+                        }
+                    }
+    
+    
+    
 }); // end document
 
     

@@ -19,5 +19,4 @@ public class ImageVO {
 	private String imgRealName;
 	private String imgChangeName;
 	private String imgExtension;
-	private Date imgDateCreated;
 }
