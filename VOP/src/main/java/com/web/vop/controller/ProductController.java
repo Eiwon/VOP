@@ -195,10 +195,22 @@ public class ProductController {
 	public ResponseEntity<Resource> showImg(int imgId){
 		log.info("showImg() : " + imgId);
 		ImageVO imageVO = imageService.getImageById(imgId);
-
+		
+		if(imageVO == null) return null;
+		
 		return FileUploadUtil.getFile(imageVO.getImgPath(), imageVO.getImgChangeName(), imageVO.getImgExtension());
-	}
+	} // end showImg
   
 	
-
+	@GetMapping("/best")
+	@ResponseBody
+	public ResponseEntity<List<ProductVO>> getBestProductInCategory(String category){
+		log.info(category + "의 최고 리뷰 상품 5개 요청");
+		
+		List<ProductVO> list = productService.getTopProductInCategory(category);
+		log.info("검색 결과 : " + list);
+		return new ResponseEntity<List<ProductVO>>(list, HttpStatus.OK);
+	} // end getBestProductInCategory
+	
+	
 }

@@ -108,7 +108,6 @@
 
 	<button type="button" onclick="addToCart()">장바구니</button>
 	
-
     
 	<!-- 바로구매 버튼 -->
     <form action="설정 예정" method="post">

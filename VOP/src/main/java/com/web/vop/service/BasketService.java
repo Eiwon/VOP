@@ -11,7 +11,7 @@ import com.web.vop.util.Pagination;
 public interface BasketService {
 	
 	//내 장바구니 물품 목록 조회
-	List<BasketDTO> getMyBasket(String memberId, Pagination pagination);
+	List<BasketDTO> getMyBasket(String memberId);
 
 	// 내 장바구기 물품 수 조회
 	int getMyBasketCnt(String memberId);

@@ -10,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -42,29 +44,18 @@ public class BasketController {
 	// return : 장바구니 물품 리스트, 페이지 메이커
 	@GetMapping("/myBasket")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> getMyBasket(String memberId, Pagination pagination){
+	public ResponseEntity<List<BasketDTO>> getMyBasket(String memberId){
 		log.info("getMyBasket() : " + memberId);
 		
-		// 페이징 처리를 위한 pageMaker 생성
-		PageMaker pageMaker = new PageMaker();
-		pageMaker.setPagination(pagination);
-		pageMaker.setTotalCount(basketService.getMyBasketCnt(memberId));
+		List<BasketDTO> basketList = basketService.getMyBasket(memberId);
 		
-		List<BasketDTO> basketList = basketService.getMyBasket(memberId, pagination);
-		
-		// 두가지 타입을 한번에 반환하기 위해 하나의 객체(Map)에 담음
-		Map<String, Object> resultMap = new HashMap<>();
-		
-		resultMap.put("basketList", basketList);
-		resultMap.put("pageMaker", pageMaker);
-		
-		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+		return new ResponseEntity<List<BasketDTO>>(basketList, HttpStatus.OK);
 	} // end getMyBasket
 	
 	// 장바구니에 물품 추가
 	@PostMapping("/myBasket")
 	@ResponseBody
-	public ResponseEntity<Integer> addToBasket(BasketVO basketVO){
+	public ResponseEntity<Integer> addToBasket(@RequestBody BasketVO basketVO){
 		log.info("addToBasket() : " + basketVO);
 		int res = basketService.addToBasket(basketVO);
 		log.info(res + "행 추가 성공");
@@ -76,7 +67,7 @@ public class BasketController {
 	// 장바구니 물품 수량 변경
 	@PutMapping("/myBasket")
 	@ResponseBody
-	public ResponseEntity<Integer> updateProductNum(BasketVO basketVO){
+	public ResponseEntity<Integer> updateProductNum(@RequestBody BasketVO basketVO){
 		log.info("updateProductNum() : " + basketVO);
 		int res = basketService.updateProductNum(basketVO);
 		log.info(res + "행 변경 성공");
@@ -87,7 +78,7 @@ public class BasketController {
 	// 장바구니 물품 삭제
 	@DeleteMapping("/myBasket")
 	@ResponseBody
-	public ResponseEntity<Integer> deleteFromBasket(BasketVO basketVO){
+	public ResponseEntity<Integer> deleteFromBasket(@RequestBody BasketVO basketVO){
 		log.info("deleteFromBasket() : " + basketVO);
 		int res = basketService.removeFromBasket(basketVO.getProductId(), basketVO.getMemberId());
 		log.info(res + "행 변경 성공");
@@ -98,16 +89,28 @@ public class BasketController {
 	// 장바구니 비우기
 	@DeleteMapping("/clear")
 	@ResponseBody
-	public ResponseEntity<Integer> clearBasket(String memberId){
+	public ResponseEntity<Integer> clearBasket(@RequestBody String memberId){
 		log.info("clearBasket() : " + memberId);
 		int res = basketService.clear(memberId);
-		log.info(res + "개 장바구니 초기화");
+		log.info(res + "행 삭제 : 장바구니 초기화");
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end clearBasket
 	
-	
-	
+	// 장바구니 물품 다중 삭제
+	@DeleteMapping("/multi/{memberId}")
+	@ResponseBody
+	public ResponseEntity<Integer> deleteMulti(@RequestBody int[] targetList, @PathVariable("memberId") String memberId){
+		log.info("deleteMulti() : " + targetList[0]);
+		int res = 0;
+		
+		for(int productId : targetList) {
+			res += basketService.removeFromBasket(productId, memberId);
+		}
+		log.info(res + "행 삭제 성공");
+		
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+	} // end updateProductNum
 	
 	
 }

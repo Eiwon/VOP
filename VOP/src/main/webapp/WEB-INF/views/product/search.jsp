@@ -43,7 +43,7 @@
     
 	<div id="searchResult">
 		<c:forEach var="productVO" items="${productList}">
-			<div>
+			<div class="product_container" onclick="toDetails(this)">
 					<div class="productId">${productVO.productId }</div>
 					<div>${productVO.productName }</div>
 					<div>${productVO.productPrice }</div>
@@ -80,6 +80,11 @@
 			
 		}); // end btnSearch.click
 	
+		function toDetails(input){
+			let productId = $(input).find('.productId').text();
+			location.href = 'detail?productId=' + productId;
+		} // end toDetails
+		
 	</script>
 </body>
 </html>

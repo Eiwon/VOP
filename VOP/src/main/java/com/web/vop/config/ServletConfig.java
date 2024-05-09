@@ -41,7 +41,7 @@ public class ServletConfig implements WebMvcConfigurer {
    }
    
    @Bean
-   public String thumbnailUploadPath() { // 상품 섬네일 이미지 저장 경로
+   public String thumbnailUploadPath() { // 상품 썸네일 이미지 저장 경로
 	  return "C:\\upload\\productThumbnail";
    }
    
@@ -49,12 +49,13 @@ public class ServletConfig implements WebMvcConfigurer {
    @Bean
    public CommonsMultipartResolver multipartResolver() {
       CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-
+      final int MB = 1048576;
+      
       // 클라이언트가 업로드하는 요청의 전체 크기 (bytes)
-      resolver.setMaxUploadSize(31457280); // 10MB
+      resolver.setMaxUploadSize(30 * MB); // 30MB
 
       // 클라이언트가 업로드하는 각 파일의 최대 크기 (bytes)
-      resolver.setMaxUploadSizePerFile(10485760); // 10MB
+      resolver.setMaxUploadSizePerFile(10 * MB); // 10MB
 
       return resolver;
    }

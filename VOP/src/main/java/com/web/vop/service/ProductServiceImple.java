@@ -122,21 +122,27 @@ public class ProductServiceImple implements ProductService{
 	
 	@Override
 	public int setProductState(String productState, int productId) {
-		log.info("setProductState");
+		log.info("setProductState()");
 		return productMapper.updateState(productState, productId);
 	} // end setProductState
 
 	@Override
 	public String selectStateByProductId(int productId) {
-		log.info("selectStateByProductId");
+		log.info("selectStateByProductId()");
 		return productMapper.selectStateByProductId(productId);
 	} // end selectStateByProductId
 
 	@Override
 	public int deleteProduct(int productId) {
-		log.info("deleteProduct");
+		log.info("deleteProduct()");
 		return productMapper.deleteProduct(productId);
 	} // end deleteProduct
+
+	@Override
+	public List<ProductVO> getTopProductInCategory(String category) {
+		log.info("getTopProductInCategory()");
+		return productMapper.selectTopProductInCategory(category);
+	} // end getTopProductInCategory
 
 	
 }
