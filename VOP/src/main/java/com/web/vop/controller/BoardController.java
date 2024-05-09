@@ -54,9 +54,6 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 	}//end mypageGET()
 	
 	
-	@Autowired
-	private MemberService memberService;
-	
 	@PostMapping("/mypage")
 	public String mypagePOST() {
 		log.info("mypagePOST()");
@@ -107,6 +104,7 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 	public void adminGET() {
 		log.info("관리자 페이지로 이동");
 	} // end myInfoGet
+	
 	
 	
 }//end MainController

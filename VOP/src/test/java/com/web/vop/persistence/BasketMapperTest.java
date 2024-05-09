@@ -31,7 +31,7 @@ public class BasketMapperTest {
 	}
 	
 	private void getMyBasket() {
-		List<BasketDTO> list = basketMapper.selectByMemberId("test1234", new Pagination());
+		List<BasketDTO> list = basketMapper.selectByMemberId("test1234");
 		log.info(list);
 		
 	} // end getMyBasket

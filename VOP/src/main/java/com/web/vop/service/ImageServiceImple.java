@@ -23,7 +23,7 @@ public class ImageServiceImple implements ImageService{
 		log.info("getImageById()");
 		log.info("imgId : "+ imgId);
 		ImageVO result = imageMapper.selectByImgId(imgId);
-		log.info("이미지 검색 : " + result.toString()); //우선 로그 만들었습니다.
+		log.info("이미지 검색 : " + result); //우선 로그 만들었습니다.
 		return result;
 	}// end getImageById()
 

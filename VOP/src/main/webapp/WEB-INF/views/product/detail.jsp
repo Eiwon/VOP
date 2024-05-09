@@ -109,18 +109,7 @@
      <div>
       <p>판매자 : ${productVO.memberId }</p>
      </div>
-     
-     
-     <!-- 장바구니 우선 완성 했으나 테스트 해봐야함 -->
-	
-	<form id="addToCartForm" action="장바구니_처리_URL" method="post">
-    	<!-- 데이터 (화면에 표시되지 않음), 도착예정, 수량 작성 예정 -->
-    	<input type="hidden" name="productId" value="${productVO.productId}">
-    	<input type="hidden" name="quantityInput" id="quantityInput" value="1">
-        <input type="hidden" name="memberId" value="${memberId}">
-    	
-	</form>
-	
+ 
 	<!-- 장바구니 버튼 -->
     <!-- 세션 아이디가 있는 경우 -->
      <c:if test="${empty memberId}">
@@ -132,11 +121,10 @@
     	<button type="button" onclick="addToCart()">장바구니</button>
 	</c:if>
 
-	<!-- 바로구매 버튼 제작 해야함 -->
+
+	<!-- 바로구매 버튼 -->
     <form action="설정 예정" method="post">
         <input type="hidden" name="memberId" value="${memberId}">
-
-        
     </form>
     <!-- 세션 아이디가 있는 경우 -->
      <c:if test="${empty memberId}">
@@ -147,10 +135,7 @@
 	<c:if test="${not empty memberId}">
     	<button type="submit" name="action" value="checkout">바로구매</button>
 	</c:if>
-    
-     
-     
-     
+
      <!-- 상품 설명 이미지 -->
      <p>상품 이미지 설명</p>
      
@@ -233,9 +218,6 @@ function addToCart() {
 }
 
 
-
-
-
 $(document).ready(function() {
 
     getAllReview(); // 댓글(리뷰) 전체 검색 메소드
@@ -311,57 +293,7 @@ $(document).ready(function() {
             } // end function()
         ); // end getJSON()
     } // end getAllReply()
-    
-  //장바구니로 데이터 보내는 역할
-  	$(document).ready(function() {
 
-    getAllReview(); // 댓글(리뷰) 전체 검색 메소드
-
-
-    // 댓글(리뷰) 전체 검색 // 이미지 및 좋아요 아직 추가 안함
-    function getAllReview() {
-        let productId = ${productVO.productId};
-
-        console.log(productId);
-        
-        let url = '../review/all/' + productId;
-        console.log(url);
-        $.getJSON(
-            url,
-            function(data) {
-                // data : 서버에서 전송받은 list 데이터가 저장되어 있음.
-                // getJSON()에서 json 데이터는 
-                // javascript object로 자동 parsing됨.
-                console.log(data);
-
-                let list = ''; // 댓글 데이터를 HTML에 표현할 문자열 변수
-
-                // $(컬렉션).each() : 컬렉션 데이터를 반복문으로 꺼내는 함수
-                $(data).each(function() {
-                    // this : 컬렉션의 각 인덱스 데이터를 의미
-                    console.log(this);
-
-                    // 전송된 replyDateCreated는 문자열 형태이므로 날짜 형태로 변환이 필요
-                    let reviewDateCreated = new Date(this.reviewDateCreated);
-                    
-                    // 날짜와 시간을 문자열로 변환하여 가져오기
-                    let dateString = reviewDateCreated.toLocaleDateString();
-                    let timeString = reviewDateCreated.toLocaleTimeString();
-
-                    
-                    // 별점 숫자를 가져와서 별 모양으로 변환
-                    let starsHTML = ''; // 별 모양 HTML을 저장할 변수
-                    let reviewStar = parseInt(this.reviewStar); // 문자열을 정수로 변환
-                    for (let i = 1; i <= 5; i++) {
-                        if (i <= reviewStar) {
-                            starsHTML += '&#9733;'; // 별 모양 HTML 코드 추가
-                        } else {
-                            starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
-                        }
-                    }
-    
-    
-    
 }); // end document
 
     

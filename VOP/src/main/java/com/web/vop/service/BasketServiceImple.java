@@ -20,9 +20,9 @@ public class BasketServiceImple implements BasketService {
 	BasketMapper basketMapper;
 	
 	@Override
-	public List<BasketDTO> getMyBasket(String memberId, Pagination pagination) {
+	public List<BasketDTO> getMyBasket(String memberId) {
 		log.info("getMyBasket()");
-		return basketMapper.selectByMemberId(memberId, pagination);
+		return basketMapper.selectByMemberId(memberId);
 	} // end getMyBasket
 
 	@Override

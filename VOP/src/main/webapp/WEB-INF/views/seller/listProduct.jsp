@@ -29,7 +29,7 @@
 		</thead>
 		<tbody>
 			<c:forEach var="productVO" items="${productList }">
-				<tr>
+				<tr class="productItem" onclick="toDetails(this)">
 					<td class="productId">${productVO.productId }</td>
 					<td>${productVO.productName }</td>
 					<td>${productVO.productPrice }</td>
@@ -90,6 +90,10 @@
 			}); // end ajax
 		} // end requestDelete
 		
+		function toDetails(input){
+			let productId = $(input).find('.productId').text();
+			location.href = '../product/detail?productId=' + productId;
+		} // end toDetails
 	</script>
 
 </body>

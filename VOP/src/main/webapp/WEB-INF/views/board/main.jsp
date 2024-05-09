@@ -154,7 +154,7 @@
 </head>
 <body>
 
-	<div class="container2">
+<div class="container2">
     <div class="user-links2">
         <a href="../member/login">로그인</a>
         <a href="../member/register">회원가입</a>
@@ -220,11 +220,24 @@
         <!-- 검색 버튼 -->
         <button class="search-button">검색</button>
     </div>
-		<!-- 마이페이지(mypage), 장바구니(basket) 링크 -->
-    	<div class="user-links">
+	<!-- 마이페이지(mypage), 장바구니(basket) 링크 -->
+    <div class="user-links">
         	<a href="mypage">마이페이지</a>
         	<a href="basket">장바구니</a>
     </div>
+</div>
+
+<div id="recommend_container">
+	
+	<div>
+		<div>
+			<img alt="등록된 이미지가 없습니다." src="">
+		</div>
+		<strong class="product_name"></strong>
+		<strong class="product_price"></strong>
+		<span class="review_num"></span>
+		<input hidden="hidden" class="product_id" value=""/>
+	</div>
 </div>
 
 	<script type="text/javascript">
@@ -240,6 +253,7 @@
 			
 		}); // end btnSearch.click
 	
+		
 	</script>
 	
 

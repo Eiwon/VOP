@@ -58,4 +58,8 @@ public interface ProductService {
 		
 	// productId로 상품 삭제
 	int deleteProduct(int productId);
+	
+	// 카테고리를 지정하여, 리뷰 수가 가장 많은 5개의 상품 검색
+	List<ProductVO> getTopProductInCategory(String category);
+	
 }
