@@ -27,7 +27,7 @@ public interface OrderService {
 	int  updateDelivery(DeliveryVO deliveryVo);
 	
 	// 배송지 삭제
-	int deleteDelivery(int deliveryId);
+	int deleteDelivery(String memberId);
 	
 	
 }

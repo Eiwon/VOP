@@ -19,42 +19,53 @@ public class OrderServiceImple implements OrderService {
 	OrderMapper orderMapper;
 	
 	@Override
-	public Date getExpectDateByPaymentId(int paymentId) {
-		// TODO Auto-generated method stub
-		return null;
+	public Date getExpectDateByPaymentId(int paymentId) { // 배송 예정일 조회
+		 log.info("getExpectDateByPaymentId()");
+		 Date result = orderMapper.selectByExpectDeliveryDate(paymentId);
+		 log.info("배송 예정일 : " + result);
+		return result;
 	}
 
 	@Override
-	public int getPaymentId(int paymentId) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getPaymentId(int paymentId) { // 송장 번호 조회
+		log.info("getPaymentId()");
+		int result = orderMapper.selectByPaymentId(paymentId);
+		log.info("송장 번호(paymentId) : " + result);
+		return result;
 	}
 
 	@Override
-	public DeliveryVO getMemberId(String memberId) {
-		// TODO Auto-generated method stub
-		return null;
+	public DeliveryVO getMemberId(String memberId) { // 배송지 상세 조회 (받는 사람 , 받는 주소 , 배송 요청 사항 )
+		log.info("getMemberId()");
+		DeliveryVO result = orderMapper.selectByMemberId(memberId);
+		log.info("배송지 상세 조회 : " + result);
+		return result;
 	}
 
-	@Override
-	public int registerDelivery(DeliveryVO deliveryVo) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int updateDelivery(DeliveryVO deliveryVo) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int deleteDelivery(int deliveryId) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 	
-	
-	
+	@Override
+	public int registerDelivery(DeliveryVO deliveryVo) { // 배송지 등록 
+		log.info("registerDelivery()");
+		int result = orderMapper.insertDelivery(deliveryVo);
+		log.info(result + "행 삽입");
+		return result;
+	}
+
+	@Override
+	public int updateDelivery(DeliveryVO deliveryVo) { // 배송지 수정 
+		log.info("updateDelivery()");
+		int result = orderMapper.updateDelivery(deliveryVo);
+		log.info(result + "행 수정");
+		return result;
+	}
+
+	@Override
+	public int deleteDelivery(String memberId) { // 배송지 삭제
+		log.info("deleteDelivery()");
+		int result = orderMapper.deleteDelivery(memberId);
+		log.info(result + "행 삭제");
+		return result;
+	}
+
 
 }

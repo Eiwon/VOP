@@ -16,15 +16,51 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="expectDeliveryDate" column="EXPECT_DELIVERY_DATE"/>
    </resultMap>
 
-	<!-- 오더 id 로 전체 조회 -->
-	<select id="selectByOrderId">
-		SELECT * FROM ORDER WHERE ORDER_ID = #{orderId}
+	<!-- 배송지 상세 조회 (배송 예정일) -->
+	<select id="selectByExpectDeliveryDate" resultType="Date">
+		SELECT EXPECT_DELIVERY_DATE FROM ORDER WHERE PAYMENT_ID = #{paymentId}
 	</select>
 
-	<select id="selectExpectDate" resultMap="OrderResultMap">
-	<!--  배송 예정일 조회  -->
-	SELECT * FROM ORDER WHERE EXPECT_DELIVERY_DATE = #{expectDeliveryDate}
+	<!-- 배송지 상세 조회 (송장 번호)  -->
+	<select id="selectByPaymentId" resultType="Integer">
+	SELECT PAYMENT_ID FROM ORDER WHERE PAYMENT_ID = #{paymentId}
 	</select>
 	
+	
+	
+	<resultMap type="com.web.vop.domain.DeliveryVO" id="DeliveryResultMap">
+      <id property="deliveryId" column="DELIVERY_ID" /> 
+      <result property="memberId" column="MEMBER_ID"/>
+      <result property="receiverName" column="RECEIVER_NAME"/>
+      <result property="receiverAddress" column="RECEIVER_ADDRESS"/>
+      <result property="receiverPhone" column="RECEIVER_PHONE"/>
+      <result property="requirement" column="REQUIREMENT"/>
+   </resultMap>
+	
+	
+	<!--  배송지 상세 조회 (받는 사람 , 받는 주소 , 배송 요청 사항 ) -->
+	<select id=" selectByMemberId" resultMap="DeliveryResultMap">
+		SELECT RECEIVER_NAME, RECEIVER_ADDRESS, REQUIREMENT FROM DELIVERY 
+		WHERE MEMBER_ID = #{memberId}
+	</select>
+	
+	
+	<!-- 배송지 등록  -->
+	<insert id="insertDelivery">
+		INSERT INTO DELIVERY VALUES (
+		#{deliveryId}, #{memberId}, #{receiverName}, #{receiverAddress}, #{receiverPhone}, #{requirement})
+	</insert>
+	
+	<!-- 배송지 수정  -->
+	<update id="updateDelivery">
+		UPDATE DELIVERY SET RECEIVER_NAME = #{receiverName}, RECEIVER_ADDRESS = #{receiverAddress}, 
+		RECEIVER_PHONE = #{receiverPhone} , REQUIREMENT = #{requirement}
+		WHERE MEMBER_ID = #{memberId}
+	</update>
+	
+	<!-- 배송지 삭제 -->
+	<delete id="deleteDelivery">
+		DELETE DELIVERY WHERE MEMBER_ID = #{memberId}
+	</delete>
 	
 </mapper>
