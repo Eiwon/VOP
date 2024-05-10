@@ -58,8 +58,9 @@ public class PaymentController {
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		 
-		// return 값 : MemberVO(유저 정보), 배송지 정보, OrderVO[](주문 정보)
 	} // end toCheckout
+	
+	
+	
 	
 }

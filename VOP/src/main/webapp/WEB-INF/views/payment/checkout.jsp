@@ -75,12 +75,42 @@
 				'<table><tbody>' + 
 				'<tr><td>총 상품 가격</td><td>' + totalPrice + '</td></tr>' +
 				'<tr><td>멤버십 할인</td><td></td></tr>' +
-				'<tr><td>할인 쿠폰</td><td id="coupon_price"></td><td><button>쿠폰 선택</button></td></tr>' +
+				'<tr><td>할인 쿠폰</td><td id="coupon_price"></td><td><button onclick="selectCoupon()">쿠폰 선택</button></td></tr>' +
+				'<tr id="coupon_list"></tr>' + 
 				'<tr><td>배송비</td><td></td></tr>' +
 				'<tr><td>총 결제 금액</td><td>' + totalPrice + '</td></tr>' +
 				'</tbody></table></div>';
 			return form;
 		} // end makePaymentInfo
+		
+		function selectCoupon(){
+			let tagCouponList = $('#coupon_list');
+			let couponList = [
+				{
+					'couponId' : '1234',
+					'couponName' : '쿠폰 테스트',
+					'couponPrice' : '1000'
+				},{
+					'couponId' : '1234',
+					'couponName' : '테스트 쿠폰',
+					'couponPrice' : '3000'
+				}
+			];
+			
+			// 비동기로 쿠폰 정보 가져와야 함
+			
+			let form = '';
+			for(x in couponList){
+				form += '<div style="display: flex;">' + 
+				'<input type="hidden" value="' + couponList[x].couponId + '">' +
+				'<span>' + couponList[x].couponName + '</span>' +
+				'<span>' + couponList[x].couponPrice + '</span>' +
+				'<input type="radio" name="coupon"><div>';
+			}
+			
+			tagCouponList.html(form);
+			
+		} // end selectCoupon
 		
 		function calcTotalPrice() {
 			let totalPrice = 0;
