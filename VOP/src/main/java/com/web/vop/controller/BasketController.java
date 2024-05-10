@@ -112,6 +112,32 @@ public class BasketController {
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end updateProductNum
 	
+	// 상품상세 정보에서 버튼 클릭시 동작되는 코드
+	
+	@ResponseBody
+	@PostMapping("/myBasketDate")
+	public ResponseEntity<Integer> registerBasket(@RequestBody BasketVO basketVO){
+		log.info("registerBasketPOST()");
+		int dbProductId = basketVO.getProductId();
+		String dbMemberId = basketVO.getMemberId();
+		int dbProductNum =  basketVO.getProductNum();
+		log.info("basketVO : " + basketVO);
+		log.info("dbProductId : " + dbProductId);
+		log.info("dbMemberId : " + dbMemberId);
+		log.info("dbProductNum : " + dbProductNum);
+		BasketVO basketVOList = basketService.getMyBasketList(dbProductId, dbMemberId);
+		log.info("basketVOList" + basketVOList);
+		int res = 0;
+		if(basketVOList == null) {
+			log.info("장바구니 등록");
+			res = basketService.addToBasket(basketVO);
+		} else {
+			log.info("장바구니 수정");
+			res = basketService.updateProductNum(basketVO);
+		}
+		log.info(res + "행 성공");
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+	}// end registerBasket
 	
 }
 

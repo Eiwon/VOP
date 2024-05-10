@@ -17,10 +17,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.web.vop.domain.BasketVO;
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.service.ImageService;
@@ -83,7 +85,6 @@ public class ProductController {
 			log.info(image);
 		}
 		
-		
 		// 상품 조회 정보
 		model.addAttribute("productVO", productVO);
 		// 댓글 갯수 정보
@@ -95,10 +96,12 @@ public class ProductController {
 		// 상품 설명 이미지 조회 정보
 		model.addAttribute("imageList", imageList);
 		
-
 		// 해당 경로
 		log.info("/product/detail get");
 	} // end productDetail()
+	
+	
+	
 	
 	@GetMapping("/register")
 	public void registerGET() {

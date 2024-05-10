@@ -27,7 +27,8 @@ public class BasketMapperTest {
 	public void test() {
 		//getMyBasket();
 		//getMyBasketCnt();
-		insertTest();
+		//insertTest();
+		testSelectFromBasket();
 	}
 	
 	private void getMyBasket() {
@@ -43,5 +44,14 @@ public class BasketMapperTest {
 	private void insertTest() {
 		int res = basketMapper.insertToBasket(new BasketVO("test1234", 15, 50));
 	} // end insertTest
+	
+	private void testSelectFromBasket() {
+		BasketVO basket = basketMapper.selectByMemberIdList(1, "test");
+		 if (basket == null) {
+			 log.info("null인 경우 :" + basket);
+		    } else {
+		     log.info("null이 아닌 경우 :" + basket);
+		    }
+	}
 	
 }
