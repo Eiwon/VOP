@@ -54,5 +54,14 @@ public class BasketServiceImple implements BasketService {
 		log.info("clear()");
 		return basketMapper.deleteAll(memberId);
 	} // end clear
+	
+	// 장바구니 데이터만 조회
+	@Override
+	public BasketVO getMyBasketList(int productId, String memberId) {
+		log.info("getMyBasketList()");
+		BasketVO basketVO = basketMapper.selectByMemberIdList(productId, memberId);
+		log.info("basketVO : " + basketVO);
+		return basketVO;
+	}
 
 }

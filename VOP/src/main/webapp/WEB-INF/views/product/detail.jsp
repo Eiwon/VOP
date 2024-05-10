@@ -4,7 +4,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!-- 세션 사용할수 있게하는 코드 -->
 <%@ page import="javax.servlet.http.HttpSession" %>
-<%@ page import="java.util.*" %>
     
 <!DOCTYPE html>
 <html>
@@ -113,19 +112,24 @@
 	<!-- 장바구니 버튼 -->
     <!-- 세션 아이디가 있는 경우 -->
      <c:if test="${empty memberId}">
-    	<button type="button" onclick="addToCart()" disabled="disabled">장바구니</button>
+    	<button id="btnBasket" disabled="disabled">장바구니</button>
     	<p>로그인 후 장바구니 가능합니다.</p>
 	 </c:if>
 	<!-- 세션 아이디가 없 경우 -->
 	<c:if test="${not empty memberId}">
-    	<button type="button" onclick="addToCart()">장바구니</button>
+    	<button id="btnBasket">장바구니</button>
 	</c:if>
+	
+	<a href="../basket/main">장바구니 바로가기</a>
 
-
-	<!-- 바로구매 버튼 -->
+	<!-- 바로구매 버튼 
     <form action="설정 예정" method="post">
         <input type="hidden" name="memberId" value="${memberId}">
+        <input type="hidden" name="productId" value="${productVO.productId}">
+        <input type="hidden" name="productNum" value="$('#quantity').val()">
     </form>
+    -->
+    
     <!-- 세션 아이디가 있는 경우 -->
      <c:if test="${empty memberId}">
     	<button type="submit" name="action" value="checkout" disabled="disabled">바로구매</button>
@@ -147,25 +151,14 @@
      
      <!-- 댓글 화면 코드 및 가운데 정렬 -->
      <p>댓글</p>
-     <div><!-- style="text-align: center;" 가운데 정렬-->
+     
       <div id="replies"></div>
-     </div>
+     
      
      <!-- 좋아요 표시 제작 예정? -->
      
      <script type="text/javascript">
-     
-
-// 페이지 로드될 때 실행되는 함수(별표시 먼저해주는 역할)
-window.onload = function() {
-    displayStars(); // 별표시 초기화 함수 호출
-    // 사용자가 수량 입력 필드를 직접 조작할 때 이벤트 핸들러 추가
-    document.getElementById("quantity").addEventListener("input", function() {
-        // 입력된 수량을 가져와 상품 가격을 업데이트
-        updateTotalPrice(parseInt(this.value));
-    });
-}
-
+    
 // 별표시를 업데이트하는 함수
 function displayStars() {
     let value = parseInt("${reviewStar}"); // 리뷰 별점을 정수 형으로 변환
@@ -189,39 +182,43 @@ function updateTotalPrice(quantity) {
     
     // 수량 입력 필드 요소에도 값을 설정
     document.getElementById("quantity").value = quantity;
-    // 장바구니에도 수량을 업데이트
-    document.getElementById("quantityInput").value = quantity;
-}
-
-//장바구니로 데이터 보내는 역할
-function addToCart() {
-    // 수량 가져오기
-    let quantityInput = document.getElementById("quantity");
-    let quantity = parseInt(quantityInput.value);
-
-    // 수량이 유효한지 확인
-    if (isNaN(quantity) || quantity <= 0) {
-        alert("유효한 수량을 입력하세요.");
-        return;
- }
-
-    // 수량 업데이트
-    let quantityInputElement = document.getElementById("quantityInput");
-    quantityInputElement.value = quantity;
-
-    // 폼 제출
-    let addToCartForm = document.getElementById("addToCartForm");
-    addToCartForm.submit();
-
-    // 세부 로그
-    console.log("장바구니에 상품 추가됨 - 수량:", quantity);
 }
 
 
 $(document).ready(function() {
-
+	displayStars(); // 별 표시 함수
     getAllReview(); // 댓글(리뷰) 전체 검색 메소드
 
+    // 장바구니
+    $('#btnBasket').click(function(){
+    	let productId = ${productVO.productId}; // 게시판 번호 데이터
+        let memberId = "${memberId}"; // 작성자 데이터
+        let productNum = $('#quantity').val(); // 수량
+        // javascript 객체 생성
+        let obj = {
+              'productId' : productId,
+              'memberId' : memberId,
+              'productNum' : productNum
+        }
+        console.log(obj);
+        
+        // $.ajax로 송수신
+        $.ajax({
+           type : 'POST', // 메서드 타입
+           url : '../basket/myBasketDate', // url
+           headers : { // 헤더 정보
+              'Content-Type' : 'application/json' // json content-type 설정
+           }, //'Content-Type' : 'application/json' 헤더 정보가 안들어가면 4050에러가 나온다.
+           data : JSON.stringify(obj), // JSON으로 변환
+           success : function(result) { // 전송 성공 시 서버에서 result 값 전송
+              console.log(result);
+              if(result == 1) {
+            	 console.log("장바구니 저장 성공");
+              }
+           }
+        });
+     }); // end btnAdd.click()
+     
 
     // 댓글(리뷰) 전체 검색 // 이미지 및 좋아요 아직 추가 안함
     function getAllReview() {
@@ -296,7 +293,6 @@ $(document).ready(function() {
 
 }); // end document
 
-    
      </script>
 
 </body>

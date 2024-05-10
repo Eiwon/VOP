@@ -14,6 +14,10 @@
 		<a href="seller">판매자 페이지</a>
 		<a href="admin">관리자 페이지</a>
 	</div>
+	
+	<p>주문 목록 조회</p>
+	
+	
 
 	<script type="text/javascript">
 	

@@ -64,4 +64,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		DELETE BASKET WHERE MEMBER_ID = #{memberId}
    </delete>
    
+   <!-- 장바구니 조회(memberId와 productId을 통해 조회 -->
+   <select id="selectByMemberIdList" resultMap="basketResultMap">
+   		SELECT * FROM BASKET 
+		WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}  
+   </select>
+   
 </mapper>

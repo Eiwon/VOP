@@ -89,6 +89,11 @@ public class ReviewRESTController {
 	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	   }
+	 
+	 @GetMapping("/review")
+	 public void registerGET() {
+		  log.info("registerGET()");
+		} // end productRegister()
 	
 	
 	
