@@ -135,5 +135,11 @@ public class ProductServiceImple implements ProductService{
 		return productMapper.selectTopProductInCategory(category);
 	} // end getTopProductInCategory
 
+	@Override
+	public List<ProductVO> getRecent5() {
+		log.info("getRecent5()");
+		return productMapper.selectRecent5();
+	} // end getRecent5
+
 	
 }

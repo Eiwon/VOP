@@ -6,7 +6,9 @@ import java.util.UUID;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -50,6 +52,9 @@ public class ProductController {
 	@Autowired
 	private ImageService imageService;
 	
+	private static final String[] categoryList = {"여성패션", "남성패션", "남녀 공용 의류", "유아동 패션", "뷰티", "출산/유아동", 
+ 			"식품", "주방용품", "생활용품", "홈인테리어", "가전디지털", "스포츠/레저", "자동차 용품", "도서/음반/DVD", 
+ 			"완구/취미", "문구/오피스", "반려동물용품", "헬스/건강식품"};
 	
 	// 상품 상세 정보 조회
 	@GetMapping("/detail")
@@ -203,15 +208,28 @@ public class ProductController {
 	} // end showImg
   
 	
-	@GetMapping("/best")
+	@GetMapping("/bestReview")
 	@ResponseBody
-	public ResponseEntity<List<ProductVO>> getBestProductInCategory(String category){
-		log.info(category + "의 최고 리뷰 상품 5개 요청");
+	public ResponseEntity<Map<String, List<ProductVO>>> getBestProductByCategory(){
+		log.info("각 카테고리별 최고 리뷰 상품 5개 요청");
+		Map<String, List<ProductVO>> resultMap = new HashMap<>();
 		
-		List<ProductVO> list = productService.getTopProductInCategory(category);
-		log.info("검색 결과 : " + list);
-		return new ResponseEntity<List<ProductVO>>(list, HttpStatus.OK);
+		for(String category : categoryList) {
+			List<ProductVO> list = productService.getTopProductInCategory(category);
+			log.info(category + " 검색 결과 : " + list);
+			resultMap.put(category, list);
+		}
+		return new ResponseEntity<Map<String, List<ProductVO>>>(resultMap, HttpStatus.OK);
 	} // end getBestProductInCategory
 	
-
+	@GetMapping("/recent")
+	@ResponseBody
+	public ResponseEntity<List<ProductVO>> getRecent5(){
+		log.info("최근 등록된 상품 5개 요청");
+		
+		List<ProductVO> list = productService.getRecent5();
+		log.info("검색 결과 : " + list);
+		return new ResponseEntity<List<ProductVO>>(list, HttpStatus.OK);
+	} // end getRecent5
+	
 }

@@ -6,6 +6,12 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<style type="text/css">
+	.product_container {
+		border: 1px solid black;
+		width: 200px;
+	}
+</style>
 <title>상품 검색</title>
 </head>
 <body>
@@ -44,15 +50,15 @@
 	<div id="searchResult">
 		<c:forEach var="productVO" items="${productList}">
 			<div class="product_container" onclick="toDetails(this)">
-					<div class="productId">${productVO.productId }</div>
+					<img alt="등록된 이미지가 없습니다." 
+					src="showImg?imgId=${productVO.imgId }">
+					<div class="productId" hidden="hidden">${productVO.productId }</div>
 					<div>${productVO.productName }</div>
 					<div>${productVO.productPrice }</div>
 					<div>${productVO.reviewNum }</div>
 					<div>${productVO.productRemains }</div>
 					<div>${productVO.productPlace }</div>
 					<div>${productVO.category }</div>
-					<img alt="등록된 이미지가 없습니다." 
-					src="showImg?imgId=${productVO.imgId }">
 			</div>
 		</c:forEach>
 	</div>   

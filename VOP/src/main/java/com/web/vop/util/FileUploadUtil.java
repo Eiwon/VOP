@@ -129,8 +129,8 @@ public class FileUploadUtil {
         
         try {
 			BufferedImage bi = ImageIO.read(file.getInputStream()); // 저장된 파일을 읽어온다
-			BufferedImage icon = new BufferedImage(95, 95, BufferedImage.TYPE_3BYTE_BGR); // icon 저장할 공간 생성
-			icon.createGraphics().drawImage(bi, 0, 0, 95, 95, null); // icon 그리기
+			BufferedImage icon = new BufferedImage(120, 120, BufferedImage.TYPE_3BYTE_BGR); // icon 저장할 공간 생성
+			icon.createGraphics().drawImage(bi, 0, 0, 120, 120, null); // icon 그리기
 			ImageIO.write(icon, "jpg", thumbnail); // 그린 icon 저장
 			log.info("thumbnail 저장 성공");
 		} catch (IOException e) {

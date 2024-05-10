@@ -148,14 +148,23 @@
 	        color: black;
 	    }
         
+        .flex_list {
+        	display: flex;
+    		flex-direction: row;
+    		list-style: none;
+        }
         
+        .product_box {
+        	border: 1px solid black;
+        	width: 200px;
+        }
         
     </style>
 </head>
 <body>
 
 <div class="container2">
-    <div class="user-links2">
+    <div class="user-links2" id="box_login">
         <a href="../member/login">로그인</a>
         <a href="../member/register">회원가입</a>
     </div>
@@ -228,23 +237,26 @@
 </div>
 
 <div id="recommend_container">
-	
 	<div>
-		<div>
-			<img alt="등록된 이미지가 없습니다." src="">
-		</div>
-		<strong class="product_name"></strong>
-		<strong class="product_price"></strong>
-		<span class="review_num"></span>
-		<input hidden="hidden" class="product_id" value=""/>
+		<h2>최근 등록된 상품</h2>
+		<ul class="flex_list" id="recent_list">
+		</ul>
 	</div>
+	
 </div>
 
 	<script type="text/javascript">
 		let boxCategory = $('#boxCategory');
 		let inputSearch = $('.search-input');
 		let btnSearch = $('.search-button');
+		let boxLogin = $('#box_login');
+		let listRecent = $('#recent_list');
+		let containerRecommend = $('#recommend_container');
 		
+		const constCategory = ["여성패션", "남성패션", "남녀 공용 의류", "유아동 패션", "뷰티", "출산/유아동", 
+			"식품", "주방용품", "생활용품", "홈인테리어", "가전디지털", "스포츠/레저", "자동차 용품", "도서/음반/DVD", 
+			"완구/취미", "문구/오피스", "반려동물용품", "헬스/건강식품"];
+        
 		btnSearch.click(function(){
 			console.log("선택된 카테고리 : " + boxCategory.val());
 			console.log("입력된 검색어 : " + inputSearch.val());
@@ -253,6 +265,85 @@
 			
 		}); // end btnSearch.click
 	
+		$(document).ready(function(){
+			setLoginBox();
+			printRecentList();
+			printRecommendByCategory();
+		}); // end document.ready
+		
+		
+		function setLoginBox(){
+			let memberId = '<%= request.getSession().getAttribute("memberId")%>';
+			console.log(memberId);
+			let form = '';
+			
+			if(memberId == 'null') { // 로그인 상태가 아닐 경우
+				form = '<a href="../member/login">로그인</a>&nbsp&nbsp&nbsp' + 
+					'<a href="../member/register">회원가입</a>';
+			}else {
+				form = '<a href="../member/logout">로그 아웃</a>';
+			}
+			boxLogin.html(form);
+		} // end setLoginBox
+		
+		
+		function printRecentList(){
+			
+			$.ajax({
+				method : 'GET',
+				url : '../product/recent',
+				success : function(result){ // result = 최근 등록된 5개 ProductVO
+					console.log(result);
+					let str = "";
+					for(x in result){ 
+						str += '<li class="product_box" onclick="toDetails(this)">' +
+								'<img alt="등록된 이미지가 없습니다." src="../product/showImg?imgId=' + result[x].imgId + '"><br>' +
+								'<strong class="product_name">' + result[x].productName + '</strong><br>' + 
+								'<strong class="product_price">' + result[x].productPrice + '</strong><br>' + 
+								'<span class="review_num">' + result[x].reviewNum + '</span>' +
+								'<input hidden="hidden" class="product_id" value="' + result[x].productId + '"/>' +
+								'</li>';
+					}
+					listRecent.html(str);
+					
+				} // end success
+			}); // end ajax
+		} // end printRecentList
+		
+		function printRecommendByCategory(){ // 카테고리 별 최고 리뷰 상품 5개씩 출력
+			$.ajax({
+				method : 'GET',
+				url : '../product/bestReview',
+				success : function(result){ // result : key=카테고리명, value=해당 카테고리의 최고리뷰 상품 List<ProductVO>
+					let form = "";
+					console.log(result);
+					for(x in constCategory){ 
+						const selectedCategory = constCategory[x];
+						form += '<div><h2>' + selectedCategory + '</h2><ul class="flex_list">';
+						for(i in result[selectedCategory]){
+							const selectedList = result[selectedCategory][i];
+							form += '<li class="product_box" onclick="toDetails(this)">' +
+							'<img alt="등록된 이미지가 없습니다." src="../product/showImg?imgId=' + selectedList.imgId + '"><br>' +
+							'<strong class="product_name">' + selectedList.productName + '</strong><br>' + 
+							'<strong class="product_price">' + selectedList.productPrice + '</strong><br>' + 
+							'<span class="review_num">' + selectedList.reviewNum + '</span>' +
+							'<input hidden="hidden" class="product_id" value="' + selectedList.productId + '"/>' +
+							'</li>' ;
+						} 
+						form += '</ul></div>';
+					}
+					containerRecommend.append(form);
+					
+				} // end success
+			}); // end ajax
+		} // end printRecentList
+		
+		
+		function toDetails(input){
+			const selectedId = $(input).find('.product_id').val();
+			console.log(selectedId);
+			location.href = '../product/detail?productId=' + selectedId;
+		} // end addDetailsEvent
 		
 	</script>
 	

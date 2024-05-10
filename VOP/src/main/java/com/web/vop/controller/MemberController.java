@@ -71,7 +71,7 @@ public class MemberController {
 		log.info("비밀번호 찾기 페이지 요청");
 	} // end findPassword
 	
-	@PostMapping("/logout")
+	@GetMapping("/logout")
 	public String logout(HttpServletRequest request) {
 		request.getSession().invalidate();
 		return "redirect:/";

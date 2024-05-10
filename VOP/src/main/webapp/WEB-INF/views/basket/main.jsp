@@ -16,25 +16,24 @@
 	<div id="product_container">
 		<button id="btn_clear">장바구니 비우기</button>
 		<table>
-			<tbody id="basket_list">
-				
-			</tbody>
+			<tbody id="basket_list"></tbody>
 		</table>
 		<input id="chk_select_all" type="checkbox">
 		<input id="btn_delete" type="button" value="선택 삭제">
 	</div>	
 	
-	<div id="expect_expense">
+	<form action="../payment/checkout" method="POST" id="form_expense">
+		<div id="order_list" hidden="hidden"></div>
 		<div id="total_product_price"></div>
-	</div>
-	
+		<input type="button" value="결제하기" onclick="submitOrder()">
+	</form>
 	
 	<script type="text/javascript">
 		const memberId = '<%= request.getSession().getAttribute("memberId")%>';
 		let pageNum = 1;
 		let tagBasketList = $('#basket_list');
 		let basketMap; // 데이터를 html과 분리해서 관리하기 위한 map
-		
+		let formExpense = $('#form_expense');
 		
 		$(document).ready(function(){
 				printBasketList();
@@ -119,6 +118,41 @@
 			}); // end ajax
 		} // end printBasketList
 		
+		function submitOrder(){
+			let orderList = [];
+			let tagOrderList = $('#order_list');
+			let form = "";
+			
+			// 체크된 물품들의 id, 갯수를 가져온다.
+			$('.chk_product').each(function(){
+				if($(this).prop('checked') == true){
+					const productId = getTargetId(this);
+					const order = {
+							'productId' : productId,
+							'purchaseNum' : basketMap[productId].productNum
+					}
+					orderList.push(order);
+					form += '<input type="hidden" name="productIds" value="' + productId + '">';
+					form += '<input type="hidden" name="productNums" value="' + basketMap[productId].productNum + '">';
+				}
+			});
+			console.log(orderList);
+			
+			if(orderList.length == 0){
+				alert("구매할 물품을 선택해주세요.");
+				event.preventDefault();
+				return;
+			}
+			
+			form += '<input type="hidden" name="memberId" value="' + memberId + '">';
+			tagOrderList.html(form);
+			
+			// memberId, productId[], productNum[] input 태그 생성 후 submit
+			formExpense.submit();
+			
+		} // end submit
+		
+		
 		
 		// productNum -1이 가능한지 체크 후 update 요청 함수 호출
 		function minusProductNum(input){
@@ -142,7 +176,7 @@
 			
 			console.log("downProductNum() - 클릭된 상품 id : " + targetId);
 			
-			if(maxNum == targetProductNum) return;
+			if(maxNum == targetProductNum)	return;
 			
 			setProductNum(basketItem, targetId, targetProductNum + 1);
 		} // end downProductNum
