@@ -85,7 +85,6 @@
             background-color: #ddd;
         }
         
-        
          /* VOP 링크 스타일링 */
         .vop-link {
             

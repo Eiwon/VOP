@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,9 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class BoardController {// 메인 페이지 구현 컨트롤러
 
+	@Autowired
+	private MemberService memberService;
+	
 	@GetMapping("/main") 
 	public void mainGET() {
 		System.out.println("main.jsp 이동");
@@ -37,7 +41,7 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 	
 	// 마이페이지 호출하기 -> 세션이 있을 경우 이동, 없으면 로그인 페이지로 이동
 	@GetMapping("/mypage") 
-	public String mypageGET(HttpServletRequest request) {
+	public String mypageGET(Model model, HttpServletRequest request) {
 		System.out.println("mypage.jsp 이동");
 		String path = "";
 		log.info("mypageGET()");
@@ -48,6 +52,8 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 		if(memberId == null) {
 			path = "redirect:../member/login";
 		}else {
+			String memberAuth = memberService.getMemberAuth(memberId);
+			model.addAttribute("memberAuth", memberAuth);
 			path = "board/mypage";
 		}
 		return path;
