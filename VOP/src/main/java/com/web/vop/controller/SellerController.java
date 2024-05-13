@@ -39,7 +39,7 @@ public class SellerController {
 	private ProductService productService;
 	
 	@Autowired
-	SellerService sellerService;
+	private SellerService sellerService;
 	
 	@GetMapping("sellerRequest")
 	public void sellerRequestGET() {
@@ -76,15 +76,15 @@ public class SellerController {
 	
 	
 	// 판매자 권한 요청 조회
-	@GetMapping("/all/{page}")
+	@GetMapping("/wait/{page}")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> getAllRequest(@PathVariable("page") int page){
+	public ResponseEntity<Map<String, Object>> getWaitRequest(@PathVariable("page") int page){
 		log.info("모든 권한요청 조회");
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.getPagination().setPageNum(page);
-		List<SellerVO> list = sellerService.getAllRequest(pageMaker.getPagination());
+		List<SellerVO> list = sellerService.getRequestByState("승인 대기중", pageMaker.getPagination());
 		log.info(list);
-		int requestCount = sellerService.getRequestCount();
+		int requestCount = sellerService.getRequestByStateCnt("승인 대기중");
 		pageMaker.setPageCount(requestCount);
 			
 		Map<String, Object> resultMap = new HashMap<>(); // 반환할 타입이 2개이므로 pageMaker와 list를 담을 맵 생성
@@ -92,7 +92,7 @@ public class SellerController {
 		resultMap.put("list", list);
 			
 		return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
-	} // end getAllRequest
+	} // end getWaitRequest
 	
 	// 자신의 권한 요청 조회
 	@GetMapping("/my/{memberId}")
@@ -166,5 +166,43 @@ public class SellerController {
 
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end deleteRequestProduct
+	
+	
+	// 등록된 판매자 조회
+	@GetMapping("/approved/{page}")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> getApprovedRequest(@PathVariable("page") int page) {
+		log.info("모든 승인된 요청 조회");
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.getPagination().setPageNum(page);
+		List<SellerVO> list = sellerService.getRequestByState("승인", pageMaker.getPagination());
+		log.info(list);
+		int requestCount = sellerService.getRequestByStateCnt("승인");
+		pageMaker.setPageCount(requestCount);
+
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("pageMaker", pageMaker);
+		resultMap.put("list", list);
+
+		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+	} // end getAllRequest
+	
+	@GetMapping("/productReq/{page}")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> getWaitProduct(@PathVariable("page") int page){
+		log.info("모든 상품 등록 요청 조회");
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.getPagination().setPageNum(page);
+		List<ProductVO> list = productService.getStateIsWait(pageMaker.getPagination());
+		log.info(list);
+		int requestCount = productService.getStateIsWaitCnt();
+		pageMaker.setPageCount(requestCount);
+
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("pageMaker", pageMaker);
+		resultMap.put("list", list);
+
+		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+	} // end getWaitProduct
 	
 }

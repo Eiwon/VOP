@@ -3,7 +3,7 @@ package com.web.vop.persistence;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.apache.ibatis.annotations.Param;
 
 import com.web.vop.domain.SellerVO;
 import com.web.vop.util.Pagination;
@@ -11,9 +11,9 @@ import com.web.vop.util.Pagination;
 @Mapper
 public interface SellerMapper {
 
-	public List<SellerVO> selectAllRequest(Pagination pagination);
+	public List<SellerVO> selectAllRequest(@Param("requestState") String requestState, @Param("pagination") Pagination pagination);
 	
-	public int selectRequestCount();
+	public int selectRequestByStateCnt(String requestState);
 	
 	public SellerVO selectRequestById(String memberId);
 	
@@ -21,7 +21,8 @@ public interface SellerMapper {
 	
 	public int updateMemberContent(SellerVO sellerVO);
 
-	public int updateAdminContent(@RequestParam("memberId") String memberId, @RequestParam("refuseMsg") String refuseMsg);
+	public int updateAdminContent(@Param("memberId") String memberId, @Param("refuseMsg") String refuseMsg);
 
 	public int deleteRequest(String memberId);
+	
 }

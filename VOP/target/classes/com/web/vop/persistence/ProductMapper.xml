@@ -51,6 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		)
 	</insert>
 	
+	<!-- 최근에 등록된 상품 ID 검색 -->
 	<select id="selectLastInsertId" resultType="int">
 		SELECT MAX(PRODUCT_ID) FROM PRODUCT
 	</select>
@@ -142,5 +143,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN FROM PRODUCT
 		) WHERE RN BETWEEN 1 AND 5
 	</select>
-		
+
+	<!-- 승인 대기중인 모든 상품 검색(페이징) -->
+	<select id="selectStateIsWait" resultMap="productResultMap">
+		SELECT * FROM (
+			SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN FROM PRODUCT
+			WHERE PRODUCT_STATE = '승인 대기중'
+		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+	</select>
+	
+	<!-- 승인 대기중인 모든 상품 수 검색 -->
+	<select id="selectStateIsWaitCnt" resultType="Integer">
+		SELECT COUNT(PRODUCT_ID) FROM PRODUCT WHERE PRODUCT_STATE = '승인 대기중'
+	</select>
+	
 </mapper>

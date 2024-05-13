@@ -19,6 +19,12 @@ public interface OrderService {
 	// 배송지 상세 조회 (송장 번호)
 	int getPaymentId(int paymentId);
 	
+	// 주문 등록
+	int registerOrder(OrderVO orderVO);
+	
+	// paymentId로 주문 검색
+	public List<OrderVO> getOrderByPaymentId(int paymentId);
+	
 	// 배송지 상세 조회 (받는 사람 , 받는 주소 , 배송 요청 사항 )
 	DeliveryVO getMemberId(String memberId);
 	

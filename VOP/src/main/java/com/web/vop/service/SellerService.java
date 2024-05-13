@@ -7,9 +7,9 @@ import com.web.vop.util.Pagination;
 
 public interface SellerService {
 
-	public List<SellerVO> getAllRequest(Pagination pagination);
+	public List<SellerVO> getRequestByState(String requestState, Pagination pagination);
 
-	public int getRequestCount();
+	public int getRequestByStateCnt(String requestState);
 	
 	public SellerVO getMyRequest(String memberId);
 	
@@ -20,4 +20,5 @@ public interface SellerService {
 	public int refuseRequest(String memberId, String refuseMsg);
 	
 	public int deleteRequest(String memberId);
+	
 }

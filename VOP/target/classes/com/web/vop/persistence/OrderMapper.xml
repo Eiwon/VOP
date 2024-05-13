@@ -14,6 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="productPrice" column="PRODUCT_PRICE"/>
       <result property="purchaseNum" column="PURCHASE_NUM"/>
       <result property="expectDeliveryDate" column="EXPECT_DELIVERY_DATE"/>
+      <result property="imgId" column="IMG_ID"/>
    </resultMap>
 
 	<resultMap type="com.web.vop.domain.DeliveryVO" id="DeliveryResultMap">
@@ -35,6 +36,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	SELECT PAYMENT_ID FROM ORDER WHERE PAYMENT_ID = #{paymentId}
 	</select>
 	
+	<!-- 주문 등록 -->
+	<insert id="insertOrder">
+		INSERT INTO "ORDER" VALUES (
+			ORDER_SEQ.NEXTVAL, #{paymentId}, #{productId}, #{productName}, #{productPrice}, #{purchaseNum},
+			SYSDATE +2, #{imgId}
+		)
+	</insert>
+	
+	
+	<!-- paymentId로 주문 검색 -->
+	<select id="selectOrderByPaymentId" resultMap="OrderResultMap">
+		SELECT * FROM "ORDER" WHERE PAYMENT_ID = #{paymentId}
+	</select>
 	
 	<!--  배송지 상세 조회 (받는 사람 , 받는 주소 , 배송 요청 사항 ) -->
 	<select id="selectByMemberId" resultMap="DeliveryResultMap">
