@@ -21,4 +21,6 @@ public interface ImageService {
 	// productId로 이미지 검색
 	List<ImageVO> getByProductId(int productId);
 	
+	// imgId로 이미지 경로 조회
+	String getImgPathByImgId(int imgId);
 }

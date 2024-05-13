@@ -59,11 +59,11 @@
         }
         
         .category:hover .subcategory {
-            display: block; /* 줄 바꿈 */
+            display: block; /* 부모 요소에 마우스를 올리면 서브 카테고리 표시 */
         }
         
         .subcategory {
-           	display: block; /* 줄 바꿈 */
+           	display: none; /* 마우스 up 아닐땐 숨김 */
             position: absolute;
             top: 100%;
             left: 0;
@@ -72,6 +72,7 @@
             padding: 10px;
             border: 1px solid #ccc;
             z-index: 1;
+            font-size: 14px; 
         }
         
         .subcategory a {
@@ -84,6 +85,9 @@
         .subcategory a:hover {
             background-color: #ddd;
         }
+        
+        
+        
         
          /* VOP 링크 스타일링 */
         .vop-link {
@@ -272,11 +276,12 @@
         <!-- 검색 버튼 -->
         <button class="search-button">검색</button>
     </div>
+    
 	<!-- 마이페이지(mypage), 장바구니(basket) 링크 -->
     <div class="user-links">
         	<a href="mypage">마이페이지</a>
         	<div class="submenu">
-        		<a href="#">주문목록</a>
+        		<a href="orderlist">주문목록</a>
         		<a href="#">취소/반품</a>
         		<a href="#">찜리스트</a>
         	</div>	

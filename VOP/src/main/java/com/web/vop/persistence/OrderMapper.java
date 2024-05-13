@@ -1,10 +1,12 @@
 package com.web.vop.persistence;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
 import com.web.vop.domain.DeliveryVO;
+import com.web.vop.domain.OrderVO;
 
 
 @Mapper
@@ -26,5 +28,8 @@ public interface OrderMapper {
 	
 	// 배송지 삭제
 	public int deleteDelivery(String memberId);
+	
+	// 주문 목록 조회 
+	public List<OrderVO> selectOrderListByMemberId(String memberId);
 
 }
