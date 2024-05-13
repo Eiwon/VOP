@@ -21,4 +21,6 @@ public interface ImageMapper {
 	// productId로 이미지 검색
 	List<ImageVO> selectByProductId(int productId);
 	
+	// 이미지 경로 조회
+	String selectImgPathByImgId(int imgId);
 }

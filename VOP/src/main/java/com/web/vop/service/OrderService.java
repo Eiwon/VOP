@@ -37,5 +37,6 @@ public interface OrderService {
 	// 배송지 삭제
 	int deleteDelivery(String memberId);
 	
-	
+	// 주문 목록 조회 
+	List<OrderVO> getOrderListByMemberId(String memberId);
 }

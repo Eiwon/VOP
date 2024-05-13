@@ -34,5 +34,8 @@ public interface OrderMapper {
 	
 	// 배송지 삭제
 	public int deleteDelivery(String memberId);
+	
+	// 주문 목록 조회 
+	public List<OrderVO> selectOrderListByMemberId(String memberId);
 
 }

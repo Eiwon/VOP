@@ -59,11 +59,11 @@
         }
         
         .category:hover .subcategory {
-            display: block;
+            display: block; /* 부모 요소에 마우스를 올리면 서브 카테고리 표시 */
         }
         
         .subcategory {
-            display: none;
+           	display: none; /* 마우스 up 아닐땐 숨김 */
             position: absolute;
             top: 100%;
             left: 0;
@@ -72,6 +72,7 @@
             padding: 10px;
             border: 1px solid #ccc;
             z-index: 1;
+            font-size: 14px; 
         }
         
         .subcategory a {
@@ -84,6 +85,9 @@
         .subcategory a:hover {
             background-color: #ddd;
         }
+        
+        
+        
         
          /* VOP 링크 스타일링 */
         .vop-link {
@@ -158,6 +162,50 @@
         	width: 200px;
         }
         
+        /* 마이페이지 - 하위 메뉴 숨김 상태로 설정*/
+        
+        /* 부모 링크에 position: relative; 스타일 적용 */
+		.user-links {
+		    position: relative;
+		}
+		
+		/* 서브 메뉴에 position: absolute; 스타일 적용 */
+		.submenu {
+		    display: block; /* 줄 바꿈 */
+		    position: absolute;
+		    top: 100%;
+		    left: 0;
+		    background-color: #fff; /* 배경색 */
+		    border: 1px solid #ccc; /* 테두리 */
+		    padding: 10px;
+		    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* 그림자 효과 */
+		}
+		
+		/* 부모 링크에 호버 시 서브 메뉴 표시 */
+		.user-links:hover .submenu {
+		    display: block;
+		}
+		
+		.user-links .submenu {
+		    display: none;
+		    position: absolute;
+		    /* 다른 스타일 속성들 */
+		    /* 필요한 경우에 추가적인 스타일 지정 */
+		}
+		
+		/* 서브 메뉴 항목 스타일링 */
+		.submenu a {
+		    display: block;
+		    margin-bottom: 5px; /* 항목 간격 조정 */
+		    text-decoration: none; /* 밑줄 제거 */
+		    color: #333; /* 글자색 지정 */
+		}
+		
+		/* 서브 메뉴 항목 호버 스타일링 */
+		.submenu a:hover {
+		    background-color: #f0f0f0; /* 호버 시 배경색 변경 */
+		}
+		
     </style>
 </head>
 <body>
@@ -228,9 +276,15 @@
         <!-- 검색 버튼 -->
         <button class="search-button">검색</button>
     </div>
+    
 	<!-- 마이페이지(mypage), 장바구니(basket) 링크 -->
     <div class="user-links">
         	<a href="mypage">마이페이지</a>
+        	<div class="submenu">
+        		<a href="orderlist">주문목록</a>
+        		<a href="#">취소/반품</a>
+        		<a href="#">찜리스트</a>
+        	</div>	
         	<a href="basket">장바구니</a>
     </div>
 </div>

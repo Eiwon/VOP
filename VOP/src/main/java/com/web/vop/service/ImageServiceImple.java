@@ -46,4 +46,11 @@ public class ImageServiceImple implements ImageService{
 		log.info("getByProductId()");
 		return imageMapper.selectByProductId(productId);
 	} // end getByProductId
+
+	@Override
+	public String getImgPathByImgId(int imgId) {// imgId로 이미지 경로 조회
+		log.info("getImgPathByImgId - imgId : " + imgId);
+		String result = imageMapper.selectImgPathByImgId(imgId);
+		return result;
+	}
 }
