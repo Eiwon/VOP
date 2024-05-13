@@ -19,17 +19,17 @@ public class SellerServiceImple implements SellerService{
 	SellerMapper sellerMapper;
 	
 	@Override
-	public List<SellerVO> getAllRequest(Pagination pagination) {
-		log.info("모든 승인 대기 중인 판매자 권한 요청 조회");
-		List<SellerVO> result = sellerMapper.selectAllRequest(pagination);
+	public List<SellerVO> getRequestByState(String requestState, Pagination pagination) {
+		log.info(requestState + "인 판매자 권한 요청 조회");
+		List<SellerVO> result = sellerMapper.selectAllRequest(requestState, pagination);
 		log.info("권한 요청 검색 결과 : " + result);
 		return result;
 	} // end getAllRequest
 
 	@Override
-	public int getRequestCount() {
+	public int getRequestByStateCnt(String requestState) {
 		log.info("승인 대기중인 요청 수 조회");
-		int res = sellerMapper.selectRequestCount();
+		int res = sellerMapper.selectRequestByStateCnt(requestState);
 		log.info("요청 수 검색 결과 : " + res);
 		return res;
 	} // end getRequestCount

@@ -17,4 +17,9 @@ public class PaymentVO {
 	private String deliveryAddress;
 	private String receiverName;
 	private String receiverPhone;
+	private String requirement;
+	private int membershipDiscount;
+	private int couponDiscount;
+	private int deliveryPrice;
+	private int chargePrice;
 }

@@ -18,16 +18,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </resultMap>
    
    <!-- 모든 판매자 권한 요청 조회 -->
-   <select id="selectAllRequest" resultMap="sellerResultMap">
+   <select id="selectRequestByState" resultMap="sellerResultMap">
    		SELECT MEMBER_ID, BUSINESS_NAME, REQUEST_TIME, REQUEST_CONTENT FROM (
    		SELECT SELLER.*, ROW_NUMBER() OVER(ORDER BY REQUEST_TIME) AS RN FROM SELLER
-   		WHERE REQUEST_STATE = '승인 대기중'
-   		) WHERE RN BETWEEN #{start} AND #{end}
+   		WHERE REQUEST_STATE = #{requestState}
+   		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
    </select>
    
    <!-- 모든 판매자 권한 요청 수 조회 -->
-   <select id="selectRequestCount" resultType="Integer">
-   		SELECT COUNT(MEMBER_ID) FROM SELLER WHERE REQUEST_STATE = '승인 대기중'
+   <select id="selectRequestByStateCnt" resultType="Integer">
+   		SELECT COUNT(MEMBER_ID) FROM SELLER WHERE REQUEST_STATE = #{requestState}
    </select>
    
    <!-- 자신의 권한 요청 조회 -->
@@ -56,13 +56,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		DELETE SELLER WHERE MEMBER_ID = #{memberId}
    </delete>
    
-   <!-- 등록된 모든 판매자 조회 -->
-  <!--  <select id="selectApprovedSeller" resultMap="sellerResultMap">
-   		SELECT * FROM (
-   			SELECT SELLER.MEMBER_ID, SELLER.BUSINESS_NAME, SELLER.REQUEST_TIME, 
-   			ROW_NUMBER() OVER (ORDER BY REQUEST_TIME DESC) RN FROM SELLER
-   			WHERE REQUEST_STATE = '승인'
-   		) WHERE RN BETWEEN #{start} AND #{end}
-   </select> -->
    
 </mapper>

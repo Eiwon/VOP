@@ -38,15 +38,6 @@ public class SellerMapperTest {
 		log.info(res + "행 추가 성공");
 	} // end insertTest
 	
-	public void selectTest() {
-		List<SellerVO> list = sellerMapper.selectAllRequest(new Pagination());
-		log.info(list);
-	} // end selectTest
-	
-	public void getCountTest() {
-		int res = sellerMapper.selectRequestCount();
-		log.info("결과 : " + res);
-	} // end getCountTest
 	
 	public void selectById() {
 		SellerVO vo = sellerMapper.selectRequestById("test1234");

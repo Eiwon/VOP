@@ -13,8 +13,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="deliveryAddress" column="DELIVERY_ADDRESS"/>
       <result property="receiverName" column="RECEIVER_NAME"/>
       <result property="receiverPhone" column="RECEIVER_PHONE"/>
+      <result property="requirement" column="REQUIREMENT"/>
+      <result property="membershipDiscount" column="MEMBERSHIP_DISCOUNT"/>
+      <result property="couponDiscount" column="COUPON_DISCOUNT"/>
+      <result property="deliveryPrice" column="DELIVERY_PRICE"/>
+      <result property="chargePrice" column="CHARGE_PRICE"/>
    </resultMap>
-
-
-
+   
+	<!-- paymentId 생성 -->
+	<select id="selectNextPaymentId" resultType="Integer">
+		SELECT PAYMENT_SEQ.NEXTVAL FROM DUAL
+	</select>
+	
+	<!-- 결제 결과 등록 -->
+	<insert id="insertPayment">
+		INSERT INTO PAYMENT VALUES (
+			#{paymentId}, #{memberId}, #{deliveryAddress}, #{receiverName}, #{receiverPhone},
+			#{requirement}, #{membershipDiscount}, #{couponDiscount}, #{deliveryPrice}, #{chargePrice}
+		)
+	</insert>
+	
+	<!-- memberId로 최근에 등록된 결제 내역 검색 -->
+	<select id="selectLastPayment" resultMap="PaymentResultMap">
+		SELECT * FROM PAYMENT
+		WHERE PAYMENT_ID = (
+		SELECT MAX(PAYMENT_ID) FROM PAYMENT WHERE MEMBER_ID = #{memberId}
+		)
+	</select>
+	
+	
 </mapper>

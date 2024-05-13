@@ -141,5 +141,17 @@ public class ProductServiceImple implements ProductService{
 		return productMapper.selectRecent5();
 	} // end getRecent5
 
+	@Override
+	public List<ProductVO> getStateIsWait(Pagination pagination) {
+		log.info("getStateIsWait()");
+		return productMapper.selectStateIsWait(pagination);
+	} // end getStateIsWait
+
+	@Override
+	public int getStateIsWaitCnt() {
+		log.info("getStateIsWaitCnt()");
+		return productMapper.selectStateIsWaitCnt();
+	} // end getStateIsWaitCnt
+
 	
 }

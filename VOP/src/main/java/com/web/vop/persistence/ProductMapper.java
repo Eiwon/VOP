@@ -74,4 +74,10 @@ public interface ProductMapper {
 	// 최근 등록된 상품 5개 조회
 	List<ProductVO> selectRecent5();
 	
+	// 상태가 승인 대기중인 상품 조회
+	List<ProductVO> selectStateIsWait(Pagination pagination);
+	
+	// 상태가 승인 대기중인 상품 수 조회
+	int selectStateIsWaitCnt();
+	
 }
