@@ -16,10 +16,6 @@ public interface ProductService {
 	// 댓글 총 갯수 조회 
 	int selectReviewByCount(int productId);
 	
-	
-//	// 이미지 검색 (상품 메인)
-//	ProductVO selectByMainImg(int productId);
-	
 	// 상품 리뷰(별) 총합 조회
 	int selectReviewByStar(int productId);
 	
@@ -62,4 +58,11 @@ public interface ProductService {
 		
 	// productId로 상품 삭제
 	int deleteProduct(int productId);
+	
+	// 카테고리를 지정하여, 리뷰 수가 가장 많은 5개의 상품 검색
+	List<ProductVO> getTopProductInCategory(String category);
+	
+	// 최근 등록된 상품 5개 조회
+	List<ProductVO> getRecent5();
+	
 }

@@ -1,5 +1,7 @@
 package com.web.vop.persistence;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +25,19 @@ public class ImageMapperTest {
 	
 	@Test
 	public void test() {
-
+//		testSelectByImgId();
+		testSelectByProductId();
 	}
 	
+	private void testSelectByImgId() {
+		ImageVO imageVO = imageMapper.selectByImgId(2);
+		log.info("testSelectByImgId() : " + imageVO);
+	}
+	
+	private void testSelectByProductId() {
+		List<ImageVO> list = imageMapper.selectByProductId(2);
+		log.info("testSelectByProductId() : " + list);
+	}
 	
 	
 }

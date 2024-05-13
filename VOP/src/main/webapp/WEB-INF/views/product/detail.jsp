@@ -2,6 +2,8 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!-- 세션 사용할수 있게하는 코드 -->
+<%@ page import="javax.servlet.http.HttpSession" %>
     
 <!DOCTYPE html>
 <html>
@@ -40,6 +42,15 @@
 
 </head>
 <body>
+
+	<%
+	// 세션 객체 가져오기
+	HttpSession sessionJSP = request.getSession();
+	// 세션에 저장된 memberId 가져오기
+	String memberId = (String) sessionJSP.getAttribute("memberId");
+	%>
+	
+
 	<!-- 상품 상세 페이지 제작 중 -->
 	<h2>상품 상세 페이지</h2>
 
@@ -47,12 +58,13 @@
       <p>카테고리 : ${productVO.category }</p>
      </div>
      
-       <!-- 우선 상품 이미지 불러오기 제작 완료-->
+       <!-- 썸네일 상품 이미지 -->
       <div>
-      	<p>이미지</p>
-      	 <p><a href="download?productId=${productVO.productId }">
-  		 ${productVO.imgRealName }.${productVO.imgExtension }</a></p>
-      </div>
+    	<p>썸네일 이미지</p>
+    	<img src="showImg?imgId=${productVO.imgId}" alt="${ImageVO.imgRealName}.${ImageVO.imgExtension}">
+	  </div>
+
+	
       
      <div>
       <p>상품 번호 : ${productVO.productId }</p>
@@ -86,7 +98,7 @@
         <p>상품 가격 : <span id="totalPrice">${productVO.productPrice}</span></p>
     </div>
      
-     <!-- 상품 증감 제작 중 -->
+     <!-- 상품 증감 -->
  
      <!-- 현재 선택된 상품 수량 -->
 	 <input type="number" id="quantity" value="1" min="1" max="99" maxlength="2">
@@ -96,53 +108,57 @@
      <div>
       <p>판매자 : ${productVO.memberId }</p>
      </div>
-     
-     
-     <!-- 장바구니 -->
+ 
+	<!-- 장바구니 버튼 -->
+    <!-- 세션 아이디가 있는 경우 -->
+     <c:if test="${empty memberId}">
+    	<button id="btnBasket" disabled="disabled">장바구니</button>
+    	<p>로그인 후 장바구니 가능합니다.</p>
+	 </c:if>
+	<!-- 세션 아이디가 없 경우 -->
+	<c:if test="${not empty memberId}">
+    	<button id="btnBasket">장바구니</button>
+	</c:if>
 	
-	<form id="addToCartForm" action="장바구니_처리_URL" method="post">
-    	<!-- 데이터 (화면에 표시되지 않음), 도착예정, 수량 작성 예정 -->
-    	<input type="hidden" name="productId" value="${productVO.productId}">
-    	<input type="hidden" name="quantityInput" id="quantityInput" value="1">
-	</form>
+	<a href="../basket/main">장바구니 바로가기</a>
 
-	<button type="button" onclick="addToCart()">장바구니</button>
-	
-
-    
-	<!-- 바로구매 버튼 -->
+	<!-- 바로구매 버튼 
     <form action="설정 예정" method="post">
-        <button type="submit" name="action" value="checkout">바로구매</button>
-        <!-- 보낼 데이터 작성 예정 -->
+        <input type="hidden" name="memberId" value="${memberId}">
+        <input type="hidden" name="productId" value="${productVO.productId}">
+        <input type="hidden" name="productNum" value="$('#quantity').val()">
     </form>
-</body>
+    -->
+    
+    <!-- 세션 아이디가 있는 경우 -->
+     <c:if test="${empty memberId}">
+    	<button type="submit" name="action" value="checkout" disabled="disabled">바로구매</button>
+    	<p>로그인 후 결제 가능합니다.</p>
+	 </c:if>
+	<!-- 세션 아이디가 없 경우 -->
+	<c:if test="${not empty memberId}">
+    	<button type="submit" name="action" value="checkout">바로구매</button>
+	</c:if>
+
+     <!-- 상품 설명 이미지 -->
+     <p>상품 이미지 설명</p>
+     
+     <div>
+    	<c:forEach items="${imageList}" var="image">
+        	<img src="showImg?imgId=${image.imgId}" alt="${image.imgRealName}.${image.imgExtension}">
+    	</c:forEach>
+	</div>
      
      <!-- 댓글 화면 코드 및 가운데 정렬 -->
      <p>댓글</p>
-     <div><!-- style="text-align: center;" 가운데 정렬-->
-      <div id="replies"></div>
-     </div>
      
-     <!-- 좋아요 표시 제작 예정 -->
+      <div id="replies"></div>
+     
+     
+     <!-- 좋아요 표시 제작 예정? -->
      
      <script type="text/javascript">
-     // 상품 수량 증감 코드
-     // 제작 중 아직 미완성
-     
-     // 별 표시
-     // 페이지 로드될 때 실행되는 함수(별표시 먼저해주는 역할)
-    // 상품 수량 증감 코드
-
-// 페이지 로드될 때 실행되는 함수(별표시 먼저해주는 역할)
-window.onload = function() {
-    displayStars(); // 별표시 초기화 함수 호출
-    // 사용자가 수량 입력 필드를 직접 조작할 때 이벤트 핸들러 추가
-    document.getElementById("quantity").addEventListener("input", function() {
-        // 입력된 수량을 가져와 상품 가격을 업데이트
-        updateTotalPrice(parseInt(this.value));
-    });
-}
-
+    
 // 별표시를 업데이트하는 함수
 function displayStars() {
     let value = parseInt("${reviewStar}"); // 리뷰 별점을 정수 형으로 변환
@@ -166,36 +182,50 @@ function updateTotalPrice(quantity) {
     
     // 수량 입력 필드 요소에도 값을 설정
     document.getElementById("quantity").value = quantity;
-    // 장바구니에도 수량을 업데이트
-    document.getElementById("quantityInput").value = quantity;
 }
-
-// 장바구니로 데이터 보내주는 역할
-function addToCart() {
-    let quantity = parseInt(document.getElementById("quantity").value);
-    if (quantity <= 0) {
-        alert("수량은 1 이상이어야 합니다.");
-        return;
-    }
-    document.getElementById("quantityInput").value = quantity; // 수량 업데이트
-    document.getElementById("addToCartForm").submit(); // 폼 제출
-}
-
 
 
 $(document).ready(function() {
-
+	displayStars(); // 별 표시 함수
     getAllReview(); // 댓글(리뷰) 전체 검색 메소드
 
+    // 장바구니
+    $('#btnBasket').click(function(){
+    	let productId = ${productVO.productId}; // 게시판 번호 데이터
+        let memberId = "${memberId}"; // 작성자 데이터
+        let productNum = $('#quantity').val(); // 수량
+        // javascript 객체 생성
+        let obj = {
+              'productId' : productId,
+              'memberId' : memberId,
+              'productNum' : productNum
+        }
+        console.log(obj);
+        
+        // $.ajax로 송수신
+        $.ajax({
+           type : 'POST', // 메서드 타입
+           url : '../basket/myBasketDate', // url
+           headers : { // 헤더 정보
+              'Content-Type' : 'application/json' // json content-type 설정
+           }, //'Content-Type' : 'application/json' 헤더 정보가 안들어가면 4050에러가 나온다.
+           data : JSON.stringify(obj), // JSON으로 변환
+           success : function(result) { // 전송 성공 시 서버에서 result 값 전송
+              console.log(result);
+              if(result == 1) {
+            	 console.log("장바구니 저장 성공");
+              }
+           }
+        });
+     }); // end btnAdd.click()
+     
 
     // 댓글(리뷰) 전체 검색 // 이미지 및 좋아요 아직 추가 안함
     function getAllReview() {
         let productId = ${productVO.productId};
-        //let productId = "${productVO.productId}";
 
         console.log(productId);
-
-        // url 변경 해야함
+        
         let url = '../review/all/' + productId;
         console.log(url);
         $.getJSON(
@@ -215,6 +245,22 @@ $(document).ready(function() {
 
                     // 전송된 replyDateCreated는 문자열 형태이므로 날짜 형태로 변환이 필요
                     let reviewDateCreated = new Date(this.reviewDateCreated);
+                    
+                    // 날짜와 시간을 문자열로 변환하여 가져오기
+                    let dateString = reviewDateCreated.toLocaleDateString();
+                    let timeString = reviewDateCreated.toLocaleTimeString();
+
+                    
+                    // 별점 숫자를 가져와서 별 모양으로 변환
+                    let starsHTML = ''; // 별 모양 HTML을 저장할 변수
+                    let reviewStar = parseInt(this.reviewStar); // 문자열을 정수로 변환
+                    for (let i = 1; i <= 5; i++) {
+                        if (i <= reviewStar) {
+                            starsHTML += '&#9733;'; // 별 모양 HTML 코드 추가
+                        } else {
+                            starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
+                        }
+                    }
 
                     // 댓글 이미지 및 좋아요 추가 해야함
                     list += '<div>' +
@@ -224,21 +270,17 @@ $(document).ready(function() {
                         this.memberId +
                         '&nbsp;&nbsp;' // 공백
                         +
-                        '<input type="hidden" id="reviewStar" value="' + this.review + '">' // 별점 숫자만 불려와서 별 형식으로 바꾸어야함
+                        '<span>' + starsHTML + '</span>' + // 별점 표시
                         +
                         this.reviewStar +
                         '&nbsp;&nbsp;' // 공백
                         +
-                        reviewDateCreated // 작성 시간
+                        dateString + ' ' + timeString + // 작성 시간 (날짜와 시간)
                         +
                         '&nbsp;&nbsp;' +
                         '<input type="text" id="reviewContent" value="' + this.reviewContent + '">' // 내용
                         +
-                        '&nbsp;&nbsp;' // 혹시 몰라 나중에 수정 현재는 아무 의미 없는 코드
-                        // + '<button class="btn_update" >수정</button>'
-                        // 혹시 몰라 나중에 수정 현재는 아무 의미 없는 코드
-                        // + '<button class="btn_delete" >삭제</button>'
-                        // 혹시 몰라 나중에 수정 현재는 아무 의미 없는 코드
+                        '&nbsp;&nbsp;' 
                         +
                         '</pre>' +
                         '</div>';
@@ -251,7 +293,6 @@ $(document).ready(function() {
 
 }); // end document
 
-    
      </script>
 
 </body>

@@ -27,11 +27,12 @@ public class BasketMapperTest {
 	public void test() {
 		//getMyBasket();
 		//getMyBasketCnt();
-		insertTest();
+		//insertTest();
+		testSelectFromBasket();
 	}
 	
 	private void getMyBasket() {
-		List<BasketDTO> list = basketMapper.selectByMemberId("test1234", new Pagination());
+		List<BasketDTO> list = basketMapper.selectByMemberId("test1234");
 		log.info(list);
 		
 	} // end getMyBasket
@@ -43,5 +44,14 @@ public class BasketMapperTest {
 	private void insertTest() {
 		int res = basketMapper.insertToBasket(new BasketVO("test1234", 15, 50));
 	} // end insertTest
+	
+	private void testSelectFromBasket() {
+		BasketVO basket = basketMapper.selectByMemberIdList(1, "test");
+		 if (basket == null) {
+			 log.info("null인 경우 :" + basket);
+		    } else {
+		     log.info("null이 아닌 경우 :" + basket);
+		    }
+	}
 	
 }

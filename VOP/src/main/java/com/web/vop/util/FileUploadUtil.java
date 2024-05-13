@@ -3,9 +3,13 @@ package com.web.vop.util;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -125,8 +129,8 @@ public class FileUploadUtil {
         
         try {
 			BufferedImage bi = ImageIO.read(file.getInputStream()); // 저장된 파일을 읽어온다
-			BufferedImage icon = new BufferedImage(95, 95, BufferedImage.TYPE_3BYTE_BGR); // icon 저장할 공간 생성
-			icon.createGraphics().drawImage(bi, 0, 0, 95, 95, null); // icon 그리기
+			BufferedImage icon = new BufferedImage(120, 120, BufferedImage.TYPE_3BYTE_BGR); // icon 저장할 공간 생성
+			icon.createGraphics().drawImage(bi, 0, 0, 120, 120, null); // icon 그리기
 			ImageIO.write(icon, "jpg", thumbnail); // 그린 icon 저장
 			log.info("thumbnail 저장 성공");
 		} catch (IOException e) {
@@ -150,7 +154,9 @@ public class FileUploadUtil {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" 
               + fullPath + "." + extension);
+        log.info("이미지 완료");
         return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
     } // end getFile
     
+
 }

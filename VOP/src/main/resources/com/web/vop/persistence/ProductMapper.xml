@@ -135,4 +135,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		DELETE PRODUCT WHERE PRODUCT_ID = #{productId}
 	</delete>
 	
+	<!-- 카테고리를 지정하여, 리뷰 수가 가장 많은 5개의 상품 검색 -->
+	<select id="selectTopProductInCategory" resultMap="productResultMap">
+		SELECT * FROM (
+		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY REVIEW_NUM DESC) RN FROM PRODUCT
+		WHERE CATEGORY = #{category}
+		) WHERE RN BETWEEN 1 AND 5
+	</select>
+	
+	<!-- 최근 등록된 상품 5개 조회 -->
+	<select id="selectRecent5" resultMap="productResultMap">
+		SELECT * FROM (
+		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN FROM PRODUCT
+		) WHERE RN BETWEEN 1 AND 5
+	</select>
+	
 </mapper>

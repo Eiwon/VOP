@@ -7,13 +7,15 @@ import org.apache.ibatis.annotations.Param;
 
 import com.web.vop.domain.BasketDTO;
 import com.web.vop.domain.BasketVO;
-import com.web.vop.util.Pagination;
 
 @Mapper
 public interface BasketMapper {
 	
 	//내 장바구니 물품 목록 조회
-	List<BasketDTO> selectByMemberId(@Param("memberId") String memberId, @Param("pagination") Pagination pagination);
+	List<BasketDTO> selectByMemberId(String memberId);
+	
+	// 내 장바구니 조회
+	BasketVO selectByMemberIdList(@Param("productId") int productId, @Param("memberId") String memberId);
 	
 	// 내 장바구기 물품 수 조회
 	int selectByMemberIdCnt(String memberId);

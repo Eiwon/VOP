@@ -20,9 +20,9 @@ public class BasketServiceImple implements BasketService {
 	BasketMapper basketMapper;
 	
 	@Override
-	public List<BasketDTO> getMyBasket(String memberId, Pagination pagination) {
+	public List<BasketDTO> getMyBasket(String memberId) {
 		log.info("getMyBasket()");
-		return basketMapper.selectByMemberId(memberId, pagination);
+		return basketMapper.selectByMemberId(memberId);
 	} // end getMyBasket
 
 	@Override
@@ -54,5 +54,14 @@ public class BasketServiceImple implements BasketService {
 		log.info("clear()");
 		return basketMapper.deleteAll(memberId);
 	} // end clear
+	
+	// 장바구니 데이터만 조회
+	@Override
+	public BasketVO getMyBasketList(int productId, String memberId) {
+		log.info("getMyBasketList()");
+		BasketVO basketVO = basketMapper.selectByMemberIdList(productId, memberId);
+		log.info("basketVO : " + basketVO);
+		return basketVO;
+	}
 
 }
