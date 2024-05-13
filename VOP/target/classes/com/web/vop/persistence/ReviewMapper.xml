@@ -50,6 +50,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       WHERE REVIEW_ID = #{reviewId}
    </delete>
    
+   <!-- 상품 총 댓글 수 증가 -->
+	<update id="reviewNumUP">
+		UPDATE PRODUCT SET REVIEW_NUM = REVIEW_NUM + 1;
+		WHERE PRODUCT_ID = #{productId}
+	</update>
+	
+	<!-- 상품 총 댓글 수 감소 -->
+	<update id="reviewNumDown">
+		UPDATE PRODUCT SET REVIEW_NUM = REVIEW_NUM - 1
+		WHERE PRODUCT_ID = #{productId}
+	</update>
+   
     
     
 </mapper>

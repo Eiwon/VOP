@@ -20,5 +20,9 @@ public interface ReviewService {
 	// ´ñ±Û(¸®ºä) »èÁ¦
 	int deleteReview(int reviewId, int productId);
 
-	
+	// ´ñ±Û ÃÑ °¹¼ö Áõ°¡
+	int reviewNumUP(int productId);
+		
+	// ´ñ±Û ÃÑ °¹¼ö °¨¼Ò
+	int reviewNumDown(int productId);
 } 

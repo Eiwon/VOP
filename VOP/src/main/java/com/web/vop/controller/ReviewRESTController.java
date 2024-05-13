@@ -7,6 +7,7 @@ import javax.swing.ListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.web.vop.domain.ReviewVO;
 import com.web.vop.service.ReviewService;
 
+import lombok.CustomLog;
 import lombok.extern.log4j.Log4j;
 
 @RestController
@@ -29,12 +31,22 @@ public class ReviewRESTController {
 	@Autowired
 	private ReviewService reviewService;
 	
-	@PostMapping // POST : 댓글(리뷰) 입력
+	@GetMapping("/register")
+	public void loginGET() {
+		log.info("register 페이지 이동 요청");
+	} // end loginGET
+	
+	@PostMapping("/register") // POST : 댓글(리뷰) 입력
 	public ResponseEntity<Integer> createReview(@RequestBody ReviewVO reviewVO){
 		log.info("createReview()");
 		
 		// reviewVO 입력 받아 댓글(리뷰) 등록
 		int reult = reviewService.createReview(reviewVO);
+		
+		// 상품 테이블에 댓글 총 갯수 증가
+		int res = reviewService.reviewNumUP(reviewVO.getProductId());
+		
+		log.info(res + "행 댓글 증가");
 		
 		// reult값을 전송하여 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 		return new ResponseEntity<Integer>(reult, HttpStatus.OK);
@@ -57,7 +69,8 @@ public class ReviewRESTController {
 		return new ResponseEntity<List<ReviewVO>>(list, HttpStatus.OK);
 	}
 	
-	 @PutMapping("/{reviewId}") // PUT : 댓글(리뷰) 수정 // replyId 가져온다.
+	
+	 @PutMapping("/{reviewId}") // PUT : 댓글(리뷰) 수정 // 나중에 데이터 받는 거에 따라 달라짐
 	   public ResponseEntity<Integer> updateReview(
 	         @PathVariable("reviewId") int reviewId,
 	         @RequestBody String reviewContent,
@@ -75,7 +88,7 @@ public class ReviewRESTController {
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	   }
 	 
-	 @DeleteMapping("/{reviewId}/{productId}") // DELETE : 댓글(리뷰) 삭제
+	 @DeleteMapping("/{reviewId}/{productId}") // DELETE : 댓글(리뷰) 삭제 // 나중에 데이터 받는 거에 따라 달라짐
 	   public ResponseEntity<Integer> deleteReview(
 	         @PathVariable("reviewId") int reviewId,
 	         @PathVariable("productId") int productId) {
@@ -86,15 +99,13 @@ public class ReviewRESTController {
 	      // productId에 해당하는 reviewId의 댓글(리뷰)
 	      int result = reviewService.deleteReview(reviewId, productId);
 	      
+	      // 상품 테이블에 댓글 총 갯수 감소
+		  int res = reviewService.reviewNumDown(productId);
+		  log.info(res + "행 댓글 감소");
+	      
 	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	   }
-	 
-	 @GetMapping("/review")
-	 public void registerGET() {
-		  log.info("registerGET()");
-		} // end productRegister()
-	
-	
+
 	
 }

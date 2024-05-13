@@ -18,9 +18,6 @@ public class ReviewServiceImple implements ReviewService{
 	@Autowired
 	private ReviewMapper reviewMapper;
 	
-	@Autowired
-	private ProductMapper productMapper;
-	
 	// ´ñ±Û(¸®ºä) µî·Ï
 	@Override
 	public int createReview(ReviewVO reviewVO) {
@@ -63,6 +60,22 @@ public class ReviewServiceImple implements ReviewService{
 		// int updateResult = boardMapper.updateReplyCount(boardId, -1);
 	    // log.info(updateResult + "Çà ´ñ±Û »èÁ¦");
 		return deleteRes;
+	}
+	
+	// ´ñ±Û ÃÑ °¹¼ö Áõ°¡
+	@Override
+	public int reviewNumUP(int productId) {
+		log.info("reviewNumUP()");
+		int res = reviewMapper.reviewNumUP(productId);
+		return res;
+	}
+		
+	// ´ñ±Û ÃÑ °¹¼ö °¨¼Ò
+	@Override
+	public int reviewNumDown(int productId) {
+		log.info("reviewNumDown()");
+		int res = reviewMapper.reviewNumDown(productId);
+		return res;
 	}
 
 }

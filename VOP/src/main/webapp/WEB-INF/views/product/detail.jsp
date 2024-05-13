@@ -50,6 +50,7 @@
 	String memberId = (String) sessionJSP.getAttribute("memberId");
 	%>
 	
+	<a href="../board/main">VOP</a>
 
 	<!-- 상품 상세 페이지 제작 중 -->
 	<h2>상품 상세 페이지</h2>
@@ -64,8 +65,6 @@
     	<img src="showImg?imgId=${productVO.imgId}" alt="${ImageVO.imgRealName}.${ImageVO.imgExtension}">
 	  </div>
 
-	
-      
      <div>
       <p>상품 번호 : ${productVO.productId }</p>
      </div>
@@ -91,7 +90,7 @@
  	 </div>
  	 
  	 <div>
-      <p>댓글 총 갯수 : ${reviewCount}</p>
+      <p>댓글 총 갯수 : ${productVO.reviewNum}</p>
      </div>
 
  	 <div>
@@ -103,7 +102,7 @@
      <!-- 현재 선택된 상품 수량 -->
 	 <input type="number" id="quantity" value="1" min="1" max="99" maxlength="2">
 
-     <!-- 상품 배송 정보 제작 해야함-->
+     <!-- 상품 배송 정보 제작 해야함 -->
      
      <div>
       <p>판매자 : ${productVO.memberId }</p>
@@ -122,13 +121,13 @@
 	
 	<a href="../basket/main">장바구니 바로가기</a>
 
-	<!-- 바로구매 버튼 
+	<!-- 바로구매 버튼 -->
     <form action="설정 예정" method="post">
         <input type="hidden" name="memberId" value="${memberId}">
         <input type="hidden" name="productId" value="${productVO.productId}">
-        <input type="hidden" name="productNum" value="$('#quantity').val()">
+        <input type="hidden" name="productNum" value="${quantity}">
     </form>
-    -->
+    
     
     <!-- 세션 아이디가 있는 경우 -->
      <c:if test="${empty memberId}">
@@ -192,7 +191,7 @@ $(document).ready(function() {
     // 장바구니
     $('#btnBasket').click(function(){
     	let productId = ${productVO.productId}; // 게시판 번호 데이터
-        let memberId = "${memberId}"; // 작성자 데이터
+        let memberId = "${memberId}"; // 작성자 데이터 // Strgin 형태여서 ""가 들어감
         let productNum = $('#quantity').val(); // 수량
         // javascript 객체 생성
         let obj = {
@@ -213,7 +212,7 @@ $(document).ready(function() {
            success : function(result) { // 전송 성공 시 서버에서 result 값 전송
               console.log(result);
               if(result == 1) {
-            	 console.log("장바구니 저장 성공");
+            	 alert('장바구니 저장 성공!');
               }
            }
         });

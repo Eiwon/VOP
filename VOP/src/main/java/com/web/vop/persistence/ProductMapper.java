@@ -18,12 +18,8 @@ public interface ProductMapper {
 	// 댓글 총 갯수 검색
 	int selectReviewCount(int productId);
 	
-//	// 상품 메인 이미지 검색 
-//	ProductVO selectByMainImg(int productId);
-	
 	// 상품 리뷰(별) 총합 검색
 	int selectReviewStar(int productId);
-	
 	
 	// 상품 등록
 	int insertProduct(ProductVO productVO);

@@ -59,9 +59,7 @@ public class BasketServiceImple implements BasketService {
 	@Override
 	public BasketVO getMyBasketList(int productId, String memberId) {
 		log.info("getMyBasketList()");
-		BasketVO basketVO = basketMapper.selectByMemberIdList(productId, memberId);
-		log.info("basketVO : " + basketVO);
-		return basketVO;
+		return basketMapper.selectByMemberIdList(productId, memberId);
 	}
 
 }
