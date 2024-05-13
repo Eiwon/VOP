@@ -41,7 +41,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM REVIEW
 		WHERE PRODUCT_ID = #{productId}
    </select>
- 
    
 	<!-- 상품 등록 -->
 	<insert id="insertProduct">
@@ -143,7 +142,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN FROM PRODUCT
 		) WHERE RN BETWEEN 1 AND 5
 	</select>
-	
-	
-	
+		
 </mapper>

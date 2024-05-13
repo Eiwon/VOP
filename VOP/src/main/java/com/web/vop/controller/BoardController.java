@@ -3,6 +3,7 @@ package com.web.vop.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.web.vop.domain.OrderVO;
 import com.web.vop.service.MemberService;
+import com.web.vop.service.OrderService;
 
 import lombok.extern.log4j.Log4j;
 
@@ -70,13 +73,33 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 		//}
 	}
 	
+	@Autowired
+	OrderService orderService;
 	
-	// 장바구니 호출하기
-	@GetMapping("/basket") 
-	public String basketGET() {
-		log.info("basket.jsp 이동");
-		return "redirect:../basket/main";
-	}//end basketGET()
+	@GetMapping("/orderlist") 
+	public String orderlistGET(Model model, HttpServletRequest request) { // 주문목록 페이지 불러오기
+		System.out.println("orderlist.jsp 이동");
+		log.info("orderlistGET()");
+		
+		String path = "";
+		String memberId = (String)request.getSession().getAttribute("memberId");
+		log.info("memberId : "+memberId);
+		
+		if(memberId == null) {
+			path = "redirect:../member/login";
+		}else {
+			// 주문 목록 가져오기 
+			List<OrderVO> orderList = orderService.getOrderListByMemberId(memberId);
+			
+			model.addAttribute("orderList", orderList);
+			
+			String memberAuth = memberService.getMemberAuth(memberId);
+			model.addAttribute("memberAuth", memberAuth);
+			
+			path = "/orderlist";
+		}
+		return path;
+	}//end orderlistGET()
 	
 	
 	// 고객센터 호출하기

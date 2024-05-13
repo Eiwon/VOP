@@ -21,4 +21,5 @@ public class OrderVO {
 	private int productPrice;
 	private int purchaseNum;
 	private Date expectDeliveryDate;
+	private int imgId;
 }

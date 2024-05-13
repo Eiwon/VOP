@@ -16,6 +16,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="expectDeliveryDate" column="EXPECT_DELIVERY_DATE"/>
    </resultMap>
 
+	<resultMap type="com.web.vop.domain.DeliveryVO" id="DeliveryResultMap">
+      <id property="deliveryId" column="DELIVERY_ID" /> 
+      <result property="memberId" column="MEMBER_ID"/>
+      <result property="receiverName" column="RECEIVER_NAME"/>
+      <result property="receiverAddress" column="RECEIVER_ADDRESS"/>
+      <result property="receiverPhone" column="RECEIVER_PHONE"/>
+      <result property="requirement" column="REQUIREMENT"/>
+   </resultMap>
+   
 	<!-- 배송지 상세 조회 (배송 예정일) -->
 	<select id="selectByExpectDeliveryDate" resultType="Date">
 		SELECT EXPECT_DELIVERY_DATE FROM ORDER WHERE PAYMENT_ID = #{paymentId}
@@ -27,19 +36,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	
-	
-	<resultMap type="com.web.vop.domain.DeliveryVO" id="DeliveryResultMap">
-      <id property="deliveryId" column="DELIVERY_ID" /> 
-      <result property="memberId" column="MEMBER_ID"/>
-      <result property="receiverName" column="RECEIVER_NAME"/>
-      <result property="receiverAddress" column="RECEIVER_ADDRESS"/>
-      <result property="receiverPhone" column="RECEIVER_PHONE"/>
-      <result property="requirement" column="REQUIREMENT"/>
-   </resultMap>
-	
-	
 	<!--  배송지 상세 조회 (받는 사람 , 받는 주소 , 배송 요청 사항 ) -->
-	<select id=" selectByMemberId" resultMap="DeliveryResultMap">
+	<select id="selectByMemberId" resultMap="DeliveryResultMap">
 		SELECT RECEIVER_NAME, RECEIVER_ADDRESS, REQUIREMENT FROM DELIVERY 
 		WHERE MEMBER_ID = #{memberId}
 	</select>
@@ -62,5 +60,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<delete id="deleteDelivery">
 		DELETE DELIVERY WHERE MEMBER_ID = #{memberId}
 	</delete>
+	
+	<!-- 주문 목록 조회 -->
+	<select id="selectOrderListByMemberId" resultMap="OrderResultMap">
+		SELECT * FROM ORDER WHERE MEMBER_ID = #{memberId}
+	</select>
 	
 </mapper>

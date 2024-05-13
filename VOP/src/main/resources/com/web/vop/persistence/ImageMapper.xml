@@ -39,4 +39,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		SELECT * FROM IMAGE WHERE PRODUCT_ID = #{productId}
    </select>
    
+   <!-- imgId로 이미지 경로 조회  -->
+   <select id="selectImgPathByImgId" resultType="String">
+   		SELECT IMG_PATH FROM IMAGE WHERE IMG_ID = #{imgId}
+   </select>
+   
 </mapper>

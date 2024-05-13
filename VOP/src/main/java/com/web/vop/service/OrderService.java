@@ -1,10 +1,12 @@
 package com.web.vop.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.web.vop.domain.DeliveryVO;
+import com.web.vop.domain.OrderVO;
 
 
 @Service
@@ -29,5 +31,6 @@ public interface OrderService {
 	// 배송지 삭제
 	int deleteDelivery(String memberId);
 	
-	
+	// 주문 목록 조회 
+	List<OrderVO> getOrderListByMemberId(String memberId);
 }
