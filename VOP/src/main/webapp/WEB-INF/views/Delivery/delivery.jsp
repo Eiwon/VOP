@@ -45,25 +45,25 @@
 	<script>
 	// 서버로부터 데이터를 받아오는 함수
 	function fetchData() {
-	  // 서버로부터 데이터를 받아오는 AJAX 요청
-	  // 여기에 AJAX 요청 코드 작성
-	  // 예를 들어, fetch() 또는 XMLHttpRequest 객체를 사용하여 서버로 요청을 보냄
-	  // 받아온 데이터를 아래의 코드를 사용하여 화면에 표시
-	  const mockData = {
-	    receiverName: "홍길동",
-	    receiverAddress: "서울시 강남구",
-	    requirement: "부재 시 문 앞에 놓아주세요."
-	  };
+	  $.ajax({
+		  url : '/Delivery/getDeliveryInfo',
+		  method : 'GET',
+		  success : function(data) {
+			  document.getElementById("receiverName").innerText = data.receiverName;
+			  document.getElementById("receiverAddress").innerText = data.receiverAddress;
+			  document.getElementById("requirement").innerText = data.requirement;
+		  },
+		  error: function(xhr, status, error) {
+			  console.error('AJAX 오류 :', status, error);
+		  }
+	  });
 	
-	  // 받아온 데이터를 화면에 표시
-	  
-	  document.getElementById("receiverName").innerText = mockData.receiverName;
-	  document.getElementById("receiverAddress").innerText = mockData.receiverAddress;
-	  document.getElementById("requirement").innerText = mockData.requirement;
 	}
 	
 	// 페이지 로드시 데이터를 받아오도록 설정
-	window.onload = fetchData;
+	$(document).ready(function() {
+		fetchData();
+	});
 	</script>
 
 </body>
