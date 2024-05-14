@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -238,4 +239,23 @@ public class ProductController {
 		return new ResponseEntity<List<ProductVO>>(list, HttpStatus.OK);
 	} // end getRecent5
 	
-}
+	
+	@GetMapping("/searchProduct")
+	@ResponseBody
+	public ResponseEntity<?> searchProduct(@RequestParam("category") String category, @RequestParam("word") String word) {
+        log.info("searchProduct()");
+        
+     // 검색 결과를 JSON 형태로 가공
+        Map<String, Object> result = new HashMap<>();
+        result.put("카테고리 : ", category);
+        result.put("입력한 단어 : ", word);
+        
+        // ResponseEntity에 JSON 데이터를 담아서 반환
+        return ResponseEntity.ok(result);
+    }// end searchProduct()
+
+
+} 
+	
+	
+

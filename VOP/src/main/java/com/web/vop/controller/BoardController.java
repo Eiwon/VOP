@@ -83,7 +83,7 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 		
 		String path = "";
 		String memberId = (String)request.getSession().getAttribute("memberId");
-		log.info("memberId : "+memberId);
+		log.info("memberId : " + memberId);
 		
 		if(memberId == null) {
 			path = "redirect:../member/login";
