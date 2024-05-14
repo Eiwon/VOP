@@ -22,4 +22,5 @@ public class OrderVO {
 	private int purchaseNum;
 	private Date expectDeliveryDate;
 	private int imgId;
+	private String memberId;
 }

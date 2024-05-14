@@ -15,6 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="purchaseNum" column="PURCHASE_NUM"/>
       <result property="expectDeliveryDate" column="EXPECT_DELIVERY_DATE"/>
       <result property="imgId" column="IMG_ID"/>
+      <result property="member_id" column="MEMBER_ID"/>
    </resultMap>
 
 	<resultMap type="com.web.vop.domain.DeliveryVO" id="DeliveryResultMap">
@@ -40,7 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="insertOrder">
 		INSERT INTO "ORDER" VALUES (
 			ORDER_SEQ.NEXTVAL, #{paymentId}, #{productId}, #{productName}, #{productPrice}, #{purchaseNum},
-			SYSDATE +2, #{imgId}
+			SYSDATE +2, #{imgId}, #{memberId}
 		)
 	</insert>
 	
