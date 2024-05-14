@@ -1,5 +1,6 @@
 package com.web.vop.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -74,6 +75,11 @@ public class OrderServiceImple implements OrderService {
 	public List<OrderVO> getOrderListByMemberId(String memberId) { 
 		log.info("getOrderListByMemberId() - memberId : " + memberId);
 		List<OrderVO> orderList = orderMapper.selectOrderListByMemberId(memberId);
+		
+		if(orderList == null) {
+			log.info("주문 내역이 없습니다.");
+			return new ArrayList<>(); // 주문 내역이 없으면 빈 리스트 반환
+		}
 		log.info("주문 조회 : " + orderList);
 		return orderList;
 	}
@@ -81,4 +87,4 @@ public class OrderServiceImple implements OrderService {
 	
 
 
-}
+}// end OrderServiceImple()

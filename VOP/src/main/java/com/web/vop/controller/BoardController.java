@@ -90,13 +90,14 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 		}else {
 			// 주문 목록 가져오기 
 			List<OrderVO> orderList = orderService.getOrderListByMemberId(memberId);
+			log.info("orderList : " + orderList);
 			
 			model.addAttribute("orderList", orderList);
 			
 			String memberAuth = memberService.getMemberAuth(memberId);
 			model.addAttribute("memberAuth", memberAuth);
 			
-			path = "/orderlist";
+			path = "/board/orderlist";
 		}
 		return path;
 	}//end orderlistGET()
