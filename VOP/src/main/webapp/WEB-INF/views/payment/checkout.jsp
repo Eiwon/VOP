@@ -91,9 +91,15 @@
 						<td>쿠폰 할인</td>
 						<td id="coupon_discount"></td>
 						<td><button id="btn_coupon" onclick="selectCoupon()">쿠폰 선택</button></td>
-						<td><ul id="coupon_list">
-							
-						</ul></td>
+					</tr>
+					<tr>
+						<td>
+							<table>
+								<tbody id="coupon_list">
+									
+								</tbody>
+							</table>
+						</td>
 					</tr>
 					<tr>
 						<td>배송비</td>
@@ -131,42 +137,35 @@
 				'chargePrice' : 0
 				};
 		let infoContainer = $('#info_container');
-		let tagMemberName = $('#member_name');
-		let tagMemberEmail = $('#member_email');
-		let tagMemberPhone = $('#member_phone');
 		let tagOrderList = $('#order_list');
-		let tagTotalPrice = $('#total_price');
-		let tagMembershipDiscount = $('#membership_discount');
-		let tagCouponDiscount = $('#coupon_discount');
-		let tagTotalPayment = $('#charge_price');
-		
-		let btnPayment = $('#btn_payment');
+		let couponVO;
 		
 		$(document).ready(function(){
 			
 			setInfo();
-			btnPayment.click(function(){
+			$('#btn_payment').click(function(){
 				payment();
 			}); // end btnPayment.click
 			
 		}); // end document.ready
 		
 		function setInfo(){
-			tagMemberName.text(memberVO.memberName);
-			tagMemberEmail.text(memberVO.memberEmail);
-			tagMemberPhone.text(memberVO.memberPhone);
+			$('#member_name').text(memberVO.memberName);
+			$('#member_email').text(memberVO.memberEmail);
+			$('#member_phone').text(memberVO.memberPhone);
 			tagOrderList.html(makeOrderInfo());
 			
 			
 			//if(memberVO.auth == 'membership') 일단 모든 유저에 멤버십 적용
 			paymentVO.membershipDiscount = 20;
 			
-			tagTotalPrice.text(calcTotalPrice());
+			setPaymentInfo();
 			
 			
 		} // end setInfo
 		
 		function makeOrderInfo(){
+			// 출력할 주문 정보 생성
 			let form = '';
 			for (x in orderList){
 				form += '<tr><td style="width: 200px;">' + orderList[x].productName + 
@@ -177,26 +176,54 @@
 			return form;
 		} // end makeOrderInfo
 		
+		function setPaymentInfo(){
+			// 결제 정보 출력
+			let totalPrice = calcTotalPrice();
+			let chargePrice = calcChargePrice();
+			
+			$('#total_price').text(totalPrice);
+			$('#membership_discount').text(paymentVO.membershipDiscount + '%');
+			$('#coupon_discount').text(paymentVO.couponDiscount + '%');
+			$('#delivery_price').text(paymentVO.deliveryPrice);
+			$('#charge_price').text(chargePrice);
+			
+		} // end setPaymentInfo
+		
 		function selectCoupon(){
 			let tagCouponList = $('#coupon_list');
+			couponVO = null;
+			paymentVO.couponDiscount = 0;
+			setPaymentInfo();
 			
+			$.ajax({ // 비동기로 쿠폰 정보 가져와야 함
+				method : 'GET',
+				url : 'coupon',
+				success : function(result){
+					console.log(result);
+					couponList = result;
+					
+					let form = '';
+					for(x in couponList){
+					form += '<tr class="couponRow"><td><input type="hidden" class="couponIdx" value="' + x + '"></td>' +
+						'<td style="width: 200px;">' + couponList[x].couponName + '</td>' +
+						'<td style="width: 200px;">' + couponList[x].discount + '% 할인</td>' +
+						'<td style="width: 200px;">' + couponList[x].couponNum + '</td>' + 
+						'<td><input type="radio" name="radioCoupon" onclick="applyCoupon(this)"></td></tr>';
+					}
 			
-			
-			
-			// 비동기로 쿠폰 정보 가져와야 함
-			
-			let form = '';
-			for(x in couponList){
-				form += '<div style="display: flex;">' + 
-				'<input type="hidden" value="' + couponList[x].couponId + '">' +
-				'<span>' + couponList[x].couponName + '</span>' +
-				'<span>' + couponList[x].couponPrice + '</span>' +
-				'<input type="radio" name="coupon"><div>';
-			}
-			
-			tagCouponList.html(form);
+					tagCouponList.html(form);
+				} // end success
+			}); // end ajax
 			
 		} // end selectCoupon
+		
+		function applyCoupon(input){
+			let couponIdx = $(input).parents('.couponRow').find('.couponIdx').val();
+			console.log('선택된 쿠폰 이름 : ' + couponList[couponIdx].couponName);
+			couponVO = couponList[x];
+			paymentVO.couponDiscount = couponList[couponIdx].discount;
+			setPaymentInfo();
+		} // end applyCoupon
 		
 		function calcTotalPrice() {
 			let totalPrice = 0;
@@ -277,7 +304,8 @@
 				},
 				data : JSON.stringify({
 					'paymentVO' : paymentVO,
-					'orderList' : orderList
+					'orderList' : orderList,
+					'couponVO' : couponVO
 				}),
 				success : function(result){
 					console.log('결제 내역 전송 결과 : ' + result);

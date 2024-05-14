@@ -5,6 +5,17 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<style type="text/css">
+.search_table {
+	border: 1px solid black;
+}
+
+td {
+	width: 200px;
+}
+
+
+</style>
 <title>관리자 페이지</title>
 </head>
 <body>
@@ -15,15 +26,15 @@
 	<div>
 		<div>
 			<h3>사업자 등록 요청</h3>
-			<table>
+			<table class="search_table">
 				<tbody id="seller_req_list">
 				</tbody>
 				<tfoot id="seller_req_list_page"></tfoot>
 			</table>
 		</div>
 		<div>
-			<h3>승인된 사업자 조회</h3>
-			<table>
+			<h3>등록된 사업자 조회</h3>
+			<table class="search_table">
 				<tbody id="seller_approved_list">
 				</tbody>
 				<tfoot id="seller_approved_list_page"></tfoot>
@@ -31,7 +42,7 @@
 		</div>
 		<div>
 			<h3>상품 등록 요청</h3>
-			<table>
+			<table class="search_table">
 				<tbody id="product_register_req_list">
 				</tbody>
 				<tfoot id="product_register_req_list_page"></tfoot>
@@ -39,33 +50,39 @@
 		</div>
 		<div>
 			<h3>상품 삭제 요청</h3>
+			<table class="search_table">
+				<tbody id="product_delete_req_list">
+				</tbody>
+				<tfoot id="product_delete_req_list_page"></tfoot>
+			</table>
 		</div>
 	</div>
-	
-	<div>
-		
-		<!-- 판매자 등록 심사 목록 -->
-		
-		<!-- 상품 등록 심사 목록 -->
-		
-		<!-- 상품 삭제 요청 -->
-	</div>
+	<!-- 
+	1. 권한 요청 승인/거부
+	2. 등록된 사업자 검색, 권한 삭제
+	3. 상품 등록 승인/거부
+	4. 상품 삭제
+	5. 페이징
+	 -->
 	
 	
 	<script type="text/javascript">
 		const memberId = '<%= request.getSession().getAttribute("memberId")%>';
-		let tagSellerReqList = $('seller_req_list');
-		let tagSellerApprovedList = $('seller_approved_list');
-		let tagProdutRegisterReqList = $('product_register_req_list');
-		let sellerReqList;
-		let sellerApprovedList;
-		let productRegisterReqList;
+		let tagSellerReqList = $('#seller_req_list');
+		let tagSellerApprovedList = $('#seller_approved_list');
+		let tagProdutRegisterReqList = $('#product_register_req_list');
+		let tagProductDeleteReqList = $('#product_delete_req_list');
+		let sellerReq = {};
+		let sellerApproved = {};
+		let productRegisterReq = {};
+		let productDeleteReq = {};
 		
 		$(document).ready(function(){
 			
 			showSellerRequest();
 			showSellerApproved();
 			showProductRegisterRequest();
+			showProductDeleteRequest();
 			
 		}); // end document.ready
 		
@@ -76,20 +93,22 @@
 			
 			$.ajax({
 				method : 'GET',
-				url : '../seller/wait/1',
+				url : '../seller/wait',
 				success : function(result){
 					console.log(result);
-					sellerReqList = JSON.parse(result);
+					sellerReq.list = result.list;
+					sellerReq.pageMaker = result.pageMaker;
 					
-					for(x in sellerReqList){
+					for(x in sellerReq.list){
 						form += '<tr onclick="toDetails(this)">' + 
 							'<td class="targetIndex" hidden="hidden">' + x + '</td>' +
-							'<td class="memberId">' + sellerReqList[x].memberId + '</td>' + 
-							'<td class="businessName">' + sellerReqList[x].businessName +'</td>' +
-							'<td class="requestTime">' + sellerReqList[x].requestTime +'</td>' +
-							'<td class="requestState">' + sellerReqList[x].requestState +'</td>' +
+							'<td class="memberId">' + sellerReq.list[x].memberId + '</td>' + 
+							'<td class="businessName">' + sellerReq.list[x].businessName +'</td>' +
+							'<td class="requestTime">' + toDate(sellerReq.list[x].requestTime) +'</td>' +
+							'<td class="requestState">' + sellerReq.list[x].requestState +'</td>' +
 							'</tr>';
 					}
+					console.log(form);
 					tagSellerReqList.html(form);
 				} // end success
 			}); // end ajax
@@ -101,17 +120,18 @@
 			
 			$.ajax({
 				method : 'GET',
-				url : '../seller/approved/1',
+				url : '../seller/approved',
 				success : function(result){
 					console.log(result);
-					sellerApprovedList = JSON.parse(result);
+					sellerApproved.list = result.list;
+					sellerApproved.pageMaker = result.pageMaker;
 					
-					for(x in sellerApprovedList){
+					for(x in sellerApproved.list){
 						form += '<tr">' + 
 							'<td class="targetIndex" hidden="hidden">' + x + '</td>' +
-							'<td class="memberId">' + sellerApprovedList[x].memberId + '</td>' + 
-							'<td class="businessName">' + sellerApprovedList[x].businessName +'</td>' +
-							'<td class="requestTime">' + sellerApprovedList[x].requestTime +'</td>' +
+							'<td class="memberId">' + sellerApproved.list[x].memberId + '</td>' + 
+							'<td class="businessName">' + sellerApproved.list[x].businessName +'</td>' +
+							'<td class="requestTime">' + toDate(sellerApproved.list[x].requestTime) +'</td>' +
 							'</tr>';
 					}
 					tagSellerApprovedList.html(form);
@@ -125,15 +145,52 @@
 			
 			$.ajax({
 				method : 'GET',
-				url : '../seller/productReq/1',
+				url : '../seller/productReq',
 				success : function(result){
 					console.log(result);
-					productRegisterReqList = JSON.parse(result);
+					productRegisterReq.list = result.list;
+					productRegisterReq.pageMaker = result.pageMaker;
 					
-					for(x in productRegisterReqList){
-						form += '';
+					for(x in productRegisterReq.list){
+						form += '<tr>' + 
+						'<td class="targetIndex" hidden="hidden">' + x + '</td>' +
+						'<td><img src="../product/showImg?imgId=' + productRegisterReq.list[x].imgId + '"></td>' +
+						'<td class="category">' + productRegisterReq.list[x].category +'</td>' +
+						'<td class="productName">' + productRegisterReq.list[x].productName + '</td>' + 
+						'<td class="productPrice">' + productRegisterReq.list[x].productPrice +'</td>' +
+						'<td class="memberId">' + productRegisterReq.list[x].memberId + '</td>' + 
+						'<td class="productDateCreated">' + toDate(productRegisterReq.list[x].productDateCreated) + '</td>' +
+						'</tr>';
 					}
-					tagProductRegisterReqList.html(form);
+					tagProdutRegisterReqList.html(form);
+				} // end success
+			}); // end ajax
+			
+		} // end showProductRegisterRequest
+		
+		function showProductDeleteRequest(){
+			let form = '';
+			
+			$.ajax({
+				method : 'GET',
+				url : '../seller/productDeleteReq',
+				success : function(result){
+					console.log(result);
+					productDeleteReq.list = result.list;
+					productDeleteReq.pageMaker = result.pageMaker;
+					
+					for(x in productDeleteReq.list){
+						form += '<tr>' + 
+						'<td class="targetIndex" hidden="hidden">' + x + '</td>' +
+						'<td><img src="../product/showImg?imgId=' + productDeleteReq.list[x].imgId + '"></td>' +
+						'<td class="category">' + productDeleteReq.list[x].category +'</td>' +
+						'<td class="productName">' + productDeleteReq.list[x].productName + '</td>' + 
+						'<td class="productPrice">' + productDeleteReq.list[x].productPrice +'</td>' +
+						'<td class="memberId">' + productDeleteReq.list[x].memberId + '</td>' + 
+						'<td class="productDateCreated">' + toDate(productDeleteReq.list[x].productDateCreated) + '</td>' +
+						'</tr>';
+					}
+					tagProdutDeleteReqList.html(form);
 				} // end success
 			}); // end ajax
 			
@@ -148,13 +205,12 @@
 			
 		} // end toDetails
 		
-		
-		/* private String memberId; // 회원 Id
-		private String businessName; // 사업체 이름
-		private Date requestTime; // 요청 시간
-		private String requestContent; // 요청 내용
-		private String requestState; // 요청 승인 대기중, 거절 여부
-		private String refuseMsg; // 요청 거부 사유 */
+		function toDate(timestamp){
+			let date = new Date(timestamp);
+			let formatted = (date.getYear() + 1900) + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + 
+					date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+			return formatted;
+		} // end toDate
 		
 	</script>
 	

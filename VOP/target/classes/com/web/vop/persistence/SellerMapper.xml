@@ -17,9 +17,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    	   	
    </resultMap>
    
-   <!-- 모든 판매자 권한 요청 조회 -->
+   <!-- 판매자 권한 요청 조회 -->
    <select id="selectRequestByState" resultMap="sellerResultMap">
-   		SELECT MEMBER_ID, BUSINESS_NAME, REQUEST_TIME, REQUEST_CONTENT FROM (
+   		SELECT MEMBER_ID, BUSINESS_NAME, REQUEST_TIME, REQUEST_CONTENT, REQUEST_STATE FROM (
    		SELECT SELLER.*, ROW_NUMBER() OVER(ORDER BY REQUEST_TIME) AS RN FROM SELLER
    		WHERE REQUEST_STATE = #{requestState}
    		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}

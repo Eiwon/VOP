@@ -127,8 +127,16 @@
     <form id="checkoutForm" action="../payment/checkout" method="POST"><!-- 에러 발생 중 데이터는 전달 잘됨 아마도 배열 형태로 보내지 않아서 인것 같다. -->
         <input type="hidden" name="memberId" value="${memberId}">
         <input type="hidden" name="productIds" value="${productVO.productId}">
+<<<<<<< HEAD
         <input type="hidden" name="productNums" value="1">
         <!-- 세션 아이디가 있는 경우 -->
+=======
+        <input type="hidden" name="productNums" value="${quantity}">
+    </form>
+    
+    
+    <!-- 세션 아이디가 있는 경우 -->
+>>>>>>> 76ca8d2302ccd09880a9148f6ed2a1b921c7dddc
      <c:if test="${empty memberId}">
     	<button type="submit" disabled="disabled">바로구매</button>
     	<p>로그인 후 결제 가능합니다.</p>

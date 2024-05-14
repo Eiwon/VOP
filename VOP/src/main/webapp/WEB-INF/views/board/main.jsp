@@ -210,12 +210,15 @@
 </head>
 <body>
 
+
+
 <div class="container2">
     <div class="user-links2" id="box_login">
         <a href="../member/login">로그인</a>
         <a href="../member/register">회원가입</a>
     </div>
     
+	
 	<div class="category">
         <span>카테고리</span>
         <div class="subcategory">
@@ -236,7 +239,11 @@
             <a href="#">헬스/건강식품</a>
         </div>
 	</div>
-
+		
+	
+	
+	
+	
 	<!-- VOP 링크 추가 -->
     <a href="main" class="vop-link">VOP</a>
     
@@ -270,11 +277,14 @@
             <option value="문구/오피스">문구/오피스</option>
             <option value="반려동물용품">반려동물용품</option>
             <option value="헬스/건강식품">헬스/건강식품</option>
-          </select>  
+          </select> 
+          
+           
         <!-- 검색 입력창 -->
-        <input type="text" class="search-input" placeholder="검색어를 입력하세요">
+        <input type="text" id="searchInput" class="search-input" placeholder="검색어를 입력하세요">
         <!-- 검색 버튼 -->
-        <button class="search-button">검색</button>
+        <button id="searchButton" class="search-button">검색</button>
+        
     </div>
     
 	<!-- 마이페이지(mypage), 장바구니(basket) 링크 -->
@@ -299,6 +309,40 @@
 </div>
 
 	<script type="text/javascript">
+	
+	$(document).ready(function() {
+	    $('#searchButton').click(function() {
+	        // 입력된 검색어와 선택된 카테고리 가져오기
+	        var searchWord = $('#searchInput').val();
+	        var selectedCategory = $('#boxCategory').val();
+
+	        // AJAX 요청 보내기
+	        $.ajax({
+	            method: 'GET',
+	            url: '../product/searchProduct',
+	            data: {
+	                category: selectedCategory, // 선택한 카테고리 
+	                word: searchWord // 입력한 검색어
+	            },
+	            success: function(response) {
+	                //  AJAX 요청이 성공했을 때 실행
+	                // JSON 형태의 응답 데이터를 파싱하여 사용
+        			var category = response.category;
+        			var word = response.word;
+        
+        			// 파싱된 데이터를 활용하여 화면에 표시하거나 다른 동작 수행
+        	        console.log("카테고리: " + category);
+        	        console.log("검색어: " + word);
+	            },
+	            error: function(xhr, status, error) {
+	                // 에러 처리 코드 작성
+	                console.error(error);
+	            }
+	        });
+	    });
+	});
+	
+	
 		let boxCategory = $('#boxCategory');
 		let inputSearch = $('.search-input');
 		let btnSearch = $('.search-button');

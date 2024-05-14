@@ -21,7 +21,7 @@ public class SellerServiceImple implements SellerService{
 	@Override
 	public List<SellerVO> getRequestByState(String requestState, Pagination pagination) {
 		log.info(requestState + "인 판매자 권한 요청 조회");
-		List<SellerVO> result = sellerMapper.selectAllRequest(requestState, pagination);
+		List<SellerVO> result = sellerMapper.selectRequestByState(requestState, pagination);
 		log.info("권한 요청 검색 결과 : " + result);
 		return result;
 	} // end getAllRequest

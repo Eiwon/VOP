@@ -17,6 +17,8 @@ public interface CouponMapper {
 	public int deleteCouponSelected(CouponVO couponVO);
 	
 	// 지정 수만큼 쿠폰 수 증감
-	public int updateCouponSelected(@Param("couponVO") CouponVO couponVO, @Param("increase") int increase);
-	   
+	public int updateCouponNum(CouponVO couponVO);
+	
+	// 지정 쿠폰 갯수 조회
+	public int selectCouponNum(CouponVO couponVO);
 }
