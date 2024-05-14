@@ -142,15 +142,15 @@ public class ProductServiceImple implements ProductService{
 	} // end getRecent5
 
 	@Override
-	public List<ProductVO> getStateIsWait(Pagination pagination) {
+	public List<ProductVO> getStateIs(String productState, Pagination pagination) {
 		log.info("getStateIsWait()");
-		return productMapper.selectStateIsWait(pagination);
+		return productMapper.selectStateIsWait(productState, pagination);
 	} // end getStateIsWait
 
 	@Override
-	public int getStateIsWaitCnt() {
+	public int getStateIsCnt(String productState) {
 		log.info("getStateIsWaitCnt()");
-		return productMapper.selectStateIsWaitCnt();
+		return productMapper.selectStateIsWaitCnt(productState);
 	} // end getStateIsWaitCnt
 
 	

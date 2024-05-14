@@ -124,8 +124,8 @@
 	<!-- 바로구매 버튼 -->
     <form action="설정 예정" method="post">
         <input type="hidden" name="memberId" value="${memberId}">
-        <input type="hidden" name="productId" value="${productVO.productId}">
-        <input type="hidden" name="productNum" value="${quantity}">
+        <input type="hidden" name="productIds" value="${productVO.productId}">
+        <input type="hidden" name="productNums" value="${quantity}">
     </form>
     
     

@@ -11,7 +11,7 @@ import com.web.vop.util.Pagination;
 @Mapper
 public interface SellerMapper {
 
-	public List<SellerVO> selectAllRequest(@Param("requestState") String requestState, @Param("pagination") Pagination pagination);
+	public List<SellerVO> selectRequestByState(@Param("requestState") String requestState, @Param("pagination") Pagination pagination);
 	
 	public int selectRequestByStateCnt(String requestState);
 	

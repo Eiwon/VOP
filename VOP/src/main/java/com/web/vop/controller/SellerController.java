@@ -74,26 +74,7 @@ public class SellerController {
 		
 	} // end updateProductGET
 	
-	
-	// 판매자 권한 요청 조회
-	@GetMapping("/wait/{page}")
-	@ResponseBody
-	public ResponseEntity<Map<String, Object>> getWaitRequest(@PathVariable("page") int page){
-		log.info("모든 권한요청 조회");
-		PageMaker pageMaker = new PageMaker();
-		pageMaker.getPagination().setPageNum(page);
-		List<SellerVO> list = sellerService.getRequestByState("승인 대기중", pageMaker.getPagination());
-		log.info(list);
-		int requestCount = sellerService.getRequestByStateCnt("승인 대기중");
-		pageMaker.setPageCount(requestCount);
-			
-		Map<String, Object> resultMap = new HashMap<>(); // 반환할 타입이 2개이므로 pageMaker와 list를 담을 맵 생성
-		resultMap.put("pageMaker", pageMaker);
-		resultMap.put("list", list);
-			
-		return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
-	} // end getWaitRequest
-	
+
 	// 자신의 권한 요청 조회
 	@GetMapping("/my/{memberId}")
 	@ResponseBody
@@ -167,14 +148,32 @@ public class SellerController {
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end deleteRequestProduct
 	
-	
-	// 등록된 판매자 조회
-	@GetMapping("/approved/{page}")
+	// 판매자 권한 요청 조회
+	@GetMapping("/wait")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> getApprovedRequest(@PathVariable("page") int page) {
+	public ResponseEntity<Map<String, Object>> getWaitRequest(Pagination pagination) {
+		log.info("모든 승인 대기중인 권한요청 조회");
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setPagination(pagination);
+		List<SellerVO> list = sellerService.getRequestByState("승인 대기중", pageMaker.getPagination());
+		log.info(list);
+		int requestCount = sellerService.getRequestByStateCnt("승인 대기중");
+		pageMaker.setPageCount(requestCount);
+
+		Map<String, Object> resultMap = new HashMap<>(); // 반환할 타입이 2개이므로 pageMaker와 list를 담을 맵 생성
+		resultMap.put("pageMaker", pageMaker);
+		resultMap.put("list", list);
+
+		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+	} // end getWaitRequest
+
+	// 등록된 판매자 조회
+	@GetMapping("/approved")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> getApprovedRequest(Pagination pagination) {
 		log.info("모든 승인된 요청 조회");
 		PageMaker pageMaker = new PageMaker();
-		pageMaker.getPagination().setPageNum(page);
+		pageMaker.setPagination(pagination);
 		List<SellerVO> list = sellerService.getRequestByState("승인", pageMaker.getPagination());
 		log.info(list);
 		int requestCount = sellerService.getRequestByStateCnt("승인");
@@ -187,15 +186,33 @@ public class SellerController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	} // end getAllRequest
 	
-	@GetMapping("/productReq/{page}")
+	@GetMapping("/productReq")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> getWaitProduct(@PathVariable("page") int page){
+	public ResponseEntity<Map<String, Object>> getWaitProduct(Pagination pagination){
 		log.info("모든 상품 등록 요청 조회");
 		PageMaker pageMaker = new PageMaker();
-		pageMaker.getPagination().setPageNum(page);
-		List<ProductVO> list = productService.getStateIsWait(pageMaker.getPagination());
+		pageMaker.setPagination(pagination);
+		List<ProductVO> list = productService.getStateIs("승인 대기중", pageMaker.getPagination());
 		log.info(list);
-		int requestCount = productService.getStateIsWaitCnt();
+		int requestCount = productService.getStateIsCnt("승인 대기중");
+		pageMaker.setPageCount(requestCount);
+
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("pageMaker", pageMaker);
+		resultMap.put("list", list);
+
+		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+	} // end getWaitProduct
+	
+	@GetMapping("/productDeleteReq")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> getDeleteProductReq(Pagination pagination){
+		log.info("상품 삭제 요청 조회");
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setPagination(pagination);
+		List<ProductVO> list = productService.getStateIs("삭제 대기중", pageMaker.getPagination());
+		log.info(list);
+		int requestCount = productService.getStateIsCnt("삭제 대기중");
 		pageMaker.setPageCount(requestCount);
 
 		Map<String, Object> resultMap = new HashMap<>();

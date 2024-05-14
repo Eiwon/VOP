@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<title>Insert title here</title>
+</head>
+<body>
+<script type="text/javascript">
+	PortOne.requestIdentityVerification({
+	  // 고객사 storeId로 변경해주세요.
+	  storeId: "store-bc857723-7e7d-4a03-8098-f75635cc4d3d",
+	  identityVerificationId: 'identity-verification-${crypto.randomUUID()}',
+	  // 콘솔에서 추가한 채널의 키 값으로 변경해주세요.
+	  channelKey: "channel-key-f92a755f-98da-4aed-9972-0e78043db0e0",
+	});
+</script>
+</body>
+</html>

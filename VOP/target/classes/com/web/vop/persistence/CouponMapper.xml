@@ -24,11 +24,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		DELETE COUPON WHERE COUPON_NAME = #{couponName} AND MEMBER_ID = #{memberId}
    </delete>
    
-   <!-- 지정 수만큼 쿠폰 수 증감 -->
-   <update id="updateCouponSelected">
-   		UPDATE COUPON SET COUPON_NUM = (
-		SELECT COUPON_NUM FROM COUPON WHERE COUPON_NAME = #{couponVO.couponName} AND MEMBER_ID = #{couponVO.memberId}
-		) + #{increase} WHERE COUPON_NAME = #{couponVO.couponName} AND MEMBER_ID = #{couponVO.memberId}
+   <!-- 지정 수로 쿠폰 수 변경 -->
+   <update id="updateCouponNum">
+   		UPDATE COUPON SET COUPON_NUM = #{couponNum} 
+   		WHERE COUPON_NAME = #{couponName} AND MEMBER_ID = #{memberId}
    </update>
+   
+   <!-- 지정 쿠폰 갯수 조회 -->
+   <select id="selectCouponNum" resultType="Integer">
+   		SELECT COUPON_NUM FROM COUPON WHERE COUPON_NAME = #{couponName} AND MEMBER_ID = #{memberId}
+   </select>
+   
    
 </mapper>

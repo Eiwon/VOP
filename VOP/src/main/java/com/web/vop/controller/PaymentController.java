@@ -22,11 +22,14 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.vop.domain.CouponVO;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.OrderVO;
 import com.web.vop.domain.PaymentVO;
 import com.web.vop.domain.PaymentWrapper;
 import com.web.vop.domain.ProductVO;
+import com.web.vop.service.BasketService;
+import com.web.vop.service.CouponService;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.OrderService;
 import com.web.vop.service.PaymentService;
@@ -46,6 +49,12 @@ public class PaymentController {
 	private ProductService productService;
 	
 	@Autowired
+	private BasketService basketService;
+	
+	@Autowired
+	private CouponService couponService;
+	
+	@Autowired
 	private OrderService orderService;
 	
 	@Autowired
@@ -54,7 +63,8 @@ public class PaymentController {
 	@PostMapping("/checkout")
 	public void makeOrders(Model model, int[] productIds, int[] productNums, String memberId) {
 		log.info("makeOrders() - memberId : " + memberId);
-		log.info("productId : " + productIds[0]);
+		log.info("productIds length : " + productIds.length);
+		log.info("first productId : " + productIds[0] + ", first productNums : " + productNums[0]);
 		
 		List<OrderVO> orderList = new ArrayList<>();
 		
@@ -69,7 +79,7 @@ public class PaymentController {
 			ProductVO productVO = productService.getProductById(productIds[i]);
 			orderList.add(new OrderVO(
 					0, 0, productVO.getProductId(), productVO.getProductName(), productVO.getProductPrice(), 
-					productNums[i], null, productVO.getImgId())
+					productNums[i], null, productVO.getImgId(), memberId)
 					);
 		}
 		
@@ -104,19 +114,33 @@ public class PaymentController {
 		
 		PaymentVO paymentVO = paymentResult.getPaymentVO();
 		List<OrderVO> orderList = paymentResult.getOrderList();
+		CouponVO couponVO = paymentResult.getCouponVO();
 		
 		log.info(paymentVO);
 		log.info(orderList);
+		log.info(couponVO);
 		
 		int res = paymentService.registerPayment(paymentVO); // 결제 결과 등록
 		int paymentId = paymentVO.getPaymentId();
 		if(res == 1) { // 각 주문 목록 등록
 			int totalRes = 0;
 			for(OrderVO order : orderList) {
-				order.setPaymentId(paymentId);
+				order.setPaymentId(paymentId); // 결제 id 추가
 				totalRes += orderService.registerOrder(order);
+				// 결제된 상품을 장바구니에서 제거
+				basketService.removeFromBasket(order.getProductId(), paymentVO.getMemberId());
 			}
 			log.info("총 " + totalRes + "행 추가 성공");
+		}
+		// 쿠폰 사용 처리
+		if(couponVO != null) {
+			int couponNum = couponVO.getCouponNum() -1;
+			if(couponNum > 0) { // 쿠폰 사용 후, 쿠폰이 남아있다면 갯수 변경
+				couponVO.setCouponNum(couponNum);
+				couponService.setCouponNum(couponVO);
+			}else { // 더 이상 남은 쿠폰이 없으면 삭제
+				couponService.removeCoupon(couponVO);
+			}
 		}
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
@@ -137,5 +161,17 @@ public class PaymentController {
 		
 		return new ResponseEntity<PaymentWrapper>(payment, HttpStatus.OK);
 	} // end sendPaymentResult
+	
+	@GetMapping("/coupon")
+	@ResponseBody
+	public ResponseEntity<List<CouponVO>> getCouponList(HttpServletRequest request){
+		String memberId = (String)request.getSession().getAttribute("memberId");
+		log.info("쿠폰 리스트 요청 : " + memberId);
+		
+		List<CouponVO> result = couponService.getByMemberId(memberId);
+		log.info(result.size() + "개 쿠폰 검색");
+		return new ResponseEntity<List<CouponVO>>(result, HttpStatus.OK);
+	} // end getCouponList
+	
 	
 }

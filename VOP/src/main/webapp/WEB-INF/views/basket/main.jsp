@@ -132,6 +132,7 @@
 							'purchaseNum' : basketMap[productId].productNum
 					}
 					orderList.push(order);
+					// 전달할 값을 form에 hidden으로 추가 
 					form += '<input type="hidden" name="productIds" value="' + productId + '">';
 					form += '<input type="hidden" name="productNums" value="' + basketMap[productId].productNum + '">';
 				}
