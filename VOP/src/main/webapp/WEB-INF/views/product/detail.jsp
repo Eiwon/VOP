@@ -107,7 +107,8 @@
      <div>
       <p>판매자 : ${productVO.memberId }</p>
      </div>
- 
+ 	
+ 	
 	<!-- 장바구니 버튼 -->
     <!-- 세션 아이디가 있는 경우 -->
      <c:if test="${empty memberId}">
@@ -119,25 +120,25 @@
     	<button id="btnBasket">장바구니</button>
 	</c:if>
 	
-	<a href="../basket/main">장바구니 바로가기</a>
-
-	<!-- 바로구매 버튼 -->
-    <form action="설정 예정" method="post">
+	<!-- 장바구니 링크 -->
+ 	<a href="../basket/main">장바구니 바로가기</a>
+ 	
+	<!-- 바로구매 버튼 --><!-- 로그인된 세션 아이디 전달 -->
+    <form id="checkoutForm" action="../payment/checkout" method="POST"><!-- 에러 발생 중 데이터는 전달 잘됨 아마도 배열 형태로 보내지 않아서 인것 같다. -->
         <input type="hidden" name="memberId" value="${memberId}">
-        <input type="hidden" name="productId" value="${productVO.productId}">
-        <input type="hidden" name="productNum" value="${quantity}">
-    </form>
-    
-    
-    <!-- 세션 아이디가 있는 경우 -->
+        <input type="hidden" name="productIds" value="${productVO.productId}">
+        <input type="hidden" name="productNums" value="1">
+        <!-- 세션 아이디가 있는 경우 -->
      <c:if test="${empty memberId}">
-    	<button type="submit" name="action" value="checkout" disabled="disabled">바로구매</button>
+    	<button type="submit" disabled="disabled">바로구매</button>
     	<p>로그인 후 결제 가능합니다.</p>
 	 </c:if>
 	<!-- 세션 아이디가 없 경우 -->
 	<c:if test="${not empty memberId}">
-    	<button type="submit" name="action" value="checkout">바로구매</button>
+    	<button type="submit" >바로구매</button> 
 	</c:if>
+    </form>
+
 
      <!-- 상품 설명 이미지 -->
      <p>상품 이미지 설명</p>
@@ -157,7 +158,41 @@
      <!-- 좋아요 표시 제작 예정? -->
      
      <script type="text/javascript">
-    
+     
+     // 바로 구매 폼 제출시 나오는 로그
+     /*
+     document.getElementById("checkoutForm").addEventListener("submit", function(event) {
+    	 alert('로그1');
+    	 let productId = ${productVO.productId}; // 게시판 번호 데이터
+         let memberId = "${memberId}"; // 작성자 데이터 // Strgin 형태여서 ""가 들어감
+         let productNum = $('#quantity').val(); // 수량
+         alert('로그1' + productId);
+         alert('로그1' + memberId);
+         alert('로그1' + productNum);
+     });
+     */
+     
+  	 // 수량 입력 필드 가져오기
+     let quantityInput = document.getElementById("quantity");
+     // 상품 가격을 표시하는 span 요소 가져오기
+     let totalPriceSpan = document.getElementById("totalPrice");
+     // 상품 가격 가져오기
+     let productPrice = parseInt('${productVO.productPrice}');
+
+     // 수량 입력 필드의 변경 이벤트 감지
+     quantityInput.addEventListener("input", function() {
+         // 현재 입력된 수량 가져오기
+         let quantity = parseInt(this.value);
+         // 총 상품 가격 계산
+         let totalPrice = quantity * productPrice;
+         // 총 상품 가격을 span 요소에 업데이트
+         // textContent : 텍스트의 내용 변경
+         totalPriceSpan.textContent = totalPrice;
+         // 현재 수량을 productNums에 적용하는 코드
+         document.querySelector('input[name="productNums"]').value = quantity;
+     });
+     
+     
 // 별표시를 업데이트하는 함수
 function displayStars() {
     let value = parseInt("${reviewStar}"); // 리뷰 별점을 정수 형으로 변환
@@ -170,19 +205,6 @@ function displayStars() {
         }
     }
 }
-
-// 상품 가격 업데이트 함수
-function updateTotalPrice(quantity) {
-    // 상품 가격과 수량을 가져와 곱한 값을 계산
-    let productPrice = parseInt("${productVO.productPrice}");
-    let totalPrice = productPrice * quantity;
-    // 계산된 결과를 화면에 출력
-    document.getElementById("totalPrice").innerText = totalPrice;
-    
-    // 수량 입력 필드 요소에도 값을 설정
-    document.getElementById("quantity").value = quantity;
-}
-
 
 $(document).ready(function() {
 	displayStars(); // 별 표시 함수
