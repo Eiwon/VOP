@@ -158,8 +158,10 @@ public class SellerController {
 		List<SellerVO> list = sellerService.getRequestByState("승인 대기중", pageMaker.getPagination());
 		log.info(list);
 		int requestCount = sellerService.getRequestByStateCnt("승인 대기중");
-		pageMaker.setPageCount(requestCount);
-
+		pageMaker.setTotalCount(requestCount);
+		pageMaker.update();
+		
+		log.info("pageMaker : " + pageMaker.getEndNum());
 		Map<String, Object> resultMap = new HashMap<>(); // 반환할 타입이 2개이므로 pageMaker와 list를 담을 맵 생성
 		resultMap.put("pageMaker", pageMaker);
 		resultMap.put("list", list);
@@ -177,8 +179,9 @@ public class SellerController {
 		List<SellerVO> list = sellerService.getRequestByState("승인", pageMaker.getPagination());
 		log.info(list);
 		int requestCount = sellerService.getRequestByStateCnt("승인");
-		pageMaker.setPageCount(requestCount);
-
+		pageMaker.setTotalCount(requestCount);
+		pageMaker.update();
+		
 		Map<String, Object> resultMap = new HashMap<>();
 		resultMap.put("pageMaker", pageMaker);
 		resultMap.put("list", list);
@@ -195,8 +198,9 @@ public class SellerController {
 		List<ProductVO> list = productService.getStateIs("승인 대기중", pageMaker.getPagination());
 		log.info(list);
 		int requestCount = productService.getStateIsCnt("승인 대기중");
-		pageMaker.setPageCount(requestCount);
-
+		pageMaker.setTotalCount(requestCount);
+		pageMaker.update();
+		
 		Map<String, Object> resultMap = new HashMap<>();
 		resultMap.put("pageMaker", pageMaker);
 		resultMap.put("list", list);
@@ -213,8 +217,9 @@ public class SellerController {
 		List<ProductVO> list = productService.getStateIs("삭제 대기중", pageMaker.getPagination());
 		log.info(list);
 		int requestCount = productService.getStateIsCnt("삭제 대기중");
-		pageMaker.setPageCount(requestCount);
-
+		pageMaker.setTotalCount(requestCount);
+		pageMaker.update();
+		
 		Map<String, Object> resultMap = new HashMap<>();
 		resultMap.put("pageMaker", pageMaker);
 		resultMap.put("list", list);
