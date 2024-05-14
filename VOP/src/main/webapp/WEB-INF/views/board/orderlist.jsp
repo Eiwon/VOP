@@ -1,13 +1,13 @@
-<%@page import="org.springframework.beans.factory.annotation.Autowired"%>
-<%@page import="com.web.vop.domain.OrderVO"%>
-<%@page import="java.util.List"%>
-<%@page import="com.web.vop.service.OrderService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="javax.servlet.http.HttpSession" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>주문 목록</title>
 </head>
 <body>
@@ -33,7 +33,7 @@
 	<!--  주문 목록을 표시할 HTML 코드를 작성 -->
 	<c:forEach items="${orderList}" var="order">
 		<div>
-			<p>예상 배송일 : ${order.orderId}</p>
+			<p>예상 배송일 : ${order.expectDeliveryDate}</p>
 			<p>상품명 : ${order.productName}</p>
 			<p>상품 가격 : ${order.productPrice} 원</p>
 			<p>상품 수량 : ${order.purchaseNum} 개</p>
