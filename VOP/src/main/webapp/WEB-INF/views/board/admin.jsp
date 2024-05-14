@@ -63,7 +63,9 @@
 		
 		$(document).ready(function(){
 			
-			//showSellerRequest();
+			showSellerRequest();
+			showSellerApproved();
+			showProductRegisterRequest();
 			
 		}); // end document.ready
 		
@@ -74,7 +76,7 @@
 			
 			$.ajax({
 				method : 'GET',
-				url : '../seller/reqList/',
+				url : '../seller/wait/1',
 				success : function(result){
 					console.log(result);
 					sellerReqList = JSON.parse(result);
@@ -99,7 +101,7 @@
 			
 			$.ajax({
 				method : 'GET',
-				url : '../seller/approvedList/',
+				url : '../seller/approved/1',
 				success : function(result){
 					console.log(result);
 					sellerApprovedList = JSON.parse(result);
@@ -123,7 +125,7 @@
 			
 			$.ajax({
 				method : 'GET',
-				url : '../product/registerRequest/',
+				url : '../seller/productReq/1',
 				success : function(result){
 					console.log(result);
 					productRegisterReqList = JSON.parse(result);

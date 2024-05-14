@@ -18,12 +18,8 @@ public interface ProductMapper {
 	// 댓글 총 갯수 검색
 	int selectReviewCount(int productId);
 	
-//	// 상품 메인 이미지 검색 
-//	ProductVO selectByMainImg(int productId);
-	
 	// 상품 리뷰(별) 총합 검색
 	int selectReviewStar(int productId);
-	
 	
 	// 상품 등록
 	int insertProduct(ProductVO productVO);
@@ -73,5 +69,11 @@ public interface ProductMapper {
 	
 	// 최근 등록된 상품 5개 조회
 	List<ProductVO> selectRecent5();
+	
+	// 상태가 승인 대기중인 상품 조회
+	List<ProductVO> selectStateIsWait(Pagination pagination);
+	
+	// 상태가 승인 대기중인 상품 수 조회
+	int selectStateIsWaitCnt();
 	
 }

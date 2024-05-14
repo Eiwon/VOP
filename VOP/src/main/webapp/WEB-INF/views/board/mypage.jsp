@@ -34,7 +34,7 @@
 	</div>
 	<script type="text/javascript">
 		const memberId = '<%= request.getSession().getAttribute("memberId")%>';
-		const memberAuth = '${memberAuth }';
+		let memberAuth = '${memberAuth }';
 		let paymentList;
 		memberAuth = 'admin'; // 테스트용 임시 값
 		let tagMyInfo = $('#my_info');

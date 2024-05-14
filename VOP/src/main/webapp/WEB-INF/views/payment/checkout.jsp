@@ -6,13 +6,20 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<!-- 포트원 결제 -->
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<!-- 포트원 결제 -->
 <style type="text/css">
 	.box_info {
 		border: 1px solid black;
 		width: 1000px;
 	}
+	#coupon_list{
+		list-style: none;
+	}
 </style>
-<title>Insert title here</title>
+<title>결제 페이지</title>
 </head>
 <body>
 	<div>
@@ -36,26 +43,25 @@
 				</tbody>
 			</table>
 		</div>
-		
 		<div class="box_info" id="receiver_info">
 			<h2>받는 사람 정보</h2>
 			<table>
 				<tbody>
 					<tr>
 						<td>이름</td>
-						<td>배송지정보</td>
+						<td><input type="text" id="receiverName"></td>
 					</tr>
 					<tr>
 						<td>배송주소</td>
-						<td>구현 후</td>
+						<td><input type="text" id="deliveryAddress"></td>
 					</tr>
 					<tr>
 						<td>연락처</td>
-						<td>추가 예정</td>
+						<td><input type="text" id="receiverPhone"></td>
 					</tr>
 					<tr>
 						<td>배송 요청사항</td>
-						<td>...</td>
+						<td><input type="text" id="requirement"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -79,24 +85,31 @@
 					</tr>
 					<tr>
 						<td>멤버십 할인</td>
-						<td></td>
+						<td id="membership_discount"></td>
 					</tr>
 					<tr>
-						<td>할인 쿠폰</td>
-						<td id="coupon_price"></td>
-						<td><button onclick="selectCoupon()">쿠폰 선택</button></td>
+						<td>쿠폰 할인</td>
+						<td id="coupon_discount"></td>
+						<td><button id="btn_coupon" onclick="selectCoupon()">쿠폰 선택</button></td>
+						<td><ul id="coupon_list">
+							
+						</ul></td>
 					</tr>
-					<tr id="coupon_list"></tr>
 					<tr>
 						<td>배송비</td>
-						<td></td>
+						<td id="delivery_price"></td>
 					</tr>
 					<tr>
 						<td>총 결제 금액</td>
-						<td id="total_payment"></td>
+						<td id="charge_price"></td>
 					</tr>
 				</tbody>
 			</table>
+		</div>
+		
+		<div>
+			<button id="btn_payment"> 결제하기 </button>
+		
 		</div>
 		
 	</div>
@@ -104,15 +117,38 @@
 	<script type="text/javascript">
 		let memberVO = JSON.parse('${memberVO}');
 		let orderList = JSON.parse('${orderList}');
+		let couponList;
+		let paymentVO = {
+				'paymentId' : 0,
+				'memberId' : '',
+				'deliveryAddress' : '',
+				'receiverName' : '',
+				'receiverPhone' : '',
+				'requirement' : '',
+				'membershipDiscount' : 0,
+				'couponDiscount' : 0,
+				'deliveryPrice' : 0,
+				'chargePrice' : 0
+				};
 		let infoContainer = $('#info_container');
 		let tagMemberName = $('#member_name');
 		let tagMemberEmail = $('#member_email');
 		let tagMemberPhone = $('#member_phone');
 		let tagOrderList = $('#order_list');
 		let tagTotalPrice = $('#total_price');
-		let tagTotalPayment = $('#total_payment');
+		let tagMembershipDiscount = $('#membership_discount');
+		let tagCouponDiscount = $('#coupon_discount');
+		let tagTotalPayment = $('#charge_price');
+		
+		let btnPayment = $('#btn_payment');
 		
 		$(document).ready(function(){
+			
+			setInfo();
+			btnPayment.click(function(){
+				payment();
+			}); // end btnPayment.click
+			
 		}); // end document.ready
 		
 		function setInfo(){
@@ -120,7 +156,14 @@
 			tagMemberEmail.text(memberVO.memberEmail);
 			tagMemberPhone.text(memberVO.memberPhone);
 			tagOrderList.html(makeOrderInfo());
+			
+			
+			//if(memberVO.auth == 'membership') 일단 모든 유저에 멤버십 적용
+			paymentVO.membershipDiscount = 20;
+			
 			tagTotalPrice.text(calcTotalPrice());
+			
+			
 		} // end setInfo
 		
 		function makeOrderInfo(){
@@ -136,17 +179,9 @@
 		
 		function selectCoupon(){
 			let tagCouponList = $('#coupon_list');
-			let couponList = [
-				{
-					'couponId' : '1234',
-					'couponName' : '쿠폰 테스트',
-					'couponPrice' : '1000'
-				},{
-					'couponId' : '1234',
-					'couponName' : '테스트 쿠폰',
-					'couponPrice' : '3000'
-				}
-			];
+			
+			
+			
 			
 			// 비동기로 쿠폰 정보 가져와야 함
 			
@@ -172,6 +207,86 @@
 			console.log('합계 : ' + totalPrice);
 			return totalPrice;
 		} // end calcTotalPrice
+		
+		function calcChargePrice(){
+			let chargePrice = calcTotalPrice() + paymentVO.deliveryPrice;
+			let discountPercent = (paymentVO.membershipDiscount + paymentVO.couponDiscount);
+			chargePrice = discountPercent >= 100 ? 0 : chargePrice * (100 - discountPercent) / 100;
+			
+			return chargePrice;
+		} // end calcChargePrice
+		
+		
+		function payment(){ // 결제 실행
+			let IMP = window.IMP;
+			IMP.init('imp04667313'); // 가맹점 식별코드 설정(포트원 홈페이지에서 확인)
+			let paymentId;
+			
+			paymentVO.chargePrice = calcChargePrice(); // 최종 결제 금액 계산
+			
+			console.log('request paymentId');
+			// 서버에서 결제 고유 번호 받아오기
+			$.ajax({
+				method : 'GET',
+				url : 'getId',
+				success : function(result){
+					if(result == 0){
+						console.log('고유 번호 받아오기 실패');
+					}else{
+						console.log('결제 고유 번호 : ' + result);
+						paymentId = result;
+						IMP.request_pay({
+							pg: 'kakaopay.TC0ONETIME', // PG사 코드(포트원 홈페이지에서 찾아서 넣어야함)
+			                pay_method: 'card', // 결제 방식
+			                merchant_uid: paymentId, // 결제 고유 번호
+			                name: orderList[0].productName, // 제품명
+			                amount: paymentVO.chargePrice, // 결제 가격
+			                buyer_name: memberVO.memberId,
+			                buyer_email: memberVO.memberEmail,
+			                // buyer_tel : '010-1234-5678',
+			                // buyer_addr : '서울특별시 강남구 삼성동',
+			                // buyer_postcode : '123-456'
+			            }, async function (rsp) { // callback
+			             	console.log(rsp);
+			            	if (rsp.success) { //결제 성공시
+			            		sendPaymentResult(rsp);
+			                }
+			            }); // end IMP.request_pay 
+					}
+				} // end success 
+			}); // end ajax
+			
+		} // end payment
+		
+		
+		function sendPaymentResult(paymentResult){
+			console.log('결제 내역 전송');
+			paymentVO.paymentId = paymentResult.merchant_uid;
+			paymentVO.memberId = paymentResult.buyer_name;
+			paymentVO.deliveryAddress = $('#deliveryAddress').val();
+			paymentVO.receiverName = $('#receiverName').val();
+			paymentVO.receiverPhone = $('#receiverPhone').val();
+			paymentVO.requirement = $('#requirement').val();
+			
+			
+			$.ajax({
+				method : 'POST',
+				url : 'apply',
+				headers : {
+					'Content-Type' : 'application/json'
+				},
+				data : JSON.stringify({
+					'paymentVO' : paymentVO,
+					'orderList' : orderList
+				}),
+				success : function(result){
+					console.log('결제 내역 전송 결과 : ' + result);
+					location.href = 'paymentResult';
+				}
+			}); // end ajax
+			
+		} // end sendPaymentResult
+		
 		
 	</script>
 	

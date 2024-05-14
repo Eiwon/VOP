@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.web.vop.domain.DeliveryVO;
 import com.web.vop.domain.OrderVO;
-import com.web.vop.persistence.ImageMapper;
 import com.web.vop.persistence.OrderMapper;
 
 import lombok.extern.log4j.Log4j;
@@ -37,6 +36,14 @@ public class OrderServiceImple implements OrderService {
 		return orderList;
 	}
 
+	@Override
+	public int registerOrder(OrderVO orderVO) {
+		log.info("registerOrder()");
+		int res = orderMapper.insertOrder(orderVO);
+		log.info(res + "행 추가 성공");
+		return res;
+	} // end registerOrder
+	
 	@Override
 	public DeliveryVO getMemberId(String memberId) { // 배송지 상세 조회 (받는 사람 , 받는 주소 , 배송 요청 사항 )
 		log.info("getMemberId()");
@@ -70,6 +77,12 @@ public class OrderServiceImple implements OrderService {
 		return orderList;
 	}
 
+	@Override
+	public List<OrderVO> getOrderByPaymentId(int paymentId) {
+		log.info("getOrderByPaymentId()");
+		return orderMapper.selectOrderByPaymentId(paymentId);
+	} // end getOrderByPaymentId
+	
 	@Override 
 	// 주문 목록 조회 + 이미지 경로 조회 By imgId
 	public List<OrderVO> getOrderListByMemberId(String memberId) { 
@@ -83,8 +96,6 @@ public class OrderServiceImple implements OrderService {
 		log.info("주문 조회 : " + orderList);
 		return orderList;
 	}
-
-	
 
 
 }// end OrderServiceImple()

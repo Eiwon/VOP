@@ -21,7 +21,7 @@ public class ProductVO {
 	private int reviewNum;
 	private int productRemains;
 	private String productPlace;
-	private String productState;
+	private String productState	;
 	private String category;
 	private int imgId;
 	private Date productDateCreated;

@@ -25,29 +25,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		SELECT * FROM PRODUCT
    		WHERE PRODUCT_ID = #{productId}
    </select>
-   
-   <!-- 메인(썸네일) 이미지 검색 -->
-   <!-- 
-   <select id="selectByMainImg" resultMap="productResultMap">
-      SELECT * FROM IMAGE
-      WHERE PRODUCT_ID = #{productId}
-   </select>
-    -->
     
    <!-- 댓글 총 갯수 검색  -->
    <!-- resultType="java.lang.Integer" 단일 값때만 사용, 코드 추가해서 테스트 통과 -->
+   <!--  우선 사용안함 보류 -->
    <select id="selectReviewCount" resultType="java.lang.Integer">
     	SELECT COUNT(*) AS PRODUCT FROM REVIEW 
     	WHERE PRODUCT_ID = #{productId}
    </select>
 
+	
    <!-- PRODUCT_ID 해당하는 리뷰(별) 총 합 -->
    <select id="selectReviewStar" resultType="java.lang.Integer">
    		SELECT SUM(REVIEW_STAR) AS TOTAL_STAR_RATINGS
 		FROM REVIEW
 		WHERE PRODUCT_ID = #{productId}
    </select>
- 
    
 	<!-- 상품 등록 -->
 	<insert id="insertProduct">
@@ -58,6 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		)
 	</insert>
 	
+	<!-- 최근에 등록된 상품 ID 검색 -->
 	<select id="selectLastInsertId" resultType="int">
 		SELECT MAX(PRODUCT_ID) FROM PRODUCT
 	</select>
@@ -149,6 +143,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN FROM PRODUCT
 		) WHERE RN BETWEEN 1 AND 5
 	</select>
+
+	<!-- 승인 대기중인 모든 상품 검색(페이징) -->
+	<select id="selectStateIsWait" resultMap="productResultMap">
+		SELECT * FROM (
+			SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN FROM PRODUCT
+			WHERE PRODUCT_STATE = '승인 대기중'
+		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+	</select>
 	
+	<!-- 승인 대기중인 모든 상품 수 검색 -->
+	<select id="selectStateIsWaitCnt" resultType="Integer">
+		SELECT COUNT(PRODUCT_ID) FROM PRODUCT WHERE PRODUCT_STATE = '승인 대기중'
+	</select>
 	
 </mapper>

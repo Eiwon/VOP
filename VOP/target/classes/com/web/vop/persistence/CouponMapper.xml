@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.web.vop.persistence.CouponMapper">
+
+   <resultMap type="com.web.vop.domain.CouponVO" id="couponResultMap">
+   		<id property="couponName" column="COUPON_NAME"/>
+   		<id property="memberId" column="MEMBER_ID"/>
+		<result property="validPeriod" column="VALID_PERIOD"/>
+		<result property="discount" column="DISCOUNT"/>
+		<result property="couponNum" column="COUPON_NUM"/>   
+   </resultMap>
+   
+   
+   <!-- memberId로 쿠폰 조회 -->
+   <select id="selectByMemberId" resultMap="couponResultMap">
+   		SELECT * FROM COUPON WHERE MEMBER_ID = #{memberId}
+   </select>
+   
+   <!-- 지정 쿠폰 삭제 -->
+   <delete id="deleteCouponSelected">
+   		DELETE COUPON WHERE COUPON_NAME = #{couponName} AND MEMBER_ID = #{memberId}
+   </delete>
+   
+   <!-- 지정 수만큼 쿠폰 수 증감 -->
+   <update id="updateCouponSelected">
+   		UPDATE COUPON SET COUPON_NUM = (
+		SELECT COUPON_NUM FROM COUPON WHERE COUPON_NAME = #{couponVO.couponName} AND MEMBER_ID = #{couponVO.memberId}
+		) + #{increase} WHERE COUPON_NAME = #{couponVO.couponName} AND MEMBER_ID = #{couponVO.memberId}
+   </update>
+   
+</mapper>
