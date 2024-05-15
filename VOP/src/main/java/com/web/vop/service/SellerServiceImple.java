@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.web.vop.domain.SellerVO;
+import com.web.vop.persistence.MemberMapper;
 import com.web.vop.persistence.SellerMapper;
 import com.web.vop.util.Pagination;
 
@@ -15,6 +16,9 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class SellerServiceImple implements SellerService{
 
+	@Autowired
+	MemberMapper memberMapper;
+	
 	@Autowired
 	SellerMapper sellerMapper;
 	
@@ -59,10 +63,14 @@ public class SellerServiceImple implements SellerService{
 	} // end updateMemberContent
 	
 	@Override
-	public int refuseRequest(String memberId, String refuseMsg) {
-		log.info("요청 거부");
-		int res = sellerMapper.updateAdminContent(memberId, refuseMsg);
+	public int approveRequest(SellerVO sellerVO) {
+		log.info("요청 결재");
+		int res = sellerMapper.updateAdminContent(sellerVO);
 		log.info(res + "행 수정 성공");
+		if(sellerVO.getRequestState().equals("승인")) { // 승인되었다면 회원 권한 변경
+			memberMapper.updateMemberAuth(sellerVO.getMemberId(), "판매자");
+		}
+		
 		return res;
 	} // end refuseRequest
 

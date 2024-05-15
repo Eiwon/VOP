@@ -46,9 +46,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		REQUEST_CONTENT = #{requestContent}, REQUEST_STATE = '승인 대기중' WHERE MEMBER_ID = #{memberId}
    </update>
    
-   <!-- 승인 거부 -->
+   <!-- 요청 결재 -->
    <update id="updateAdminContent">
-   		UPDATE SELLER SET REQUEST_STATE = '승인 거부됨', REFUSE_MSG = #{refuseMsg} WHERE MEMBER_ID = #{memberId}
+   		UPDATE SELLER SET REQUEST_STATE = #{requestState}, REFUSE_MSG = #{refuseMsg} WHERE MEMBER_ID = #{memberId}
    </update>
    
    <!-- 요청 삭제 -->

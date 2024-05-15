@@ -4,9 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.domain.SellerVO;
+import com.web.vop.service.MemberService;
 import com.web.vop.service.ProductService;
 import com.web.vop.service.SellerService;
 import com.web.vop.util.PageMaker;
@@ -40,6 +39,9 @@ public class SellerController {
 	
 	@Autowired
 	private SellerService sellerService;
+	
+	@Autowired
+	private MemberService memberService;
 	
 	@GetMapping("sellerRequest")
 	public void sellerRequestGET() {
@@ -87,7 +89,7 @@ public class SellerController {
 		
 		
 	// 요청 등록
-	@PostMapping("/register")
+	@PostMapping("/registerReq")
 	@ResponseBody
 	public ResponseEntity<Integer> registerRequest(@RequestBody SellerVO sellerVO) {
 		log.info("요청 등록 : " + sellerVO);
@@ -97,7 +99,7 @@ public class SellerController {
 	} // end registerRequest
 		
 	// 요청 수정(유저)
-	@PutMapping("/update")
+	@PutMapping("/updateReq")
 	@ResponseBody
 	public ResponseEntity<Integer> updateRequest(@RequestBody SellerVO sellerVO) {
 		log.info("요청 수정 : " + sellerVO);
@@ -106,12 +108,12 @@ public class SellerController {
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end updateRequest
 
-	// 요청 거절(관리자)
-	@PutMapping("/refuse")
+	// 요청 승인/거절(관리자)
+	@PutMapping("/approval")
 	@ResponseBody
-	public ResponseEntity<Integer> refuseRequest(@RequestBody SellerVO sellerVO) {
+	public ResponseEntity<Integer> approveRequest(@RequestBody SellerVO sellerVO) {
 		log.info("요청 거절 : " + sellerVO.getMemberId());
-		int res = sellerService.refuseRequest(sellerVO.getMemberId(), sellerVO.getRefuseMsg());
+		int res = sellerService.approveRequest(sellerVO);
 
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end refuseRequest
@@ -226,5 +228,15 @@ public class SellerController {
 
 		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	} // end getWaitProduct
+	
+	@GetMapping("/popupSellerReg")
+	public void popupSellerReqGET(Model model, String memberId) {
+		log.info("판매자 등록 팝업 요청 " + memberId);
+		SellerVO sellerVO = sellerService.getMyRequest(memberId);
+		MemberVO memberVO = memberService.getMemberInfo(memberId);
+		model.addAttribute("sellerVO", sellerVO);
+		model.addAttribute("memberVO", memberVO);
+	} // end popupSellerReqGET
+	
 	
 }

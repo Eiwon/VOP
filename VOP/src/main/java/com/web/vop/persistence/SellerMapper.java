@@ -21,7 +21,7 @@ public interface SellerMapper {
 	
 	public int updateMemberContent(SellerVO sellerVO);
 
-	public int updateAdminContent(@Param("memberId") String memberId, @Param("refuseMsg") String refuseMsg);
+	public int updateAdminContent(SellerVO sellerVO);
 
 	public int deleteRequest(String memberId);
 	

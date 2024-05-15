@@ -38,7 +38,7 @@ tr {
 	<div>
 		<h2>관리자 페이지</h2>
 	</div>
-	
+	<button onclick="popupSellerRegister(this)">클릭</button>
 	<div>
 		<div class="request_container">
 			<h3>사업자 등록 요청</h3>
@@ -115,7 +115,7 @@ tr {
 					sellerReq.list = result.list;
 					
 					for(x in sellerReq.list){
-						form += '<tr onclick="toDetails(this)">' + 
+						form += '<tr>' + 
 							'<td class="targetIndex" hidden="hidden">' + x + '</td>' +
 							'<td class="memberId">' + sellerReq.list[x].memberId + '</td>' + 
 							'<td class="businessName">' + sellerReq.list[x].businessName +'</td>' +
@@ -252,6 +252,21 @@ tr {
 			pageForm += '</ul>';
 			return pageForm;
 		} // end makePageForm
+		
+		function popupSellerRegister(input){
+			// 클릭한 sellerRequest의 memberId 찾기
+			//const targetIndex = $(input).find('#targetIndex').text();
+			//sellerReq[targetIndex];
+			const popupStat = {
+					'url' : '../seller/popupSellerReg?memberId=test1234',
+					'name' : 'popupSellerReqister',
+					'option' : 'width=500, height=600, top=50, left=400'
+			};
+			
+			// 팝업 창 띄우기
+			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
+			
+		} // end popupSellerRegister
 		
 		
 	</script>
