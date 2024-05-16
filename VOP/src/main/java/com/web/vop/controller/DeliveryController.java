@@ -36,22 +36,20 @@ public class DeliveryController {
 	}//end deliveryGET()
 	
 	
-	@GetMapping("/register")
-	public void registerGET() {
-		log.info("배송 정보 등록 페이지 이동");
-	} // end registerGET
-	
-	@PostMapping("/register")
-	public String registerPOST(DeliveryVO deliveryVO, HttpServletRequest request) {
-		log.info("배송 정보 등록");
-		log.info("등록 정보 : " + deliveryVO);
-		
-		deliveryVO.setMemberId((String)request.getSession().getAttribute("memberId"));
-		
-		int res = deliveryService.registerDelivery(deliveryVO);
-		log.info(res + "행 등록 성공");
-		
-		return "redirect:delivery";
-	} // end registerPOST
-	
+	/*
+	 * @GetMapping("/register") public void registerGET() {
+	 * log.info("배송 정보 등록 페이지 이동"); } // end registerGET
+	 * 
+	 * @PostMapping("/register") public String registerPOST(DeliveryVO deliveryVO,
+	 * HttpServletRequest request) { log.info("배송 정보 등록"); log.info("등록 정보 : " +
+	 * deliveryVO);
+	 * 
+	 * deliveryVO.setMemberId((String)request.getSession().getAttribute("memberId"))
+	 * ;
+	 * 
+	 * int res = deliveryService.registerDelivery(deliveryVO); log.info(res +
+	 * "행 등록 성공");
+	 * 
+	 * return "redirect:delivery"; } // end registerPOST
+	 */	
 }
