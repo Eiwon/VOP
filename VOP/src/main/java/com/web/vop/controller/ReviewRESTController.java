@@ -28,11 +28,6 @@ public class ReviewRESTController {
 	@Autowired
 	private ReviewService reviewService;
 	
-	@GetMapping("/register")
-	public void loginGET() {
-		log.info("register 페이지 이동 요청");
-	} // end loginGET
-	
 	@PostMapping("/register") // POST : 댓글(리뷰) 입력
 	public ResponseEntity<Integer> createReview(@RequestBody ReviewVO reviewVO){
 		log.info("createReview()");

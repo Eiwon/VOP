@@ -51,6 +51,7 @@
     </fieldset>
       <input type="text" id="reviewContent">
       <!-- 이미지는 제작 중 -->
+      <!-- 
         <div>
       	 <strong>상세정보 이미지</strong>
 			<input id="inputDetails" type="file" name="details" multiple="multiple" onchange="showDetailsPreview()">
@@ -58,13 +59,14 @@
 			</div>
 		</div>
       <button id="btnAdd">등록</button>
-       
+         -->
    </div>
+  
    
    <script type="text/javascript">
    
 	// 이미지 확장자 필터
-   const blockedExtension = new RegExp("exe|sh|php|jsp|aspx|zip|alz");
+   //const blockedExtension = new RegExp("exe|sh|php|jsp|aspx|zip|alz");
 	
    
   $(document).ready(function(){

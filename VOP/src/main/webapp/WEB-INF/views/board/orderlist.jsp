@@ -331,7 +331,10 @@
             </div>
             <div class="order-buttons">
                 <a href=""><button>배송 조회</button></a>
-                <a href=""><button>리뷰 쓰기</button></a>
+                <form action="../review/register" method="get">
+                	<input type="hidden" name="productId" value="${order.productId}">
+                	<button type="submit">리뷰 쓰기</button>
+                </form>
 				<a href=""><button>교환/반품 신청</button></a>
             </div>
         </div>
