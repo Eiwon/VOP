@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.web.vop.domain.ProductDetailsDTO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.util.Pagination;
 
@@ -71,4 +72,6 @@ public interface ProductService {
 	// 상태가 ?? 대기중인 상품 수 조회
 	int getStateIsCnt(String productState);
 	
+	// productId로 상세 정보 조회
+	ProductDetailsDTO getDetails(int productId);
 }

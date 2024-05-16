@@ -23,4 +23,7 @@ public interface ImageService {
 	
 	// imgId로 이미지 경로 조회
 	String getImgPathByImgId(int imgId);
+	
+	// productId로 이미지 id 검색
+	List<Integer> getImgId(int productId);
 }

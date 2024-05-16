@@ -53,4 +53,10 @@ public class ImageServiceImple implements ImageService{
 		String result = imageMapper.selectImgPathByImgId(imgId);
 		return result;
 	}
+
+	@Override
+	public List<Integer> getImgId(int productId) {
+		log.info("getImgId()");
+		return imageMapper.selectImgIdByProductId(productId);
+	} // end getImgId
 }

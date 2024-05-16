@@ -44,7 +44,7 @@
 			</table>
 		</div>
 		<div class="box_info" id="receiver_info">
-			<h2>받는 사람 정보</h2>
+			<h2>받는 사람 정보 <button onclick="showDeliveryPopup()">배송지 변경</button></h2>
 			<table>
 				<tbody>
 					<tr>
@@ -123,6 +123,7 @@
 	<script type="text/javascript">
 		let memberVO = JSON.parse('${memberVO}');
 		let orderList = JSON.parse('${orderList}');
+		let deliveryVO = JSON.parse('${deliveryVO}');
 		let couponList;
 		let paymentVO = {
 				'paymentId' : 0,
@@ -153,6 +154,10 @@
 			$('#member_name').text(memberVO.memberName);
 			$('#member_email').text(memberVO.memberEmail);
 			$('#member_phone').text(memberVO.memberPhone);
+			$('#receiverName').text(deliveryVO.receiverName);
+			$('#deliveryAddress').text(deliveryVO.deliveryAddress);
+			$('#receiverPhone').text(deliveryVO.receiverPhone);
+			$('#requirement').text(deliveryVO.requirement);
 			tagOrderList.html(makeOrderInfo());
 			
 			
@@ -232,7 +237,7 @@
 				totalPrice += orderList[x].productPrice * orderList[x].purchaseNum;
 			}
 			console.log('합계 : ' + totalPrice);
-			return totalPrice;
+			return Math.ceil(totalPrice);
 		} // end calcTotalPrice
 		
 		function calcChargePrice(){
@@ -240,7 +245,7 @@
 			let discountPercent = (paymentVO.membershipDiscount + paymentVO.couponDiscount);
 			chargePrice = discountPercent >= 100 ? 0 : chargePrice * (100 - discountPercent) / 100;
 			
-			return chargePrice;
+			return Math.ceil(chargePrice);
 		} // end calcChargePrice
 		
 		
@@ -315,6 +320,9 @@
 			
 		} // end sendPaymentResult
 		
+		function showDeliveryPopup(){
+			
+		} // end showDeliveryPopup
 		
 	</script>
 	

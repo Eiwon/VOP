@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.web.vop.domain.ImageVO;
+
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -94,9 +96,9 @@ public class FileUploadUtil {
      * @param path 파일이 저장된 날짜 경로
      * @param chgName 저장된 파일 이름
      */
-    public static void deleteFile(String uploadPath, String path, String chgName) {
+    public static void deleteFile(ImageVO imageVO) {
         // 삭제할 파일의 전체 경로 생성
-        String fullPath = uploadPath + File.separator + path + File.separator + chgName;
+        String fullPath = imageVO.getImgPath() + File.separator + imageVO.getImgChangeName();
         
         // 파일 객체 생성
         File file = new File(fullPath);
