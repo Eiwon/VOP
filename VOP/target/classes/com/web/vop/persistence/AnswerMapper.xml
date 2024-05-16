@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.web.vop.persistence.AnswerMapper">
+
+	<resultMap type="com.web.vop.domain.AnswerVO" id="answerResultMap">
+	
+   		<id property="answerId" column="ANSWER_ID"/>
+   		<result property="memberId" column="MEMBER_ID"/>
+		<result property="productId" column="PRODUCT_ID"/>
+		<result property="answerContent" column="ANSWER_CONTENT"/>
+		<result property="answerDateCreated" column="ANSWER_DATE_CREATED"/>  
+		<result property="inquiryId" column="INQUIRY_ID"/>  
+		 
+   </resultMap>
+   
+   <!-- 댓댓글(답변) 입력 -->
+   <insert id="insertAnswer">
+      INSERT INTO ANSWER (ANSWER_ID, MEMBER_ID, PRODUCT_ID, ANSWER_CONTENT
+      , ANSWER_DATE_CREATED, INQUIRY_ID)
+      VALUES (ANSWER_SEQ.NEXTVAL, #{memberId}, #{productId}, #{answerContent}
+      , SYSDATE, #{inquiryId})
+   </insert>
+   
+   <!-- 댓댓글(답변) 전체 검색 -->
+   <!-- 사용안함 
+   <select id="selectListByInquiry" resultMap="answerResultMap">
+      SELECT * FROM ANSWER
+      WHERE INQUIRY_ID = #{inquiryId}
+      ORDER BY ANSWER_ID
+   </select>
+   -->
+   
+   <!-- 댓댓글(답변) 수정 --><!-- 수정 기능 넣을지 말지 고민 중 -->
+   <update id="updateAnswer">
+      UPDATE ANSWER
+      SET ANSWER_CONTENT = #{answerContent}
+      WHERE REVIEW_ID = #{productId} AND MEMBER_ID = #{memberId}
+   </update>
+   
+   <!-- 댓댓글(답변) 삭제 -->
+   <delete id="deleteAnswer">
+      DELETE FROM ANSWER
+      WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
+   </delete>
+   
+
+
+
+</mapper>

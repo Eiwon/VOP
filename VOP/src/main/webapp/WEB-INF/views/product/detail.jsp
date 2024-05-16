@@ -124,7 +124,7 @@
  	<a href="../basket/main">장바구니 바로가기</a>
  	
 	<!-- 바로구매 버튼 --><!-- 로그인된 세션 아이디 전달 -->
-    <form id="checkoutForm" action="../payment/checkout" method="POST"><!-- 에러 발생 중 데이터는 전달 잘됨 아마도 배열 형태로 보내지 않아서 인것 같다. -->
+    <form id="checkoutForm" action="../payment/checkout" method="POST">
         <input type="hidden" name="memberId" value="${memberId}">
         <input type="hidden" name="productIds" value="${productVO.productId}">
         <input type="hidden" name="productNums" value="1">
