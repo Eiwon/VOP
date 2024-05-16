@@ -44,4 +44,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		SELECT IMG_PATH FROM IMAGE WHERE IMG_ID = #{imgId}
    </select>
    
+   <!-- productId로 이미지 id 검색 -->
+   <select id="selectImgIdByProductId" resultType="Integer">
+   		SELECT IMG_ID FROM IMAGE WHERE PRODUCT_ID = #{productId}
+   </select>
+   
+   <!-- 상품과 관련된 모든 이미지 검색 -->
+   <select id="selectAllbyProductId" resultMap="imageResultMap">
+   		SELECT * FROM IMAGE WHERE PRODUCT_ID = #{productId} OR IMG_ID = (
+   			SELECT IMG_ID FROM PRODUCT WHERE PRODUCT_ID = #{productId}
+   		)
+   </select>
+   
+   <!-- 상품과 관련된 모든 이미지 삭제 -->
+   <delete id="deleteProductImage">
+   		DELETE IMAGE WHERE PRODUCT_ID = #{productId} OR IMG_ID = (
+   			SELECT IMG_ID FROM PRODUCT WHERE PRODUCT_ID = #{productId}
+   		)
+   </delete>
+   
 </mapper>

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.web.vop.domain.MemberVO;
+import com.web.vop.domain.ProductDetailsDTO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.domain.SellerVO;
+import com.web.vop.service.ImageService;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.ProductService;
 import com.web.vop.service.SellerService;
@@ -43,6 +47,9 @@ public class SellerController {
 	@Autowired
 	private MemberService memberService;
 	
+	@Autowired
+	private ImageService imageService;
+	
 	@GetMapping("sellerRequest")
 	public void sellerRequestGET() {
 		log.info("판매자 권한 신청 페이지로 이동");
@@ -54,23 +61,40 @@ public class SellerController {
 		return "redirect:../product/register";
 	} // end registerProductGET
 	
-	@GetMapping("listProduct")
-	public void listProductGET(Model model, String memberId, Pagination pagination) {
-		log.info("상품 조회 페이지 이동 by " + memberId);
+	@GetMapping("/admin")
+	public void adminGET() {
+		log.info("관리자 페이지로 이동");
+	} // end myInfoGet
+	
+	@GetMapping("/myProduct")
+	public void listProductGET() {
+		log.info("상품 조회 페이지 이동");
+	} // end listProductGET
+	
+	@GetMapping("/productList")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> productList(Pagination pagination, HttpServletRequest request){
+		String memberId = (String)request.getSession().getAttribute("memberId");
+		log.info(memberId + "가 등록한 상품 검색");
 		
+		Map<String, Object> resultMap = new HashMap<>();
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
 		pageMaker.setTotalCount(productService.getCntByMemberId(memberId));
+		
 		List<ProductVO> productList = productService.selectByMemberId(memberId, pageMaker.getPagination());
 		
 		if(productList != null) {
 			log.info(productList.size() + "개 데이터 검색 성공");
 		}
-		model.addAttribute("pageMaker", pageMaker);
-		model.addAttribute("productList", productList);
-	} // end listProductGET
+		
+		resultMap.put("productList", productList);
+		resultMap.put("pageMaker", pageMaker);
+		
+		return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
+	} // end productList
 	
-	@GetMapping("updateProduct")
+	@GetMapping("/updateProduct")
 	public void updateProductGET(Model model, String productId) {
 		log.info("상품 수정 페이지 요청"); // 상세 검색 기능 필요
 		
@@ -112,7 +136,7 @@ public class SellerController {
 	@PutMapping("/approval")
 	@ResponseBody
 	public ResponseEntity<Integer> approveRequest(@RequestBody SellerVO sellerVO) {
-		log.info("요청 거절 : " + sellerVO.getMemberId());
+		log.info("요청 승인 / 거절 : " + sellerVO.getMemberId());
 		int res = sellerService.approveRequest(sellerVO);
 
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
@@ -229,14 +253,53 @@ public class SellerController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	} // end getWaitProduct
 	
-	@GetMapping("/popupSellerReg")
-	public void popupSellerReqGET(Model model, String memberId) {
-		log.info("판매자 등록 팝업 요청 " + memberId);
+	@GetMapping("/popupSellerDetails")
+	public void popupSellerDetailsGET(Model model, String memberId) {
+		log.info("판매자 상세 정보 팝업 요청 " + memberId);
 		SellerVO sellerVO = sellerService.getMyRequest(memberId);
 		MemberVO memberVO = memberService.getMemberInfo(memberId);
 		model.addAttribute("sellerVO", sellerVO);
 		model.addAttribute("memberVO", memberVO);
 	} // end popupSellerReqGET
 	
+	@GetMapping("/popupProductDetails")
+	public void popupProductDetailsGET(Model model, int productId) {
+		log.info("상품 상세 정보 팝업 요청 " + productId);
+		
+		ProductDetailsDTO productDetails = productService.getDetails(productId);
+		productDetails.setImgIdDetails(imageService.getImgId(productId));
+		log.info("상세 정보 검색 결과 : " + productDetails);
+		
+		model.addAttribute("productDetails", productDetails);
+	} // end popupProductDetailsGET
+	
+	@GetMapping("/popupProductUpdate")
+	public void popupProductUpdateGET(Model model, int productId) {
+		log.info("상품 정보 수정 팝업 요청 " + productId);
+		
+		ProductDetailsDTO productDetails = productService.getDetails(productId);
+		productDetails.setImgIdDetails(imageService.getImgId(productId));
+		log.info("상세 정보 검색 결과 : " + productDetails);
+		
+		model.addAttribute("productDetails", productDetails);
+	} // end popupProductUpdateGET
+	
+	@PutMapping("/productState")
+	@ResponseBody
+	public ResponseEntity<Integer> updateProductState(@RequestBody ProductVO productVO){
+		log.info("상품 상태 변경 : " + productVO.getProductId());
+		int res = productService.setProductState(productVO.getProductState(), productVO.getProductId());
+		log.info(res + "행 수정 성공");
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+	} // end updateProductState
+	
+	@DeleteMapping("/product")
+	@ResponseBody
+	public ResponseEntity<Integer> deleteProduct(@RequestBody ProductVO productVO){
+		log.info("상품 삭제 : " + productVO.getProductId());
+		int res = productService.deleteProduct(productVO.getProductId());
+		log.info(res + "행 삭제 성공");
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+	} // end updateProductState
 	
 }

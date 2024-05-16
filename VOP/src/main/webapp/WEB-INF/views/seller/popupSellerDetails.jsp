@@ -15,10 +15,10 @@ tr {
 	border: 1px solid black;
 }
 </style>
-<title>${sellerVO.memberId } 님의 판매자 등록 요청</title>
+<title>${sellerVO.memberId } 님의 판매자 정보</title>
 </head>
 <body>
-	<h2>판매자 등록 요청자 정보</h2>
+	<h2>판매자 정보</h2>
 	<table class="form_info">
 		<tbody>
 			<tr>
@@ -41,6 +41,7 @@ tr {
 				<td>사업체 명</td>
 				<td>${sellerVO.businessName }</td>
 			</tr>
+			
 			<tr>
 				<td>요청 시간</td>
 				<td>${sellerVO.requestTime }</td>
@@ -56,13 +57,37 @@ tr {
 		</tbody>
 		<tfoot>
 			<tr>
-				<td><button onclick="sendResult('승인')">승인</button></td>
-				<td><button onclick="sendResult('거절')">거절</button></td>
+				<td><button id="btn_approve"></button></td>
+				<td><button id="btn_refuse"></button></td>
 			</tr>
 		</tfoot>
 	</table>
 	
 	<script type="text/javascript">
+		const memberAuth = '${memberVO.memberAuth }';
+		let btnApprove = $('#btn_approve');
+		let btnRefuse = $('#btn_refuse');
+		
+		// 대상 유저의 권한이 "판매자"이면 판매자 권한 취소 페이지 출력
+		if(memberAuth == '판매자'){
+			btnApprove.text('판매자 권한 취소');
+			btnApprove.click(function(){
+				sendResult('승인');
+			});
+			btnRefuse.text('돌아가기');
+			btnRefuse.click(function(){
+				window.close();
+			});
+		}else { // "일반"이면 판매자 권한 등록 페이지 출력
+			btnApprove.text('승인');
+			btnApprove.click(function(){
+				sendResult('승인');
+			});
+			btnRefuse.text('거절');
+			btnRefuse.click(function(){
+				sendResult('거절');
+			});
+		}
 		
 		
 		function sendResult(requestState){

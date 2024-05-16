@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-
+import com.web.vop.domain.ProductDetailsDTO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.util.Pagination;
 
@@ -76,4 +76,6 @@ public interface ProductMapper {
 	// 상태가 ??인 상품 수 조회
 	int selectStateIsCnt(String productState);
 	
+	// productId로 상세 정보 조회
+	ProductDetailsDTO selectDetails(int productId);
 }

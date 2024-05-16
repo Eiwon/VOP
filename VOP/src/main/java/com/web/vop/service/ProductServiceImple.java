@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.web.vop.domain.ImageVO;
+import com.web.vop.domain.ProductDetailsDTO;
 import com.web.vop.domain.ProductVO;
+import com.web.vop.persistence.ImageMapper;
 import com.web.vop.persistence.ProductMapper;
+import com.web.vop.util.FileUploadUtil;
 import com.web.vop.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
@@ -18,6 +21,9 @@ public class ProductServiceImple implements ProductService{
 	
 	@Autowired
 	private ProductMapper productMapper;
+	
+	@Autowired
+	private ImageMapper imageMapper;
 	
 	// 상품 상세 정보 검색
 	@Override
@@ -126,7 +132,22 @@ public class ProductServiceImple implements ProductService{
 	@Override
 	public int deleteProduct(int productId) {
 		log.info("deleteProduct()");
-		return productMapper.deleteProduct(productId);
+		int res = 0;
+		// 상품 이미지도 삭제해야함
+		List<ImageVO> imageList = imageMapper.selectAllbyProductId(productId);
+		
+		if(imageList != null) { // 서버에 저장된 이미지 삭제
+			log.info("관련 이미지 : " + imageList.size() + "건");
+			for(ImageVO image : imageList) {
+				FileUploadUtil.deleteFile(image);
+			}
+		}
+		// DB에 저장된 이미지 정보 삭제
+		res += imageMapper.deleteProductImage(productId);
+		res += productMapper.deleteProduct(productId);
+		log.info("DB 총 " + res + "건 삭제 완료");
+		
+		return res;
 	} // end deleteProduct
 
 	@Override
@@ -152,6 +173,12 @@ public class ProductServiceImple implements ProductService{
 		log.info("getStateIsWaitCnt()");
 		return productMapper.selectStateIsCnt(productState);
 	} // end getStateIsWaitCnt
+
+	@Override
+	public ProductDetailsDTO getDetails(int productId) {
+		log.info("getDetails()");
+		return productMapper.selectDetails(productId);
+	} // end getDetails
 
 	
 

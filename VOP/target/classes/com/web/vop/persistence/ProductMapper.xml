@@ -20,6 +20,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="productDateCreated" column="PRODUCT_DATE_CREATED"/>
    </resultMap>
    
+   <resultMap type="com.web.vop.domain.ProductDetailsDTO" 
+   		id="productDetailsResultMap">
+   		<id property="productId" column="PRODUCT_ID"/>
+   		<result property="memberId" column="MEMBER_ID"/>
+     	<result property="productName" column="PRODUCT_NAME"/>
+      	<result property="productPrice" column="PRODUCT_PRICE"/>
+   		<result property="productRemains" column="PRODUCT_REMAINS"/>
+      	<result property="productPlace" column="PRODUCT_PLACE"/>
+      	<result property="productState" column="PRODUCT_STATE"/>
+      	<result property="category" column="CATEGORY"/>
+      	<result property="imgId" column="IMG_ID"/>
+      	<result property="productDateCreated" column="PRODUCT_DATE_CREATED"/>
+		<result property="memberName" column="MEMBER_NAME"/>
+		<result property="memberEmail" column="MEMBER_EMAIL"/>
+		<result property="memberPhone" column="MEMBER_PHONE"/>
+		<result property="businessName" column="BUSINESS_NAME"/>
+   </resultMap>
+   
    <!-- productId통해 상품 조회 -->
    <select id="selectProduct" resultMap="productResultMap">
    		SELECT * FROM PRODUCT
@@ -155,6 +173,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!--상태가 ??인 모든 상품 수 검색 -->
 	<select id="selectStateIsCnt" resultType="Integer">
 		SELECT COUNT(PRODUCT_ID) FROM PRODUCT WHERE PRODUCT_STATE = #{productState}
+	</select>
+	
+	<!-- productId로 상세 정보 조회 -->
+	<select id="selectDetails" resultMap="productDetailsResultMap">
+		SELECT PM.*, SELLER.BUSINESS_NAME FROM (
+			SELECT P.*, M.MEMBER_ID PM_MEMBER_ID, M.MEMBER_NAME, M.MEMBER_EMAIL, M.MEMBER_PHONE 
+			FROM PRODUCT P JOIN MEMBER M
+			ON P.MEMBER_ID = M.MEMBER_ID
+			WHERE P.PRODUCT_ID = #{productId}
+		) PM JOIN SELLER ON PM.PM_MEMBER_ID = SELLER.MEMBER_ID
 	</select>
 	
 </mapper>
