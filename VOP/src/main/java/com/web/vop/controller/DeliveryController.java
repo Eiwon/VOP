@@ -1,11 +1,7 @@
 package com.web.vop.controller;
-
-
-<<<<<<< HEAD
 import java.util.List;
 
-=======
->>>>>>> 0d996a6246facfcd9fb033cc5a67cd9ba9379427
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,26 +13,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.web.vop.domain.DeliveryVO;
-<<<<<<< HEAD
+
 import com.web.vop.service.MemberService;
-=======
+
 import com.web.vop.service.DeliveryService;
->>>>>>> 0d996a6246facfcd9fb033cc5a67cd9ba9379427
-import com.web.vop.service.OrderService;
 
 import lombok.extern.log4j.Log4j;
 
 
 @Controller
-@RequestMapping("/delivery")
+@RequestMapping("/Delivery")
 @Log4j
 public class DeliveryController {
 	
 	@Autowired
-	OrderService orderService;
-	
-	@Autowired
-	private DeliveryService deliveryService;
+	DeliveryService deliveryService;
 	
 	// 마이페이지에서 주문목록 > 배송조회 페이지로 이동
 	@GetMapping("/delivery")
@@ -60,7 +51,7 @@ public class DeliveryController {
 				path = "redirect:../member/login";
 			}else {
 				// 배송지 상세 조회 (받는 사람 , 받는 주소 , 상세 주소 ,배송 요청 사항 )
-				List<DeliveryVO> deliveryList = orderService.getMemberId(memberId);
+				List<DeliveryVO> deliveryList = deliveryService.getMemberId(memberId);
 				log.info(deliveryList.toString());
 				
 				model.addAttribute("deliveryList", deliveryList);
@@ -78,9 +69,23 @@ public class DeliveryController {
 	@GetMapping("/deliveryRegister")
 	public void deliveryRegisterGET() {
 		log.info("deliveryRegister 페이지 이동 요청");
-		
 	}//end deliveryRegisterGET()
 	
+	
+	@PostMapping("/register")
+	public String registerPOST(DeliveryVO deliveryVo, HttpServletRequest request) {
+	    log.info("배송 정보 등록");
+	    //log.info("등록 정보 : {}", deliveryVo.toString());
+
+	    deliveryVo.setMemberId((String) request.getSession().getAttribute("memberId"));
+
+	    int res = deliveryService.registerDelivery(deliveryVo);
+	    log.info(res + "행 등록 성공");
+
+	    return "redirect:delivery";
+	}
+
+
 	/*
 	 * @GetMapping("/register") public void registerGET() {
 	 * log.info("배송 정보 등록 페이지 이동"); } // end registerGET

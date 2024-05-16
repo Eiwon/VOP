@@ -11,7 +11,7 @@
 </head>
 <body>
 <h2>배송지 등록</h2>
-<form id="deliveryForm" action="saveDeliveryAddress" method="post">
+<form id="deliveryForm" action="register" method="post">
     <label for="recipient">받는 사람:</label>
     <input type="text" id="recipient" name="recipient" required><br><br>
 

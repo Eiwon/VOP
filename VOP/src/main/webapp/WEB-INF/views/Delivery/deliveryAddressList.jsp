@@ -9,6 +9,28 @@
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>배송지 관리</title>
+
+
+<style>
+
+    .delivery-box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+    .delivery-details {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .delivery-details img {
+        margin-right: 10px;
+        max-width: 100px;
+    }
+    .delivery-buttons {
+        margin-left: auto;
+    }
+</style>
 </head>
 <body>
 <h2>배송지 관리</h2>
@@ -26,9 +48,9 @@
 %>
 
 	<c:forEach items="${deliveryList}" var="delivery">
-	    <div class="order-box">
-	        <div class="order-details">
-	        <!-- 이미지 목록 표시 -->
+	    <div class="delivery-box">
+    		<div class="delivery-details">
+       		<!-- 이미지 목록 표시 -->
 				<c:forEach items="${imageList}" var="image">
 					   <img src="showImg?imgId=${image.imgId}" alt="${image.imgRealName}.${image.imgExtension}">
 				</c:forEach>

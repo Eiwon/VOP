@@ -23,18 +23,6 @@ public interface OrderMapper {
 	// paymentId로 주문 검색
 	public List<OrderVO> selectOrderByPaymentId(int paymentId);
 	
-	// 배송지 상세 조회 (받는 사람 , 받는 주소 , 배송 요청 사항 )
-	public List<DeliveryVO> selectByMemberId(String memberId);
-	
-	// 배송지 등록 
-	public int insertDelivery(DeliveryVO deliveryVo);
-		
-	// 배송지 수정 
-	public int updateDelivery(DeliveryVO deliveryVo);
-	
-	// 배송지 삭제
-	public int deleteDelivery(String memberId);
-	
 	// 주문 목록 조회 
 	public List<OrderVO> selectOrderListByMemberId(String memberId);
 

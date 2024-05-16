@@ -5,22 +5,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="com.web.vop.persistence.DeliveryMapper">
 
-   <resultMap type="com.web.vop.domain.DeliveryVO"
-      id="deliveryResultMap">
-      <id property="deliveryId" column="DELIVERY_ID"/>
-      <result property="memberId" column="MEMBER_ID" />
+   <resultMap type="com.web.vop.domain.DeliveryVO" 
+   id="DeliveryResultMap">
+      <id property="deliveryId" column="DELIVERY_ID" /> 
+      <result property="memberId" column="MEMBER_ID"/>
       <result property="receiverName" column="RECEIVER_NAME"/>
       <result property="receiverAddress" column="RECEIVER_ADDRESS"/>
       <result property="receiverPhone" column="RECEIVER_PHONE"/>
+      <result property="deliveryAddressDetails" column="DELIVERY_ADDRESS_DETAILS"/>
       <result property="requirement" column="REQUIREMENT"/>
    </resultMap>
    
-   <insert id="insertDelivery">
+   <!-- 배송지 등록 -->
+   <insert id="insertDelivery"> 
    		INSERT INTO DELIVERY VALUES (
    			DELIVERY_SEQ.NEXTVAL, #{memberId}, #{receiverName}, #{receiverAddress},
    			#{receiverPhone}, #{requirement}
    		)
    </insert>
+   
+   <!-- 배송지 수정  -->
+	<update id="updateDelivery">
+		UPDATE DELIVERY SET RECEIVER_NAME = #{receiverName}, RECEIVER_ADDRESS = #{receiverAddress}, 
+		RECEIVER_PHONE = #{receiverPhone} , DELIVERY_ADDRESS_DETAILS = #{deliveryAddressDetails}, REQUIREMENT = #{requirement}
+		WHERE MEMBER_ID = #{memberId}
+	</update>
+   
+   <!-- 배송지 삭제 -->
+	<delete id="deleteDelivery">
+		DELETE DELIVERY WHERE MEMBER_ID = #{memberId}
+	</delete>
+   
+   <!--  배송지 상세 조회 -->
+	<select id="selectByMemberId" resultMap="DeliveryResultMap">
+		SELECT * FROM DELIVERY WHERE MEMBER_ID = #{memberId}
+	</select>
    
 </mapper>
 	
