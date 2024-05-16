@@ -4,44 +4,60 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<style type="text/css">
+.form_container{
+	border: 1px solid black;
+	width: 500px;
+	height: 800px;
+	display: inline-block;
+}
+input {
+	width: 400px;
+	height: 40px;
+}
+.input_box {
+	height: 50px;
+	margin-top: 40px;
+}
+</style>
 <meta charset="UTF-8">
 <title>회원 가입</title>
 </head>
-<body>
+<body style="text-align: center;">
+	<div class="form_container">
 	<div>
-		<div>
+		<div class="input_box">
 			<input type="text" id="member_id" name="memberId" placeholder="아이디" onblur="isValidId(this)">
 			<div></div>
 		</div>
-		<div>
+		<div class="input_box">
 			<input type="password" id="member_pw" name="memberPw" placeholder="비밀번호" onblur="expChk('pw', this)">
 			<div></div>
 		</div>
-		<div>
+		<div class="input_box">
 			<input type="password" id="check_pw" placeholder="비밀번호 확인" onblur="comparePw()">
 			<div></div>
 		</div>
-		<div>
+		<div class="input_box">
 			<input type="text" id="member_name" name="memberName" placeholder="이름" onblur="expChk('name', this)">
 			<div></div>
 		</div>
-		<div>
+		<div class="input_box">
 			<input type="text" id="member_email" name="memberEmail" placeholder="이메일" onblur="expChk('email', this)">
 			<div></div>
 		</div>
-		<div>
+		<div class="input_box">
 			<input type="text" id="member_phone" name="memberPhone" placeholder="전화번호" onblur="isValidPhone(this)">
 			<div></div>
 			<button onclick="whoYouAre()">본인인증</button>
 		</div>
 	</div>
-	<div>
+	<div style="margin-top: 30px;">
 		<input type="button" onclick="register()" value="회원 가입">
 	</div>
-
+	</div>
 	<script type="text/javascript">
 		
 		let memberId = $('#member_id');
@@ -50,7 +66,8 @@
 		let memberName = $('#member_name');
 		let memberEmail = $('#member_email');
 		let memberPhone = $('#member_phone');
-	
+		IMP.init('imp04667313');
+		
 		let expMap = {};
 		expMap['id'] = {
 				exp : new RegExp("^[a-zA-Z][a-zA-Z0-9]{5,19}$"),
@@ -218,31 +235,26 @@
 		} // end expChk
 		
 		function whoYouAre(){
-			IMP.init('imp04667313');
+			/* PortOne.requestIdentityVerification({
+				  // 고객사 storeId로 변경해주세요.
+				  storeId: "store-bc857723-7e7d-4a03-8098-f75635cc4d3d",
+				  identityVerificationId: `identity-verification-${crypto.randomUUID()}`,
+				  // 콘솔에서 추가한 채널의 키 값으로 변경해주세요.
+				  channelKey: "channel-key-f92a755f-98da-4aed-9972-0e78043db0e0",
+				}); */
 			IMP.certification(
 					  {
 					    // param
 					    // 주문 번호
-					    pg: "A010002002", //본인인증 설정이 2개이상 되어 있는 경우 필
-					    merchant_uid: "ORD20180131-0000011",
-					    // 모바일환경에서 popup:false(기본값) 인 경우 필수
+					    //pg: "danal.A010002002", //본인인증 설정이 2개이상 되어 있는 경우 필
+					    //merchant_uid: "ORD20180131-0000011",
 					    // PC환경에서는 popup 파라미터가 무시되고 항상 true 로 적용됨
 					    popup: true
 					  },
 					  function (rsp) {
 					    // callback
-					    if (rsp.success) {
-					    	console.log(rsp);
-					   		$.ajax({
-					   			
-					   		});
-					      // 인증 성공 시 로직
-					    } else {
-					    	console.log('fail : ' + rsp);
-					      // 인증 실패 시 로직
-					    }
-					  },
-					);
+					    console.log('fail : ' + rsp);
+					  });
 		} // end whoYouAre
 		
 	</script>

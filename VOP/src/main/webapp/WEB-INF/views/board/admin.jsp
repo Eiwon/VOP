@@ -13,7 +13,23 @@
 td {
 	width: 200px;
 }
+.request_container {
+	height: 400px;
+}
 
+.page_list {
+	display: flex;
+	flex-direction: row;
+	list-style: none;
+	
+}
+
+tbody {
+	height: 250px;
+}
+tr {
+	height: 50px;
+}
 
 </style>
 <title>관리자 페이지</title>
@@ -22,9 +38,9 @@ td {
 	<div>
 		<h2>관리자 페이지</h2>
 	</div>
-	
+	<button onclick="popupSellerRegister(this)">클릭</button>
 	<div>
-		<div>
+		<div class="request_container">
 			<h3>사업자 등록 요청</h3>
 			<table class="search_table">
 				<tbody id="seller_req_list">
@@ -32,7 +48,7 @@ td {
 				<tfoot id="seller_req_list_page"></tfoot>
 			</table>
 		</div>
-		<div>
+		<div class="request_container">
 			<h3>등록된 사업자 조회</h3>
 			<table class="search_table">
 				<tbody id="seller_approved_list">
@@ -40,7 +56,7 @@ td {
 				<tfoot id="seller_approved_list_page"></tfoot>
 			</table>
 		</div>
-		<div>
+		<div class="request_container">
 			<h3>상품 등록 요청</h3>
 			<table class="search_table">
 				<tbody id="product_register_req_list">
@@ -48,7 +64,7 @@ td {
 				<tfoot id="product_register_req_list_page"></tfoot>
 			</table>
 		</div>
-		<div>
+		<div class="request_container">
 			<h3>상품 삭제 요청</h3>
 			<table class="search_table">
 				<tbody id="product_delete_req_list">
@@ -79,28 +95,27 @@ td {
 		
 		$(document).ready(function(){
 			
-			showSellerRequest();
-			showSellerApproved();
-			showProductRegisterRequest();
-			showProductDeleteRequest();
+			showSellerRequest(1);
+			showSellerApproved(1);
+			showProductRegisterRequest(1);
+			showProductDeleteRequest(1);
 			
 		}); // end document.ready
 		
 		
 		
-		function showSellerRequest(){
+		function showSellerRequest(page){
 			let form = '';
-			
+			let pageForm = '<ul>';
 			$.ajax({
 				method : 'GET',
-				url : '../seller/wait',
+				url : '../seller/wait?pageNum=' + page,
 				success : function(result){
 					console.log(result);
 					sellerReq.list = result.list;
-					sellerReq.pageMaker = result.pageMaker;
 					
 					for(x in sellerReq.list){
-						form += '<tr onclick="toDetails(this)">' + 
+						form += '<tr>' + 
 							'<td class="targetIndex" hidden="hidden">' + x + '</td>' +
 							'<td class="memberId">' + sellerReq.list[x].memberId + '</td>' + 
 							'<td class="businessName">' + sellerReq.list[x].businessName +'</td>' +
@@ -108,14 +123,15 @@ td {
 							'<td class="requestState">' + sellerReq.list[x].requestState +'</td>' +
 							'</tr>';
 					}
-					console.log(form);
+					$('#seller_req_list_page').html(makePageForm(result.pageMaker, 'showSellerRequest'));
+					
 					tagSellerReqList.html(form);
 				} // end success
 			}); // end ajax
 			
 		} // end showSellerRequest
 		
-		function showSellerApproved(){
+		function showSellerApproved(page){
 			let form = '';
 			
 			$.ajax({
@@ -124,7 +140,6 @@ td {
 				success : function(result){
 					console.log(result);
 					sellerApproved.list = result.list;
-					sellerApproved.pageMaker = result.pageMaker;
 					
 					for(x in sellerApproved.list){
 						form += '<tr">' + 
@@ -134,13 +149,16 @@ td {
 							'<td class="requestTime">' + toDate(sellerApproved.list[x].requestTime) +'</td>' +
 							'</tr>';
 					}
+					
+					$('#seller_approved_list_page').html(makePageForm(result.pageMaker, 'showSellerApproved'));
+					
 					tagSellerApprovedList.html(form);
 				} // end success
 			}); // end ajax
 			
 		} // end showSellerApproved
 		
-		function showProductRegisterRequest(){
+		function showProductRegisterRequest(page){
 			let form = '';
 			
 			$.ajax({
@@ -149,7 +167,6 @@ td {
 				success : function(result){
 					console.log(result);
 					productRegisterReq.list = result.list;
-					productRegisterReq.pageMaker = result.pageMaker;
 					
 					for(x in productRegisterReq.list){
 						form += '<tr>' + 
@@ -162,13 +179,15 @@ td {
 						'<td class="productDateCreated">' + toDate(productRegisterReq.list[x].productDateCreated) + '</td>' +
 						'</tr>';
 					}
+					$('#product_register_req_list_page').html(makePageForm(result.pageMaker, 'showProductRegisterRequest'));
+					
 					tagProdutRegisterReqList.html(form);
 				} // end success
 			}); // end ajax
 			
 		} // end showProductRegisterRequest
 		
-		function showProductDeleteRequest(){
+		function showProductDeleteRequest(page){
 			let form = '';
 			
 			$.ajax({
@@ -177,7 +196,6 @@ td {
 				success : function(result){
 					console.log(result);
 					productDeleteReq.list = result.list;
-					productDeleteReq.pageMaker = result.pageMaker;
 					
 					for(x in productDeleteReq.list){
 						form += '<tr>' + 
@@ -190,7 +208,9 @@ td {
 						'<td class="productDateCreated">' + toDate(productDeleteReq.list[x].productDateCreated) + '</td>' +
 						'</tr>';
 					}
-					tagProdutDeleteReqList.html(form);
+					$('#product_delete_req_list_page').html(makePageForm(result.pageMaker, 'showProductDeleteRequest'));
+					
+					tagProductDeleteReqList.html(form);
 				} // end success
 			}); // end ajax
 			
@@ -211,6 +231,43 @@ td {
 					date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
 			return formatted;
 		} // end toDate
+		
+		function makePageForm(pageMaker, listenerName){
+			const startNum = pageMaker.startNum;
+			const endNum = pageMaker.endNum;
+			console.log(startNum + ', ' + endNum);
+			
+			let pageForm = '<ul class="page_list">';
+			if(pageMaker.prev){
+				pageForm += '<li onclick="' + listenerName + '(' + (startNum - 1) + ')">이전</li>&nbsp&nbsp';
+			}
+			
+			for(let x = startNum; x <= endNum; x++){
+				pageForm += '<li onclick="' + listenerName + '(' + x + ')">' + x + '</li>&nbsp&nbsp';
+			}
+			
+			if(pageMaker.next){
+				pageForm += '<li onclick="' + listenerName + '(' + (endNum + 1) + ')">다음</li>';
+			}
+			pageForm += '</ul>';
+			return pageForm;
+		} // end makePageForm
+		
+		function popupSellerRegister(input){
+			// 클릭한 sellerRequest의 memberId 찾기
+			//const targetIndex = $(input).find('#targetIndex').text();
+			//sellerReq[targetIndex];
+			const popupStat = {
+					'url' : '../seller/popupSellerReg?memberId=test1234',
+					'name' : 'popupSellerReqister',
+					'option' : 'width=500, height=600, top=50, left=400'
+			};
+			
+			// 팝업 창 띄우기
+			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
+			
+		} // end popupSellerRegister
+		
 		
 	</script>
 	

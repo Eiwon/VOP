@@ -87,9 +87,9 @@ public class BasketController {
 	} // end updateProductNum
 	
 	// 장바구니 비우기
-	@DeleteMapping("/clear")
+	@DeleteMapping("/clear/{memberId}")
 	@ResponseBody
-	public ResponseEntity<Integer> clearBasket(@RequestBody String memberId){
+	public ResponseEntity<Integer> clearBasket(@PathVariable("memberId") String memberId){
 		log.info("clearBasket() : " + memberId);
 		int res = basketService.clear(memberId);
 		log.info(res + "행 삭제 : 장바구니 초기화");

@@ -251,11 +251,10 @@
 		function clearBasket(){
 			$.ajax({
 				method : 'DELETE',
-				url : 'clear',
+				url : 'clear/' + memberId,
 				headers : {
 	                  'Content-Type' : 'application/json'
 	            },
-	            data : JSON.stringify(memberId),
 				success : function(result){
 					console.log(result);
 					printBasketList();

@@ -13,6 +13,11 @@ public class PageMaker {
 	private int totalCount; // 전체 게시글 수
 	private int pageCount; // 화면에 표시되는 페이지 번호 수
 	
+	private int startNum;
+	private int endNum;
+	private boolean isPrev;
+	private boolean isNext;
+	
 	public PageMaker() {
 		this.pageCount = 5; // 5개의 페이지 번호만 화면에 표시
 	}	
@@ -67,5 +72,13 @@ public class PageMaker {
 			return true;
 		}
 	} // end isNext()
+	
+	public void update() { 
+		// 자바스크립트로 전송하면 자바스크립트에서 자바 객체 메소드를 호출 못해서 미리 계산했습니다.
+		this.isPrev = isPrev();
+		this.startNum = getStartNum();
+		this.endNum = getEndNum();
+		this.isNext = isNext();
+	} // end update()
 	
 } // end PageMaker

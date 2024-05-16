@@ -41,15 +41,18 @@ public class ReviewRESTController {
 		log.info("createReview()");
 		
 		// reviewVO 입력 받아 댓글(리뷰) 등록
-		int reult = reviewService.createReview(reviewVO);
+		int result = reviewService.createReview(reviewVO);
 		
-		// 상품 테이블에 댓글 총 갯수 증가
-		int res = reviewService.reviewNumUP(reviewVO.getProductId());
+		// 등록이 완료 되었을때 댓글 총 갯수 증가
+		if(result == 1) {
+			// 상품 테이블에 댓글 총 갯수 증가
+			int res = reviewService.reviewNumUP(reviewVO.getProductId());
+			log.info(res + "행 댓글 증가");
+		}
 		
-		log.info(res + "행 댓글 증가");
-		
-		// reult값을 전송하여 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
-		return new ResponseEntity<Integer>(reult, HttpStatus.OK);
+		log.info(result + "행 댓글 등록");
+		// result값을 전송하여 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
+		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 	
 //	// productController쪽으로 이동
@@ -99,9 +102,14 @@ public class ReviewRESTController {
 	      // productId에 해당하는 reviewId의 댓글(리뷰)
 	      int result = reviewService.deleteReview(reviewId, productId);
 	      
-	      // 상품 테이블에 댓글 총 갯수 감소
-		  int res = reviewService.reviewNumDown(productId);
-		  log.info(res + "행 댓글 감소");
+	      // 삭제가 완료 되었을때 댓글 총 갯수 감소
+	      if(result == 1) {
+	    	  // 상품 테이블에 댓글 총 갯수 감소
+			  int res = reviewService.reviewNumDown(productId);
+			  log.info(res + "행 댓글 감소");
+			}
+	      
+	      log.info(result + "행 댓글 삭제");
 	      
 	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);

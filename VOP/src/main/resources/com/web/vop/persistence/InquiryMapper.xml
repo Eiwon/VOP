@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.web.vop.persistence.InquiryMapper">
+
+	<resultMap type="com.web.vop.domain.InquiryVO"
+      id="inquiryResultMap">
+      
+      <id property="inquiryId" column="INQUIRY_ID" /> 
+      <result property="memberId" column="MEMBER_ID" />
+      <result property="productId" column="PRODUCT_ID"/>
+      <result property="inquiryContent" column="INQUIRY_CONTENT"/>
+      <result property="inquiryDateCreated" column="INQUIRY_DATE_CREATED"/>
+      <result property="parentId" column="PARENT_ID"/>
+   </resultMap>
+	
+	
+	<!-- 댓글(문의) 입력 -->
+   <insert id="insertInquiry">
+      INSERT INTO INQUIRY 
+      (INQUIRY_ID, MEMBER_ID, PRODUCT_ID, INQUIRY_CONTENT, INQUIRY_DATE_CREATED, PARENT_ID)
+	  VALUES (INQUIRY_SEQ.NEXTVAL , #{memberId}, #{productId}, #{inquiryContent}, SYSDATE, #{parentId});
+   </insert>
+   
+    <!-- 댓글(리뷰) 전체 검색 -->
+   <select id="selectListByReview" resultMap="reviewResultMap">
+      SELECT * FROM INQUIRY
+      WHERE PRODUCT_ID = #{productId}
+      ORDER BY INQUIRY_ID
+   </select>
+   
+	 <!-- 댓글(문의) 수정 --><!-- 수정 기능 넣을지 말지 고민 중 -->
+   <update id="updateInquiry">
+      UPDATE INQUIRY
+      SET INQUIRY_DATE_CREATED = #{inquiryContent}
+      WHERE REVIEW_ID = #{productId} AND MEMBER_ID = #{memberId}
+   </update>
+   
+   <!-- 댓글(문의) 삭제 -->
+   <delete id="deleteInquiry">
+      DELETE FROM INQUIRY
+      WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
+   </delete>
+   
+</mapper>

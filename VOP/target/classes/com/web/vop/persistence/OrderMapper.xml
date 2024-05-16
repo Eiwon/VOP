@@ -14,10 +14,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="productPrice" column="PRODUCT_PRICE"/>
       <result property="purchaseNum" column="PURCHASE_NUM"/>
       <result property="expectDeliveryDate" column="EXPECT_DELIVERY_DATE"/>
+<<<<<<< HEAD
       <result property="memberId" column="MEMBER_ID"/> <!-- memberId 추가 하기 -->
       <result property="imgId" column="IMG_ID"/>
       <result property="imgId" column="IMG_ID"/>
       <result property="member_id" column="MEMBER_ID"/>
+=======
+
+      <result property="memberId" column="MEMBER_ID"/> <!-- memberId 추가 하기 -->
+      <result property="imgId" column="IMG_ID"/>
+
+>>>>>>> c0138e2f4b527b1a21dcac190759099c20a21aee
    </resultMap>
 
 	<resultMap type="com.web.vop.domain.DeliveryVO" id="DeliveryResultMap">

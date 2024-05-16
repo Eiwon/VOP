@@ -17,7 +17,7 @@ public interface SellerService {
 	
 	public int updateMemberContent(SellerVO sellerVO);
 	
-	public int refuseRequest(String memberId, String refuseMsg);
+	public int approveRequest(SellerVO sellerVO);
 	
 	public int deleteRequest(String memberId);
 	
