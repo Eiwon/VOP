@@ -64,15 +64,16 @@ public class SellerServiceImple implements SellerService{
 	
 	@Override
 	public int approveRequest(SellerVO sellerVO) {
-		log.info("요청 결재");
+		log.info("판매자 권한 부여 / 회수");
 		int res = sellerMapper.updateAdminContent(sellerVO);
 		log.info(res + "행 수정 성공");
 		if(sellerVO.getRequestState().equals("승인")) { // 승인되었다면 회원 권한 변경
 			memberMapper.updateMemberAuth(sellerVO.getMemberId(), "판매자");
+		}else {
+			memberMapper.updateMemberAuth(sellerVO.getMemberId(), "일반");
 		}
-		
 		return res;
-	} // end refuseRequest
+	} // end approveRequest
 
 	@Override
 	public int deleteRequest(String memberId) {
@@ -81,6 +82,8 @@ public class SellerServiceImple implements SellerService{
 		log.info(res + "행 삭제 성공");
 		return res;
 	} // end deleteRequest
+
+	
 
 	
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -78,8 +79,10 @@ public class MemberController {
 	} // end logout
 	
 	@GetMapping("/modify")
-	public void modifyGET() {
+	public void modifyGET(Model model, HttpServletRequest request) {
 		log.info("내 정보 수정 페이지 요청");
+		String memberId = (String)request.getSession().getAttribute("memberId");
+		model.addAttribute("memberVO", memberService.getMemberInfo(memberId));
 	} // end modifyGET
 	
 }

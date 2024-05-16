@@ -21,7 +21,7 @@
 	</div>
 	<div>
 		<a href="registerProduct">상품 등록</a>
-		<a href='listProduct?memberId=<%= request.getSession().getAttribute("memberId")%>'>등록한 상품 조회</a>
+		<a href='myProduct'>등록한 상품 조회</a>
 	</div>
 	
 	<script type="text/javascript">
@@ -61,12 +61,20 @@
 				'<thead><tr><th>사업체 이름</th><th>신청 날짜</th><th>신청 내용</th><th>상태</th><th>비고</th></tr></thead>' + 
 				'<tbody><tr>' +
 				'<td>' + sellerVO.businessName + '</td>' +
-				'<td>' + new Date(sellerVO.requestTime) + '</td>' +
+				'<td>' + toDate(sellerVO.requestTime) + '</td>' +
 				'<td>' + sellerVO.requestContent + '</td>' +
 				'<td>' + sellerVO.requestState + '</td>' +
 				'<td>' + sellerVO.refuseMsg + '</td></tr></tbody></table></div>';
 			myRequest.html(str);
 		} // end printInfo
+		
+		function toDate(timestamp){
+			let date = new Date(timestamp);
+			let formatted = (date.getYear() + 1900) + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + 
+					date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+			return formatted;
+		} // end toDate
+		
 	</script>
 	
 </body>

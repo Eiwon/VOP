@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.web.vop.persistence.DeliveryMapper">
+
+   <resultMap type="com.web.vop.domain.DeliveryVO"
+      id="deliveryResultMap">
+      <id property="deliveryId" column="DELIVERY_ID"/>
+      <result property="memberId" column="MEMBER_ID" />
+      <result property="receiverName" column="RECEIVER_NAME"/>
+      <result property="receiverAddress" column="RECEIVER_ADDRESS"/>
+      <result property="receiverPhone" column="RECEIVER_PHONE"/>
+      <result property="requirement" column="REQUIREMENT"/>
+   </resultMap>
+   
+   <insert id="insertDelivery">
+   		INSERT INTO DELIVERY VALUES (
+   			DELIVERY_SEQ.NEXTVAL, #{memberId}, #{receiverName}, #{receiverAddress},
+   			#{receiverPhone}, #{requirement}
+   		)
+   </insert>
+   
+</mapper>
+	

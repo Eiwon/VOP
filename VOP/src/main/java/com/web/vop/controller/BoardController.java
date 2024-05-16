@@ -138,18 +138,22 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 	} // end myInfoGet
 	
 	@GetMapping("/admin")
-	public void adminGET() {
+	public String adminGET() {
 		log.info("관리자 페이지로 이동");
+		return "redirect:../seller/admin";
 	} // end myInfoGet
 	
-	@GetMapping("basket")
+	@GetMapping("/basket")
 	public String basketGET() {
 		log.info("장바구니 페이지 이동");
 		return "redirect:../basket/main";
 	} // end basketGET
 	
-	
-	
+	@GetMapping("/delivery")
+	public String deliveryGET() {
+		log.info("delivery controller로 redirection");
+		return "redirect:../delivery/delivery";
+	} // end deliveryGET
 	
 	
 }//end MainController

@@ -23,6 +23,7 @@
 				<div id="my_info">
 					<a href="myInfo">내 정보 확인 / 수정</a>
 					<a href="seller">판매자 페이지</a>
+					<a href="delivery">배송지 관리</a>
 				</div>
 			</div>
 		</div>

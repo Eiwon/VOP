@@ -2,12 +2,10 @@ package com.web.vop.controller;
 
 import java.util.List;
 
-import javax.swing.ListModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.web.vop.domain.ReviewVO;
 import com.web.vop.service.ReviewService;
 
-import lombok.CustomLog;
 import lombok.extern.log4j.Log4j;
 
 @RestController
@@ -53,10 +50,9 @@ public class ReviewRESTController {
 		log.info(result + "행 댓글 등록");
 		// result값을 전송하여 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
-	}
+	}// end createReview()
 	
-//	// productController쪽으로 이동
-//	// 경로 ../all 인것 같다.
+	
 	@GetMapping("/all/{productId}") // GET : 댓글(리뷰) 선택(all)
 	public ResponseEntity<List<ReviewVO>> readAllReview(
 			@PathVariable("productId") int productId){
@@ -70,7 +66,7 @@ public class ReviewRESTController {
 		
 		// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 		return new ResponseEntity<List<ReviewVO>>(list, HttpStatus.OK);
-	}
+	}// end readAllReview()
 	
 	
 	 @PutMapping("/{reviewId}") // PUT : 댓글(리뷰) 수정 // 나중에 데이터 받는 거에 따라 달라짐
@@ -89,7 +85,7 @@ public class ReviewRESTController {
 	      
 	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
-	   }
+	   }// end updateReview()
 	 
 	 @DeleteMapping("/{reviewId}/{productId}") // DELETE : 댓글(리뷰) 삭제 // 나중에 데이터 받는 거에 따라 달라짐
 	   public ResponseEntity<Integer> deleteReview(
@@ -113,7 +109,7 @@ public class ReviewRESTController {
 	      
 	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
-	   }
+	   }// end deleteReview()
 
 	
 }
