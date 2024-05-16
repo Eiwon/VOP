@@ -330,8 +330,8 @@
                 </div>
             </div>
             <div class="order-buttons">
-                <a href=""><button>배송 조회</button></a>
-                <a href=""><button>리뷰 쓰기</button></a>
+                <a href="../Delivery/delivery"><button>배송 조회</button></a>
+                <a href="../review/register"><button>리뷰 쓰기</button></a>
 				<a href=""><button>교환/반품 신청</button></a>
             </div>
         </div>
@@ -348,6 +348,10 @@
     }   
 %>
 
+	<!-- 배송지 관리 페이지 -->
+    <a href="../Delivery/deliveryAddressList">배송지 관리</a>
+	
+	
 	
 </body>
 </html>

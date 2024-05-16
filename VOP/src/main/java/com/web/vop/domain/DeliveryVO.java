@@ -18,5 +18,5 @@ public class DeliveryVO {
 	private String receiverAddress; // 배송지
 	private String receiverPhone; // 수령인 전화번호 
 	private String requirement; //  요청사항
-	
+	private String deliveryAddressDetails; // 배송지 상세주소 
 }

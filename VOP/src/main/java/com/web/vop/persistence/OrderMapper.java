@@ -24,7 +24,7 @@ public interface OrderMapper {
 	public List<OrderVO> selectOrderByPaymentId(int paymentId);
 	
 	// 배송지 상세 조회 (받는 사람 , 받는 주소 , 배송 요청 사항 )
-	public DeliveryVO selectByMemberId(String memberId);
+	public List<DeliveryVO> selectByMemberId(String memberId);
 	
 	// 배송지 등록 
 	public int insertDelivery(DeliveryVO deliveryVo);

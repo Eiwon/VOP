@@ -14,17 +14,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="productPrice" column="PRODUCT_PRICE"/>
       <result property="purchaseNum" column="PURCHASE_NUM"/>
       <result property="expectDeliveryDate" column="EXPECT_DELIVERY_DATE"/>
-<<<<<<< HEAD
+      <result property="imgId" column="IMG_ID"/>
       <result property="memberId" column="MEMBER_ID"/> <!-- memberId 추가 하기 -->
-      <result property="imgId" column="IMG_ID"/>
-      <result property="imgId" column="IMG_ID"/>
-      <result property="member_id" column="MEMBER_ID"/>
-=======
-
-      <result property="memberId" column="MEMBER_ID"/> <!-- memberId 추가 하기 -->
-      <result property="imgId" column="IMG_ID"/>
-
->>>>>>> c0138e2f4b527b1a21dcac190759099c20a21aee
    </resultMap>
 
 	<resultMap type="com.web.vop.domain.DeliveryVO" id="DeliveryResultMap">
@@ -33,6 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="receiverName" column="RECEIVER_NAME"/>
       <result property="receiverAddress" column="RECEIVER_ADDRESS"/>
       <result property="receiverPhone" column="RECEIVER_PHONE"/>
+      <result property="deliveryAddressDetails" column="DELIVERY_ADDRESS_DETAILS"/>
       <result property="requirement" column="REQUIREMENT"/>
    </resultMap>
    
@@ -60,10 +52,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT * FROM "ORDER" WHERE PAYMENT_ID = #{paymentId}
 	</select>
 	
-	<!--  배송지 상세 조회 (받는 사람 , 받는 주소 , 배송 요청 사항 ) -->
+	<!--  배송지 상세 조회 -->
 	<select id="selectByMemberId" resultMap="DeliveryResultMap">
-		SELECT RECEIVER_NAME, RECEIVER_ADDRESS, REQUIREMENT FROM DELIVERY 
-		WHERE MEMBER_ID = #{memberId}
+		SELECT * FROM DELIVERY WHERE MEMBER_ID = #{memberId}
 	</select>
 	
 	
@@ -76,7 +67,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 배송지 수정  -->
 	<update id="updateDelivery">
 		UPDATE DELIVERY SET RECEIVER_NAME = #{receiverName}, RECEIVER_ADDRESS = #{receiverAddress}, 
-		RECEIVER_PHONE = #{receiverPhone} , REQUIREMENT = #{requirement}
+		RECEIVER_PHONE = #{receiverPhone} , DELIVERY_ADDRESS_DETAILS = #{deliveryAddressDetails}, REQUIREMENT = #{requirement}
 		WHERE MEMBER_ID = #{memberId}
 	</update>
 	
@@ -89,5 +80,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectOrderListByMemberId" resultMap="OrderResultMap">
 		SELECT * FROM "ORDER" WHERE MEMBER_ID = #{memberId}
 	</select>
+	
 	
 </mapper>
