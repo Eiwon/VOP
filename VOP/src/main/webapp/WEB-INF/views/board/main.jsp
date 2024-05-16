@@ -254,7 +254,7 @@
    	 });
 	</script>
     
-    <!-- 검색창 추가 -->
+    <!-- 카테고리 드롭다운 -->
     <div class="search-container">
           <!-- 카테고리 선택 드롭다운 -->
           <select id="boxCategory">
@@ -284,7 +284,10 @@
         <input type="text" id="searchInput" class="search-input" placeholder="검색어를 입력하세요">
         <!-- 검색 버튼 -->
         <button id="searchButton" class="search-button">검색</button>
-        
+		
+		<!-- 페이지 맨 위로 가기 버튼 -->
+		<button id="btnTop" style="position: fixed; bottom: 20px; right: 20px; width: 80px; height: 40px; font-size: 16px;">TOP</button>
+		
     </div>
     
 	<!-- 마이페이지(mypage), 장바구니(basket) 링크 -->
@@ -299,49 +302,36 @@
     </div>
 </div>
 
+<script>
+    $(document).ready(function(){
+        // 페이지 맨 위로 가기 버튼 클릭 이벤트
+        $('#btnTop').click(function(){
+            $('html, body').animate({scrollTop: 0}, 'slow'); // 스크롤을 맨 위로 부드럽게 이동
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+        // 페이지 맨 위로 가기 버튼 클릭 이벤트
+        $('#btnTop').click(function(){
+            $('html, body').animate({scrollTop: 0}, 'slow'); // 스크롤을 맨 위로 부드럽게 이동
+        });
+    });
+</script>
+
 <div id="recommend_container">
 	<div>
 		<h2>최근 등록된 상품</h2>
 		<ul class="flex_list" id="recent_list">
+	
 		</ul>
 	</div>
-	
 </div>
 
-	<script type="text/javascript">
-	
-	$(document).ready(function() {
-	    $('#searchButton').click(function() {
-	        // 입력된 검색어와 선택된 카테고리 가져오기
-	        var searchWord = $('#searchInput').val();
-	        var selectedCategory = $('#boxCategory').val();
 
-	        // AJAX 요청 보내기
-	        $.ajax({
-	            method: 'GET',
-	            url: '../product/searchProduct',
-	            data: {
-	                category: selectedCategory, // 선택한 카테고리 
-	                word: searchWord // 입력한 검색어
-	            },
-	            success: function(response) {
-	                //  AJAX 요청이 성공했을 때 실행
-	                // JSON 형태의 응답 데이터를 파싱하여 사용
-        			var category = response.category;
-        			var word = response.word;
-        
-        			// 파싱된 데이터를 활용하여 화면에 표시하거나 다른 동작 수행
-        	        console.log("카테고리: " + category);
-        	        console.log("검색어: " + word);
-	            },
-	            error: function(xhr, status, error) {
-	                // 에러 처리 코드 작성
-	                console.error(error);
-	            }
-	        });
-	    });
-	});
-	
+
+	<script type="text/javascript">
 	
 		let boxCategory = $('#boxCategory');
 		let inputSearch = $('.search-input');
@@ -355,12 +345,13 @@
 			"완구/취미", "문구/오피스", "반려동물용품", "헬스/건강식품"];
         
 		btnSearch.click(function(){
-			console.log("선택된 카테고리 : " + boxCategory.val());
-			console.log("입력된 검색어 : " + inputSearch.val());
-			
-			location.href = "../product/search?category=" + boxCategory.val() + "&word=" + inputSearch.val();
-			
+		    console.log("선택된 카테고리 : " + boxCategory.val());
+		    console.log("입력된 검색어 : " + inputSearch.val());
+
+		    location.href = "../product/search?category=" + boxCategory.val() + "&word=" + inputSearch.val();
+
 		}); // end btnSearch.click
+
 	
 		$(document).ready(function(){
 			setLoginBox();
