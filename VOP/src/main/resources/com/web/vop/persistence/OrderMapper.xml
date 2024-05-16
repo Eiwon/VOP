@@ -26,6 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="receiverAddress" column="RECEIVER_ADDRESS"/>
       <result property="receiverPhone" column="RECEIVER_PHONE"/>
       <result property="requirement" column="REQUIREMENT"/>
+      <result property="memberId" column="MEMBER_ID"/> <!-- memberId 추가 하기 -->
    </resultMap>
    
 	<!-- 배송지 상세 조회 (배송 예정일) -->
@@ -52,34 +53,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT * FROM "ORDER" WHERE PAYMENT_ID = #{paymentId}
 	</select>
 	
-	<!--  배송지 상세 조회 (받는 사람 , 받는 주소 , 배송 요청 사항 ) -->
-	<select id="selectByMemberId" resultMap="DeliveryResultMap">
-		SELECT RECEIVER_NAME, RECEIVER_ADDRESS, REQUIREMENT FROM DELIVERY 
-		WHERE MEMBER_ID = #{memberId}
-	</select>
-	
-	
-	<!-- 배송지 등록  -->
-	<insert id="insertDelivery">
-		INSERT INTO DELIVERY VALUES (
-		#{deliveryId}, #{memberId}, #{receiverName}, #{receiverAddress}, #{receiverPhone}, #{requirement})
-	</insert>
-	
-	<!-- 배송지 수정  -->
-	<update id="updateDelivery">
-		UPDATE DELIVERY SET RECEIVER_NAME = #{receiverName}, RECEIVER_ADDRESS = #{receiverAddress}, 
-		RECEIVER_PHONE = #{receiverPhone} , REQUIREMENT = #{requirement}
-		WHERE MEMBER_ID = #{memberId}
-	</update>
-	
-	<!-- 배송지 삭제 -->
-	<delete id="deleteDelivery">
-		DELETE DELIVERY WHERE MEMBER_ID = #{memberId}
-	</delete>
 	
 	<!-- 주문 목록 조회 -->
 	<select id="selectOrderListByMemberId" resultMap="OrderResultMap">
 		SELECT * FROM "ORDER" WHERE MEMBER_ID = #{memberId}
 	</select>
+	
 	
 </mapper>

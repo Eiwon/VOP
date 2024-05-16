@@ -44,39 +44,7 @@ public class OrderServiceImple implements OrderService {
 		return res;
 	} // end registerOrder
 	
-	@Override
-	public DeliveryVO getMemberId(String memberId) { // 배송지 상세 조회 (받는 사람 , 받는 주소 , 배송 요청 사항 )
-		log.info("getMemberId()");
-		DeliveryVO orderList = orderMapper.selectByMemberId(memberId);
-		log.info("배송지 상세 조회 : " + orderList);
-		return orderList;
-	}
-
 	
-	@Override
-	public int registerDelivery(DeliveryVO deliveryVo) { // 배송지 등록 
-		log.info("registerDelivery()");
-		int orderList = orderMapper.insertDelivery(deliveryVo);
-		log.info(orderList + "행 삽입");
-		return orderList;
-	}
-
-	@Override
-	public int updateDelivery(DeliveryVO deliveryVo) { // 배송지 수정 
-		log.info("updateDelivery()");
-		int orderList = orderMapper.updateDelivery(deliveryVo);
-		log.info(orderList + "행 수정");
-		return orderList;
-	}
-
-	@Override
-	public int deleteDelivery(String memberId) { // 배송지 삭제
-		log.info("deleteDelivery()");
-		int orderList = orderMapper.deleteDelivery(memberId);
-		log.info(orderList + "행 삭제");
-		return orderList;
-	}
-
 	@Override
 	public List<OrderVO> getOrderByPaymentId(int paymentId) {
 		log.info("getOrderByPaymentId()");
@@ -96,6 +64,8 @@ public class OrderServiceImple implements OrderService {
 		log.info("주문 조회 : " + orderList);
 		return orderList;
 	}
+
+	
 
 
 }// end OrderServiceImple()

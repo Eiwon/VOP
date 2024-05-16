@@ -25,18 +25,6 @@ public interface OrderService {
 	// paymentId로 주문 검색
 	public List<OrderVO> getOrderByPaymentId(int paymentId);
 	
-	// 배송지 상세 조회 (받는 사람 , 받는 주소 , 배송 요청 사항 )
-	DeliveryVO getMemberId(String memberId);
-	
-	// 배송지 등록 
-	int registerDelivery(DeliveryVO deliveryVo);
-	
-	// 배송지 수정 
-	int  updateDelivery(DeliveryVO deliveryVo);
-	
-	// 배송지 삭제
-	int deleteDelivery(String memberId);
-	
 	// 주문 목록 조회 
 	List<OrderVO> getOrderListByMemberId(String memberId);
 }

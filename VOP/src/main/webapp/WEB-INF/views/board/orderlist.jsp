@@ -351,6 +351,10 @@
     }   
 %>
 
+	<!-- 배송지 관리 페이지 -->
+    <a href="../Delivery/deliveryAddressList">배송지 관리</a>
+	
+	
 	
 </body>
 </html>
