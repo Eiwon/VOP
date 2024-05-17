@@ -51,19 +51,17 @@ public class ProductServiceImple implements ProductService{
 	}
 
 	@Override
-	public int registerProduct(ProductVO productVO) {
+	public int registerProduct(ProductVO productVO) { // 등록 성공시, 등록한 상품 id 반환
 		log.info("registerProduct : " + productVO);
 		int res = productMapper.insertProduct(productVO);
-		log.info(res + "행 추가 성공" + productVO.getProductId());
+		if(res == 1) {
+			log.info(res + "행 추가 성공" + productVO.getProductId());
+			res = productMapper.selectLastInsertId();
+		}else {
+			res = -1;
+		}
 		return res;
 	} // end registerProduct
-
-	@Override
-	public int getRecentProductId() {
-		log.info("getRecentProductId()");
-		int res = productMapper.selectLastInsertId();
-		return res;
-	} // end getRecentProductId
 	
 	@Override
 	public List<ProductVO> selectByCategory(String category, Pagination pagination) {
@@ -179,6 +177,12 @@ public class ProductServiceImple implements ProductService{
 		log.info("getDetails()");
 		return productMapper.selectDetails(productId);
 	} // end getDetails
+
+	@Override
+	public int updateProduct(ProductVO productVO) {
+		log.info("updateProduct()");
+		return productMapper.updateProduct(productVO);
+	} // end updateProduct
 
 	
 

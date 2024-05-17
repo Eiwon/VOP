@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.ProductDetailsDTO;
 import com.web.vop.domain.ProductVO;
@@ -31,6 +32,7 @@ import com.web.vop.service.ImageService;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.ProductService;
 import com.web.vop.service.SellerService;
+import com.web.vop.util.FileUploadUtil;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
@@ -52,6 +54,12 @@ public class SellerController {
 	
 	@Autowired
 	private ImageService imageService;
+	
+	@Autowired
+	private String thumbnailUploadPath;
+	
+	@Autowired
+	private String uploadPath;
 	
 	@GetMapping("sellerRequest")
 	public void sellerRequestGET() {
@@ -100,12 +108,49 @@ public class SellerController {
 	
 	// 상품 정보 수정
 	@PostMapping("/updateProduct")
-	public void updateProduct(ProductDetailsDTO productDetails, MultipartFile thumbnail, MultipartFile[] details) {
+	public void updateProduct(ProductVO productVO, MultipartFile thumbnail, MultipartFile[] details) {
 		log.info("상품 수정---------------------------------------");
-		log.info(productDetails);
-		log.info(thumbnail.getOriginalFilename());
+		log.info(productVO);
+		log.info(thumbnail.isEmpty());
+		log.info(details[0].isEmpty());
+		int productId = productVO.getProductId();
+		int imgId = productVO.getImgId();
+		// 입력된 파일이 없으면 파일 변경 X
+		// 기존 썸네일 imgId에 해당하는 이미지 파일 정보를 검색, 해당 이미지를 서버에서 삭제 후 DB에서 삭제
+		// 새 이미지를 저장, 저장 후 imgId를 가져온다.
 		
-	} // end updateProductGET
+		if(!thumbnail.isEmpty()) { // 썸네일이 수정된 경우, 
+			ImageVO newImg = FileUploadUtil.saveImage(thumbnail, thumbnailUploadPath, true); // 서버에 새 이미지 저장
+			
+			if(imgId != 0) { // 기존에 등록된 이미지가 있었다면 수정
+				ImageVO oldImg = imageService.getImageById(imgId);
+				FileUploadUtil.deleteFile(oldImg); // 서버에서 기존 이미지 삭제
+				newImg.setImgId(imgId);
+				imageService.updateImgById(newImg); // DB에 새 이미지 저장
+			}else { // 없었다면 새로 등록
+				imgId = imageService.registerImage(newImg);
+			}
+		} // end save thumbnail
+		
+		if(!details[0].isEmpty()) { // 세부사항 이미지가 수정된 경우
+			List<ImageVO> imgList = imageService.getByProductId(productId);
+			// 기존의 모든 이미지 서버에서 삭제
+			for(ImageVO image : imgList) {
+				FileUploadUtil.deleteFile(image);
+			}
+			// 기존의 모든 이미지 DB에서 삭제
+			imageService.removeByProductId(productId);
+			
+			// 서버, DB에 새 이미지 저장
+			for(MultipartFile file : details) {
+				ImageVO image = FileUploadUtil.saveImage(file, uploadPath, false);
+				imageService.registerImage(image);
+			}
+		} // end save details
+		
+		productService.updateProduct(productVO);
+		
+	} // end updateProduct
 	
 
 	// 자신의 판매자 권한 요청 조회

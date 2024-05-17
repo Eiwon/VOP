@@ -25,7 +25,7 @@ img {
 </head>
 <body>
 	<h2>상품 상세 정보</h2>
-	<form action="updateProduct" method="POST" id="formProduct">
+	<form action="updateProduct" method="POST" id="formProduct" enctype="multipart/form-data">
 	<table class="form_info">
 		<tbody>
 			<tr>
@@ -89,7 +89,7 @@ img {
 		<tfoot>
 			<tr>
 				<td><button type="button" id="btn_continue"></button></td>
-				<td><button type="button" id="btn_update">수정 요청</button></td>
+				<td><button type="submit" id="btn_update">수정 요청</button></td>
 				<td><button type="button" id="btn_delete">삭제 요청</button></td>
 			</tr>
 		</tfoot>
@@ -186,20 +186,13 @@ img {
 			
 		} // end toggleProductState
 		
-		function updateRequest() { // 업데이트 요청
-			
-			let formProduct = $('#formProduct');
+		let formProduct = $('#formProduct');
 		
+		formProduct.submit(function update(){
 			formProduct.append('<input type="hidden" name="productId" value="' + productDetails.productId + '">');
 			formProduct.append('<input type="hidden" name="imgId" value="' + productDetails.imgId + '">');
-			for(x in productDetails.imgIdDetails){
-				formProduct.append('<input type="hidden" name="imgIdDetails" value="' + productDetails.imgIdDetails[x] + '">');			
-			}
-			
-			formProduct.submit();
-			//window.close();
-			
-		} // end updateRequest
+			formProduct.append('<input type="hidden" name="productState" value="승인 대기중">');
+		});
 		
 		function deleteRequest() {
 			
@@ -222,8 +215,6 @@ img {
 					}
 				} // end success
 			}); // end ajax
-			
-			
 		} // end deleteRequest
 		
 		function showThumbPreview(){

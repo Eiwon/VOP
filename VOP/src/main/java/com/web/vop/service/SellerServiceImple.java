@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.SellerVO;
 import com.web.vop.persistence.MemberMapper;
@@ -86,6 +87,7 @@ public class SellerServiceImple implements SellerService{
 		return res;
 	} // end deleteRequest
 
+	@Transactional(value = "transactionManager")
 	@Override
 	public int deleteProductRequest(int productId) {
 		log.info("상품 삭제 요청");
