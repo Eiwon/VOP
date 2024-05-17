@@ -5,10 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -141,6 +143,11 @@ public class FileUploadUtil {
 		}
     } // end saveIcon
     
+    public static ImageVO toImageVO(MultipartFile file, String uploadPath) {
+    	String imgChangedName = UUID.randomUUID().toString();
+    	String imgRealName = file.getOriginalFilename();
+    	return new ImageVO(0, 0, uploadPath, subStrName(imgRealName), imgChangedName, subStrExtension(imgRealName));
+    } // end toImageVO
     
     // @param imgPath : 파일 업로드 경로
     // @param changedName : 파일명

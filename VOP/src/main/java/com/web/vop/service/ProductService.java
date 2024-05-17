@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductDetailsDTO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.util.Pagination;
@@ -21,10 +22,7 @@ public interface ProductService {
 	int selectReviewByStar(int productId);
 	
 	// 상품 등록
-	int registerProduct(ProductVO productVO);
-	
-	// 방금 등록한 상품 id 조회
-	int getRecentProductId();
+	int registerProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details);
 	
 	// 카테고리로 상품 검색
 	List<ProductVO> selectByCategory(String category, Pagination pagination);
@@ -74,4 +72,7 @@ public interface ProductService {
 	
 	// productId로 상세 정보 조회
 	ProductDetailsDTO getDetails(int productId);
+	
+	// 상품 정보 변경
+	int updateProduct(ProductVO productVO);
 }

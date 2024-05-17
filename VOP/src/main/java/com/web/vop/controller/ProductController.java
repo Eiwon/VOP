@@ -120,53 +120,37 @@ public class ProductController {
 
 	@PostMapping("/register")
 	public String registerPOST(ProductVO productVO,  MultipartFile thumbnail, MultipartFile[] details) {
+		// DB 저장 실패시에는 이미지를 서버에 저장하면 안됨 => DB에 저장 성공을 확인한 후 서버에 저장
 		log.info("registerPOST()");
 		log.info(productVO);
 		log.info("파일 명 : " + thumbnail.getOriginalFilename());
+		ImageVO imgThumbnail = null;
+		List<ImageVO> imgDetails = new ArrayList<>();
 		
-		// UUID 생성
-	    String thumbnailName = UUID.randomUUID().toString();
-	    FileUploadUtil.saveIcon(thumbnailUploadPath, thumbnail, thumbnailName);
+		
+		// 모든 파일을 imageVO로 변환
+		if (!thumbnail.isEmpty()) { // 파일이 있는 경우
+			imgThumbnail = FileUploadUtil.toImageVO(thumbnail, thumbnailUploadPath);
+		}
+		if(!details[0].isEmpty()) {
+			for (MultipartFile file : details) {
+				imgDetails.add(FileUploadUtil.toImageVO(file, uploadPath));
+			}
+		}
+		
+	    int res = productService.registerProduct(productVO, imgThumbnail, imgDetails);
+	    log.info("상품 등록 결과 : " + res);
 	    
-	    ImageVO imageVO = new ImageVO(0, 0,
-	    		thumbnailUploadPath, FileUploadUtil.subStrName(thumbnail.getOriginalFilename()),
-	    		thumbnailName, FileUploadUtil.subStrExtension(thumbnail.getOriginalFilename()));
-	    
-	    // thumbnail 이미지 등록
-	    int res = imageService.registerImage(imageVO);
-	    log.info("image " + res + "행 추가 성공");
-	    
-	    // 등록한 이미지 id 불러오기 
-	    int recentImageId = imageService.getRecentImgId();
-	    log.info("추가된 이미지 id : " + recentImageId);
-	    
-	    productVO.setImgId(recentImageId);
-	    // 상품 등록
-	    res = productService.registerProduct(productVO);
-	    log.info("product " + res + "행 추가 성공");
-	    
-	    // 등록한 상품 id 불러오기
-	    int recentProductId = productService.getRecentProductId(); 
-	    log.info("추가된 상품 id : " + recentProductId);
-	    
-	    
-	    log.info("details 파일 수 : " + details.length);
-	    
-	    // details 이미지들 저장 후 IMAGE 테이블에 추가
-	    String[] detailsNames = new String[details.length];
-	    
-	    for(int i = 0; i < details.length; i++) {
-	    	detailsNames[i] = UUID.randomUUID().toString();
-	    	FileUploadUtil.saveFile(uploadPath, details[i], detailsNames[i]);
-	    	// 파일 저장
-	    	ImageVO vo = new ImageVO(
-	    			0, recentProductId, uploadPath, FileUploadUtil.subStrName(details[i].getOriginalFilename()),
-	    			detailsNames[i], FileUploadUtil.subStrExtension(details[i].getOriginalFilename())
-	    			); 
-	    	res = imageService.registerImage(vo);
-	    	log.info(res + "행 추가 성공");
+	    if(res == 1) { // DB 저장 성공시 서버에 저장 
+	    	if(imgThumbnail != null) {
+	    		FileUploadUtil.saveIcon(thumbnailUploadPath, thumbnail, imgThumbnail.getImgChangeName());
+	    	}
+	    	if (!details[0].isEmpty()) {
+	    		for(int i = 0; i < imgDetails.size(); i++) {
+	    			FileUploadUtil.saveFile(uploadPath, details[i], imgDetails.get(i).getImgChangeName());	    			
+	    		}
+	    	}
 	    }
-	    
 	    return "redirect:../seller/sellerRequest";
 	} // end registerPOST
 
