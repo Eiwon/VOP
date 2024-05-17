@@ -5,10 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -141,6 +143,23 @@ public class FileUploadUtil {
 		}
     } // end saveIcon
     
+    // 파일을 작게 변환하여 저장 후 imageVO 반환
+    public static ImageVO saveImage(MultipartFile file, String uploadPath, boolean isMinified) {
+    	String imgChangedName = UUID.randomUUID().toString();
+    	String imgRealName = file.getOriginalFilename();
+    	
+    	if(isMinified) {
+    		saveIcon(uploadPath, file, imgChangedName);    		
+    	}else {
+    		saveFile(uploadPath, file, imgChangedName);
+    	}
+		ImageVO imageVO = new ImageVO(0, 0, uploadPath,
+				FileUploadUtil.subStrName(imgRealName), imgChangedName,
+				FileUploadUtil.subStrExtension(imgRealName));
+		return imageVO;
+    } // end saveImage
+    
+    // 파일을 상품 세부사항 폴더에 저장 후 
     
     // @param imgPath : 파일 업로드 경로
     // @param changedName : 파일명

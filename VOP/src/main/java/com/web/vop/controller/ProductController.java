@@ -124,48 +124,46 @@ public class ProductController {
 		log.info(productVO);
 		log.info("파일 명 : " + thumbnail.getOriginalFilename());
 		
-		// UUID 생성
-	    String thumbnailName = UUID.randomUUID().toString();
-	    FileUploadUtil.saveIcon(thumbnailUploadPath, thumbnail, thumbnailName);
+		if (!thumbnail.isEmpty()) { // 파일이 있는 경우
+			// UUID 생성
+			String thumbnailName = UUID.randomUUID().toString();
+			// 서버에 thumbnail 이미지 저장
+			FileUploadUtil.saveIcon(thumbnailUploadPath, thumbnail, thumbnailName);
+			ImageVO imageVO = new ImageVO(0, 0, thumbnailUploadPath,
+					FileUploadUtil.subStrName(thumbnail.getOriginalFilename()), thumbnailName,
+					FileUploadUtil.subStrExtension(thumbnail.getOriginalFilename()));
+			
+			// DB에 thumbnail 이미지 저장
+			int imgId = imageService.registerImage(imageVO);
+			if (imgId == -1) {
+				log.info("이미지 등록 실패");
+			} else {
+				log.info("이미지 등록 성공 : imgId = " + imgId);
+			}
+			productVO.setImgId(imgId);
+		} // end save thumbnail
+	   
 	    
-	    ImageVO imageVO = new ImageVO(0, 0,
-	    		thumbnailUploadPath, FileUploadUtil.subStrName(thumbnail.getOriginalFilename()),
-	    		thumbnailName, FileUploadUtil.subStrExtension(thumbnail.getOriginalFilename()));
-	    
-	    // thumbnail 이미지 등록
-	    int res = imageService.registerImage(imageVO);
-	    log.info("image " + res + "행 추가 성공");
-	    
-	    // 등록한 이미지 id 불러오기 
-	    int recentImageId = imageService.getRecentImgId();
-	    log.info("추가된 이미지 id : " + recentImageId);
-	    
-	    productVO.setImgId(recentImageId);
 	    // 상품 등록
-	    res = productService.registerProduct(productVO);
-	    log.info("product " + res + "행 추가 성공");
+	    int productId = productService.registerProduct(productVO);
+	    log.info("상품 등록 성공 : productId = " + productId);
 	    
-	    // 등록한 상품 id 불러오기
-	    int recentProductId = productService.getRecentProductId(); 
-	    log.info("추가된 상품 id : " + recentProductId);
-	    
-	    
-	    log.info("details 파일 수 : " + details.length);
-	    
-	    // details 이미지들 저장 후 IMAGE 테이블에 추가
-	    String[] detailsNames = new String[details.length];
-	    
-	    for(int i = 0; i < details.length; i++) {
-	    	detailsNames[i] = UUID.randomUUID().toString();
-	    	FileUploadUtil.saveFile(uploadPath, details[i], detailsNames[i]);
-	    	// 파일 저장
-	    	ImageVO vo = new ImageVO(
-	    			0, recentProductId, uploadPath, FileUploadUtil.subStrName(details[i].getOriginalFilename()),
-	    			detailsNames[i], FileUploadUtil.subStrExtension(details[i].getOriginalFilename())
-	    			); 
-	    	res = imageService.registerImage(vo);
-	    	log.info(res + "행 추가 성공");
-	    }
+	    // 파일이 있는지 체크 (등록된 파일이 없어도 크기가 최소 1이라 length로 확인 불가
+		if (!details[0].isEmpty()) {
+			// details 이미지들 저장 후 IMAGE 테이블에 추가
+			String[] detailsNames = new String[details.length];
+
+			for (int i = 0; i < details.length; i++) {
+				detailsNames[i] = UUID.randomUUID().toString();
+				FileUploadUtil.saveFile(uploadPath, details[i], detailsNames[i]);
+				// 파일 저장
+				ImageVO vo = new ImageVO(0, productId, uploadPath,
+						FileUploadUtil.subStrName(details[i].getOriginalFilename()), detailsNames[i],
+						FileUploadUtil.subStrExtension(details[i].getOriginalFilename()));
+				int res = imageService.registerImage(vo);
+				log.info(res + "행 추가 성공");
+			}
+		} // end save details
 	    
 	    return "redirect:../seller/sellerRequest";
 	} // end registerPOST

@@ -34,4 +34,14 @@ public interface ImageMapper {
 	
 	// 상품과 관련된 모든 이미지 삭제
 	int deleteProductImage(int productId);
+	
+	// imgId로 이미지 삭제
+	int deleteById(int imgId);
+	
+	// productId로 이미지 삭제
+	int deleteByProductId(int productId);
+	
+	// imgId로 업데이트
+	int updateById(ImageVO imageVO);
+	
 }

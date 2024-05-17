@@ -78,4 +78,7 @@ public interface ProductMapper {
 	
 	// productId로 상세 정보 조회
 	ProductDetailsDTO selectDetails(int productId);
+	
+	// 상품 정보 변경
+	int updateProduct(ProductVO productVO);
 }
