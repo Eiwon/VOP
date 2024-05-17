@@ -143,23 +143,11 @@ public class FileUploadUtil {
 		}
     } // end saveIcon
     
-    // 파일을 작게 변환하여 저장 후 imageVO 반환
-    public static ImageVO saveImage(MultipartFile file, String uploadPath, boolean isMinified) {
+    public static ImageVO toImageVO(MultipartFile file, String uploadPath) {
     	String imgChangedName = UUID.randomUUID().toString();
     	String imgRealName = file.getOriginalFilename();
-    	
-    	if(isMinified) {
-    		saveIcon(uploadPath, file, imgChangedName);    		
-    	}else {
-    		saveFile(uploadPath, file, imgChangedName);
-    	}
-		ImageVO imageVO = new ImageVO(0, 0, uploadPath,
-				FileUploadUtil.subStrName(imgRealName), imgChangedName,
-				FileUploadUtil.subStrExtension(imgRealName));
-		return imageVO;
-    } // end saveImage
-    
-    // 파일을 상품 세부사항 폴더에 저장 후 
+    	return new ImageVO(0, 0, uploadPath, subStrName(imgRealName), imgChangedName, subStrExtension(imgRealName));
+    } // end toImageVO
     
     // @param imgPath : 파일 업로드 경로
     // @param changedName : 파일명

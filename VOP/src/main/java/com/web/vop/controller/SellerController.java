@@ -119,36 +119,27 @@ public class SellerController {
 		// 기존 썸네일 imgId에 해당하는 이미지 파일 정보를 검색, 해당 이미지를 서버에서 삭제 후 DB에서 삭제
 		// 새 이미지를 저장, 저장 후 imgId를 가져온다.
 		
-		if(!thumbnail.isEmpty()) { // 썸네일이 수정된 경우, 
-			ImageVO newImg = FileUploadUtil.saveImage(thumbnail, thumbnailUploadPath, true); // 서버에 새 이미지 저장
-			
-			if(imgId != 0) { // 기존에 등록된 이미지가 있었다면 수정
-				ImageVO oldImg = imageService.getImageById(imgId);
-				FileUploadUtil.deleteFile(oldImg); // 서버에서 기존 이미지 삭제
-				newImg.setImgId(imgId);
-				imageService.updateImgById(newImg); // DB에 새 이미지 저장
-			}else { // 없었다면 새로 등록
-				imgId = imageService.registerImage(newImg);
-			}
-		} // end save thumbnail
-		
-		if(!details[0].isEmpty()) { // 세부사항 이미지가 수정된 경우
-			List<ImageVO> imgList = imageService.getByProductId(productId);
-			// 기존의 모든 이미지 서버에서 삭제
-			for(ImageVO image : imgList) {
-				FileUploadUtil.deleteFile(image);
-			}
-			// 기존의 모든 이미지 DB에서 삭제
-			imageService.removeByProductId(productId);
-			
-			// 서버, DB에 새 이미지 저장
-			for(MultipartFile file : details) {
-				ImageVO image = FileUploadUtil.saveImage(file, uploadPath, false);
-				imageService.registerImage(image);
-			}
-		} // end save details
-		
-		productService.updateProduct(productVO);
+		/*
+		 * if(!thumbnail.isEmpty()) { // 썸네일이 수정된 경우, ImageVO newImg =
+		 * FileUploadUtil.saveIcon(thumbnail, thumbnailUploadPath); // 서버에 새 이미지 저장
+		 * 
+		 * if(imgId != 0) { // 기존에 등록된 이미지가 있었다면 수정 ImageVO oldImg =
+		 * imageService.getImageById(imgId); FileUploadUtil.deleteFile(oldImg); // 서버에서
+		 * 기존 이미지 삭제 newImg.setImgId(imgId); imageService.updateImgById(newImg); // DB에
+		 * 새 이미지 저장 }else { // 없었다면 새로 등록 imgId = imageService.registerImage(newImg); }
+		 * } // end save thumbnail
+		 * 
+		 * if(!details[0].isEmpty()) { // 세부사항 이미지가 수정된 경우 List<ImageVO> imgList =
+		 * imageService.getByProductId(productId); // 기존의 모든 이미지 서버에서 삭제 for(ImageVO
+		 * image : imgList) { FileUploadUtil.deleteFile(image); } // 기존의 모든 이미지 DB에서 삭제
+		 * imageService.removeByProductId(productId);
+		 * 
+		 * // 서버, DB에 새 이미지 저장 for(MultipartFile file : details) { ImageVO image =
+		 * FileUploadUtil.saveImage(file, uploadPath, false);
+		 * imageService.registerImage(image); } } // end save details
+		 * 
+		 * productService.updateProduct(productVO);
+		 */
 		
 	} // end updateProduct
 	

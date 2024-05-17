@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductDetailsDTO;
@@ -21,6 +22,9 @@ public class ProductServiceImple implements ProductService{
 	
 	@Autowired
 	private ProductMapper productMapper;
+	
+	@Autowired
+	private ImageService imageService;
 	
 	@Autowired
 	private ImageMapper imageMapper;
@@ -50,16 +54,23 @@ public class ProductServiceImple implements ProductService{
 		return res;
 	}
 
+	@Transactional(value = "transactionManager")
 	@Override
-	public int registerProduct(ProductVO productVO) { // 등록 성공시, 등록한 상품 id 반환
+	public int registerProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details) { // 등록 성공시, 등록한 상품 id 반환
 		log.info("registerProduct : " + productVO);
-		int res = productMapper.insertProduct(productVO);
-		if(res == 1) {
-			log.info(res + "행 추가 성공" + productVO.getProductId());
-			res = productMapper.selectLastInsertId();
-		}else {
-			res = -1;
+		int res = 0;
+		if(thumbnail != null) {
+			int imgId = imageService.registerImage(thumbnail);
+			productVO.setImgId(imgId);
 		}
+		productMapper.insertProduct(productVO);
+		int productId = productMapper.selectLastInsertId();
+		
+		for(ImageVO detail : details) {
+			detail.setProductId(productId);
+			res = imageMapper.insertImg(detail);
+		}
+		
 		return res;
 	} // end registerProduct
 	
