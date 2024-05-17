@@ -14,32 +14,46 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="receiverPhone" column="RECEIVER_PHONE"/>
       <result property="deliveryAddressDetails" column="DELIVERY_ADDRESS_DETAILS"/>
       <result property="requirement" column="REQUIREMENT"/>
+      <result property="isDefault" column="IS_DEFAULT"/>
    </resultMap>
    
    <!-- 배송지 등록 -->
    <insert id="insertDelivery"> 
-   		INSERT INTO DELIVERY VALUES (
+   		INSERT INTO DELIVERY (DELIVERY_ID, MEMBER_ID, RECEIVER_NAME, RECEIVER_ADDRESS, RECEIVER_PHONE, DELIVERY_ADDRESS_DETAILS, REQUIREMENT, IS_DEFAULT)
+   		VALUES (
    			DELIVERY_SEQ.NEXTVAL, #{memberId}, #{receiverName}, #{receiverAddress},
-   			#{receiverPhone}, #{requirement}
+   			#{receiverPhone},  #{deliveryAddressDetails}, #{requirement}, #{isDefault}
    		)
    </insert>
    
    <!-- 배송지 수정  -->
 	<update id="updateDelivery">
-		UPDATE DELIVERY SET RECEIVER_NAME = #{receiverName}, RECEIVER_ADDRESS = #{receiverAddress}, 
-		RECEIVER_PHONE = #{receiverPhone} , DELIVERY_ADDRESS_DETAILS = #{deliveryAddressDetails}, REQUIREMENT = #{requirement}
-		WHERE MEMBER_ID = #{memberId}
+		UPDATE DELIVERY 
+		SET 
+			RECEIVER_NAME = #{receiverName}, 
+			RECEIVER_ADDRESS = #{receiverAddress}, 
+			RECEIVER_PHONE = #{receiverPhone} , 
+			DELIVERY_ADDRESS_DETAILS = #{deliveryAddressDetails}, 
+			REQUIREMENT = #{requirement}, 
+			IS_DEFAULT= #{isDefault}
+		WHERE DELIVERY_ID = #{deliveryId} AND MEMBER_ID = #{memberId}
 	</update>
    
    <!-- 배송지 삭제 -->
 	<delete id="deleteDelivery">
-		DELETE DELIVERY WHERE MEMBER_ID = #{memberId}
+		DELETE DELIVERY WHERE DELIVERY_ID = #{deliveryId} AND MEMBER_ID = #{memberId}
 	</delete>
    
-   <!--  배송지 상세 조회 -->
+   <!--  배송지 상세 조회 by memberId-->
 	<select id="selectByMemberId" resultMap="DeliveryResultMap">
 		SELECT * FROM DELIVERY WHERE MEMBER_ID = #{memberId}
 	</select>
+	
+	<!-- 배송지 상세 조회 by deliveryId -->
+   	<select id="selectBydeliveryId" resultMap="DeliveryResultMap">
+		SELECT * FROM DELIVERY WHERE DELIVERY_ID = #{deliveryId}
+	</select>
+	
    
 </mapper>
 	

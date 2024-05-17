@@ -19,10 +19,17 @@ public class DeliveryServiceImple implements DeliveryService{
 	
 	// 배송지 등록
 	@Override
-	public int registerDelivery(DeliveryVO deliveryVO) {
+	public int registerDelivery(DeliveryVO deliveryVo) {
 		log.info("registerDelivery()");
-		int res = deliveryMapper.insertDelivery(deliveryVO);
-		return res;
+		try {
+			int res = deliveryMapper.insertDelivery(deliveryVo);			
+			return res;
+		} catch (Exception e) {
+			log.error("배송지 등록 중 오류 발생: " + e.getMessage());
+			
+	        // 사용자에게 오류 페이지를 보여주기
+	        throw new RuntimeException("배송지 등록 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+		}
 	} // end registerDelivery
 	
 	// 배송지 수정
@@ -43,7 +50,7 @@ public class DeliveryServiceImple implements DeliveryService{
 		return res;
 	}//end deleteDelivery()
 	
-	// 배송지 상세 조회
+	// 배송지 상세 조회 by memberId
 	@Override
 	public List<DeliveryVO> getMemberId(String memberId) {
 		log.info("registerDelivery()-memberId : " + memberId);
@@ -51,6 +58,15 @@ public class DeliveryServiceImple implements DeliveryService{
 		log.info("배송지 상세 조회 : " + result.toString());
 		return result;
 	}//end getMemberId()
+
+	// 배송지 상세 조회 by deliveryId 
+	@Override
+	public DeliveryVO getDeliveryById(int deliveryId) {
+		log.info("getDeliveryById()-deliveryId : " + deliveryId);
+		DeliveryVO result = deliveryMapper.selectBydeliveryId(deliveryId);
+		log.info("getDeliveryById : " + result);
+		return result;
+	}//end getDeliveryById()
 	
 	
 }

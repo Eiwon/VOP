@@ -30,6 +30,22 @@
     .delivery-buttons {
         margin-left: auto;
     }
+    
+    <style>
+    .delivery-details p {
+        margin-bottom: 10px;
+    }
+
+    .delivery-details label {
+        display: inline-block;
+        width: 150px; /* 라벨 너비 조절 */
+        font-weight: bold;
+    }
+
+    .default-checkbox {
+        margin-top: 10px;
+    }
+
 </style>
 </head>
 <body>
@@ -47,20 +63,39 @@
 	} else {
 %>
 
-	<c:forEach items="${deliveryList}" var="delivery">
-	    <div class="delivery-box">
-    		<div class="delivery-details">
-       		<!-- 이미지 목록 표시 -->
-				<c:forEach items="${imageList}" var="image">
-					   <img src="showImg?imgId=${image.imgId}" alt="${image.imgRealName}.${image.imgExtension}">
-				</c:forEach>
-	            <p>받는 사람 : ${delivery.receiverName}</p>
-	            <p>배송지 : ${delivery.receiverAddress + delivery.deliveryAddressDetails}</p>
-	            <p>핸드폰 번호 : ${delivery.phoneNumber}</p>
-	            <p>요청사항 : ${delivery.deliveryRequest}</p>
-	        </div>
-	    </div>
-	</c:forEach>
+	<table border="1">
+    <thead>
+        <tr>
+            <th>받는 사람</th>
+            <th>최종배송지</th>
+            <th>휴대폰 번호</th>
+            <th>배송 요청사항</th>
+            <th>기본 배송지 설정</th>
+            <th>수정</th>
+        </tr>
+    </thead>
+    <tbody>
+        <c:forEach items="${deliveryList}" var="delivery">
+            <tr>
+                <td>${delivery.receiverName}</td>
+                <td>${delivery.receiverAddress} ${delivery.deliveryAddressDetails}</td>
+                <td>${delivery.receiverPhone}</td>
+                <td>${delivery.requirement}</td>
+                <td>
+                    <c:if test="${delivery.isDefault eq 1}">
+                        기본 배송지
+                    </c:if>
+                </td>
+                <td>
+                    <c:if test="${delivery.isDefault eq 0}">
+                        <a href="../Delivery/deliveryUpdate?deliveryId=${delivery.deliveryId}">수정</a>
+                    </c:if>
+                </td>
+            </tr>
+        </c:forEach>
+    </tbody>
+</table>
+	
 
 	<!-- 주문 목록이 비어있을 때 -->
     <c:if test="${empty deliveryList}">
