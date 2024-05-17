@@ -26,14 +26,26 @@ public class ReviewServiceImple implements ReviewService{
 		log.info(insertRes + "Çà ´ñ±Û(¸®ºä) µî·Ï");
 		return insertRes;
 	}
-
+	
+	// ´ñ±Û(¸®ºä) ÀüÃ¼ °Ë»ö
 	@Override
 	public List<ReviewVO> getAllReview(int productId) {
 		log.info("getAllReview()");
 		List<ReviewVO> result = reviewMapper.selectListByReview(productId);
 		return result;
 	}
-
+	
+	// ´ñ±Û(¸®ºä) productId ±×¸®°í memberIdÅëÇØ °Ë»ö
+	@Override
+	public ReviewVO selectByReview(int productId, String memberId) {
+		log.info("selectByReview()");
+		log.info("productId : " + productId);
+		log.info("memberId : " + memberId);
+		ReviewVO result = reviewMapper.selectByReview(productId, memberId);
+		return result;
+	}
+	
+	// ´ñ±Û(¸®ºä) ¼öÁ¤
 	@Override
 	public int updateReview(int reviewId, String reviewContent, float reviewStar) {
 		log.info("updateReview()");
@@ -47,6 +59,7 @@ public class ReviewServiceImple implements ReviewService{
 		return updateRes;
 	}
 
+	// ´ñ±Û(¸®ºä) »èÁ¦
 	@Override
 	public int deleteReview(int reviewId, int productId) {
 		log.info("deleteReview()");
@@ -59,6 +72,7 @@ public class ReviewServiceImple implements ReviewService{
 	@Override
 	public int reviewNumUP(int productId) {
 		log.info("reviewNumUP()");
+		log.info("productId : " + productId);
 		int res = reviewMapper.reviewNumUP(productId);
 		return res;
 	}
@@ -70,5 +84,7 @@ public class ReviewServiceImple implements ReviewService{
 		int res = reviewMapper.reviewNumDown(productId);
 		return res;
 	}
+
+	
 
 }

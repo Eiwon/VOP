@@ -13,6 +13,9 @@ public interface ReviewService {
 		 
 	// ´ñ±Û(¸®ºä) ÀüÃ¼ °Ë»ö
 	List<ReviewVO> getAllReview(int productId);
+	
+	// ´ñ±Û(¸®ºä) ÀüÃ¼ °Ë»ö
+	ReviewVO selectByReview(int productId, String memberId);
 		 
 	// ´ñ±Û(¸®ºä) ¼öÁ¤
 	int updateReview(int reviewId, String reviewContent, float reviewStar);

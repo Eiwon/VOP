@@ -61,7 +61,6 @@
      
        <!-- 썸네일 상품 이미지 -->
       <div>
-    	<p>썸네일 이미지</p>
     	<img src="showImg?imgId=${productVO.imgId}" alt="${ImageVO.imgRealName}.${ImageVO.imgExtension}">
 	  </div>
 

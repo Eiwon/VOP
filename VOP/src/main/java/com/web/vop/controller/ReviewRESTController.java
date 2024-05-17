@@ -29,23 +29,41 @@ public class ReviewRESTController {
 	private ReviewService reviewService;
 	
 	@PostMapping("/register") // POST : 댓글(리뷰) 입력
-	public ResponseEntity<Integer> createReview(@RequestBody ReviewVO reviewVO){
+	public ResponseEntity<Integer> createReviewPOST(@RequestBody ReviewVO reviewVO){
 		log.info("createReview()");
 		
-		// reviewVO 입력 받아 댓글(리뷰) 등록
-		int result = reviewService.createReview(reviewVO);
+		log.info("reviewVO : " + reviewVO);
 		
-		// 등록이 완료 되었을때 댓글 총 갯수 증가
-		if(result == 1) {
-			// 상품 테이블에 댓글 총 갯수 증가
-			int res = reviewService.reviewNumUP(reviewVO.getProductId());
-			log.info(res + "행 댓글 증가");
-		}
+		int productId = reviewVO.getProductId();
 		
-		log.info(result + "행 댓글 등록");
+		String memberId = reviewVO.getMemberId();
+		
+		log.info("productId :" + productId);
+		log.info("memberId : " + memberId);
+		
+		int result = 0;
+		
+//		ReviewVO vo = reviewService.selectByReview(productId, memberId);
+		
+//		if(vo == null) {
+			// reviewVO 입력 받아 댓글(리뷰) 등록
+			result = reviewService.createReview(reviewVO);
+			
+			// 등록이 완료 되었을때 댓글 총 갯수 증가
+			if(result == 1) {
+				// 상품 테이블에 댓글 총 갯수 증가
+				int res = reviewService.reviewNumUP(productId);
+				log.info(res + "행 댓글 증가");
+			}
+			
+			log.info(result + "행 댓글 등록");
+//		} else {
+//			log.info(memberId + "님은 " + productId + "상품 번호에 이미 댓글(리뷰)를 등록 하였습니다.");
+//		}
+		
 		// result값을 전송하여 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
-	}// end createReview()
+	}// end createReviewPOST()
 	
 	
 	@GetMapping("/all/{productId}") // GET : 댓글(리뷰) 선택(all)
