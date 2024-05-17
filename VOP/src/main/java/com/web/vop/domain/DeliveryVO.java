@@ -19,4 +19,5 @@ public class DeliveryVO {
 	private String receiverPhone; // 수령인 전화번호 
 	private String requirement; //  요청사항
 	private String deliveryAddressDetails; // 배송지 상세주소 
+	private int isDefault; // 기본 배송지
 }

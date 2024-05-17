@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.SellerVO;
 import com.web.vop.persistence.MemberMapper;
@@ -21,6 +22,9 @@ public class SellerServiceImple implements SellerService{
 	
 	@Autowired
 	SellerMapper sellerMapper;
+	
+	@Autowired
+	ProductService productService;
 	
 	@Override
 	public List<SellerVO> getRequestByState(String requestState, Pagination pagination) {
@@ -82,6 +86,25 @@ public class SellerServiceImple implements SellerService{
 		log.info(res + "행 삭제 성공");
 		return res;
 	} // end deleteRequest
+
+	@Transactional(value = "transactionManager")
+	@Override
+	public int deleteProductRequest(int productId) {
+		log.info("상품 삭제 요청");
+		// 판매 중인 상품이면 삭제 대기중 상태로 전환, (판매 중, 삭제 대기중) 상태가 아니라면 즉시 삭제
+		String productState = productService.selectStateByProductId(productId);
+		log.info("현재 상태 : " + productState);
+
+		int res = 0;
+		if (productState.equals("판매중")) {
+			if (productService.setProductState("삭제 대기중", productId) == 1)
+				res = 1;
+		} else if (!productState.equals("삭제 대기중")) {
+			if (productService.deleteProduct(productId) == 1)
+				res = 2;
+		}
+		return res;
+	} // end deleteProductRequest
 
 	
 

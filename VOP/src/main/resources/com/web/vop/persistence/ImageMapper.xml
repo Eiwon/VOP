@@ -63,4 +63,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		)
    </delete>
    
+   <!-- imgId로 이미지 삭제 -->
+   <delete id="deleteById">
+   		DELETE IMAGE WHERE IMG_ID = #{imgId}
+   </delete>
+   
+   <!-- productId로 이미지 삭제 -->
+   <delete id="deleteByProductId">
+   		DELETE IMAGE WHERE PRODUCT_ID = #{productId}
+   </delete>
+   
+   <!-- 이미지 업데이트 -->
+   <update id="updateById">
+   		UPDATE IMAGE SET IMG_REAL_NAME = #{imgRealName}, IMG_CHANGE_NAME = #{imgChangeName}, 
+   		IMG_EXTENSION = #{imgExtension} WHERE IMG_ID = #{imgId}
+   </update>
+   
 </mapper>

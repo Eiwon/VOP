@@ -19,7 +19,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.ProductDetailsDTO;
 import com.web.vop.domain.ProductVO;
@@ -28,6 +32,7 @@ import com.web.vop.service.ImageService;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.ProductService;
 import com.web.vop.service.SellerService;
+import com.web.vop.util.FileUploadUtil;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
@@ -50,6 +55,12 @@ public class SellerController {
 	@Autowired
 	private ImageService imageService;
 	
+	@Autowired
+	private String thumbnailUploadPath;
+	
+	@Autowired
+	private String uploadPath;
+	
 	@GetMapping("sellerRequest")
 	public void sellerRequestGET() {
 		log.info("판매자 권한 신청 페이지로 이동");
@@ -71,6 +82,7 @@ public class SellerController {
 		log.info("상품 조회 페이지 이동");
 	} // end listProductGET
 	
+	// 해당 유저가 등록한 상품 검색
 	@GetMapping("/productList")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> productList(Pagination pagination, HttpServletRequest request){
@@ -94,14 +106,54 @@ public class SellerController {
 		return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
 	} // end productList
 	
-	@GetMapping("/updateProduct")
-	public void updateProductGET(Model model, String productId) {
-		log.info("상품 수정 페이지 요청"); // 상세 검색 기능 필요
+	// 상품 정보 수정
+	@PostMapping("/updateProduct")
+	public void updateProduct(ProductVO productVO, MultipartFile thumbnail, MultipartFile[] details) {
+		log.info("상품 수정---------------------------------------");
+		log.info(productVO);
+		log.info(thumbnail.isEmpty());
+		log.info(details[0].isEmpty());
+		int productId = productVO.getProductId();
+		int imgId = productVO.getImgId();
+		// 입력된 파일이 없으면 파일 변경 X
+		// 기존 썸네일 imgId에 해당하는 이미지 파일 정보를 검색, 해당 이미지를 서버에서 삭제 후 DB에서 삭제
+		// 새 이미지를 저장, 저장 후 imgId를 가져온다.
 		
-	} // end updateProductGET
+		if(!thumbnail.isEmpty()) { // 썸네일이 수정된 경우, 
+			ImageVO newImg = FileUploadUtil.saveImage(thumbnail, thumbnailUploadPath, true); // 서버에 새 이미지 저장
+			
+			if(imgId != 0) { // 기존에 등록된 이미지가 있었다면 수정
+				ImageVO oldImg = imageService.getImageById(imgId);
+				FileUploadUtil.deleteFile(oldImg); // 서버에서 기존 이미지 삭제
+				newImg.setImgId(imgId);
+				imageService.updateImgById(newImg); // DB에 새 이미지 저장
+			}else { // 없었다면 새로 등록
+				imgId = imageService.registerImage(newImg);
+			}
+		} // end save thumbnail
+		
+		if(!details[0].isEmpty()) { // 세부사항 이미지가 수정된 경우
+			List<ImageVO> imgList = imageService.getByProductId(productId);
+			// 기존의 모든 이미지 서버에서 삭제
+			for(ImageVO image : imgList) {
+				FileUploadUtil.deleteFile(image);
+			}
+			// 기존의 모든 이미지 DB에서 삭제
+			imageService.removeByProductId(productId);
+			
+			// 서버, DB에 새 이미지 저장
+			for(MultipartFile file : details) {
+				ImageVO image = FileUploadUtil.saveImage(file, uploadPath, false);
+				imageService.registerImage(image);
+			}
+		} // end save details
+		
+		productService.updateProduct(productVO);
+		
+	} // end updateProduct
 	
 
-	// 자신의 권한 요청 조회
+	// 자신의 판매자 권한 요청 조회
 	@GetMapping("/my/{memberId}")
 	@ResponseBody
 	public ResponseEntity<SellerVO> getMyRequest(@PathVariable("memberId") String memberId){
@@ -112,7 +164,7 @@ public class SellerController {
 	} // end getMyRequest
 		
 		
-	// 요청 등록
+	// 판매자 권한 요청 등록
 	@PostMapping("/registerReq")
 	@ResponseBody
 	public ResponseEntity<Integer> registerRequest(@RequestBody SellerVO sellerVO) {
@@ -122,7 +174,7 @@ public class SellerController {
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end registerRequest
 		
-	// 요청 수정(유저)
+	// 판매자 권한 요청 수정(유저)
 	@PutMapping("/updateReq")
 	@ResponseBody
 	public ResponseEntity<Integer> updateRequest(@RequestBody SellerVO sellerVO) {
@@ -132,7 +184,7 @@ public class SellerController {
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end updateRequest
 
-	// 요청 승인/거절(관리자)
+	// 판매자 권한 요청 승인/거절(관리자)
 	@PutMapping("/approval")
 	@ResponseBody
 	public ResponseEntity<Integer> approveRequest(@RequestBody SellerVO sellerVO) {
@@ -142,7 +194,7 @@ public class SellerController {
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end refuseRequest
 		
-	// 요청 삭제
+	// 판매자 권한 요청 삭제
 	@DeleteMapping("/delete/{memberId}")
 	@ResponseBody
 	public ResponseEntity<Integer> deleteRequest(@PathVariable("memberId") String memberId) {
@@ -152,27 +204,6 @@ public class SellerController {
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end deleteRequest
 
-	// 상품 삭제 요청
-	@PostMapping("/delReqProduct")
-	@ResponseBody
-	public ResponseEntity<Integer> deleteRequestProduct(String productId) {
-		log.info("상품 삭제 요청 : " + productId);
-		int pid = Integer.parseInt(productId);
-		// 판매 중인 상품이면 삭제 대기중 상태로 전환, (판매 중, 삭제 대기중) 상태가 아니라면 즉시 삭제
-		String productState = productService.selectStateByProductId(pid);
-		log.info("현재 상태 : " + productState);
-
-		int res = 0;
-		if (productState.equals("판매중")) {
-			if (productService.setProductState("삭제 대기중", pid) == 1)
-				res = 1;
-		} else if (!productState.equals("삭제 대기중")) {
-			if (productService.deleteProduct(pid) == 1)
-				res = 2;
-		}
-
-		return new ResponseEntity<Integer>(res, HttpStatus.OK);
-	} // end deleteRequestProduct
 	
 	// 판매자 권한 요청 조회
 	@GetMapping("/wait")
@@ -215,6 +246,7 @@ public class SellerController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	} // end getAllRequest
 	
+	// 상품 등록 요청 조회
 	@GetMapping("/productReq")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> getWaitProduct(Pagination pagination){
@@ -234,6 +266,17 @@ public class SellerController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	} // end getWaitProduct
 	
+	// 상품 삭제 요청 등록 (삭제 가능한 상태면 삭제)
+	@DeleteMapping("/productReq")
+	@ResponseBody
+	public ResponseEntity<Integer> deleteRequestProduct(@RequestBody int productId) {
+		log.info("상품 삭제 요청 : " + productId);
+		int res = sellerService.deleteProductRequest(productId);
+
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+	} // end deleteRequestProduct
+	
+	// 상품 삭제 요청 조회
 	@GetMapping("/productDeleteReq")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> getDeleteProductReq(Pagination pagination){
@@ -253,6 +296,7 @@ public class SellerController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	} // end getWaitProduct
 	
+	// 판매자 상세정보 팝업으로 이동
 	@GetMapping("/popupSellerDetails")
 	public void popupSellerDetailsGET(Model model, String memberId) {
 		log.info("판매자 상세 정보 팝업 요청 " + memberId);
@@ -262,6 +306,7 @@ public class SellerController {
 		model.addAttribute("memberVO", memberVO);
 	} // end popupSellerReqGET
 	
+	// 상품 상세정보 팝업으로 이동
 	@GetMapping("/popupProductDetails")
 	public void popupProductDetailsGET(Model model, int productId) {
 		log.info("상품 상세 정보 팝업 요청 " + productId);
@@ -273,6 +318,7 @@ public class SellerController {
 		model.addAttribute("productDetails", productDetails);
 	} // end popupProductDetailsGET
 	
+	// 상품 정보 수정 팝업으로 이동
 	@GetMapping("/popupProductUpdate")
 	public void popupProductUpdateGET(Model model, int productId) {
 		log.info("상품 정보 수정 팝업 요청 " + productId);
@@ -281,9 +327,15 @@ public class SellerController {
 		productDetails.setImgIdDetails(imageService.getImgId(productId));
 		log.info("상세 정보 검색 결과 : " + productDetails);
 		
-		model.addAttribute("productDetails", productDetails);
+		try {
+			model.addAttribute("productDetails", new ObjectMapper().writeValueAsString(productDetails));
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
 	} // end popupProductUpdateGET
 	
+	// 상품 상태 변경
 	@PutMapping("/productState")
 	@ResponseBody
 	public ResponseEntity<Integer> updateProductState(@RequestBody ProductVO productVO){
@@ -293,6 +345,7 @@ public class SellerController {
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end updateProductState
 	
+	// 상품 즉시 삭제
 	@DeleteMapping("/product")
 	@ResponseBody
 	public ResponseEntity<Integer> deleteProduct(@RequestBody ProductVO productVO){

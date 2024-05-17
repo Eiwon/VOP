@@ -5,6 +5,29 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<style type="text/css">
+
+td {
+	width: 200px;
+}
+.request_container {
+	height: 400px;
+}
+
+.page_list {
+	display: flex;
+	flex-direction: row;
+	list-style: none;
+}
+
+tbody {
+	height: 250px;
+}
+tr {
+	height: 50px;
+}
+
+</style>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>등록한 상품 조회</title>
 </head>
@@ -21,7 +44,7 @@
 		let productMap = {}; // 상품 목록과 페이지 정보를 저장할 객체 선언
 		
 		$(document).ready(function(){
-			productMap.show(); // 상품 목록 출력
+			productMap.show(1); // 상품 목록 출력
 		}); // end document.ready
 		
 		
@@ -34,7 +57,7 @@
 				url : 'productList?pageNum=' + page,
 				success : function(result) {
 					console.log(result);
-					productMap.list = result.list;
+					productMap.list = result.productList;
 					productMap.pageMaker = result.pageMaker; // 가져온 데이터를 저장
 					
 					const list = productMap.list;
@@ -94,7 +117,7 @@
 			const popupStat = {
 					'url' : targetUrl, // 서버에 다른 페이지로 이동을 요청하는 url
 					'name' : 'popupUpdate',
-					'option' : 'width=500, height=600, top=50, left=400' // 팝업창 설정
+					'option' : 'width=700, height=1000, top=50, left=400' // 팝업창 설정
 			};
 			
 			// 팝업 창 띄우기

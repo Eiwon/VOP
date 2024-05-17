@@ -12,25 +12,26 @@
 <body>
 <h2>배송지 등록</h2>
 <form id="deliveryForm" action="register" method="post">
-    <label for="recipient">받는 사람:</label>
-    <input type="text" id="recipient" name="recipient" required><br><br>
+    <label for="receiverName">받는 사람:</label>
+    <input type="text" id="receiverName" name="receiverName" required><br><br>
 
     <!-- 우편번호 찾기 관련 코드 -->
     <input type="text" id="sample6_postcode" placeholder="우편번호">
     <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
-    <input type="text" id="sample6_address" placeholder="주소"><br>
-    <input type="text" id="sample6_detailAddress" placeholder="상세주소"><br><br>
+    <input type="text" id="receiverAddress" name="receiverAddress" placeholder="주소"><br>
+    <input type="text" id="deliveryAddressDetails" name="deliveryAddressDetails" placeholder="상세주소"><br><br>
 
-    <label for="phone">휴대폰 번호:</label>
-    <input type="text" id="phone" name="phone" placeholder="010-1234-5678" required><br><br>
+    <label for="receiverPhone">휴대폰 번호:</label>
+    <input type="text" id="receiverPhone" name="receiverPhone" placeholder="010-1234-5678" required><br><br>
 
-    <label for="notes">배송 요청사항:</label><br>
-    <textarea id="notes" name="notes" rows="4" cols="50">일반 : 문앞</textarea><br><br>
+    <label for="requirement">배송 요청사항:</label><br>
+    <textarea id="requirement" name="requirement" rows="4" cols="50">일반 : 문앞</textarea><br><br>
 
-    <input type="checkbox" id="default" name="default" value="true">
-    <label for="default">기본 배송지로 설정</label><br><br>
+    <input type="checkbox" id="isDefault" name="isDefault" value="0">
+    <label for="isDefault">기본 배송지로 설정</label><br><br>
 
     <button type="submit">저장</button>
+
 </form>
 
 <script>
@@ -52,44 +53,44 @@
 
                 // 우편번호와 주소 정보를 해당 필드에 넣는다.
                 document.getElementById('sample6_postcode').value = data.zonecode;
-                document.getElementById("sample6_address").value = addr;
+                document.getElementById("receiverAddress").value = addr;
                 // 커서를 상세주소 필드로 이동한다.
-                document.getElementById("sample6_detailAddress").focus();
+                document.getElementById("deliveryAddressDetails").focus();
             }
         }).open();
     }
 </script>
 <script>
-    // 저장 버튼 클릭 시 폼 유효성 검사 후 제출 및 페이지 이동
-    document.getElementById("deliveryForm").addEventListener("submit", function(event) {
-        var recipient = document.getElementById("recipient").value;
-        var phone = document.getElementById("phone").value;
+	//저장 버튼 클릭 시 폼 유효성 검사 후 제출 및 페이지 이동
+	document.getElementById("deliveryForm").addEventListener("submit", function(event) {
+    	var receiverName = document.getElementById("receiverName").value;
+    	var receiverPhone = document.getElementById("receiverPhone").value;
 
         // 받는 사람, 휴대폰 번호가 비어있는지 확인
-        if (!recipient || !phone) {
+        if (!receiverName || !receiverPhone) {
             alert("받는 사람, 휴대폰 번호는 필수 입력 사항입니다.");
             event.preventDefault(); // 폼 제출 막기
         }
 
         // 휴대폰 번호 형식 체크
-        if (!checkPhoneNumber(phone)) {
+        if (!checkPhoneNumber(receiverPhone)) {
             alert("올바른 휴대폰 번호 형식이 아닙니다. 국내 휴대번호만 입력 가능합니다.");
             event.preventDefault(); // 폼 제출 막기
         }
 
         // 기본 배송지로 설정되었는지 확인
-        var isDefault = document.getElementById("default").checked;
-        if (isDefault && !recipient) {
+        var isDefault = document.getElementById("isDefault").checked;
+        if (isDefault && !receiverName) {
             alert("기본 배송지로 설정하려면 받는 사람 정보가 필요합니다.");
             event.preventDefault(); // 폼 제출 막기
         }
     });
 
     // 휴대폰 번호 형식 체크 함수
-    function checkPhoneNumber(phone) {
-        var phoneRegex = /^\d{3}-\d{3,4}-\d{4}$/;
-        return phoneRegex.test(phone);
-    }
+    function checkPhoneNumber(receiverPhone) {
+    var phoneRegex = /^010-\d{4}-\d{4}$/;
+    return phoneRegex.test(receiverPhone);
+}
 </script>
 </body>
 </html>           
