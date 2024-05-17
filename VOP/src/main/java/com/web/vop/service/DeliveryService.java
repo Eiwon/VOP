@@ -15,6 +15,9 @@ public interface DeliveryService {
 	// 배송지 삭제
 	int deleteDelivery(String memberId);
 	
-	// 배송지 상세 조회 
+	// 배송지 상세 조회 by memberId 
 	List<DeliveryVO> getMemberId(String memberId);
+	
+	// 배송지 상세 조회 by deliveryId
+	DeliveryVO getDeliveryById(int deliveryId);
 }

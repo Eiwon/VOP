@@ -20,4 +20,7 @@ public interface DeliveryMapper {
 	
 	// 배송지 상세 조회 (받는 사람 , 받는 주소 , 배송 요청 사항 )
 	public List<DeliveryVO> selectByMemberId(String memberId);
+	
+	// 배송지 상세 조회 by deliveryId
+	public DeliveryVO selectBydeliveryId(int deliveryId);
 }
