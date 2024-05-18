@@ -165,17 +165,14 @@ public class ProductController {
 		
 		if(category.equals("전체")) { // 카테고리가 전체, 검색어가 있는 경우
 			log.info("검색어 검색");
-			productList = productService.selectByName(word, pagination);
-			pageMaker.setTotalCount(productService.selectByNameCnt(word));
+			productList = productService.searchByName(word, pageMaker);
 		}else {
 			if(word.length() > 0) { // 카테고리가 있고, 검색어도 있는 경우
 				log.info("카테고리 + 검색어 검색");
-				productList = productService.selectByNameInCategory(category, word, pagination);
-				pageMaker.setTotalCount(productService.selectByNameInCategoryCnt(category, word));
+				productList = productService.searchByNameInCategory(category, word, pageMaker);
 			}else { // 카테고리가 있고, 검색어는 없는 경우
 				log.info("카테고리 검색");
-				productList = productService.selectByCategory(category, pagination);
-				pageMaker.setTotalCount(productService.selectByCategoryCnt(category));
+				productList = productService.searchByCategory(category, pageMaker);
 			}
 		}
 		// 카테고리가 전체, 검색어도 없는 경우 -- 클라이언트 측에서 실행 X

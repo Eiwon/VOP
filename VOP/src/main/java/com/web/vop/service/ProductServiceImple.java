@@ -12,6 +12,7 @@ import com.web.vop.domain.ProductVO;
 import com.web.vop.persistence.ImageMapper;
 import com.web.vop.persistence.ProductMapper;
 import com.web.vop.util.FileUploadUtil;
+import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
@@ -75,56 +76,38 @@ public class ProductServiceImple implements ProductService{
 	} // end registerProduct
 	
 	@Override
-	public List<ProductVO> selectByCategory(String category, Pagination pagination) {
-		log.info("selectByCategory()");
-		return productMapper.selectByCategory(category, pagination);
+	public List<ProductVO> searchByCategory(String category, PageMaker pageMaker) {
+		log.info("searchByCategory()");
+		int totalCnt = productMapper.selectByCategoryCnt(category);
+		pageMaker.setTotalCount(totalCnt);
+		return productMapper.selectByCategory(category, pageMaker.getPagination());
 	} // end selectByCategory
-
-	@Override
-	public int selectByCategoryCnt(String category) {
-		log.info("selectByCategoryCnt()");
-		return productMapper.selectByCategoryCnt(category);
-	} // end selectByCategoryCnt
 	
 	@Override
-	public List<ProductVO> selectByName(String productName, Pagination pagination) {
-		log.info("selectByName()");
+	public List<ProductVO> searchByName(String productName, PageMaker pageMaker) {
+		log.info("searchByName()");
 		String includeName = '%' + productName + '%';
-		return productMapper.selectByName(includeName, pagination);
-	} // end selectByName
-
-	@Override
-	public int selectByNameCnt(String productName) {
-		log.info("selectByNameCnt()");
-		String includeName = '%' + productName + '%';
-		return productMapper.selectByNameCnt(includeName);
+		int totalCnt = productMapper.selectByNameCnt(includeName);
+		pageMaker.setTotalCount(totalCnt);
+		return productMapper.selectByName(includeName, pageMaker.getPagination());
 	} // end selectByName
 	
 	@Override
-	public List<ProductVO> selectByNameInCategory(String category, String productName, Pagination pagination) {
-		log.info("selectByNameInCategory()");
+	public List<ProductVO> searchByNameInCategory(String category, String productName, PageMaker pageMaker) {
+		log.info("searchByNameInCategory()");
 		String includeName = '%' + productName + '%';
-		return productMapper.selectByNameInCategory(category, includeName, pagination);
+		int totalCnt = productMapper.selectByNameInCategoryCnt(category, includeName);
+		pageMaker.setTotalCount(totalCnt);
+		return productMapper.selectByNameInCategory(category, includeName, pageMaker.getPagination());
 	} // end selectByNameInCategory
-
-	@Override
-	public int selectByNameInCategoryCnt(String category, String productName) {
-		log.info("selectByNameInCategoryCnt()");
-		String includeName = '%' + productName + '%';
-		return productMapper.selectByNameInCategoryCnt(category, includeName);
-	} // end selectByNameInCategoryCnt
 	
 	@Override
-	public List<ProductVO> selectByMemberId(String memberId, Pagination pagination) {
+	public List<ProductVO> searchByMemberId(String memberId, PageMaker pageMaker) {
 		log.info("selectByMemberId()");
-		return productMapper.selectByMemberId(memberId, pagination);
+		int totalCnt = productMapper.selectByMemberIdCnt(memberId);
+		pageMaker.setTotalCount(totalCnt);
+		return productMapper.selectByMemberId(memberId, pageMaker.getPagination());
 	} // end selectByMemberId
-
-	@Override
-	public int getCntByMemberId(String memberId) {
-		log.info("getCntByMemberId()");
-		return productMapper.selectByMemberIdCnt(memberId);
-	} // end getCntByMemberId
 	
 	@Override
 	public int setProductState(String productState, int productId) {
@@ -172,16 +155,12 @@ public class ProductServiceImple implements ProductService{
 	} // end getRecent5
 
 	@Override
-	public List<ProductVO> getStateIs(String productState, Pagination pagination) {
-		log.info("getStateIsWait()");
-		return productMapper.selectStateIs(productState, pagination);
-	} // end getStateIsWait
-
-	@Override
-	public int getStateIsCnt(String productState) {
-		log.info("getStateIsWaitCnt()");
-		return productMapper.selectStateIsCnt(productState);
-	} // end getStateIsWaitCnt
+	public List<ProductVO> searchByState(String productState, PageMaker pageMaker) {
+		log.info("searchByState()");
+		int totalCnt = productMapper.selectStateIsCnt(productState);
+		pageMaker.setTotalCount(totalCnt);
+		return productMapper.selectStateIs(productState, pageMaker.getPagination());
+	} // end searchByState
 
 	@Override
 	public ProductDetailsDTO getDetails(int productId) {
@@ -189,10 +168,35 @@ public class ProductServiceImple implements ProductService{
 		return productMapper.selectDetails(productId);
 	} // end getDetails
 
+	@Transactional(value = "transactionManager")
 	@Override
-	public int updateProduct(ProductVO productVO) {
+	public int updateProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details) {
 		log.info("updateProduct()");
-		return productMapper.updateProduct(productVO);
+		int productId = productVO.getProductId();
+		int oldThumbnailId = productVO.getImgId();
+		// thumbnail 이미지 변경
+		if(thumbnail != null) {// 이미지가 변경되었다면, 기존 이미지 삭제, 새 이미지 추가
+			if(productVO.getImgId() > 0) {
+				imageMapper.deleteById(oldThumbnailId);
+			}
+			imageMapper.insertImg(thumbnail);
+			int newImgId = imageMapper.selectRecentImgId();
+			productVO.setImgId(newImgId);
+		}
+		
+		// details 이미지 변경
+		if(details.size() > 0) {
+			imageMapper.deleteByProductId(productId);
+			for(ImageVO detail : details) {
+				detail.setProductId(productId);
+				imageMapper.insertImg(detail);
+			}
+		}
+		// 상품 변경점 저장
+		productMapper.updateProduct(productVO);
+		int res = productMapper.updateState(productVO.getProductState(), productId);
+		
+		return res;
 	} // end updateProduct
 
 	

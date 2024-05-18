@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductDetailsDTO;
 import com.web.vop.domain.ProductVO;
+import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
 @Service
@@ -25,29 +26,17 @@ public interface ProductService {
 	int registerProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details);
 	
 	// 카테고리로 상품 검색
-	List<ProductVO> selectByCategory(String category, Pagination pagination);
-	
-	// 카테고리로 상품 검색 결과 수량
-	int selectByCategoryCnt(String category);
+	List<ProductVO> searchByCategory(String category, PageMaker pageMaker);
 	
 	// 이름으로 상품 검색
-	List<ProductVO> selectByName(String productName, Pagination pagination);
-	
-	// 이름으로 상품 검색 결과 수량
-	int selectByNameCnt(String productName);
+	List<ProductVO> searchByName(String productName, PageMaker pageMaker);
 	
 	// 카테고리 안에서 이름으로 검색
-	List<ProductVO> selectByNameInCategory(String category, String productName,
-			Pagination pagination);
-	
-	// 카테고리 안에서 이름으로 검색 결과 수량
-	int selectByNameInCategoryCnt(String category, String productName);
+	List<ProductVO> searchByNameInCategory(String category, String productName,
+			PageMaker pageMaker);
 	
 	// memberId로 상품 조회
-	List<ProductVO> selectByMemberId(String memberId, Pagination pagination);
-	
-	// memberId로 상품 갯수 조회
-	int getCntByMemberId(String memberId);
+	List<ProductVO> searchByMemberId(String memberId, PageMaker pageMaker);
 	
 	// productId로 상품 상태 변경
 	int setProductState(String productState, int productId);
@@ -65,14 +54,11 @@ public interface ProductService {
 	List<ProductVO> getRecent5();
 	
 	// 상태가 ?? 대기중인 상품 조회
-	List<ProductVO> getStateIs(String productState, Pagination pagination);
-	
-	// 상태가 ?? 대기중인 상품 수 조회
-	int getStateIsCnt(String productState);
+	List<ProductVO> searchByState(String productState, PageMaker pageMaker);
 	
 	// productId로 상세 정보 조회
 	ProductDetailsDTO getDetails(int productId);
 	
 	// 상품 정보 변경
-	int updateProduct(ProductVO productVO);
+	int updateProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details);
 }

@@ -11,6 +11,11 @@
 		border: 1px solid black;
 		width: 200px;
 	}
+	#pageSelector {
+		list-style: none;
+		flex-direction: row;
+		display: flex;
+	}
 </style>
 <title>상품 검색</title>
 </head>

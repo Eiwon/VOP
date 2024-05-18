@@ -1,5 +1,6 @@
 package com.web.vop.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,9 +93,8 @@ public class SellerController {
 		Map<String, Object> resultMap = new HashMap<>();
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
-		pageMaker.setTotalCount(productService.getCntByMemberId(memberId));
 		
-		List<ProductVO> productList = productService.selectByMemberId(memberId, pageMaker.getPagination());
+		List<ProductVO> productList = productService.searchByMemberId(memberId, pageMaker);
 		
 		if(productList != null) {
 			log.info(productList.size() + "개 데이터 검색 성공");
@@ -109,38 +109,35 @@ public class SellerController {
 	// 상품 정보 수정
 	@PostMapping("/updateProduct")
 	public void updateProduct(ProductVO productVO, MultipartFile thumbnail, MultipartFile[] details) {
-		log.info("상품 수정---------------------------------------");
-		log.info(productVO);
-		log.info(thumbnail.isEmpty());
-		log.info(details[0].isEmpty());
-		int productId = productVO.getProductId();
-		int imgId = productVO.getImgId();
-		// 입력된 파일이 없으면 파일 변경 X
-		// 기존 썸네일 imgId에 해당하는 이미지 파일 정보를 검색, 해당 이미지를 서버에서 삭제 후 DB에서 삭제
-		// 새 이미지를 저장, 저장 후 imgId를 가져온다.
+		log.info("----------상품 수정---------------------");
+		log.info("상품 정보 : " + productVO + ", 썸네일 유무 : " + !thumbnail.isEmpty());
+		ImageVO thumbnailVO = null;
+		List<ImageVO> detailsList = new ArrayList<>();
 		
-		/*
-		 * if(!thumbnail.isEmpty()) { // 썸네일이 수정된 경우, ImageVO newImg =
-		 * FileUploadUtil.saveIcon(thumbnail, thumbnailUploadPath); // 서버에 새 이미지 저장
-		 * 
-		 * if(imgId != 0) { // 기존에 등록된 이미지가 있었다면 수정 ImageVO oldImg =
-		 * imageService.getImageById(imgId); FileUploadUtil.deleteFile(oldImg); // 서버에서
-		 * 기존 이미지 삭제 newImg.setImgId(imgId); imageService.updateImgById(newImg); // DB에
-		 * 새 이미지 저장 }else { // 없었다면 새로 등록 imgId = imageService.registerImage(newImg); }
-		 * } // end save thumbnail
-		 * 
-		 * if(!details[0].isEmpty()) { // 세부사항 이미지가 수정된 경우 List<ImageVO> imgList =
-		 * imageService.getByProductId(productId); // 기존의 모든 이미지 서버에서 삭제 for(ImageVO
-		 * image : imgList) { FileUploadUtil.deleteFile(image); } // 기존의 모든 이미지 DB에서 삭제
-		 * imageService.removeByProductId(productId);
-		 * 
-		 * // 서버, DB에 새 이미지 저장 for(MultipartFile file : details) { ImageVO image =
-		 * FileUploadUtil.saveImage(file, uploadPath, false);
-		 * imageService.registerImage(image); } } // end save details
-		 * 
-		 * productService.updateProduct(productVO);
-		 */
+		// DB 변경
+		// 변경할 이미지가 있다면, DB에 저장하기 위해 VO로 변환
+		if(!thumbnail.isEmpty()) {  
+			thumbnailVO = FileUploadUtil.toImageVO(thumbnail, thumbnailUploadPath);
+		}
+		if(!details[0].isEmpty()) {
+			for(MultipartFile detail : details) {
+				detailsList.add(FileUploadUtil.toImageVO(detail, uploadPath));
+			}
+		}
 		
+		// 변경할 정보를 service에 전달 (transaction 필요)
+		int res = productService.updateProduct(productVO, thumbnailVO, detailsList);
+		
+		if(res == 1) { // 저장 성공시 서버에 파일 저장
+			if(!thumbnail.isEmpty()) {
+				FileUploadUtil.saveIcon(thumbnailUploadPath, thumbnail, thumbnailVO.getImgChangeName());
+			}
+			if(!details[0].isEmpty()) {
+				for(int i = 0; i < details.length; i++) {
+					FileUploadUtil.saveFile(uploadPath, details[i], detailsList.get(i).getImgChangeName());
+				}
+			}
+		}
 	} // end updateProduct
 	
 
@@ -244,10 +241,8 @@ public class SellerController {
 		log.info("모든 상품 등록 요청 조회");
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
-		List<ProductVO> list = productService.getStateIs("승인 대기중", pageMaker.getPagination());
+		List<ProductVO> list = productService.searchByState("승인 대기중", pageMaker);
 		log.info(list);
-		int requestCount = productService.getStateIsCnt("승인 대기중");
-		pageMaker.setTotalCount(requestCount);
 		pageMaker.update();
 		
 		Map<String, Object> resultMap = new HashMap<>();
@@ -274,10 +269,8 @@ public class SellerController {
 		log.info("상품 삭제 요청 조회");
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
-		List<ProductVO> list = productService.getStateIs("삭제 대기중", pageMaker.getPagination());
+		List<ProductVO> list = productService.searchByState("삭제 대기중", pageMaker);
 		log.info(list);
-		int requestCount = productService.getStateIsCnt("삭제 대기중");
-		pageMaker.setTotalCount(requestCount);
 		pageMaker.update();
 		
 		Map<String, Object> resultMap = new HashMap<>();
