@@ -51,51 +51,26 @@ public class PaymentController {
 	private ProductService productService;
 	
 	@Autowired
-	private BasketService basketService;
-	
-	@Autowired
 	private CouponService couponService;
-	
-	@Autowired
-	private OrderService orderService;
 	
 	@Autowired
 	private PaymentService paymentService;
 	
-	@Autowired
-	private DeliveryService deliveryService;
-	
 	@PostMapping("/checkout")
-	public void makeOrders(Model model, int[] productIds, int[] productNums, String memberId) {
-		log.info("makeOrders() - memberId : " + memberId);
-		log.info("productIds length : " + productIds.length);
-		log.info("first productId : " + productIds[0] + ", first productNums : " + productNums[0]);
+	public void makePayment(Model model, int[] productIds, int[] productNums, String memberId) {
+		log.info("makePayment() - memberId : " + memberId);
+		log.info("결제할 상품 갯수 : " + productIds.length);
 		
 		List<OrderVO> orderList = new ArrayList<>();
 		
-		// 유저 정보 검색
-		MemberVO memberVO = memberService.getMemberInfo(memberId);
-		
-		// 배송지 정보 (미구현)
-		DeliveryVO deliveryVO = new DeliveryVO();
-		
-		// 상품 정보 검색 => 주문 정보 형태로 변환
-		for(int i = 0; i < productIds.length; i++) {
-			ProductVO productVO = productService.getProductById(productIds[i]);
-			orderList.add(new OrderVO(
-					0, 0, productVO.getProductId(), productVO.getProductName(), productVO.getProductPrice(), 
-					productNums[i], null, productVO.getImgId(), memberId)
-					);
-		}
+		PaymentWrapper payment = paymentService.makePaymentForm(productIds, productNums, memberId);
 		
 		try { // 자바스크립트에서 쓰기 위해 json 형식 문자열로 변환
-			model.addAttribute("orderList", new ObjectMapper().writeValueAsString(orderList));
-			model.addAttribute("memberVO", new ObjectMapper().writeValueAsString(memberVO));
-			model.addAttribute("deliveryVO", new ObjectMapper().writeValueAsString(deliveryVO));
+			model.addAttribute("paymentWrapper", new ObjectMapper().writeValueAsString(payment));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-	} // end toCheckout
+	} // end makePayment
 	
 	
 	@GetMapping("/paymentResult")
@@ -116,54 +91,22 @@ public class PaymentController {
 	@PostMapping("/apply")
 	@ResponseBody
 	public ResponseEntity<Integer> savePaymentResult(@RequestBody PaymentWrapper paymentResult){
-		log.info("결제 결과 저장");
+		log.info("---------결제 결과 저장--------");
+		log.info("결제 내역 : " + paymentResult.getPaymentVO());
+		log.info("주문 목록 : " + paymentResult.getOrderList());
+		log.info("쿠폰 사용 내역 : " + paymentResult.getCouponVO());
 		
-		PaymentVO paymentVO = paymentResult.getPaymentVO();
-		List<OrderVO> orderList = paymentResult.getOrderList();
-		CouponVO couponVO = paymentResult.getCouponVO();
-		
-		log.info(paymentVO);
-		log.info(orderList);
-		log.info(couponVO);
-		
-		int res = paymentService.registerPayment(paymentVO); // 결제 결과 등록
-		int paymentId = paymentVO.getPaymentId();
-		if(res == 1) { // 각 주문 목록 등록
-			int totalRes = 0;
-			for(OrderVO order : orderList) {
-				order.setPaymentId(paymentId); // 결제 id 추가
-				totalRes += orderService.registerOrder(order);
-				// 결제된 상품을 장바구니에서 제거
-				basketService.removeFromBasket(order.getProductId(), paymentVO.getMemberId());
-			}
-			log.info("총 " + totalRes + "행 추가 성공");
-		}
-		// 쿠폰 사용 처리
-		if(couponVO != null) {
-			int couponNum = couponVO.getCouponNum() -1;
-			if(couponNum > 0) { // 쿠폰 사용 후, 쿠폰이 남아있다면 갯수 변경
-				couponVO.setCouponNum(couponNum);
-				couponService.setCouponNum(couponVO);
-			}else { // 더 이상 남은 쿠폰이 없으면 삭제
-				couponService.removeCoupon(couponVO);
-			}
-		}
+		int res = paymentService.registerPayment(paymentResult); // 결제 결과 등록
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end savePaymentResult
 	
 	@GetMapping("/payment")
 	@ResponseBody
-	public ResponseEntity<PaymentWrapper> sendPaymentResult(HttpServletRequest request){
+	public ResponseEntity<PaymentWrapper> getPaymentResult(HttpServletRequest request){
 		log.info("결제 결과 조회 요청");
-		String memberId = (String) request.getSession().getAttribute("memberId");
-		PaymentWrapper payment = new PaymentWrapper(); // 각 주문정보와 전체 결제 내역을 한번에 보내기 위해 포장
-		payment.setPaymentVO(
-				paymentService.getRecentPayment(memberId)
-				);
-		payment.setOrderList(
-				orderService.getOrderByPaymentId(payment.getPaymentVO().getPaymentId())
-				);
+		String memberId = (String) request.getSession().getAttribute("memberId");// 각 주문정보와 전체 결제 내역을 한번에 보내기 위해 포장
+		PaymentWrapper payment = paymentService.getRecentPayment(memberId);
 		
 		return new ResponseEntity<PaymentWrapper>(payment, HttpStatus.OK);
 	} // end sendPaymentResult

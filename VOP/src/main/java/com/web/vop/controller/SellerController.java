@@ -54,9 +54,6 @@ public class SellerController {
 	private MemberService memberService;
 	
 	@Autowired
-	private ImageService imageService;
-	
-	@Autowired
 	private String thumbnailUploadPath;
 	
 	@Autowired
@@ -200,13 +197,10 @@ public class SellerController {
 		log.info("모든 승인 대기중인 권한요청 조회");
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
-		List<SellerVO> list = sellerService.getRequestByState("승인 대기중", pageMaker.getPagination());
+		List<SellerVO> list = sellerService.getRequestByState("승인 대기중", pageMaker);
 		log.info(list);
-		int requestCount = sellerService.getRequestByStateCnt("승인 대기중");
-		pageMaker.setTotalCount(requestCount);
-		pageMaker.update();
 		
-		log.info("pageMaker : " + pageMaker.getEndNum());
+		pageMaker.update();
 		Map<String, Object> resultMap = new HashMap<>(); // 반환할 타입이 2개이므로 pageMaker와 list를 담을 맵 생성
 		resultMap.put("pageMaker", pageMaker);
 		resultMap.put("list", list);
@@ -221,12 +215,10 @@ public class SellerController {
 		log.info("모든 승인된 요청 조회");
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
-		List<SellerVO> list = sellerService.getRequestByState("승인", pageMaker.getPagination());
+		List<SellerVO> list = sellerService.getRequestByState("승인", pageMaker);
 		log.info(list);
-		int requestCount = sellerService.getRequestByStateCnt("승인");
-		pageMaker.setTotalCount(requestCount);
-		pageMaker.update();
 		
+		pageMaker.update();
 		Map<String, Object> resultMap = new HashMap<>();
 		resultMap.put("pageMaker", pageMaker);
 		resultMap.put("list", list);
@@ -243,8 +235,8 @@ public class SellerController {
 		pageMaker.setPagination(pagination);
 		List<ProductVO> list = productService.searchByState("승인 대기중", pageMaker);
 		log.info(list);
+	
 		pageMaker.update();
-		
 		Map<String, Object> resultMap = new HashMap<>();
 		resultMap.put("pageMaker", pageMaker);
 		resultMap.put("list", list);
@@ -271,8 +263,8 @@ public class SellerController {
 		pageMaker.setPagination(pagination);
 		List<ProductVO> list = productService.searchByState("삭제 대기중", pageMaker);
 		log.info(list);
-		pageMaker.update();
 		
+		pageMaker.update();	
 		Map<String, Object> resultMap = new HashMap<>();
 		resultMap.put("pageMaker", pageMaker);
 		resultMap.put("list", list);
@@ -296,7 +288,6 @@ public class SellerController {
 		log.info("상품 상세 정보 팝업 요청 " + productId);
 		
 		ProductDetailsDTO productDetails = productService.getDetails(productId);
-		productDetails.setImgIdDetails(imageService.getImgId(productId));
 		log.info("상세 정보 검색 결과 : " + productDetails);
 		
 		model.addAttribute("productDetails", productDetails);
@@ -308,15 +299,13 @@ public class SellerController {
 		log.info("상품 정보 수정 팝업 요청 " + productId);
 		
 		ProductDetailsDTO productDetails = productService.getDetails(productId);
-		productDetails.setImgIdDetails(imageService.getImgId(productId));
 		log.info("상세 정보 검색 결과 : " + productDetails);
 		
-		try {
+		try { // 자바스크립트에서 사용하기 위해 JSON으로 변환 후 전송
 			model.addAttribute("productDetails", new ObjectMapper().writeValueAsString(productDetails));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		
 	} // end popupProductUpdateGET
 	
 	// 상품 상태 변경

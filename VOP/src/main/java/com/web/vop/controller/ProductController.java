@@ -137,7 +137,7 @@ public class ProductController {
 				imgDetails.add(FileUploadUtil.toImageVO(file, uploadPath));
 			}
 		}
-		
+		// DB에 상품 정보 등록
 	    int res = productService.registerProduct(productVO, imgThumbnail, imgDetails);
 	    log.info("상품 등록 결과 : " + res);
 	    

@@ -121,10 +121,12 @@
 	</div>
 	
 	<script type="text/javascript">
-		let memberVO = JSON.parse('${memberVO}');
-		let orderList = JSON.parse('${orderList}');
-		let deliveryVO = JSON.parse('${deliveryVO}');
+		let paymentWrapper = JSON.parse('${paymentWrapper}');
+		let memberVO = paymentWrapper.memberVO;
+		let orderList = paymentWrapper.orderList;
+		let deliveryVO = paymentWrapper.deliveryVO;
 		let couponList;
+		let couponVO;
 		let paymentVO = {
 				'paymentId' : 0,
 				'memberId' : '',
@@ -139,7 +141,7 @@
 				};
 		let infoContainer = $('#info_container');
 		let tagOrderList = $('#order_list');
-		let couponVO;
+		
 		
 		$(document).ready(function(){
 			
@@ -322,6 +324,19 @@
 		
 		function showDeliveryPopup(){
 			
+			const popupStat = {
+					'url' : 'popupDeliverySelect'',
+					'name' : 'popupDeliverySelect',
+					'option' : 'width=500, height=600, top=50, left=400'
+			};
+			
+			// 팝업 창 띄우기
+			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
+			popup.onbeforeunload = function(){
+				// 팝업 닫힐 때 실행
+				console.log("팝업 닫힘");
+				
+			} // end popup.onbeforeunload
 		} // end showDeliveryPopup
 		
 	</script>

@@ -3,13 +3,11 @@ package com.web.vop.service;
 import java.util.List;
 
 import com.web.vop.domain.SellerVO;
-import com.web.vop.util.Pagination;
+import com.web.vop.util.PageMaker;
 
 public interface SellerService {
 
-	public List<SellerVO> getRequestByState(String requestState, Pagination pagination);
-
-	public int getRequestByStateCnt(String requestState);
+	public List<SellerVO> getRequestByState(String requestState, PageMaker pageMaker);
 	
 	public SellerVO getMyRequest(String memberId);
 	

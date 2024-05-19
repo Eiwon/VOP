@@ -165,7 +165,9 @@ public class ProductServiceImple implements ProductService{
 	@Override
 	public ProductDetailsDTO getDetails(int productId) {
 		log.info("getDetails()");
-		return productMapper.selectDetails(productId);
+		ProductDetailsDTO details = productMapper.selectDetails(productId);
+		details.setImgIdDetails(imageService.getImgId(productId));
+		return details;
 	} // end getDetails
 
 	@Transactional(value = "transactionManager")

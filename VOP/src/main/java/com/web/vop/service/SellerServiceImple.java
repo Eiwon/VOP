@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.web.vop.domain.SellerVO;
 import com.web.vop.persistence.MemberMapper;
 import com.web.vop.persistence.SellerMapper;
+import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
@@ -27,20 +28,14 @@ public class SellerServiceImple implements SellerService{
 	ProductService productService;
 	
 	@Override
-	public List<SellerVO> getRequestByState(String requestState, Pagination pagination) {
+	public List<SellerVO> getRequestByState(String requestState, PageMaker pageMaker) {
 		log.info(requestState + "인 판매자 권한 요청 조회");
-		List<SellerVO> result = sellerMapper.selectRequestByState(requestState, pagination);
+		int totalCnt = sellerMapper.selectRequestByStateCnt(requestState);
+		pageMaker.setTotalCount(totalCnt);
+		List<SellerVO> result = sellerMapper.selectRequestByState(requestState, pageMaker.getPagination());
 		log.info("권한 요청 검색 결과 : " + result);
 		return result;
 	} // end getAllRequest
-
-	@Override
-	public int getRequestByStateCnt(String requestState) {
-		log.info("승인 대기중인 요청 수 조회");
-		int res = sellerMapper.selectRequestByStateCnt(requestState);
-		log.info("요청 수 검색 결과 : " + res);
-		return res;
-	} // end getRequestCount
 	
 	@Override
 	public SellerVO getMyRequest(String memberId) {
