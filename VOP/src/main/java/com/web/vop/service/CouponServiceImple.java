@@ -41,4 +41,19 @@ public class CouponServiceImple implements CouponService{
 		return couponMapper.selectCouponNum(couponVO);
 	} // end getCouponNum
 
+	@Override
+	public int useUpCoupon(CouponVO couponVO) {
+		int couponNum = couponMapper.selectCouponNum(couponVO); // 현재 쿠폰 수 조회
+		int res = 0;
+		if(couponNum - 1 > 0) { // 사용 후, 쿠폰이 남아있다면 갯수 변경
+			couponVO.setCouponNum(couponNum -1);
+			res = couponMapper.updateCouponNum(couponVO);
+		}else { // 더 이상 남은 쿠폰이 없으면 삭제
+			res = couponMapper.deleteCouponSelected(couponVO);
+		}
+		
+		return res;
+	} // end useUpCoupon
+
+	
 }

@@ -17,4 +17,8 @@ public interface CouponService {
 	
 	// 지정 쿠폰 갯수 조회
 	public int getCouponNum(CouponVO couponVO); 
+	
+	// 쿠폰 사용 처리
+	public int useUpCoupon(CouponVO couponVO);
+	
 }

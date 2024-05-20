@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductDetailsDTO;
@@ -11,6 +12,7 @@ import com.web.vop.domain.ProductVO;
 import com.web.vop.persistence.ImageMapper;
 import com.web.vop.persistence.ProductMapper;
 import com.web.vop.util.FileUploadUtil;
+import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
@@ -21,6 +23,9 @@ public class ProductServiceImple implements ProductService{
 	
 	@Autowired
 	private ProductMapper productMapper;
+	
+	@Autowired
+	private ImageService imageService;
 	
 	@Autowired
 	private ImageMapper imageMapper;
@@ -50,70 +55,59 @@ public class ProductServiceImple implements ProductService{
 		return res;
 	}
 
+	@Transactional(value = "transactionManager")
 	@Override
-	public int registerProduct(ProductVO productVO) { // 등록 성공시, 등록한 상품 id 반환
+	public int registerProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details) { // 등록 성공시, 등록한 상품 id 반환
 		log.info("registerProduct : " + productVO);
-		int res = productMapper.insertProduct(productVO);
-		if(res == 1) {
-			log.info(res + "행 추가 성공" + productVO.getProductId());
-			res = productMapper.selectLastInsertId();
-		}else {
-			res = -1;
+		int res = 0;
+		if(thumbnail != null) {
+			int imgId = imageService.registerImage(thumbnail);
+			productVO.setImgId(imgId);
 		}
+		productMapper.insertProduct(productVO);
+		int productId = productMapper.selectLastInsertId();
+		
+		for(ImageVO detail : details) {
+			detail.setProductId(productId);
+			res = imageMapper.insertImg(detail);
+		}
+		
 		return res;
 	} // end registerProduct
 	
 	@Override
-	public List<ProductVO> selectByCategory(String category, Pagination pagination) {
-		log.info("selectByCategory()");
-		return productMapper.selectByCategory(category, pagination);
+	public List<ProductVO> searchByCategory(String category, PageMaker pageMaker) {
+		log.info("searchByCategory()");
+		int totalCnt = productMapper.selectByCategoryCnt(category);
+		pageMaker.setTotalCount(totalCnt);
+		return productMapper.selectByCategory(category, pageMaker.getPagination());
 	} // end selectByCategory
-
-	@Override
-	public int selectByCategoryCnt(String category) {
-		log.info("selectByCategoryCnt()");
-		return productMapper.selectByCategoryCnt(category);
-	} // end selectByCategoryCnt
 	
 	@Override
-	public List<ProductVO> selectByName(String productName, Pagination pagination) {
-		log.info("selectByName()");
+	public List<ProductVO> searchByName(String productName, PageMaker pageMaker) {
+		log.info("searchByName()");
 		String includeName = '%' + productName + '%';
-		return productMapper.selectByName(includeName, pagination);
-	} // end selectByName
-
-	@Override
-	public int selectByNameCnt(String productName) {
-		log.info("selectByNameCnt()");
-		String includeName = '%' + productName + '%';
-		return productMapper.selectByNameCnt(includeName);
+		int totalCnt = productMapper.selectByNameCnt(includeName);
+		pageMaker.setTotalCount(totalCnt);
+		return productMapper.selectByName(includeName, pageMaker.getPagination());
 	} // end selectByName
 	
 	@Override
-	public List<ProductVO> selectByNameInCategory(String category, String productName, Pagination pagination) {
-		log.info("selectByNameInCategory()");
+	public List<ProductVO> searchByNameInCategory(String category, String productName, PageMaker pageMaker) {
+		log.info("searchByNameInCategory()");
 		String includeName = '%' + productName + '%';
-		return productMapper.selectByNameInCategory(category, includeName, pagination);
+		int totalCnt = productMapper.selectByNameInCategoryCnt(category, includeName);
+		pageMaker.setTotalCount(totalCnt);
+		return productMapper.selectByNameInCategory(category, includeName, pageMaker.getPagination());
 	} // end selectByNameInCategory
-
-	@Override
-	public int selectByNameInCategoryCnt(String category, String productName) {
-		log.info("selectByNameInCategoryCnt()");
-		String includeName = '%' + productName + '%';
-		return productMapper.selectByNameInCategoryCnt(category, includeName);
-	} // end selectByNameInCategoryCnt
 	
 	@Override
-	public List<ProductVO> selectByMemberId(String memberId, Pagination pagination) {
+	public List<ProductVO> searchByMemberId(String memberId, PageMaker pageMaker) {
 		log.info("selectByMemberId()");
-		return productMapper.selectByMemberId(memberId, pagination);
+		int totalCnt = productMapper.selectByMemberIdCnt(memberId);
+		pageMaker.setTotalCount(totalCnt);
+		return productMapper.selectByMemberId(memberId, pageMaker.getPagination());
 	} // end selectByMemberId
-
-	@Override
-	public int getCntByMemberId(String memberId) {
-		log.info("getCntByMemberId()");
-		return productMapper.selectByMemberIdCnt(memberId);
-	} // end getCntByMemberId
 	
 	@Override
 	public int setProductState(String productState, int productId) {
@@ -127,25 +121,24 @@ public class ProductServiceImple implements ProductService{
 		return productMapper.selectStateByProductId(productId);
 	} // end selectStateByProductId
 
+	@Transactional(value = "transactionManager")
 	@Override
-	public int deleteProduct(int productId) {
+	public List<ImageVO> deleteProduct(int productId) {
 		log.info("deleteProduct()");
 		int res = 0;
+		ProductVO target = productMapper.selectProduct(productId);
+		int imgId = target.getImgId();
+		
 		// 상품 이미지도 삭제해야함
 		List<ImageVO> imageList = imageMapper.selectAllbyProductId(productId);
+		imageList.add(imageMapper.selectByImgId(imgId));
 		
-		if(imageList != null) { // 서버에 저장된 이미지 삭제
-			log.info("관련 이미지 : " + imageList.size() + "건");
-			for(ImageVO image : imageList) {
-				FileUploadUtil.deleteFile(image);
-			}
-		}
 		// DB에 저장된 이미지 정보 삭제
-		res += imageMapper.deleteProductImage(productId);
-		res += productMapper.deleteProduct(productId);
-		log.info("DB 총 " + res + "건 삭제 완료");
+		imageMapper.deleteById(imgId);
+		productMapper.deleteProduct(productId);
+		imageMapper.deleteProductImage(productId);
 		
-		return res;
+		return imageList;
 	} // end deleteProduct
 
 	@Override
@@ -161,30 +154,61 @@ public class ProductServiceImple implements ProductService{
 	} // end getRecent5
 
 	@Override
-	public List<ProductVO> getStateIs(String productState, Pagination pagination) {
-		log.info("getStateIsWait()");
-		return productMapper.selectStateIs(productState, pagination);
-	} // end getStateIsWait
-
-	@Override
-	public int getStateIsCnt(String productState) {
-		log.info("getStateIsWaitCnt()");
-		return productMapper.selectStateIsCnt(productState);
-	} // end getStateIsWaitCnt
+	public List<ProductVO> searchByState(String productState, PageMaker pageMaker) {
+		log.info("searchByState()");
+		int totalCnt = productMapper.selectStateIsCnt(productState);
+		pageMaker.setTotalCount(totalCnt);
+		return productMapper.selectStateIs(productState, pageMaker.getPagination());
+	} // end searchByState
 
 	@Override
 	public ProductDetailsDTO getDetails(int productId) {
 		log.info("getDetails()");
-		return productMapper.selectDetails(productId);
+		ProductDetailsDTO details = productMapper.selectDetails(productId);
+		details.setImgIdDetails(imageService.getImgId(productId));
+		return details;
 	} // end getDetails
 
+	@Transactional(value = "transactionManager")
 	@Override
-	public int updateProduct(ProductVO productVO) {
+	public int updateProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details) {
 		log.info("updateProduct()");
-		return productMapper.updateProduct(productVO);
+		int productId = productVO.getProductId();
+		int oldThumbnailId = productVO.getImgId();
+		
+		// thumbnail 이미지 변경
+		if(thumbnail != null) {// 이미지가 변경되었다면, 기존 이미지 삭제, 새 이미지 추가
+			if(productVO.getImgId() > 0) {
+				imageMapper.deleteById(oldThumbnailId);
+			}
+			imageMapper.insertImg(thumbnail);
+			int newImgId = imageMapper.selectRecentImgId();
+			log.info(newImgId);
+			productVO.setImgId(newImgId);
+		}
+		
+		// details 이미지 변경
+		if(details.size() > 0) {
+			imageMapper.deleteByProductId(productId);
+			for(ImageVO detail : details) {
+				detail.setProductId(productId);
+				imageMapper.insertImg(detail);
+			}
+		}
+		// 상품 변경점 저장
+		productMapper.updateProduct(productVO);
+		int res = productMapper.updateState(productVO.getProductState(), productId);
+		
+		return res;
 	} // end updateProduct
 
 	
-
+	@Override
+	public int deleteProductRequest(int productId) {
+		log.info("상품 삭제 요청");
+		int res = productMapper.updateState("삭제 대기중", productId);
+				
+		return res;
+	} // end deleteProductRequest
 	
 }

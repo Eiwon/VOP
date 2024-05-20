@@ -1,17 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>리뷰 작성</title>
-<!-- 외부 CSS 파일 링크 -->
-<link href="/assets/css/star.css" rel="stylesheet"/>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <style>
 /* 리뷰 별 폼 스타일 */
 #myform fieldset {
     display: inline-block;
-    direction: ltr; /* 텍스트 방향을 오른쪽에서 왼쪽으로 설정 */
+    direction: rtl; /* 텍스트 방향을 오른쪽에서 왼쪽으로 설정 */
     border: 0;
 }
 
@@ -25,11 +25,21 @@
     font-size: 1em;
     color: transparent;
     text-shadow: 0 0 0 #f0f0f0;
-    pointer-events: none; /* 별점 조작 비활성화 */
-    cursor: default; /* 커서를 기본값으로 설정하여 클릭 이벤트 제거 */
-    
+}
+/* 별표시에 마우스 호버 시 효과 */
+#myform label:hover{
+    text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+}
+/* 이전 별표시에 마우스 호버 시 효과 */
+#myform label:hover ~ label{
+    text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+}
+/* 선택된 별표시 스타일 */
+#myform input[type=radio]:checked ~ label{
+    text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
 }
 </style>
+
 </head>
 <body>
 	
@@ -40,45 +50,66 @@
 	String memberId = (String) sessionJSP.getAttribute("memberId");
 	%>
 	
- <div style="text-align: center;" id="myform">
- 	<fieldset>
-        <!-- 별점 선택 라디오 버튼 -->
-        <input type="radio" value="5" id="reviewStar"><label for="rate1">★</label>
-        <input type="radio" value="4" id="reviewStar"><label for="rate2">★</label>
-        <input type="radio" value="3" id="reviewStar"><label for="rate3">★</label>
-        <input type="radio" value="2" id="reviewStar"><label for="rate4">★</label>
-        <input type="radio" value="1" id="reviewStar"><label for="rate5">★</label>
-    </fieldset>
-      <input type="text" id="reviewContent">
-      <!-- 이미지는 제작 중 -->
-        <div>
-      	 <strong>상세정보 이미지</strong>
-			<input id="inputDetails" type="file" name="details" multiple="multiple" onchange="showDetailsPreview()">
-			<div id="previewDetails">
-			</div>
-		</div>
-      <button id="btnAdd">등록</button>
-       
-   </div>
-   
-   <script type="text/javascript">
-   
-	// 이미지 확장자 필터
-   const blockedExtension = new RegExp("exe|sh|php|jsp|aspx|zip|alz");
+	<h1>리뷰 작성</h1>
 	
+	<p>이미지 썸네일</p>
+	  <div>
+    	<img src="../product/showImg?imgId=${imgId}" alt="${imgRealName}.${imgExtension}">
+	  </div>
+	  
+
+	
+<div id="myform">
+    
+    <fieldset id="starFieldset">
+        <!-- 별점 선택 라디오 버튼 -->
+        <input type="radio" name="reviewStar" value="5" id="rate1"><label for="rate1">★</label>
+        <input type="radio" name="reviewStar" value="4" id="rate2"><label for="rate2">★</label>
+        <input type="radio" name="reviewStar" value="3" id="rate3"><label for="rate3">★</label>
+        <input type="radio" name="reviewStar" value="2" id="rate4"><label for="rate4">★</label>
+        <input type="radio" name="reviewStar" value="1" id="rate5"><label for="rate5">★</label>
+    </fieldset><br>
+    <input type="hidden" id="memberId" value="${memberId}"><!-- 여기 부분 없어도 될뜻 -->
+    <input type="hidden" id="productId" value="${order.productId}"><!-- 여기 부분 없어도 될뜻 -->
+    <input type="text" id="reviewContent"><br>
+    <button id="btnAdd">등록</button>
+    
+    
+</div>
+
+<script type="text/javascript">
    
-  $(document).ready(function(){
+$(document).ready(function(){
+	
+	let selectedStar; // 전역 변수로 selectedStar 선언
+	
+    // 라디오 버튼 클릭 이벤트 핸들러
+    $('#starFieldset input[type="radio"]').click(function() {
+        // 선택된 별의 값 가져오기
+        selectedStar = $(this).val();
+        // reviewStar 변수에 선택된 별 값 할당
+        $('#reviewStar').val(selectedStar);
+        
+        
+        
+        console.log(selectedStar);
+    });
 
    // 댓글 입력 코드
    $('#btnAdd').click(function(){
        let memberId = $('#memberId').val(); // 작성자 데이터
-       let reviewStar = $('#reviewStar').val();// 리뷰(별)
+       let productId = ${productId}; 
+       let reviewStar = selectedStar;// 리뷰(별)
        let reviewContent = $('#reviewContent').val(); // 댓글 내용
+       
+       console.log(reviewStar);
+       
        // javascript 객체 생성
-       let obj = {
+       let obj = {	
              'memberId' : memberId,
+             'productId' : productId,
              'reviewStar' : reviewStar,
-             'replyContent' : replyContent
+             'reviewContent' : reviewContent
        }
        console.log(obj);
        
@@ -95,17 +126,15 @@
              if(result == 1) {
                 alert('댓글 입력 성공');
                 // 댓글 입력 완료 하면 마이페이지로 이동
-                window.location.href = '/board/mypage';
+                window.location.href = '../board/orderlist';
              }
-          }
-       });
+          } // end success 
+       }); // end ajax
     }); // end btnAdd.click()
     
-   
-   </script>
-   
-    
+  }); // end document.ready()// end document document.ready()
 
+    </script>
 
 </body>
 </html>

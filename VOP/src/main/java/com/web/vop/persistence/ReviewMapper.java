@@ -15,6 +15,9 @@ public interface ReviewMapper {
 	 // 댓글(리뷰) 전체 검색
 	 List<ReviewVO> selectListByReview(int productId);
 	 
+	 // 댓글(리뷰) productId 그리고 memberId 통해 검색
+	 ReviewVO selectByReview(int productId, String memberId);
+	 
 	 // 댓글(리뷰) 수정
 	 int updateReview(ReviewVO reviewVO);
 	 

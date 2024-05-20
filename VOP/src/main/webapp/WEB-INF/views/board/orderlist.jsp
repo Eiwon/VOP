@@ -8,6 +8,8 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<!-- 모달 스타일 창크기가 변하면는 같이변하게 하는기능 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>주문 목록</title>
 <style>
 
@@ -215,6 +217,44 @@
 		    background-color: #f0f0f0; /* 호버 시 배경색 변경 */
 		}
 		
+		 /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        /* 모달 닫기 버튼 스타일 */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+		/* 모달 스타일 끝 */
+		
+		
         
 </style>
 
@@ -330,8 +370,37 @@
                 </div>
             </div>
             <div class="order-buttons">
-                <a href="../Delivery/delivery"><button>배송 조회</button></a>
-                <a href="../review/register"><button>리뷰 쓰기</button></a>
+                <a href=""><button>배송 조회</button></a>
+                
+                	<!-- 리뷰 쓰기 코드 -->
+	                <form action="../review/register" method="get">
+	                	<input type="hidden" name="productId" value="${order.productId}">
+	                	<input type="hidden" name="imgId" value="${order.imgId}">
+	                	<button type="submit">리뷰 쓰기</button>
+	                </form>
+	                
+	                <!-- 리뷰 수정 코드 -->
+	                <form action="../review/modify" method="get">
+	                	<input type="hidden" name="productId" value="${order.productId}">
+	                	<input type="hidden" name="imgId" value="${order.imgId}">
+	                	<input type="hidden" name="memberId" value="${memberId}">
+	                	<button type="submit">리뷰 수정</button>
+	                </form>
+	                
+	                <!-- 판매자 문의 코드 -->
+	                <button id="sellerInquiry">판매자 문의</button>
+	                <div id="myModal" class="modal">
+  					 <div class="modal-content">
+    					<span class="close">&times;</span>
+   						<h2>판매자 문의</h2><!-- 여유되면 이미지 등록 예정 -->
+    					<form id="inquiryForm">
+       			 			<label for="message">내용:</label><br>
+        					<textarea id="inquiryContent" name="inquiryContent"></textarea><br>
+        					<button type="submit">판매자에게 1:1문의하기</button>
+   						</form>	
+  					  </div>
+				     </div>
+	                
 				<a href=""><button>교환/반품 신청</button></a>
             </div>
         </div>
@@ -344,12 +413,40 @@
         </div>
     </c:if>
     
+    
+    
 <%  
     }   
 %>
 
 	<!-- 배송지 관리 페이지 -->
     <a href="../Delivery/deliveryAddressList">배송지 관리</a>
+    
+    <script type="text/javascript">
+    
+ 	// 모달 열기 버튼을 클릭하면 모달을 표시합니다.
+    document.getElementById('sellerInquiry').addEventListener('click', function() {
+        document.getElementById('myModal').style.display = 'block';
+    });
+
+    // 모달의 닫기 버튼을 클릭하면 모달을 숨깁니다.
+    document.querySelector('.close').addEventListener('click', function() {
+        document.getElementById('myModal').style.display = 'none';
+    });
+
+    // 폼 제출 시 데이터 출력
+    document.getElementById('inquiryForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 폼의 기본 동작 방지
+
+        // 입력된 이름과 내용 가져오기
+        var name = document.getElementById('name').value;
+        var message = document.getElementById('message').value;
+
+        // 모달에 입력된 이름과 내용 출력
+        alert('내용: ' + message);
+    });
+    
+    </script>
 	
 	
 	

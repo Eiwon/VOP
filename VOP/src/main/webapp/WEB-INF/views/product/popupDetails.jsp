@@ -122,7 +122,7 @@ tr {
 	function sendResult(productState){
 		
 		$.ajax({
-			url : 'productState',
+			url : 'changeState',
 			headers : {
 				'Content-Type' : 'application/json'
 			},
@@ -156,12 +156,12 @@ tr {
 	} // end deleteProduct
 	
 	
-		function toDate(timestamp){
-			let date = new Date(timestamp);
-			let formatted = (date.getYear() + 1900) + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + 
-					date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-			return formatted;
-		} // end toDate
+	function toDate(timestamp){
+		let date = new Date(timestamp);
+		let formatted = (date.getYear() + 1900) + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + 
+				date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+		return formatted;
+	} // end toDate
 		
 		
 	</script>

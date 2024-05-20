@@ -27,6 +27,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       , SYSDATE, #{reviewStar}, 0)<!-- 0 좋아요는 댓글 작성 하는 사람 이외 다른 사람이 수정 해야 한다. -->
    </insert>
    
+   <!-- 댓글(리뷰) productId 그리고 memberId통해 검색 -->
+   <select id="selectByReview" resultMap="reviewResultMap">
+   		SELECT * FROM REVIEW
+	 	WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
+   </select>
+   
    <!-- 댓글(리뷰) 전체 검색 -->
    <select id="selectListByReview" resultMap="reviewResultMap">
       SELECT * FROM REVIEW
@@ -36,23 +42,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 댓글(리뷰) 상세 검색(제작 예정) -->
    
+   
    <!-- 댓글(리뷰) 수정 -->
    <update id="updateReview">
       UPDATE REVIEW
       SET REVIEW_CONTENT = #{reviewContent},
       REVIEW_STAR = #{reviewStar}
-      WHERE REVIEW_ID = #{reviewId}
+      WHERE REVIEW_ID = #{productId} AND #{memberId}
    </update>
    
    <!-- 댓글(리뷰) 삭제 -->
    <delete id="deleteReview">
-      DELETE FROM REVIEW
-      WHERE REVIEW_ID = #{reviewId}
+      DELETE FROM REVIEW 
+      WHERE REVIEW_ID = #{productId} AND #{memberId}
    </delete>
    
    <!-- 상품 총 댓글 수 증가 -->
 	<update id="reviewNumUP">
-		UPDATE PRODUCT SET REVIEW_NUM = REVIEW_NUM + 1;
+		UPDATE PRODUCT SET REVIEW_NUM = REVIEW_NUM + 1
 		WHERE PRODUCT_ID = #{productId}
 	</update>
 	

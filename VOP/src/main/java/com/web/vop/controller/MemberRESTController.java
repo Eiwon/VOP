@@ -25,9 +25,7 @@ public class MemberRESTController {
 	
 	@PostMapping("/register") // 회원가입 요청
 	public ResponseEntity<Integer> registerPOST(@RequestBody MemberVO memberVO) {
-		log.info("회원 가입 요청");
-		log.info("회원 정보 : " + memberVO.toString());
-		memberVO.setMemberAuth("일반");
+		log.info("회원 가입 요청 : " + memberVO.toString());
 		int res = memberService.registerMember(memberVO);
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
@@ -82,7 +80,7 @@ public class MemberRESTController {
 	public ResponseEntity<Integer> updateAuth(
 			@RequestParam String memberId, @RequestParam String auth){
 		log.info("권한 변경");
-		int res = memberService.updateAuth(memberId, memberId);
+		int res = memberService.updateAuth(memberId, auth);
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end updateAuth

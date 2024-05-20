@@ -1,29 +1,19 @@
 package com.web.vop.controller;
 
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.web.vop.domain.OrderVO;
-import com.web.vop.domain.SellerVO;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.OrderService;
-import com.web.vop.util.PageMaker;
-import com.web.vop.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -69,16 +59,6 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 		return path;
 	}//end mypageGET()
 	
-	
-	@PostMapping("/mypage")
-	public String mypagePOST() {
-		log.info("mypagePOST()");
-		//if () {
-			
-		//}else {			
-			return "redirect:/board/register";
-		//}
-	}
 	
 	@Autowired
 	OrderService orderService;

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.web.vop.domain.SellerVO;
 import com.web.vop.persistence.MemberMapper;
 import com.web.vop.persistence.SellerMapper;
+import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
@@ -27,20 +28,14 @@ public class SellerServiceImple implements SellerService{
 	ProductService productService;
 	
 	@Override
-	public List<SellerVO> getRequestByState(String requestState, Pagination pagination) {
+	public List<SellerVO> getRequestByState(String requestState, PageMaker pageMaker) {
 		log.info(requestState + "인 판매자 권한 요청 조회");
-		List<SellerVO> result = sellerMapper.selectRequestByState(requestState, pagination);
+		int totalCnt = sellerMapper.selectRequestByStateCnt(requestState);
+		pageMaker.setTotalCount(totalCnt);
+		List<SellerVO> result = sellerMapper.selectRequestByState(requestState, pageMaker.getPagination());
 		log.info("권한 요청 검색 결과 : " + result);
 		return result;
 	} // end getAllRequest
-
-	@Override
-	public int getRequestByStateCnt(String requestState) {
-		log.info("승인 대기중인 요청 수 조회");
-		int res = sellerMapper.selectRequestByStateCnt(requestState);
-		log.info("요청 수 검색 결과 : " + res);
-		return res;
-	} // end getRequestCount
 	
 	@Override
 	public SellerVO getMyRequest(String memberId) {
@@ -86,27 +81,6 @@ public class SellerServiceImple implements SellerService{
 		log.info(res + "행 삭제 성공");
 		return res;
 	} // end deleteRequest
-
-	@Transactional(value = "transactionManager")
-	@Override
-	public int deleteProductRequest(int productId) {
-		log.info("상품 삭제 요청");
-		// 판매 중인 상품이면 삭제 대기중 상태로 전환, (판매 중, 삭제 대기중) 상태가 아니라면 즉시 삭제
-		String productState = productService.selectStateByProductId(productId);
-		log.info("현재 상태 : " + productState);
-
-		int res = 0;
-		if (productState.equals("판매중")) {
-			if (productService.setProductState("삭제 대기중", productId) == 1)
-				res = 1;
-		} else if (!productState.equals("삭제 대기중")) {
-			if (productService.deleteProduct(productId) == 1)
-				res = 2;
-		}
-		return res;
-	} // end deleteProductRequest
-
-	
 
 	
 }

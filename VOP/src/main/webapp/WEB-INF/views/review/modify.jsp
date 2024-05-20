@@ -5,13 +5,13 @@
 <head>
 <meta charset="UTF-8">
 <title>리뷰 수정</title>
-<!-- 외부 CSS 파일 링크 -->
-<link href="/assets/css/star.css" rel="stylesheet"/>
+3<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
 <style>
 /* 리뷰 별 폼 스타일 */
 #myform fieldset {
     display: inline-block;
-    direction: ltr; /* 텍스트 방향을 오른쪽에서 왼쪽으로 설정 */
+    direction: rtl; /* 텍스트 방향을 오른쪽에서 왼쪽으로 설정 */
     border: 0;
 }
 
@@ -25,9 +25,18 @@
     font-size: 1em;
     color: transparent;
     text-shadow: 0 0 0 #f0f0f0;
-    pointer-events: none; /* 별점 조작 비활성화 */
-    cursor: default; /* 커서를 기본값으로 설정하여 클릭 이벤트 제거 */
-    
+}
+/* 별표시에 마우스 호버 시 효과 */
+#myform label:hover{
+    text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+}
+/* 이전 별표시에 마우스 호버 시 효과 */
+#myform label:hover ~ label{
+    text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+}
+/* 선택된 별표시 스타일 */
+#myform input[type=radio]:checked ~ label{
+    text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
 }
 </style>
 </head>
@@ -39,8 +48,15 @@
 	String memberId = (String) sessionJSP.getAttribute("memberId");
 	%>
 	
- 	<div style="text-align: center;" id="myform">
- 	<fieldset>
+	<h1>리뷰 수정</h1>
+	
+	<p>이미지 썸네일</p>
+	  <div>
+    	<img src="../product/showImg?imgId=${imgId}" alt="${imgRealName}.${imgExtension}">
+	  </div>
+	
+ 	<div id="myform">
+ 	<fieldset id="starFieldset">
         <!-- 별점 선택 라디오 버튼 -->
         <input type="radio" value="5" id="rate1"><label for="rate1">★</label>
         <input type="radio" value="4" id="rate2"><label for="rate2">★</label>
@@ -63,21 +79,29 @@
         //let replyId = $(this).prevAll('#replyId').val();
         let reviewStar = $('#reviewStar').val();// 리뷰(별)
         let reviewContent = $('#reviewContent').val();
-        let reviewId = ${productVO.reviewId};// 나중에 경로 정해 졌을때 데이터가 회원 Id, 상품 Id OR 댓글 id만 있으면 됨
+        let reviewId = ${reviewId};// 나중에 경로 정해 졌을때 데이터가 회원 Id, 상품 Id OR 댓글 id만 있으면 됨
+        
+        let obj = {
+        		'reviewId' : reviewId,
+        		'reviewStar' : reviewStar,
+        		'reviewContent' : reviewContent
+        }
+        
+        console.log(obj);
         
         // ajax 요청
         $.ajax({
-           type : 'PUT', 
-           url : '../review/' + replyId,// 경로 나중에
+           type : 'PUT', // 메서드 타입
+           url : '../review/' + reviewId,// 경로 
            headers : {
-              'Content-Type' : 'application/json'
-           },
-           data : replyContent, 
-           success : function(result) {
+              'Content-Type' : 'application/json' // json content-type 설정
+           }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 4050에러가 나온다.
+           data : JSON.stringify(obj), // JSON으로 변환
+           success : function(result) { // 전송 성공 시 서버에서 result 값 전송
               console.log(result);
               if(result == 1) {
                  alert('댓글 수정 성공!');
-                 window.location.href = '/board/mypage';
+                 window.location.href = '../board/orderlist';
               }
            }
         });
