@@ -50,13 +50,15 @@
 
 	<tbody>
          <c:forEach var="ReviewVO" items="${reviewList }">
+         	<tr>
          	<c:forEach var="ProductVO" items="${productList }">
+         		<td>productList.productName</td>
          		<td><img src="../product/showImg?imgId=${productList.imgId}" 
          		alt="${productList.imgRealName}.${productList.imgExtension}"></td>
-         		<td>productList.</td>
+         		<td>productList.reviewAvg</td>
          	</c:forEach>
-            <tr>
-               <td>${ReviewVO.reviewId}</td>
+               <td>${ReviewVO.reviewContent}</td>
+               <td>${ReviewVO.reviewContent}</td>
             </tr>
          </c:forEach>
      </tbody>
