@@ -54,7 +54,7 @@ tr {
 
 			$.ajax({
 				method : 'GET',
-				url : 'productList?pageNum=' + page,
+				url : 'myList?pageNum=' + page,
 				success : function(result) {
 					console.log(result);
 					productMap.list = result.productList;
@@ -65,7 +65,7 @@ tr {
 					for (x in list) {
 						form += '<tr onclick="popupUpdate(this)">' +
 								'<td class="targetIndex" hidden="hidden">'+ x + '</td>' +
-								'<td><img src="../product/showImg?imgId='+ list[x].imgId + '"></td>' +
+								'<td><img src="showImg?imgId='+ list[x].imgId + '"></td>' +
 								'<td class="category">' + list[x].category + '</td>' + 
 								'<td class="productName">' + list[x].productName + '</td>' + 
 								'<td class="productPrice">' + list[x].productPrice + '</td>' + 
@@ -111,7 +111,7 @@ tr {
 		function popupUpdate(input){
 			// 클릭한 항목의 index 검색
 			const targetIndex = $(input).find('.targetIndex').text();
-			let targetUrl = 'popupProductUpdate?productId=' + productMap.list[targetIndex].productId;
+			let targetUrl = 'popupUpdate?productId=' + productMap.list[targetIndex].productId;
 			
 			// 팝업창 정보 설정
 			const popupStat = {

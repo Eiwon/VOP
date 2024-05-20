@@ -25,7 +25,7 @@ img {
 </head>
 <body>
 	<h2>상품 상세 정보</h2>
-	<form action="updateProduct" method="POST" id="formProduct" enctype="multipart/form-data">
+	<form action="../product/update" method="POST" id="formProduct" enctype="multipart/form-data">
 	<table class="form_info">
 		<tbody>
 			<tr>
@@ -75,6 +75,10 @@ img {
 			<tr>
 				<td>보관 위치</td>
 				<td><input id="productPlace" name="productPlace"></td>
+			</tr>
+			<tr>
+				<td>등록 상태</td>
+				<td id="productState"></td>
 			</tr>
 			<tr>
 				<td>썸네일 <input id="inputThumbnail" type="file" name="thumbnail" onchange="showThumbPreview()"></td>
@@ -133,11 +137,12 @@ img {
 			$('#productPrice').val(productDetails.productPrice);
 			$('#productRemains').val(productDetails.productRemains);
 			$('#productPlace').val(productDetails.productPlace);
-			$('#productThumbnail').html('<img src="../product/showImg?imgId=' + productDetails.imgId + '">');
+			$('#productState').text(productDetails.productState);
+			$('#productThumbnail').html('<img src="showImg?imgId=' + productDetails.imgId + '">');
 			
 			let imgDetailsForm = '';
 			for (x in productDetails.imgIdDetails){
-				imgDetailsForm += '<img src="../product/showImg?imgId=' + productDetails.imgIdDetails[x] + '"><br>';
+				imgDetailsForm += '<img src="showImg?imgId=' + productDetails.imgIdDetails[x] + '"><br>';
 			}
 			$('#productDetails').html(imgDetailsForm);
 			
@@ -145,6 +150,8 @@ img {
 				btnContinue.text('판매 중단');
 			}else if(productDetails.productState == '판매 중단'){
 				btnContinue.text('판매 재개');
+			}else{
+				btnContinue.css('visibility', "hidden");
 			}
 			
 		} // end setInfo
@@ -164,7 +171,7 @@ img {
 				headers : {
 					'Content-Type' : 'application/json'
 				},
-				url : 'productState',
+				url : 'changeState',
 				data : JSON.stringify({
 					'productId' : productId,
 					'productState' : productState
@@ -201,7 +208,7 @@ img {
 				headers : {
 					'Content-Type' : 'application/json'
 				},
-				url : 'productReq',
+				url : 'request',
 				data : JSON.stringify(productId),
 				success : function(result){
 					console.log(result);

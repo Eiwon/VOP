@@ -126,6 +126,14 @@ public class DeliveryController {
         return "redirect:deliveryAddressList";
     }//end updatePOST()
     
+    @GetMapping("/popupSelect")
+    public void popupSelectGET() {
+    	log.info("배송지 선택 팝업 요청 ");
+    } // end popupSelectGET
     
+    @GetMapping("/popupRegister")
+	public void popupRegisterGET() {
+		log.info("배송지 등록 팝업 이동");
+	} // end popupRegisterGET
     
 }//end DeliveryController

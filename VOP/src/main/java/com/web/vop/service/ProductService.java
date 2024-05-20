@@ -45,7 +45,7 @@ public interface ProductService {
 	String selectStateByProductId(int productId);
 		
 	// productId로 상품 삭제
-	int deleteProduct(int productId);
+	List<ImageVO> deleteProduct(int productId);
 	
 	// 카테고리를 지정하여, 리뷰 수가 가장 많은 5개의 상품 검색
 	List<ProductVO> getTopProductInCategory(String category);
@@ -61,4 +61,7 @@ public interface ProductService {
 	
 	// 상품 정보 변경
 	int updateProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details);
+	
+	// 상품 삭제 요청
+	public int deleteProductRequest(int productId);
 }

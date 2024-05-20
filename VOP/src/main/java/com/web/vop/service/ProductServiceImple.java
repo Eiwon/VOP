@@ -121,25 +121,24 @@ public class ProductServiceImple implements ProductService{
 		return productMapper.selectStateByProductId(productId);
 	} // end selectStateByProductId
 
+	@Transactional(value = "transactionManager")
 	@Override
-	public int deleteProduct(int productId) {
+	public List<ImageVO> deleteProduct(int productId) {
 		log.info("deleteProduct()");
 		int res = 0;
+		ProductVO target = productMapper.selectProduct(productId);
+		int imgId = target.getImgId();
+		
 		// 상품 이미지도 삭제해야함
 		List<ImageVO> imageList = imageMapper.selectAllbyProductId(productId);
+		imageList.add(imageMapper.selectByImgId(imgId));
 		
-		if(imageList != null) { // 서버에 저장된 이미지 삭제
-			log.info("관련 이미지 : " + imageList.size() + "건");
-			for(ImageVO image : imageList) {
-				FileUploadUtil.deleteFile(image);
-			}
-		}
 		// DB에 저장된 이미지 정보 삭제
-		res += imageMapper.deleteProductImage(productId);
-		res += productMapper.deleteProduct(productId);
-		log.info("DB 총 " + res + "건 삭제 완료");
+		imageMapper.deleteById(imgId);
+		productMapper.deleteProduct(productId);
+		imageMapper.deleteProductImage(productId);
 		
-		return res;
+		return imageList;
 	} // end deleteProduct
 
 	@Override
@@ -176,6 +175,7 @@ public class ProductServiceImple implements ProductService{
 		log.info("updateProduct()");
 		int productId = productVO.getProductId();
 		int oldThumbnailId = productVO.getImgId();
+		
 		// thumbnail 이미지 변경
 		if(thumbnail != null) {// 이미지가 변경되었다면, 기존 이미지 삭제, 새 이미지 추가
 			if(productVO.getImgId() > 0) {
@@ -183,6 +183,7 @@ public class ProductServiceImple implements ProductService{
 			}
 			imageMapper.insertImg(thumbnail);
 			int newImgId = imageMapper.selectRecentImgId();
+			log.info(newImgId);
 			productVO.setImgId(newImgId);
 		}
 		
@@ -202,6 +203,12 @@ public class ProductServiceImple implements ProductService{
 	} // end updateProduct
 
 	
-
+	@Override
+	public int deleteProductRequest(int productId) {
+		log.info("상품 삭제 요청");
+		int res = productMapper.updateState("삭제 대기중", productId);
+				
+		return res;
+	} // end deleteProductRequest
 	
 }

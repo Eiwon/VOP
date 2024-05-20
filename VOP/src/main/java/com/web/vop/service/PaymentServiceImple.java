@@ -96,13 +96,7 @@ public class PaymentServiceImple implements PaymentService {
 		
 		// 쿠폰 사용 처리
 		if(couponVO != null) {
-			int couponNum = couponVO.getCouponNum() -1;
-			if(couponNum > 0) { // 쿠폰 사용 후, 쿠폰이 남아있다면 갯수 변경
-				couponVO.setCouponNum(couponNum);
-				couponService.setCouponNum(couponVO);
-			}else { // 더 이상 남은 쿠폰이 없으면 삭제
-				couponService.removeCoupon(couponVO);
-			}
+			couponService.useUpCoupon(couponVO);
 		}
 		
 		return res;

@@ -17,35 +17,35 @@ tr {
 </head>
 <body>
 	
-	<form action="register" method="POST">
 		<table>
 			<tbody>
 				<tr>
-					<td><input type="text" name="receiverName" id="receiverName" placeholder="받는 사람" onblur="validCheck(this)"></td>
+					<td><input type="text" id="receiverName" placeholder="받는 사람" onblur="validCheck(this)"></td>
 					<td id="receiverNameAlert"></td>
 				</tr>
 				<tr>
-					<td><input type="text" name="receiverAddress" id="receiverAddress" readonly></td>
+					<td><input type="text" id="receiverAddress" readonly></td>
 					<td><button type="button" onclick="searchAddress()">우편번호 검색</button></td>
 				</tr>
 				<tr>
-					<td><input type="text" name="receiverPhone" id="receiverPhone" placeholder="휴대폰 번호" onblur="validCheck(this)"></td>
+					<td><input type="text" id="deliveryAddressDetails" placeholder="상세 주소"></td>
+				</tr>
+				<tr>
+					<td><input type="text" id="receiverPhone" placeholder="휴대폰 번호" onblur="validCheck(this)"></td>
 					<td id="receiverPhoneAlert"></td>
 				</tr>
 				<tr>
-					<td><input type="text" name="requirement" id="requirement" placeholder="배송 요구사항"></td>
+					<td><input type="text" id="requirement" placeholder="배송 요구사항"></td>
 				</tr>
 			</tbody>
 		</table>
 		<input type="button" value="저장" onclick="saveDelivery()">
-	</form>
-	
-	
 	
 	
 	<script type="text/javascript">
 		let tagReceiverName = $('#receiverName');
 		let tagReceiverAddress = $('#receiverAddress');
+		let tagDeliveryAddressDetails = $('#deliveryAddressDetails');
 		let tagReceiverPhone = $('#receiverPhone');
 		let tagRequirement = $('#requirement');
 		let deliveryVO = {};
@@ -108,11 +108,25 @@ tr {
 					return;
 				}
 			}
-			tagReceiverName.val(deliveryVO.receiverName);
-			tagReceiverAddress.val(deliveryVO.receiverAddress);
-			tagReceiverPhone.val(deliveryVO.receiverPhone);
+			deliveryVO.deliveryAddressDetails = tagDeliveryAddressDetails.val();
+			deliveryVO.requirement = tagRequirement.val();
 			
-			$('form').submit();
+			$.ajax({
+				method : 'POST',
+				url : 'popupRegister',
+				headers : {
+					'Content-Type' : 'application/json'
+				},
+				data : JSON.stringify({
+					'deliveryVO' : deliveryVO
+				}),
+				success : function(result){
+					console.log(result);
+					if(result == 1){
+						window.close();
+					}
+				} // end success
+			}); // end ajax
 			
 		} // end saveDelivery
 		

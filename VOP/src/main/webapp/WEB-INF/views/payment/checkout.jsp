@@ -49,15 +49,19 @@
 				<tbody>
 					<tr>
 						<td>이름</td>
-						<td><input type="text" id="receiverName"></td>
+						<td><input type="text" id="receiverName" readonly></td>
 					</tr>
 					<tr>
 						<td>배송주소</td>
-						<td><input type="text" id="deliveryAddress"></td>
+						<td><input type="text" id="receiverAddress" readonly></td>
+					</tr>
+					<tr>
+						<td>상세주소</td>
+						<td><input type="text" id="deliveryAddressDetails" readonly></td>
 					</tr>
 					<tr>
 						<td>연락처</td>
-						<td><input type="text" id="receiverPhone"></td>
+						<td><input type="text" id="receiverPhone" readonly></td>
 					</tr>
 					<tr>
 						<td>배송 요청사항</td>
@@ -157,7 +161,8 @@
 			$('#member_email').text(memberVO.memberEmail);
 			$('#member_phone').text(memberVO.memberPhone);
 			$('#receiverName').text(deliveryVO.receiverName);
-			$('#deliveryAddress').text(deliveryVO.deliveryAddress);
+			$('#receiverAddress').text(deliveryVO.receiverAddress);
+			$('#deliveryAddressDetails').text(deliveryVO.deliveryAddressDetails);
 			$('#receiverPhone').text(deliveryVO.receiverPhone);
 			$('#requirement').text(deliveryVO.requirement);
 			tagOrderList.html(makeOrderInfo());
@@ -204,7 +209,7 @@
 			
 			$.ajax({ // 비동기로 쿠폰 정보 가져와야 함
 				method : 'GET',
-				url : 'coupon',
+				url : '../coupon/myList',
 				success : function(result){
 					console.log(result);
 					couponList = result;
@@ -325,7 +330,7 @@
 		function showDeliveryPopup(){
 			
 			const popupStat = {
-					'url' : 'popupDeliverySelect'',
+					'url' : 'popupDeliverySelect',
 					'name' : 'popupDeliverySelect',
 					'option' : 'width=500, height=600, top=50, left=400'
 			};
@@ -335,7 +340,13 @@
 			popup.onbeforeunload = function(){
 				// 팝업 닫힐 때 실행
 				console.log("팝업 닫힘");
+				deliveryVO.receiverName = $('#receiverName').val();
+				deliveryVO.receiverAddress = $('#receiverAddress').val();
+				deliveryVO.deliveryAddressDetails = $('#deliveryAddressDetails').val();
+				deliveryVO.receiverPhone = $('#receiverPhone').val();
+				deliveryVO.requirement = $('#requirement').val();
 				
+				console.log(deliveryVO);
 			} // end popup.onbeforeunload
 		} // end showDeliveryPopup
 		

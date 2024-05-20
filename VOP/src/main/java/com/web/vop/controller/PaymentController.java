@@ -43,15 +43,6 @@ import lombok.extern.log4j.Log4j;
 @RequestMapping("/payment")
 @Log4j
 public class PaymentController {
-
-	@Autowired
-	private MemberService memberService;
-	
-	@Autowired
-	private ProductService productService;
-	
-	@Autowired
-	private CouponService couponService;
 	
 	@Autowired
 	private PaymentService paymentService;
@@ -111,16 +102,12 @@ public class PaymentController {
 		return new ResponseEntity<PaymentWrapper>(payment, HttpStatus.OK);
 	} // end sendPaymentResult
 	
-	@GetMapping("/coupon")
-	@ResponseBody
-	public ResponseEntity<List<CouponVO>> getCouponList(HttpServletRequest request){
-		String memberId = (String)request.getSession().getAttribute("memberId");
-		log.info("쿠폰 리스트 요청 : " + memberId);
-		
-		List<CouponVO> result = couponService.getByMemberId(memberId);
-		log.info(result.size() + "개 쿠폰 검색");
-		return new ResponseEntity<List<CouponVO>>(result, HttpStatus.OK);
-	} // end getCouponList
+	
+	@GetMapping("/popupDeliverySelect")
+	public String popupDeliverySelect() {
+		log.info("배송지 선택 팝업 호출");
+		return "redirect:../Delivery/popupSelect";
+	} // end popupDeliverySelect
 	
 	
 }

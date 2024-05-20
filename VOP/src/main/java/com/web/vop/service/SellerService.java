@@ -19,6 +19,4 @@ public interface SellerService {
 	
 	public int deleteRequest(String memberId);
 	
-	public int deleteProductRequest(int productId);
-	
 }
