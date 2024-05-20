@@ -41,14 +41,16 @@ public class DeliveryServiceImple implements DeliveryService{
 		return res;
 	}// end updateDelivery()
 	
+
 	// 배송지 삭제
 	@Override
-	public int deleteDelivery(String memberId) {
+	public int deleteDelivery(int deliveryId) {
 		log.info("deleteDelivery()");
-		int res = deliveryMapper.deleteDelivery(memberId);
+		int res = deliveryMapper.deleteDelivery(deliveryId);
 		log.info(res + "행 삭제");
 		return res;
 	}//end deleteDelivery()
+
 	
 	// 배송지 상세 조회 by memberId
 	@Override
@@ -59,14 +61,17 @@ public class DeliveryServiceImple implements DeliveryService{
 		return result;
 	}//end getMemberId()
 
-	// 배송지 상세 조회 by deliveryId 
+	
+	// 배송지 상세 조회 by deliveryId and memberId
 	@Override
-	public DeliveryVO getDeliveryById(int deliveryId) {
-		log.info("getDeliveryById()-deliveryId : " + deliveryId);
-		DeliveryVO result = deliveryMapper.selectBydeliveryId(deliveryId);
+	public DeliveryVO getDeliveryById(int deliveryId, String memberId) {
+		log.info("getDeliveryById()");
+		DeliveryVO result = deliveryMapper.selectBydeliveryId(deliveryId, memberId);
 		log.info("getDeliveryById : " + result);
 		return result;
 	}//end getDeliveryById()
+
 	
+
 	
 }

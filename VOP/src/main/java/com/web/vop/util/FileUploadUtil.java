@@ -3,23 +3,13 @@ package com.web.vop.util;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.web.vop.domain.ImageVO;
@@ -156,15 +146,10 @@ public class FileUploadUtil {
 	// @ResponseBody
 	// public ResponseEntity<Resource> 메소드 이름(){} 로 비동기 메소드 만들고, 이 메소드 실행 결과를 리턴하면 됩니다.
     // 클라이언트 측은 <img src="요청 경로?검색 대상 정보"> 로 비동기 요청 보내면 됩니다.
-    public static ResponseEntity<Resource> getFile(String imgPath, String changedName, String extension) { // 저장된 파일 불러오기
-    	String fullPath = imgPath + File.separator + changedName;
+    public static Resource getFile(String fullPath, String extension) { // 저장된 파일 불러오기
     	Resource resource = new FileSystemResource(fullPath);
-        // 다운로드할 파일 이름을 헤더에 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" 
-              + fullPath + "." + extension);
-        log.info("이미지 완료");
-        return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+        log.info("이미지 불러오기 완료");
+        return resource;
     } // end getFile
     
 

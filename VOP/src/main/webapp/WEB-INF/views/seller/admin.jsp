@@ -161,7 +161,7 @@ tr {
 			
 			$.ajax({
 				method : 'GET',
-				url : 'productReq?pageNum=' + page,
+				url : '../product/registerRequest?pageNum=' + page,
 				success : function(result){
 					console.log(result);
 					listMap.productRegisterReq.list = result.list;
@@ -192,12 +192,12 @@ tr {
 			
 			$.ajax({
 				method : 'GET',
-				url : 'productDeleteReq?pageNum=' + page,
+				url : '../product/deleteRequest?pageNum=' + page,
 				success : function(result){
 					console.log(result);
 					listMap.productDeleteReq.list = result.list;
 					listMap.productDeleteReq.pageMaker = result.pageMaker;
-					const list = listMap.productRegisterReq.list;
+					const list = listMap.productDeleteReq.list;
 					
 					for(x in list){
 						form += '<tr onclick="popupDetails(this)">' + 
@@ -271,11 +271,11 @@ tr {
 				key = 'sellerApproved';
 				break;
 			case 'product_register_req_list' : // 상품 등록 요청 목록에 속해있는 경우
-				targetUrl = 'popupProductDetails?productId=' + listMap.productRegisterReq.list[targetIndex].productId;
+				targetUrl = '../product/popupDetails?productId=' + listMap.productRegisterReq.list[targetIndex].productId;
 				key = 'productRegisterReq';
 				break;
 			case 'product_delete_req_list' : // 상품 삭제 요청 목록에 속해있는 경우
-				targetUrl = 'popupProductDetails?productId=' + listMap.productDeleteReq.list[targetIndex].productId;
+				targetUrl = '../product/popupDetails?productId=' + listMap.productDeleteReq.list[targetIndex].productId;
 				key = 'productDeleteReq';
 				break;
 			default : return;

@@ -20,7 +20,8 @@
 %>
 
 <form id="delivery" action="update" method="post">
-
+	<input type="hidden" id="deliveryId" name="deliveryId" value="${delivery.deliveryId}">
+	
     <label for="receiverName">받는 사람:</label>
     <input type="text" id="receiverName" name="receiverName" value="${delivery.receiverName}" required><br><br>
 
@@ -40,7 +41,7 @@
     <label for="isDefault">기본 배송지로 설정</label><br><br>
 
     <!-- 수정 버튼 -->
-    <button type="submit">수정</button>
+    <button type="submit" id="updateButton">수정</button>
     
 </form>
 
@@ -75,6 +76,7 @@
 <!-- 삭제 버튼 -->
 <form id="deleteForm" action="delete" method="post">
     <input type="hidden" id="deliveryId" name="deliveryId" value="${delivery.deliveryId}">
+    
     <button type="button" id="deleteButton">삭제</button>
 </form>
 
@@ -83,6 +85,8 @@
     $(document).ready(function() {
         $("#deleteButton").click(function() {
             var deliveryId = $("#deliveryId").val();
+            var memberId = '<%= memberId %>';
+
             // 배송지 삭제를 위한 Ajax 요청
             $.ajax({
                 url: "delete",
@@ -90,7 +94,7 @@
                 data: { deliveryId: deliveryId },
                 success: function(data) {
                     // 삭제 성공 시 페이지 새로고침 또는 다른 동작 수행
-                    location.reload(); // 페이지 새로고침 예시
+                	window.location.href = "../Delivery/deliveryAddressList";
                 },
                 error: function(xhr, status, error) {
                     // 삭제 실패 시 에러 처리
@@ -119,7 +123,8 @@
     $(document).ready(function() {
     	
     	var deliveryId = $("#deliveryId").val(); // deliveryId가 페이지 로드 시 설정되어 있어야 한다
-        
+    	
+    	
     	console.log('deliveryId : ' + deliveryId);
         // 서버에서 해당 배송지 정보를 받아오는 Ajax 요청 
         $.ajax({
@@ -139,5 +144,38 @@
     	
     });
 </script>
+<script>
+	//수정 버튼 클릭 시 폼 유효성 검사 후 제출 및 페이지 이동
+	document.getElementById("updateButton").addEventListener("click", function(event) {
+    	var receiverName = document.getElementById("receiverName").value;
+    	var receiverPhone = document.getElementById("receiverPhone").value;
+
+        // 받는 사람, 휴대폰 번호가 비어있는지 확인
+        if (!receiverName || !receiverPhone) {
+            alert("받는 사람, 휴대폰 번호는 필수 입력 사항입니다.");
+            event.preventDefault(); // 폼 제출 막기
+        }
+
+        // 휴대폰 번호 형식 체크
+        if (!checkPhoneNumber(receiverPhone)) {
+            alert("올바른 휴대폰 번호 형식이 아닙니다. 국내 휴대번호만 입력 가능합니다.");
+            event.preventDefault(); // 폼 제출 막기
+        }
+
+        // 기본 배송지로 설정되었는지 확인
+        var isDefault = document.getElementById("isDefault").checked;
+        if (isDefault && !receiverName) {
+            alert("기본 배송지로 설정하려면 받는 사람 정보가 필요합니다.");
+            event.preventDefault(); // 폼 제출 막기
+        }
+    });
+
+    // 휴대폰 번호 형식 체크 함수
+    function checkPhoneNumber(receiverPhone) {
+    var phoneRegex = /^010-\d{4}-\d{4}$/;
+    return phoneRegex.test(receiverPhone);
+}
+</script>
+
 </body>
 </html>

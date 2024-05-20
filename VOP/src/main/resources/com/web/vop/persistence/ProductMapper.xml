@@ -216,7 +216,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updateProduct">
 		UPDATE PRODUCT SET PRODUCT_NAME = #{productName}, PRODUCT_PRICE = #{productPrice},
 			PRODUCT_REMAINS = #{productRemains}, PRODUCT_PLACE = #{productPlace},
-			CATEGORY = #{category} WHERE PRODUCT_ID = #{productId}
+			CATEGORY = #{category}, IMG_ID = #{imgId} WHERE PRODUCT_ID = #{productId}
 	</update>
 	
 	
