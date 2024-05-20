@@ -1,8 +1,8 @@
 package com.web.vop.persistence;
 
 import java.util.List;
-
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.web.vop.domain.ReviewVO;
 
@@ -15,8 +15,11 @@ public interface ReviewMapper {
 	 // 댓글(리뷰) 전체 검색
 	 List<ReviewVO> selectListByReview(int productId);
 	 
+	 // 댓글(리뷰) 회원ID로 전체 검색
+	 List<ReviewVO> selectListByReviewMemberId(String memberId);
+	 
 	 // 댓글(리뷰) productId 그리고 memberId 통해 검색
-	 ReviewVO selectByReview(int productId, String memberId);
+	 ReviewVO selectByReview(@Param("productId")int productId, @Param("memberId")String memberId);
 	 
 	 // 댓글(리뷰) 수정
 	 int updateReview(ReviewVO reviewVO);
@@ -24,11 +27,8 @@ public interface ReviewMapper {
 	 // 댓글(리뷰) 삭제
 	 int deleteReview(int reviewId);
 	 
-	// 댓글 총 갯수 증가
-	int reviewNumUP(int productId);
-		
-	// 댓글 총 갯수 감소
-	int reviewNumDown(int productId);
+	 
+	
 	 
 	 // 댓글(리뷰) 검색(댓글 내용에 입력한 단어가 포함 되어 있으면 검색 리스트 형태, 제작예정)
 	 

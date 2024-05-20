@@ -20,19 +20,11 @@
     border: 0;
 }
 
-/* 라디오 버튼 숨김 */
-#myform input[type=radio] {
-    display: none;
-}
-
 /* 별표시 스타일 */
 #myform label {
     font-size: 1em;
     color: transparent;
     text-shadow: 0 0 0 #f0f0f0;
-    pointer-events: none; /* 별점 조작 비활성화 */
-    cursor: default; /* 커서를 기본값으로 설정하여 클릭 이벤트 제거 */
-    
 }
 
 
@@ -85,7 +77,7 @@
      </div>
      
      <div>
-      <p>리뷰 평균 : ${reviewStar}</p>
+      <p>리뷰 평균 : ${productVO.reviewAvg}</p>
  	 </div>
  	 
  	 <div>
@@ -104,7 +96,7 @@
      <!-- 상품 배송 정보 제작 해야함 -->
      
      <div>
-      <p>판매자 : ${productVO.memberId }</p>
+      <p>판매자 : ${productVO.memberId}</p>
      </div>
  	
  	
@@ -153,24 +145,10 @@
      <p>댓글</p>
      
       <div id="replies"></div>
-     
-     
+
      <!-- 좋아요 표시 제작 예정? -->
      
      <script type="text/javascript">
-     
-     // 바로 구매 폼 제출시 나오는 로그
-     /*
-     document.getElementById("checkoutForm").addEventListener("submit", function(event) {
-    	 alert('로그1');
-    	 let productId = ${productVO.productId}; // 게시판 번호 데이터
-         let memberId = "${memberId}"; // 작성자 데이터 // Strgin 형태여서 ""가 들어감
-         let productNum = $('#quantity').val(); // 수량
-         alert('로그1' + productId);
-         alert('로그1' + memberId);
-         alert('로그1' + productNum);
-     });
-     */
      
   	 // 수량 입력 필드 가져오기
      let quantityInput = document.getElementById("quantity");
@@ -195,7 +173,7 @@
      
 // 별표시를 업데이트하는 함수
 function displayStars() {
-    let value = parseInt("${reviewStar}"); // 리뷰 별점을 정수 형으로 변환
+    let value = parseInt("${productVO.reviewAvg}"); // 리뷰 별점을 정수 형으로 변환
     let stars = document.querySelectorAll('#myform label'); // 별 표시 기능 가져오기
     for (let i = 0; i < stars.length; i++) {
         if (i < value) {
@@ -204,7 +182,7 @@ function displayStars() {
             stars[i].style.color = 'transparent'; // 선택된 별보다 큰 값의 별은 투명하게 표시
         }
     }
-}
+}// end displayStars()
 
 $(document).ready(function() {
 	displayStars(); // 별 표시 함수

@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>리뷰 수정</title>
-3<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 
 <style>
 /* 리뷰 별 폼 스타일 */
@@ -50,6 +50,10 @@
 	
 	<h1>리뷰 수정</h1>
 	
+	<div>
+		<p>상품 번호 "${productId}"</p>
+	</div>
+	
 	<p>이미지 썸네일</p>
 	  <div>
     	<img src="../product/showImg?imgId=${imgId}" alt="${imgRealName}.${imgExtension}">
@@ -58,11 +62,11 @@
  	<div id="myform">
  	<fieldset id="starFieldset">
         <!-- 별점 선택 라디오 버튼 -->
-        <input type="radio" value="5" id="rate1"><label for="rate1">★</label>
-        <input type="radio" value="4" id="rate2"><label for="rate2">★</label>
-        <input type="radio" value="3" id="rate3"><label for="rate3">★</label>
-        <input type="radio" value="2" id="rate4"><label for="rate4">★</label>
-        <input type="radio" value="1" id="rate5"><label for="rate5">★</label>
+        <input type="radio" name="reviewStar" value="5" id="rate1"><label for="rate1">★</label>
+        <input type="radio" name="reviewStar" value="4" id="rate2"><label for="rate2">★</label>
+        <input type="radio" name="reviewStar" value="3" id="rate3"><label for="rate3">★</label>
+        <input type="radio" name="reviewStar" value="2" id="rate4"><label for="rate4">★</label>
+        <input type="radio" name="reviewStar" value="1" id="rate5"><label for="rate5">★</label>
     </fieldset>
       <input type="text" id="reviewContent">
       <!-- 이미지는 나중에 -->
@@ -70,21 +74,35 @@
      </div>
      
      <script type="text/javascript">
+     
+     $(document).ready(function(){
+    		
+    		let selectedStar; // 전역 변수로 selectedStar 선언
+    		
+    	    // 라디오 버튼 클릭 이벤트 핸들러
+    	    $('#starFieldset input[type="radio"]').click(function() {
+    	        // 선택된 별의 값 가져오기
+    	        selectedStar = $(this).val();
+    	        // reviewStar 변수에 선택된 별 값 할당
+    	        $('#reviewStar').val(selectedStar);
+    	        
+    	        console.log(selectedStar);
+    	    });
+     
  	 // 수정 버튼을 클릭하면 선택된 댓글 수정
      $('#btnUpdate').click(function(){
         console.log(this);
-        
-        // 선택된 댓글의 replyId, replyContent 값을 저장
-        // prevAll() : 선택된 노드 이전에 있는 모든 형제 노드를 접근
-        //let replyId = $(this).prevAll('#replyId').val();
-        let reviewStar = $('#reviewStar').val();// 리뷰(별)
-        let reviewContent = $('#reviewContent').val();
+
         let reviewId = ${reviewId};// 나중에 경로 정해 졌을때 데이터가 회원 Id, 상품 Id OR 댓글 id만 있으면 됨
+        let reviewStar = selectedStar// 리뷰(별)
+        let reviewContent = $('#reviewContent').val();
+        let productId = ${productId};
         
         let obj = {
         		'reviewId' : reviewId,
         		'reviewStar' : reviewStar,
-        		'reviewContent' : reviewContent
+        		'reviewContent' : reviewContent,
+        		'productId' : productId
         }
         
         console.log(obj);
@@ -92,7 +110,7 @@
         // ajax 요청
         $.ajax({
            type : 'PUT', // 메서드 타입
-           url : '../review/' + reviewId,// 경로 
+           url : '../review/modify',// 경로 
            headers : {
               'Content-Type' : 'application/json' // json content-type 설정
            }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 4050에러가 나온다.
@@ -107,11 +125,8 @@
         });
         
      }); // end replies.on()
-     
-     
+     }); // end document.ready()
      </script>
-
-
 
 </body>
 </html>

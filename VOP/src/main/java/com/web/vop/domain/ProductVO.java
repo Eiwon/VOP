@@ -25,4 +25,5 @@ public class ProductVO {
 	private String category;
 	private int imgId;
 	private Date productDateCreated;
+	private float reviewAvg;
 }

@@ -19,8 +19,20 @@ public interface ProductService {
 	// ´ñ±Û ÃÑ °¹¼ö Á¶È¸ 
 	int selectReviewByCount(int productId);
 	
-	// »óÇ° ¸®ºä(º°) ÃÑÇÕ Á¶È¸
-	int selectReviewByStar(int productId);
+	// ´ñ±Û ÃÑ °¹¼ö Áõ°¡
+	int reviewNumUP(int productId);
+			
+	// ´ñ±Û ÃÑ °¹¼ö °¨¼Ò
+	int reviewNumDown(int productId);
+		
+	// »óÇ° ¸®ºä(º°) ÃÑÇÕ °Ë»ö
+	int selectReviewStar(int productId);
+	
+	// »óÇ° ¸®ºä(º°) Æò±Õ°ª ¼öÁ¤
+	int updateReviewAvg(int productId, String reviewAvg);
+	
+	// ´ñ±Û(¸®ºä) Ä«¿îÅÍ
+	int updateReviewNum(int productId, int reviewNum);
 	
 	// »óÇ° µî·Ï
 	int registerProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details);

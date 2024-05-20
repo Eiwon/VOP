@@ -33,10 +33,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	 	WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
    </select>
    
-   <!-- 댓글(리뷰) 전체 검색 -->
+   <!-- 댓글(리뷰) productId로 전체 검색 -->
    <select id="selectListByReview" resultMap="reviewResultMap">
       SELECT * FROM REVIEW
       WHERE PRODUCT_ID = #{productId}
+      ORDER BY REVIEW_ID
+   </select>
+   
+   <!-- 댓글(리뷰) memberId로 전체 검색 -->
+   <select id="selectListByReviewMemberId" resultMap="reviewResultMap">
+      SELECT * FROM REVIEW
+      WHERE MEMBER_ID = #{memberId}
       ORDER BY REVIEW_ID
    </select>
    
@@ -48,26 +55,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       UPDATE REVIEW
       SET REVIEW_CONTENT = #{reviewContent},
       REVIEW_STAR = #{reviewStar}
-      WHERE REVIEW_ID = #{productId} AND #{memberId}
+      WHERE REVIEW_ID = #{reviewId}
    </update>
    
    <!-- 댓글(리뷰) 삭제 -->
    <delete id="deleteReview">
       DELETE FROM REVIEW 
-      WHERE REVIEW_ID = #{productId} AND #{memberId}
+      WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
    </delete>
-   
-   <!-- 상품 총 댓글 수 증가 -->
-	<update id="reviewNumUP">
-		UPDATE PRODUCT SET REVIEW_NUM = REVIEW_NUM + 1
-		WHERE PRODUCT_ID = #{productId}
-	</update>
 	
-	<!-- 상품 총 댓글 수 감소 -->
-	<update id="reviewNumDown">
-		UPDATE PRODUCT SET REVIEW_NUM = REVIEW_NUM - 1
+	<!-- PRODUCT_ID 해당하는 리뷰(별) 총 합 -->
+    <select id="selectReviewStar" resultType="Integer">
+   		SELECT SUM(REVIEW_STAR) AS TOTAL_STAR_RATINGS
+		FROM REVIEW
 		WHERE PRODUCT_ID = #{productId}
-	</update>
+    </select>
+    
+    
    
     
     

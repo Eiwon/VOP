@@ -34,6 +34,13 @@ public class ReviewServiceImple implements ReviewService{
 		List<ReviewVO> result = reviewMapper.selectListByReview(productId);
 		return result;
 	}
+	// ´ñ±Û(¸®ºä) memberId·Î ÀüÃ¼ °Ë»ö
+	@Override
+	public List<ReviewVO> getAllReviewMemberId(String memberId) {
+		log.info("getAllReviewMemberId()");
+		List<ReviewVO> result = reviewMapper.selectListByReviewMemberId(memberId);
+		return result;
+	}
 	
 	// ´ñ±Û(¸®ºä) productId ±×¸®°í memberIdÅëÇØ °Ë»ö
 	@Override
@@ -67,23 +74,12 @@ public class ReviewServiceImple implements ReviewService{
 		log.info(deleteRes + "Çà »èÁ¦");
 		return deleteRes;
 	}
+
 	
-	// ´ñ±Û ÃÑ °¹¼ö Áõ°¡
-	@Override
-	public int reviewNumUP(int productId) {
-		log.info("reviewNumUP()");
-		log.info("productId : " + productId);
-		int res = reviewMapper.reviewNumUP(productId);
-		return res;
-	}
-		
-	// ´ñ±Û ÃÑ °¹¼ö °¨¼Ò
-	@Override
-	public int reviewNumDown(int productId) {
-		log.info("reviewNumDown()");
-		int res = reviewMapper.reviewNumDown(productId);
-		return res;
-	}
+
+
+	
+	
 
 	
 

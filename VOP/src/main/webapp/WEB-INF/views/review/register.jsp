@@ -52,6 +52,10 @@
 	
 	<h1>리뷰 작성</h1>
 	
+	<div>
+		<p>상품 번호 "${productId}"</p>
+	</div>
+	
 	<p>이미지 썸네일</p>
 	  <div>
     	<img src="../product/showImg?imgId=${imgId}" alt="${imgRealName}.${imgExtension}">
@@ -89,8 +93,6 @@ $(document).ready(function(){
         selectedStar = $(this).val();
         // reviewStar 변수에 선택된 별 값 할당
         $('#reviewStar').val(selectedStar);
-        
-        
         
         console.log(selectedStar);
     });
@@ -132,7 +134,7 @@ $(document).ready(function(){
        }); // end ajax
     }); // end btnAdd.click()
     
-  }); // end document.ready()// end document document.ready()
+  }); // end document.ready()
 
     </script>
 

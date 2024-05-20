@@ -35,7 +35,7 @@ public class ProductServiceImple implements ProductService{
 	public ProductVO getProductById(int productId) {
 		log.info("getProductById()");
 		ProductVO result = productMapper.selectProduct(productId);
-		log.info("»óÇ° »ó¼¼ Á¤º¸ : " + result.toString());
+//		log.info("»óÇ° »ó¼¼ Á¤º¸ : " + result.toString());
 		return result;
 	} // end getProductById()
 	
@@ -47,12 +47,46 @@ public class ProductServiceImple implements ProductService{
 		return res;
 	}
 	
-	// »óÇ° ¸®ºä ÃÑ ÇÕ °Ë»ö
+	// ´ñ±Û ÃÑ °¹¼ö Áõ°¡
 	@Override
-	public int selectReviewByStar(int productId) {
+	public int reviewNumUP(int productId) {
+		log.info("reviewNumUP()");
+		log.info("productId : " + productId);
+		int res = productMapper.reviewNumUP(productId);
+		return res;
+	}
+			
+	// ´ñ±Û ÃÑ °¹¼ö °¨¼Ò
+	@Override
+	public int reviewNumDown(int productId) {
+		log.info("reviewNumDown()");
+		int res = productMapper.reviewNumDown(productId);
+		return res;
+	}
+	
+	// »óÇ° ¸®ºä Æò±Õ°ª ¼öÁ¤
+	@Override
+	public int updateReviewAvg(int productId, String reviewAvg) {
+		log.info("updateReviewAvg()");
+		int res = productMapper.updateReviewAvg(productId, reviewAvg);
+		return res;
+	}
+	
+	// productId ÇØ´çÇÏ´Â ¸®ºä ÃÑ ÇÕ 
+	@Override
+	public int selectReviewStar(int productId) {
 		log.info("selectReviewByStar()");
 		int res = productMapper.selectReviewStar(productId);
 		return res;
+	}
+	
+	// ´ñ±Û(¸®ºä) Ä«¿îÅÍ
+	@Override
+	public int updateReviewNum(int productId, int reviewNum) {
+		log.info("updateReviewNum()");
+		int updateRes = productMapper.updateReviewNum(productId, reviewNum);
+		log.info(updateRes + "Çà ´ñ±Û(¸®ºä) Ä«¿îÅÍ");
+		return updateRes;
 	}
 
 	@Transactional(value = "transactionManager")
@@ -200,6 +234,8 @@ public class ProductServiceImple implements ProductService{
 		
 		return res;
 	} // end updateProduct
+
+	
 
 	
 

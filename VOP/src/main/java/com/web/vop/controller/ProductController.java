@@ -70,24 +70,9 @@ public class ProductController {
 		
 		log.info("productId : " + productId);
 		// productId에 해당하는 상품 조회 
-		ProductVO productVO = productService.getProductById(productId);
+		ProductVO productVO = productService.getProductById(productId);	
 		
-		// 댓글 총 갯수 조회
-//		int reviewCount = productService.selectReviewByCount(productId);
-//		log.info("reviewCount" + reviewCount);
-		
-		// 리뷰 평균 값 코드
-		int res = 0; // 댓글 입력시 소수점 입력 불가
-		String reviewStar = "0";
-		if(productVO.getReviewNum() != 0) { //0 이하일 때 무한의 에러가 나와온다.
-			res = productService.selectReviewByStar(productId);
-			log.info("리뷰(별) : " + res);
-			// 리뷰 평균 값
-			reviewStar = df.format((float)res / productVO.getReviewNum());
-		}
-		log.info("res : " + res);
-		log.info("reviewStar : " + reviewStar);
-		
+		// 이미지 코드
 		ImageVO imageVO = imageService.getImageById(productVO.getImgId());
 		
 		List<ImageVO> imageList = imageService.getByProductId(productId);
@@ -95,12 +80,8 @@ public class ProductController {
 			log.info(image);
 		}
 		
-		// 댓글 갯수 정보
-//		model.addAttribute("reviewCount", reviewCount);
 		// 상품 조회 정보
 		model.addAttribute("productVO", productVO);
-		// 리뷰 평균 정보
-		model.addAttribute("reviewStar", reviewStar);
 		// 이미지 조회 정보
 		model.addAttribute("imageVO", imageVO);
 		// 상품 설명 이미지 조회 정보

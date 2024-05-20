@@ -387,6 +387,12 @@
 	                	<button type="submit">리뷰 수정</button>
 	                </form>
 	                
+	                 <!-- 리뷰 관리 코드 -->
+	                 <form action="../review/list" method="get">
+	                	<input type="hidden" name="memberId" value="${memberId}">
+	                	<button type="submit">리뷰 관리</button>
+	                </form>
+	                
 	                <!-- 판매자 문의 코드 -->
 	                <button id="sellerInquiry">판매자 문의</button>
 	                <div id="myModal" class="modal">

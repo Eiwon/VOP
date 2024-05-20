@@ -18,6 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="category" column="CATEGORY"/>
       <result property="imgId" column="IMG_ID"/>
       <result property="productDateCreated" column="PRODUCT_DATE_CREATED"/>
+      <result property="reviewAvg" column="REVIEW_AVG"/>
    </resultMap>
    
    <resultMap type="com.web.vop.domain.ProductDetailsDTO" 
@@ -36,6 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="memberEmail" column="MEMBER_EMAIL"/>
 		<result property="memberPhone" column="MEMBER_PHONE"/>
 		<result property="businessName" column="BUSINESS_NAME"/>
+		
    </resultMap>
    
    <!-- productId통해 상품 조회 -->
@@ -59,6 +61,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM REVIEW
 		WHERE PRODUCT_ID = #{productId}
    </select>
+   
+   
+   <!-- 상품 댓글 수 카운터 -->
+   <update id="updateReviewNum">
+   		UPDATE PRODUCT SET REVIEW_NUM = #{reviewNum}
+		WHERE PRODUCT_ID = #{productId}
+   </update>
+   
+    <!-- 리뷰 평균 값 수정 -->
+    <update id="updateReviewAvg">
+		UPDATE PRODUCT SET REVIEW_AVG = #{reviewAvg}
+		WHERE PRODUCT_ID = #{productId}
+    </update>
+    
+    <!-- 상품 총 댓글 수 증가 -->
+	<update id="reviewNumUP">
+		UPDATE PRODUCT SET REVIEW_NUM = REVIEW_NUM + 1
+		WHERE PRODUCT_ID = #{productId}
+	</update>
+	
+	<!-- 상품 총 댓글 수 감소 -->
+	<update id="reviewNumDown">
+		UPDATE PRODUCT SET REVIEW_NUM = REVIEW_NUM - 1
+		WHERE PRODUCT_ID = #{productId}
+	</update>
    
 	<!-- 상품 등록 -->
 	<insert id="insertProduct">

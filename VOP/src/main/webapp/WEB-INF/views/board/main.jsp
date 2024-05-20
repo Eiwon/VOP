@@ -389,6 +389,7 @@
 								'<strong class="product_name">' + result[x].productName + '</strong><br>' + 
 								'<strong class="product_price">' + result[x].productPrice + '</strong><br>' + 
 								'<span class="review_num">' + result[x].reviewNum + '</span>' +
+								
 								'<input hidden="hidden" class="product_id" value="' + result[x].productId + '"/>' +
 								'</li>';
 					}
@@ -433,7 +434,7 @@
 			console.log(selectedId);
 			location.href = '../product/detail?productId=' + selectedId;
 		} // end addDetailsEvent
-		
+
 	</script>
 	
 

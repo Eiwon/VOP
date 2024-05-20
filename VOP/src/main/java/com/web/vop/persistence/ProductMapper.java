@@ -18,8 +18,20 @@ public interface ProductMapper {
 	// ´ñ±Û ÃÑ °¹¼ö °Ë»ö
 	int selectReviewCount(int productId);
 	
+	// ´ñ±Û ÃÑ °¹¼ö Áõ°¡
+	int reviewNumUP(int productId);
+			
+	// ´ñ±Û ÃÑ °¹¼ö °¨¼Ò
+	int reviewNumDown(int productId);
+		
 	// »óÇ° ¸®ºä(º°) ÃÑÇÕ °Ë»ö
 	int selectReviewStar(int productId);
+	
+	// »óÇ° ¸®ºä(º°) Æò±Õ°ª µî·Ï
+	int updateReviewAvg(@Param("productId")int productId, @Param("reviewAvg")String reviewAvg);
+	
+	// ´ñ±Û(¸®ºä) Ä«¿îÅÍ
+	int updateReviewNum(@Param("productId")int productId, @Param("reviewNum")int reviewNum);
 	
 	// »óÇ° µî·Ï
 	int insertProduct(ProductVO productVO);
