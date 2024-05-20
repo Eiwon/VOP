@@ -92,7 +92,7 @@ public class DeliveryController {
         } else {
         	
         // 배송지 전체 조회(by deliveryId)하기
-        DeliveryVO delivery = deliveryService.getDeliveryById(deliveryId);
+        DeliveryVO delivery = deliveryService.getDeliveryById(deliveryId, memberId);
         log.info("delivery" + delivery);
         
         // 사용자가 선택한 배송지 선택 정보 View로 전달

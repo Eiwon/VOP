@@ -27,7 +27,7 @@
     <label for="requirement">배송 요청사항:</label><br>
     <textarea id="requirement" name="requirement" rows="4" cols="50">일반 : 문앞</textarea><br><br>
 
-    <input type="checkbox" id="isDefault" name="isDefault" value="0">
+    <input type="checkbox" id="isDefault" name="isDefault" value="1" checked>
     <label for="isDefault">기본 배송지로 설정</label><br><br>
 
     <button type="submit">저장</button>

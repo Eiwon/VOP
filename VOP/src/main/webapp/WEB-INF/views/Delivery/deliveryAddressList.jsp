@@ -87,9 +87,8 @@
                     </c:if>
                 </td>
                 <td>
-                    <c:if test="${delivery.isDefault eq 0}">
-                        <a href="../Delivery/deliveryUpdate?deliveryId=${delivery.deliveryId}">수정</a>
-                    </c:if>
+                    <a href="../Delivery/deliveryUpdate?deliveryId=${delivery.deliveryId}">수정</a>
+                    
                 </td>
             </tr>
         </c:forEach>
