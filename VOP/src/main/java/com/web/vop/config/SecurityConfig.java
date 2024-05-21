@@ -9,42 +9,53 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
+import com.web.vop.persistence.Constant;
 import com.web.vop.service.UserDetailsServiceImple;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @Configuration
 @RequiredArgsConstructor
 @Log4j
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
+public class SecurityConfig extends WebSecurityConfigurerAdapter implements Constant{
 
 	@Autowired
 	UserDetailsServiceImple userDetailsServiceImple;
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		log.info("--------------------security filter-------------------");
+		log.info("--------------------security filter load------------------");
 		// form으로 작성한 요청이 들어오면 가로채서 tag의 name 속성 값으로 id, pw 저장
 		// 이후 UserDetailsService로 넘겨줌
 		http
         .authorizeRequests()
-            .anyRequest().authenticated()
+            .antMatchers(PERMIT_ALL).permitAll()
+            .antMatchers(MEMBER_ONLY).authenticated()
+            .antMatchers(ADMIN_ONLY).hasAnyRole(AUTH_ADMIN)
+            .antMatchers(SELLER_OVER).hasAnyRole(AUTH_SELLER, AUTH_ADMIN)
         .and()
             .formLogin()
             .loginPage("/member/login")
             .usernameParameter("memberId")
             .passwordParameter("memberPw")
             .loginProcessingUrl("/member/login")
-            .defaultSuccessUrl("/member/register", false)
-            .permitAll()
+            .defaultSuccessUrl("/board/main", false)
         .and()
             .logout()
+            .logoutUrl("/member/logout")
+            
         .and()
-        	.csrf().disable();
+        	.csrf().disable()
+        .sessionManagement() // maximumSessions, maxSessionsPreventsLogin을 설정하기 위해 호출
+        .maximumSessions(1) // 하나의 아이디로 동시에 로그인 할 수 있는 최대치 : 1
+        .maxSessionsPreventsLogin(true); // 설정값을 초과하여 로그인시, 먼저 로그인한 아이디의 세션 만료 설정
+        
 							
 	}
 	
@@ -52,10 +63,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		log.info("auth check " + auth);
+		auth.userDetailsService(userDetailsServiceImple).passwordEncoder(passwordEncoder());
 	}
 	
-	
-	
-	
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 	
 }

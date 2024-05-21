@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.vop.domain.CouponVO;
 import com.web.vop.domain.DeliveryVO;
+import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.OrderVO;
 import com.web.vop.domain.PaymentVO;
@@ -48,13 +50,12 @@ public class PaymentController {
 	private PaymentService paymentService;
 	
 	@PostMapping("/checkout")
-	public void makePayment(Model model, int[] productIds, int[] productNums, String memberId) {
-		log.info("makePayment() - memberId : " + memberId);
+	public void makePayment(
+			Model model, int[] productIds, int[] productNums, @AuthenticationPrincipal MemberDetails memberDetails) {
+		log.info("makePayment()");
 		log.info("결제할 상품 갯수 : " + productIds.length);
 		
-		List<OrderVO> orderList = new ArrayList<>();
-		
-		PaymentWrapper payment = paymentService.makePaymentForm(productIds, productNums, memberId);
+		PaymentWrapper payment = paymentService.makePaymentForm(productIds, productNums, memberDetails.getUsername());
 		
 		try { // 자바스크립트에서 쓰기 위해 json 형식 문자열로 변환
 			model.addAttribute("paymentWrapper", new ObjectMapper().writeValueAsString(payment));
@@ -84,6 +85,7 @@ public class PaymentController {
 	public ResponseEntity<Integer> savePaymentResult(@RequestBody PaymentWrapper paymentResult){
 		log.info("---------결제 결과 저장--------");
 		log.info("결제 내역 : " + paymentResult.getPaymentVO());
+		log.info("배송지 정보 : " + paymentResult.getDeliveryVO());
 		log.info("주문 목록 : " + paymentResult.getOrderList());
 		log.info("쿠폰 사용 내역 : " + paymentResult.getCouponVO());
 		
@@ -94,9 +96,9 @@ public class PaymentController {
 	
 	@GetMapping("/payment")
 	@ResponseBody
-	public ResponseEntity<PaymentWrapper> getPaymentResult(HttpServletRequest request){
+	public ResponseEntity<PaymentWrapper> getPaymentResult(@AuthenticationPrincipal MemberDetails memberDetails){
 		log.info("결제 결과 조회 요청");
-		String memberId = (String) request.getSession().getAttribute("memberId");// 각 주문정보와 전체 결제 내역을 한번에 보내기 위해 포장
+		String memberId = memberDetails.getUsername();// 각 주문정보와 전체 결제 내역을 한번에 보내기 위해 포장
 		PaymentWrapper payment = paymentService.getRecentPayment(memberId);
 		
 		return new ResponseEntity<PaymentWrapper>(payment, HttpStatus.OK);

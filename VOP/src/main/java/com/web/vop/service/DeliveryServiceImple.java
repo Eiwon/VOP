@@ -57,7 +57,7 @@ public class DeliveryServiceImple implements DeliveryService{
 	public List<DeliveryVO> getMemberId(String memberId) {
 		log.info("registerDelivery()-memberId : " + memberId);
 		List<DeliveryVO> result = deliveryMapper.selectByMemberId(memberId);
-		log.info("배송지 상세 조회 : " + result.toString());
+		log.info("배송지 상세 조회 : " + result);
 		return result;
 	}//end getMemberId()
 
@@ -71,6 +71,12 @@ public class DeliveryServiceImple implements DeliveryService{
 		return result;
 	}//end getDeliveryById()
 
+	@Override // 기본 배송지 검색
+	public DeliveryVO getDefaultDelivery(String memberId) {
+		log.info("getDefaultDelivery()");
+		DeliveryVO result = deliveryMapper.selectDefaultByMemberId(memberId);
+		return result;
+	} // end getDefaultDelivery
 	
 	// 기본 배송지 조회
 	@Override

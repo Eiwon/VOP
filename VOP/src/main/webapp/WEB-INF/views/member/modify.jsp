@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authentication var="memberDetails" property="principal"/>
 <html>
 <head>
 <meta charset="EUC-KR">
@@ -17,7 +19,7 @@
 			<span>비밀번호 확인</span>
 			<div>
 				<span>아이디</span><br>
-				<span><%= request.getSession().getAttribute("memberId") %></span>
+				<span>${memberDetails.getUsername() }</span>
 			</div>
 			<div>
 				<span>비밀번호</span>
@@ -34,15 +36,15 @@
 				<tbody>
 					<tr>
 						<td>아이디</td>
-						<td><input type="text" value="${memberVO.memberId }" readonly></td>
+						<td><input type="text" value="" readonly>${memberDetails.getUsername() }</td>
 					</tr>
 					<tr>
 						<td>이름</td>
-						<td><input type="text" name="memberName" value="${memberVO.memberName }"></td>
+						<td><input type="text" name="memberName" value="">${memberDetails.memberVO.memberName }</td>
 					</tr>
 					<tr>
 						<td>휴대폰 번호</td>
-						<td><input type="text" name="memberPhone" value="${memberVO.memberPhone }"></td>
+						<td><input type="text" name="memberPhone" value="">${memberDetails.memberVO.memberPhone }</td>
 					</tr>
 					
 					<tr>
@@ -53,7 +55,6 @@
 					<tr></tr>
 					<tr></tr>
 				</tbody>
-			
 			</table>
 		
 		<!-- </form> -->
@@ -61,8 +62,11 @@
 	</div>
 	
 	<script type="text/javascript">
-		let memberIdVal = '<%= request.getSession().getAttribute("memberId") %>';
+		let memberIdVal = '${memberDetails.memberVO.memberId }';
 		let memberPw = $('#member_pw');
+		
+		console.log(memberIdVal);
+		
 		function checkPw(){
 			let memberPwVal = memberPw.val();
 			
@@ -75,7 +79,6 @@
 				method : 'POST',
 				url : 'checkMember',
 				data : {
-					'memberId' : memberIdVal,
 					'memberPw' : memberPwVal
 				},
 				success : function(result){

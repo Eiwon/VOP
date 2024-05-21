@@ -91,7 +91,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="insertProduct">
    		INSERT INTO PRODUCT VALUES (
    		PRODUCT_SEQ.NEXTVAL, #{memberId}, #{productName}, #{productPrice},
-   		0, #{productRemains}, #{productPlace}, '판매중', #{category}, 
+   		0, #{productRemains}, #{productPlace}, #{productState}, #{category}, 
    		#{imgId}, SYSDATE 
    		)
 	</insert>
@@ -106,14 +106,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		SELECT * FROM (
    		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
    		FROM PRODUCT
- 		WHERE CATEGORY = #{category} AND PRODUCT_STATE = '판매중'
+ 		WHERE CATEGORY = #{category} AND PRODUCT_STATE = #{productState}
    		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
 	</select>
 
 	<!-- 카테고리로 검색 결과 수량 -->
 	<select id="selectByCategoryCnt" resultType="Integer">
 		SELECT COUNT(PRODUCT_ID) FROM PRODUCT 
-		WHERE CATEGORY = #{category} AND PRODUCT_STATE = '판매중'
+		WHERE CATEGORY = #{category} AND PRODUCT_STATE = #{productState}
 	</select>
 
 	<!-- 상품 이름으로 검색 (페이징) -->
@@ -121,14 +121,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		SELECT * FROM (
    		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
    		FROM PRODUCT
-   		WHERE PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = '판매중'
+   		WHERE PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = #{productState}
    		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
    	</select>	
 
 	<!-- 이름으로 검색 결과 수량 -->
 	<select id="selectByNameCnt" resultType="Integer">
 		SELECT COUNT(PRODUCT_ID) FROM PRODUCT 
-		WHERE PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = '판매중'
+		WHERE PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = #{productState}
 	</select>
 
 	<!-- 카테고리를 선택하여 이름으로 검색 (페이징) -->
@@ -136,14 +136,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT * FROM (
    		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
    		FROM PRODUCT
- 		WHERE CATEGORY = #{category} AND PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = '판매중'
+ 		WHERE CATEGORY = #{category} AND PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = #{productState}
    		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
 	</select>
 	
 	<!-- 카테고리를 선택하여 이름으로 검색 결과 수량 -->
 	<select id="selectByNameInCategoryCnt" resultType="Integer">
 		SELECT COUNT(PRODUCT_ID) FROM PRODUCT 
-		WHERE CATEGORY = #{category} AND PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = '판매중'
+		WHERE CATEGORY = #{category} AND PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = #{productState}
 	</select>
 	
 	<!-- memberId로 상품 조회 -->
@@ -209,7 +209,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			FROM PRODUCT P JOIN MEMBER M
 			ON P.MEMBER_ID = M.MEMBER_ID
 			WHERE P.PRODUCT_ID = #{productId}
-		) PM JOIN SELLER ON PM.PM_MEMBER_ID = SELLER.MEMBER_ID
+		) PM LEFT OUTER JOIN SELLER ON PM.PM_MEMBER_ID = SELLER.MEMBER_ID
 	</select>
 	
 	<!-- 상품 정보 변경 -->

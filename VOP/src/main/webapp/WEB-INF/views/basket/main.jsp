@@ -29,7 +29,6 @@
 	</form>
 	
 	<script type="text/javascript">
-		const memberId = '<%= request.getSession().getAttribute("memberId")%>';
 		let pageNum = 1;
 		let tagBasketList = $('#basket_list');
 		let basketMap; // 데이터를 html과 분리해서 관리하기 위한 map
@@ -60,7 +59,7 @@
 		function printBasketList(){
 			$.ajax({
 				method : 'GET',
-				url : 'myBasket?memberId=' + memberId + '&pageNum=' + pageNum,
+				url : 'myBasket',
 				success : function(result){
 					console.log(result);
 					const basketList = result;
@@ -201,18 +200,13 @@
 		function deleteProduct(input){
 			let targetId = getTargetId(input);
 			
-			const obj = {
-				'memberId' : memberId,
-				'productId' : targetId,
-			}
-			
 			$.ajax({
 				method : 'DELETE',
 				url : 'myBasket',
 				headers : {
 	                  'Content-Type' : 'application/json'
 	            },
-				data : JSON.stringify(obj),
+				data : targetId,
 				success : function(result){
 					console.log(result);
 					printBasketList();
@@ -235,7 +229,7 @@
 			
 			$.ajax({
 				method : 'DELETE',
-				url : 'multi/' + memberId,
+				url : 'multi',
 				headers : {
 	                  'Content-Type' : 'application/json'
 	            },
@@ -251,10 +245,7 @@
 		function clearBasket(){
 			$.ajax({
 				method : 'DELETE',
-				url : 'clear/' + memberId,
-				headers : {
-	                  'Content-Type' : 'application/json'
-	            },
+				url : 'clear',
 				success : function(result){
 					console.log(result);
 					printBasketList();
@@ -265,7 +256,6 @@
 		// productNum update 요청 송신
 		function setProductNum(basketItem, productId, productNum){
 			const obj = {
-				'memberId' : memberId,
 				'productId' : productId,
 				'productNum' : productNum
 			};

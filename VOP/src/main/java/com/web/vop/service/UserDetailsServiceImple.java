@@ -29,6 +29,7 @@ public class UserDetailsServiceImple implements UserDetailsService{
 		
 		if(memberVO == null) {
 			log.info("잘못된 ID 또는 비밀번호");
+			return null;
 		}
 		MemberDetails memberDetails = new MemberDetails();
 		memberDetails.setMemberVO(memberVO);

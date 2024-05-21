@@ -41,25 +41,26 @@ public interface ProductMapper {
 	
 	// 카테고리로 검색
 	List<ProductVO> selectByCategory(
-			@Param("category") String category, @Param("pagination") Pagination pagination);
+			@Param("category") String category, @Param("pagination") Pagination pagination, @Param("productState") String productState);
 	
 	// 카테고리로 검색 결과 수량
-	int selectByCategoryCnt(String category);
+	int selectByCategoryCnt(@Param("category") String category, @Param("productState") String productState);
 	
 	// 이름에 검색어가 포함된 상품 검색
 	List<ProductVO> selectByName(
-			@Param("productName") String productName, @Param("pagination") Pagination pagination);
+			@Param("productName") String productName, @Param("pagination") Pagination pagination, @Param("productState") String productState);
 	
 	// 이름에 검색어가 포함된 상품 검색 결과 수량
-	int selectByNameCnt(String productName);
+	int selectByNameCnt(@Param("productName") String productName, @Param("productState") String productState);
 	
 	// 카테고리 내에서, 이름에 검색어가 포함된 상품 검색
 	List<ProductVO> selectByNameInCategory(
 			@Param("category") String category, @Param("productName") String productName,
-			@Param("pagination") Pagination pagination);
+			@Param("pagination") Pagination pagination, @Param("productState") String productState);
 	
 	// 카테고리 내에서, 이름에 검색어가 포함된 상품 검색 결과 수량
-	int selectByNameInCategoryCnt(@Param("category") String category, @Param("productName") String productName);
+	int selectByNameInCategoryCnt(@Param("category") String category, @Param("productName") String productName, 
+			@Param("productState") String productState);
 	
 	// memberId로 상품 조회
 	List<ProductVO> selectByMemberId(@Param("memberId") String memberId, @Param("pagination") Pagination pagination);

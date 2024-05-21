@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.web.vop.domain.BasketDTO;
 import com.web.vop.domain.BasketVO;
+import com.web.vop.domain.MemberDetails;
 import com.web.vop.service.BasketService;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
@@ -44,18 +46,18 @@ public class BasketController {
 	// return : 장바구니 물품 리스트, 페이지 메이커
 	@GetMapping("/myBasket")
 	@ResponseBody
-	public ResponseEntity<List<BasketDTO>> getMyBasket(String memberId){
-		log.info("getMyBasket() : " + memberId);
-		
-		List<BasketDTO> basketList = basketService.getMyBasket(memberId);
-		
+	public ResponseEntity<List<BasketDTO>> getMyBasket(@AuthenticationPrincipal MemberDetails memberDetails){
+		log.info("getMyBasket()");
+		List<BasketDTO> basketList = basketService.getMyBasket(memberDetails.getUsername());
+		log.info(basketList);
 		return new ResponseEntity<List<BasketDTO>>(basketList, HttpStatus.OK);
 	} // end getMyBasket
 	
 	// 장바구니에 물품 추가
 	@PostMapping("/myBasket")
 	@ResponseBody
-	public ResponseEntity<Integer> addToBasket(@RequestBody BasketVO basketVO){
+	public ResponseEntity<Integer> addToBasket(@RequestBody BasketVO basketVO, @AuthenticationPrincipal MemberDetails memberDetails){
+		basketVO.setMemberId(memberDetails.getUsername());
 		log.info("addToBasket() : " + basketVO);
 		int res = basketService.addToBasket(basketVO);
 		log.info(res + "행 추가 성공");
@@ -67,7 +69,8 @@ public class BasketController {
 	// 장바구니 물품 수량 변경
 	@PutMapping("/myBasket")
 	@ResponseBody
-	public ResponseEntity<Integer> updateProductNum(@RequestBody BasketVO basketVO){
+	public ResponseEntity<Integer> updateProductNum(@RequestBody BasketVO basketVO, @AuthenticationPrincipal MemberDetails memberDetails){
+		basketVO.setMemberId(memberDetails.getUsername());
 		log.info("updateProductNum() : " + basketVO);
 		int res = basketService.updateProductNum(basketVO);
 		log.info(res + "행 변경 성공");
@@ -78,7 +81,8 @@ public class BasketController {
 	// 장바구니 물품 삭제
 	@DeleteMapping("/myBasket")
 	@ResponseBody
-	public ResponseEntity<Integer> deleteFromBasket(@RequestBody BasketVO basketVO){
+	public ResponseEntity<Integer> deleteFromBasket(@RequestBody BasketVO basketVO, @AuthenticationPrincipal MemberDetails memberDetails){
+		basketVO.setMemberId(memberDetails.getUsername());
 		log.info("deleteFromBasket() : " + basketVO);
 		int res = basketService.removeFromBasket(basketVO.getProductId(), basketVO.getMemberId());
 		log.info(res + "행 변경 성공");
@@ -87,25 +91,25 @@ public class BasketController {
 	} // end updateProductNum
 	
 	// 장바구니 비우기
-	@DeleteMapping("/clear/{memberId}")
+	@DeleteMapping("/clear")
 	@ResponseBody
-	public ResponseEntity<Integer> clearBasket(@PathVariable("memberId") String memberId){
-		log.info("clearBasket() : " + memberId);
-		int res = basketService.clear(memberId);
+	public ResponseEntity<Integer> clearBasket(@AuthenticationPrincipal MemberDetails memberDetails){
+		log.info("clearBasket()");
+		int res = basketService.clear(memberDetails.getUsername());
 		log.info(res + "행 삭제 : 장바구니 초기화");
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end clearBasket
 	
 	// 장바구니 물품 다중 삭제
-	@DeleteMapping("/multi/{memberId}")
+	@DeleteMapping("/multi")
 	@ResponseBody
-	public ResponseEntity<Integer> deleteMulti(@RequestBody int[] targetList, @PathVariable("memberId") String memberId){
+	public ResponseEntity<Integer> deleteMulti(@RequestBody int[] targetList, @AuthenticationPrincipal MemberDetails memberDetails){
 		log.info("deleteMulti() : " + targetList[0]);
 		int res = 0;
 		
 		for(int productId : targetList) {
-			res += basketService.removeFromBasket(productId, memberId);
+			res += basketService.removeFromBasket(productId, memberDetails.getUsername());
 		}
 		log.info(res + "행 삭제 성공");
 		

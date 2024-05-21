@@ -27,7 +27,7 @@ public class MemberDetails implements UserDetails{
 
 			@Override
 			public String getAuthority() {
-				return memberVO.getMemberAuth();
+				return "ROLE_" + memberVO.getMemberAuth();
 			}
 		});
 		

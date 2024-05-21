@@ -3,6 +3,8 @@ package com.web.vop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.service.MemberService;
 
@@ -25,7 +28,8 @@ public class MemberRESTController {
 	
 	@PostMapping("/register") // 회원가입 요청
 	public ResponseEntity<Integer> registerPOST(@RequestBody MemberVO memberVO) {
-		log.info("회원 가입 요청 : " + memberVO.toString());
+		log.info("회원 가입 요청 : " + memberVO);
+		
 		int res = memberService.registerMember(memberVO);
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
@@ -67,9 +71,9 @@ public class MemberRESTController {
 	} // end resetPassword
 	
 	@PostMapping("/checkMember")
-	public ResponseEntity<Integer> checkMember(@RequestParam String memberId, @RequestParam String memberPw){
+	public ResponseEntity<Integer> checkMember(@AuthenticationPrincipal MemberDetails memberDetails, @RequestParam String memberPw){
 		log.info("비밀번호 확인");
-		String checkedId = memberService.checkLogin(memberId, memberPw);
+		String checkedId = memberService.checkLogin(memberDetails.getUsername(), memberPw);
 		
 		int res = (checkedId == null) ? 0 : 1;
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
