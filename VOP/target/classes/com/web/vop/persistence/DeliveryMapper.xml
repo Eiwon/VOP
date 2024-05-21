@@ -19,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 배송지 등록 -->
    <insert id="insertDelivery"> 
-   		INSERT INTO DELIVERY (DELIVERY_ID, MEMBER_ID, RECEIVER_NAME, RECEIVER_ADDRESS, RECEIVER_PHONE, REQUIREMENT, DELIVERY_ADDRESS_DETAILS,  IS_DEFAULT)
+   		INSERT INTO DELIVERY
    		VALUES (
    			DELIVERY_SEQ.NEXTVAL, #{memberId}, #{receiverName}, #{receiverAddress},
    			#{receiverPhone}, #{requirement}, #{deliveryAddressDetails}, #{isDefault}
@@ -52,6 +52,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 배송지 상세 조회 (수정페이지) by deliveryId and memberId-->
    	<select id="selectBydeliveryId" resultMap="DeliveryResultMap">
 		SELECT * FROM DELIVERY WHERE DELIVERY_ID = #{deliveryId} AND MEMBER_ID = #{memberId}
+	</select>
+	
+	<!-- memberId로 기본 배송지 검색 -->
+	<select id="selectDefaultByMemberId" resultMap="DeliveryResultMap">
+		SELECT * FROM DELIVERY WHERE MEMBER_ID = #{memberId} AND IS_DEFAULT = 1
 	</select>
 	
    

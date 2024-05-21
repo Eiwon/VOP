@@ -17,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,8 +34,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.vop.domain.BasketVO;
 import com.web.vop.domain.ImageVO;
+import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.ProductDetailsDTO;
 import com.web.vop.domain.ProductVO;
+import com.web.vop.persistence.Constant;
 import com.web.vop.service.ImageService;
 import com.web.vop.service.ProductService;
 import com.web.vop.util.FileUploadUtil;
@@ -97,9 +100,6 @@ public class ProductController {
 		log.info("/product/detail get");
 	} // end productDetail()
 	
-	
-	
-	
 	@GetMapping("/register")
 	public void registerGET() {
 		log.info("registerGET()");
@@ -111,9 +111,12 @@ public class ProductController {
 	} // end myProductGET
 	
 	@PostMapping("/register")
-	public String registerPOST(ProductVO productVO,  MultipartFile thumbnail, MultipartFile[] details) {
+	public String registerPOST(
+			ProductVO productVO,  MultipartFile thumbnail, MultipartFile[] details,
+			@AuthenticationPrincipal MemberDetails memberDetails) {
 		// DB 저장 실패시에는 이미지를 서버에 저장하면 안됨 => DB에 저장 성공을 확인한 후 서버에 저장
 		log.info("registerPOST()");
+		productVO.setMemberId(memberDetails.getUsername());
 		log.info(productVO);
 		log.info("파일 명 : " + thumbnail.getOriginalFilename());
 		ImageVO imgThumbnail = null;
@@ -179,8 +182,9 @@ public class ProductController {
 	// 해당 유저가 등록한 상품 검색
 	@GetMapping("/myList")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> productList(Pagination pagination, HttpServletRequest request) {
-		String memberId = (String) request.getSession().getAttribute("memberId");
+	public ResponseEntity<Map<String, Object>> productList(
+			Pagination pagination, @AuthenticationPrincipal MemberDetails memberDetails) {
+		String memberId = memberDetails.getUsername();
 		log.info(memberId + "가 등록한 상품 검색");
 
 		Map<String, Object> resultMap = new HashMap<>();
@@ -349,9 +353,9 @@ public class ProductController {
 		String productState = productService.selectStateByProductId(productId);
 		
 		int res = 0;
-		if (productState.equals("판매중")) {
-			res = productService.setProductState("삭제 대기중", productId);
-		} else if (!productState.equals("삭제 대기중")) {
+		if (productState.equals(Constant.STATE_SELL)) {
+			res = productService.setProductState(Constant.STATE_REMOVE_WAIT, productId);
+		} else if (!productState.equals(Constant.STATE_REMOVE_WAIT)) {
 			res = delete(productId);
 		}
 		
@@ -366,7 +370,7 @@ public class ProductController {
 		log.info("모든 상품 등록 요청 조회");
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
-		List<ProductVO> list = productService.searchByState("승인 대기중", pageMaker);
+		List<ProductVO> list = productService.searchByState(Constant.STATE_APPROVAL_WAIT, pageMaker);
 		log.info(list);
 
 		pageMaker.update();
@@ -384,7 +388,7 @@ public class ProductController {
 		log.info("상품 삭제 요청 조회");
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
-		List<ProductVO> list = productService.searchByState("삭제 대기중", pageMaker);
+		List<ProductVO> list = productService.searchByState(Constant.STATE_REMOVE_WAIT, pageMaker);
 		log.info(list);
 
 		pageMaker.update();

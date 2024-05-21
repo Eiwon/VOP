@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductDetailsDTO;
 import com.web.vop.domain.ProductVO;
+import com.web.vop.persistence.Constant;
 import com.web.vop.persistence.ImageMapper;
 import com.web.vop.persistence.ProductMapper;
 import com.web.vop.util.FileUploadUtil;
@@ -98,6 +99,7 @@ public class ProductServiceImple implements ProductService{
 			int imgId = imageService.registerImage(thumbnail);
 			productVO.setImgId(imgId);
 		}
+		productVO.setProductState(Constant.STATE_SELL);
 		productMapper.insertProduct(productVO);
 		int productId = productMapper.selectLastInsertId();
 		
@@ -112,27 +114,27 @@ public class ProductServiceImple implements ProductService{
 	@Override
 	public List<ProductVO> searchByCategory(String category, PageMaker pageMaker) {
 		log.info("searchByCategory()");
-		int totalCnt = productMapper.selectByCategoryCnt(category);
+		int totalCnt = productMapper.selectByCategoryCnt(category, Constant.STATE_SELL);
 		pageMaker.setTotalCount(totalCnt);
-		return productMapper.selectByCategory(category, pageMaker.getPagination());
+		return productMapper.selectByCategory(category, pageMaker.getPagination(), Constant.STATE_SELL);
 	} // end selectByCategory
 	
 	@Override
 	public List<ProductVO> searchByName(String productName, PageMaker pageMaker) {
 		log.info("searchByName()");
 		String includeName = '%' + productName + '%';
-		int totalCnt = productMapper.selectByNameCnt(includeName);
+		int totalCnt = productMapper.selectByNameCnt(includeName, Constant.STATE_SELL);
 		pageMaker.setTotalCount(totalCnt);
-		return productMapper.selectByName(includeName, pageMaker.getPagination());
+		return productMapper.selectByName(includeName, pageMaker.getPagination(), Constant.STATE_SELL);
 	} // end selectByName
 	
 	@Override
 	public List<ProductVO> searchByNameInCategory(String category, String productName, PageMaker pageMaker) {
 		log.info("searchByNameInCategory()");
 		String includeName = '%' + productName + '%';
-		int totalCnt = productMapper.selectByNameInCategoryCnt(category, includeName);
+		int totalCnt = productMapper.selectByNameInCategoryCnt(category, includeName, Constant.STATE_SELL);
 		pageMaker.setTotalCount(totalCnt);
-		return productMapper.selectByNameInCategory(category, includeName, pageMaker.getPagination());
+		return productMapper.selectByNameInCategory(category, includeName, pageMaker.getPagination(), Constant.STATE_SELL);
 	} // end selectByNameInCategory
 	
 	@Override
@@ -199,7 +201,12 @@ public class ProductServiceImple implements ProductService{
 	public ProductDetailsDTO getDetails(int productId) {
 		log.info("getDetails()");
 		ProductDetailsDTO details = productMapper.selectDetails(productId);
-		details.setImgIdDetails(imageService.getImgId(productId));
+		log.info(details);
+		List<Integer> imgIds = imageService.getImgId(productId);
+		if(imgIds != null) {
+			log.info(imgIds);
+			details.setImgIdDetails(imgIds);			
+		}
 		return details;
 	} // end getDetails
 

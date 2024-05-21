@@ -54,10 +54,12 @@ public class PaymentServiceImple implements PaymentService {
 		PaymentWrapper payment = new PaymentWrapper();
 		// 유저 정보 검색
 		MemberVO memberVO = memberService.getMemberInfo(memberId);
-				
+		log.info("검색된 유저 정보 : " + memberVO);
+		
 		// 배송지 정보 (미구현)
-		DeliveryVO deliveryVO = new DeliveryVO();
-				
+		DeliveryVO deliveryVO = deliverService.getDefaultDelivery(memberId);
+		log.info("검색된 배송지 정보 : " + deliveryVO);
+		
 		List<OrderVO> orderList = new ArrayList<>();
 		// 상품 정보 검색 => 주문 정보 형태로 변환
 		for(int i = 0; i < productIds.length; i++) {

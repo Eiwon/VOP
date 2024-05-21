@@ -37,13 +37,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 요청 등록 -->
    <insert id="insertRequest">
-   		INSERT INTO SELLER VALUES (#{memberId}, #{businessName}, SYSDATE, #{requestContent}, '승인 대기중', NULL)
+   		INSERT INTO SELLER VALUES (#{memberId}, #{businessName}, SYSDATE, #{requestContent}, #{requestState}, NULL)
    </insert>
    
    <!-- 요청 수정(유저) -->
    <update id="updateMemberContent">
    		UPDATE SELLER SET BUSINESS_NAME = #{businessName}, REQUEST_TIME = SYSDATE, 
-   		REQUEST_CONTENT = #{requestContent}, REQUEST_STATE = '승인 대기중' WHERE MEMBER_ID = #{memberId}
+   		REQUEST_CONTENT = #{requestContent}, REQUEST_STATE = #{requestState} WHERE MEMBER_ID = #{memberId}
    </update>
    
    <!-- 요청 결재 -->

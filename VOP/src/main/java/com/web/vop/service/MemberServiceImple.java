@@ -1,9 +1,11 @@
 package com.web.vop.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.web.vop.domain.MemberVO;
+import com.web.vop.persistence.Constant;
 import com.web.vop.persistence.MemberMapper;
 
 import lombok.extern.log4j.Log4j;
@@ -15,9 +17,16 @@ public class MemberServiceImple implements MemberService{
 	@Autowired
 	MemberMapper memberMapper; 
 	
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
 	@Override
 	public int registerMember(MemberVO memberVO) {	// 회원 등록
 		log.info("Member Service registerMember()");
+		String password = memberVO.getMemberPw();
+		password = passwordEncoder.encode(password);
+		memberVO.setMemberPw(password);
+		memberVO.setMemberAuth(Constant.AUTH_NORMAL);
 		int res = memberMapper.insertMember(memberVO);
 		log.info(res + "행 추가 성공");
 		return res;

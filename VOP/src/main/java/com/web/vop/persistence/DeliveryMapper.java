@@ -24,4 +24,8 @@ public interface DeliveryMapper {
 	
 	// 배송지 상세 조회 (수정페이지) by deliveryId and memberId
 	public DeliveryVO selectBydeliveryId(@Param("deliveryId") int deliveryId, @Param("memberId") String memberId);
+
+	// memberId로 기본 배송지 검색
+	public DeliveryVO selectDefaultByMemberId(String memberId);
+	
 }
