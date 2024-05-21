@@ -4,7 +4,9 @@ package com.web.vop.controller;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,8 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -110,5 +111,38 @@ public class DeliveryRESTController {
 		int res = 1;
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end registerDelivery
+	
+	
+	@GetMapping("/checkDefaultAddress")
+	public Map<String, Boolean> checkDefaultAddress(@RequestParam String memberId){
+		log.info("checkDefaultAddress() - memberId : " + memberId);
+		boolean hasDefault = deliveryService.hasDefaultAddress(memberId);
+		log.info("기본 배송지 존재 ? " + hasDefault);
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("hasDefaultAddress", hasDefault);
+		return response;
+	}// end  checkDefaultAddress()
+	
+	
+	// 기존 배송지의 기본 배송지 = 0 으로 업데이트
+ 	@PutMapping("/delivery/updateDefault")
+	  public ResponseEntity<String> updateDefault(@RequestBody Map<String, Integer> requestMap) {
+        		int newDefaultDeliveryId = requestMap.get("deliveryId");
+        		String memberId = "회원 아이디"; // 실제로는 세션 등에서 가져오는 코드 필요
+        		log.info("updateDefault()");
+
+	        try {
+            	// 기본 배송지를 업데이트하는 서비스 메서드 호출
+            	deliveryService.setDefaultDelivery(newDefaultDeliveryId, memberId);
+            	return ResponseEntity.ok("기본 배송지가 성공적으로 업데이트되었습니다.");
+        		} catch (Exception e) {
+            	log.error("기본 배송지 업데이트 중 오류 발생: " + e.getMessage());
+            	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("기본 배송지 업데이트 중 오류가 발생했습니다.");
+        	}
+    }// end updateDefault()
+	
+
+	
+	
 	
 }//end DeliveryRESTController()

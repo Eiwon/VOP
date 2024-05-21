@@ -72,6 +72,38 @@ public class DeliveryServiceImple implements DeliveryService{
 	}//end getDeliveryById()
 
 	
+	// 기본 배송지 조회
+	@Override
+	public boolean hasDefaultAddress(String memberId) {
+		log.info("hasDefaultAddress()");
+		int count = deliveryMapper.cntIsDefault(memberId);
+		log.info("기본 배송지 개수: " + count);
+		return  count > 0;
+	}//end hasDefaultAddress()
+
+	
+	// 기본 배송지 설정하기
+	@Override
+	public void setDefaultDelivery(int deliveryId, String memberId) {
+		log.info("setDefaultDelivery() with deliveryId: {}" + deliveryId);
+		log.info("setDefaultDelivery() with memberId: {}" + memberId);
+		
+		  try {
+		        // 기존 기본 배송지를 0으로 업데이트
+		        int updateDefaultResult = deliveryMapper.updateDefault(memberId);
+		        log.info("기존의 기본 배송지를 0으로 업데이트 : " + updateDefaultResult + "행 수정");
+		        
+		        // 새로운 기본 배송지를 1로 설정
+		        int updateNewDefaultResult = deliveryMapper.updateNewDefault(deliveryId, memberId);
+		        log.info("새로운 배송지를 기본 배송지로 설정: " + updateNewDefaultResult + "행 수정");
+		    } catch (Exception e) {
+		        log.error(e);
+		        throw e; // 재throw 하여 상위 레이어에서도 예외를 처리할 수 있도록 
+		    }
+	}//end setDefaultDelivery()
+
+
+	
 
 	
 }

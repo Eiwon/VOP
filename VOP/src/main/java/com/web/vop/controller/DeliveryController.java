@@ -59,11 +59,26 @@ public class DeliveryController {
         return path;
     }//end deliveryAddressListGET()
     
+    
     // 배송지 등록 페이지로 이동
     @GetMapping("/deliveryRegister")
-    public void deliveryRegisterGET() {
+    public String deliveryRegisterGET(Model model, HttpServletRequest request) {
         log.info("deliveryRegister 페이지 이동 요청");
+        String path = "";
+        String memberId = (String) request.getSession().getAttribute("memberId");
+        log.info("memberId : " + memberId);
+
+        if (memberId == null) {
+            path = "redirect:../member/login";
+        } else {
+            String memberAuth = memberService.getMemberAuth(memberId);
+            model.addAttribute("memberAuth", memberAuth);
+            
+            path = "/Delivery/deliveryRegister";
+        }
+        return path;
     }//end deliveryRegisterGET()
+
     
     @PostMapping("/register")
     public String registerPOST(DeliveryVO deliveryVo, HttpServletRequest request) {
