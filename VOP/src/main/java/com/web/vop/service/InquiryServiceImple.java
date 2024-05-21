@@ -23,7 +23,6 @@ public class InquiryServiceImple implements InquiryService{
 	public int createInquiry(InquiryVO inquiryVO) {
 		log.info("createInquiry()");
 		int insertRes = inquiryMapper.insertInquiry(inquiryVO);
-		log.info(insertRes + "행 댓글(문의) 등록");
 		return insertRes;
 	}
 	
@@ -35,11 +34,22 @@ public class InquiryServiceImple implements InquiryService{
 		return result;
 	}
 	
+	// 댓글(문의) 검색
+	@Override
+	public InquiryVO selectByInquiry(int productId, String memberId) {
+		log.info("selectByInquiry()");
+		InquiryVO inquiryVO = inquiryMapper.selectByInquiry(productId, memberId);
+		return inquiryVO;
+	}
+	
 	// 댓글(문의) 수정
 	@Override
 	public int updateInquiry(int productId, String memberId, String inquiryContent) {
-		log.info("updateBoard()");
+		log.info("updateInquiry()");
+		log.info("로그1");
+		
 		InquiryVO inquiryVO = new InquiryVO();
+		log.info("inquiryVO : " + inquiryVO);
 		inquiryVO.setProductId(productId);
 		inquiryVO.setMemberId(memberId);
 		inquiryVO.setInquiryContent(inquiryContent);
@@ -53,8 +63,9 @@ public class InquiryServiceImple implements InquiryService{
 	public int deleteInquiry(int productId, String memberId) {
 		log.info("deleteInquiry()");
 		int deleteRes = inquiryMapper.deleteInquiry(productId, memberId);
-		log.info(deleteRes + "행 삭제");
 		return deleteRes;
 	}
+	
+	
 
 }

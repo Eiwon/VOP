@@ -3,6 +3,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="javax.servlet.http.HttpSession" %>
+<!-- 
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication var="memberDetails" property="principal"/>
+</sec:authorize> 
+ -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -353,7 +359,10 @@
 		response.sendRedirect("../member/login");
 	} else {
 %>
-
+	<!-- 
+	<h1>${memberDetails.getUsername() }</h1>
+	<h1>${memberDetails.getAuthority() }</h1>
+	 -->
 	
     <c:forEach items="${orderList}" var="order">
         <div class="order-box">
@@ -378,15 +387,7 @@
 	                	<input type="hidden" name="imgId" value="${order.imgId}">
 	                	<button type="submit">리뷰 쓰기</button>
 	                </form>
-	                
-	                <!-- 리뷰 수정 코드 -->
-	                <form action="../review/modify" method="get">
-	                	<input type="hidden" name="productId" value="${order.productId}">
-	                	<input type="hidden" name="imgId" value="${order.imgId}">
-	                	<input type="hidden" name="memberId" value="${memberId}">
-	                	<button type="submit">리뷰 수정</button>
-	                </form>
-	                
+
 	                 <!-- 리뷰 관리 코드 -->
 	                 <form action="../review/list" method="get">
 	                	<input type="hidden" name="memberId" value="${memberId}">
@@ -394,18 +395,55 @@
 	                </form>
 	                
 	                <!-- 판매자 문의 코드 -->
-	                <button id="sellerInquiry">판매자 문의</button>
-	                <div id="myModal" class="modal">
-  					 <div class="modal-content">
-    					<span class="close">&times;</span>
-   						<h2>판매자 문의</h2><!-- 여유되면 이미지 등록 예정 -->
-    					<form id="inquiryForm">
-       			 			<label for="message">내용:</label><br>
-        					<textarea id="inquiryContent" name="inquiryContent"></textarea><br>
-        					<button type="submit">판매자에게 1:1문의하기</button>
-   						</form>	
-  					  </div>
-				     </div>
+	                <button class="sellerInquiry">판매자 문의</button>
+	                
+	                <!-- 판매자 수정 코드 -->
+	                <button class="inquiryUpdate">판매자 문의 수정</button>
+	                
+	                <!-- 판매자 삭제 코드 -->
+	                <button class="inquiryDelete">판매자 문의 삭제</button>
+	                
+					<!-- 판매자 문의 등록 모달 -->
+					<div class="modal sellerModal createModal">
+    					<div class="modal-content">
+        				<span class="close">&times;</span>
+        				<h2>판매자 문의</h2>
+        					<form class="createInquiry">
+            					<input type="hidden" id="memberId" name="memberId" value="${memberId}">
+            					<input type="hidden" id="productId" name="productId" value="${order.productId}">
+            					<label for="message">내용:</label><br>
+            					<textarea class="content" name="content"></textarea><br>
+            					<button type="submit">판매자에게 1:1문의하기</button>
+        					</form>    
+    					</div>
+					</div>
+
+					<!-- 판매자 문의 수정 모달 -->
+					<div class="modal sellerModal updateModal">
+    					<div class="modal-content">
+        				<span class="close">&times;</span>
+        				<h2>판매자 수정</h2>
+        					<form class="updateInquiry">
+            					<input type="hidden" id="memberId" name="memberId" value="${memberId}">
+            					<input type="hidden" id="productId" name="productId" value="${order.productId}">
+            					<label for="message">내용:</label><br>
+            					<textarea class="content" name="content"></textarea><br>
+            					<button type="submit">수정하기</button>
+        					</form>    
+    					</div>
+					</div>
+					
+	                <!-- 판매자 문의 삭제 모달 -->
+					<div class="modal sellerModal deleteModal">
+    					<div class="modal-content">
+        				<span class="close">&times;</span>
+	                	<form class="deleteInquiry">
+	                		<input type="hidden" id="memberId" name="memberId" value="${memberId}">
+            				<input type="hidden" id="productId" name="productId" value="${order.productId}">
+            				<button type="submit">삭제하시 겠습니까?</button>
+	                	</form>
+	                	</div>
+					</div>
 	                
 				<a href=""><button>교환/반품 신청</button></a>
             </div>
@@ -418,39 +456,183 @@
             <p>주문 목록이 비어 있습니다.</p>
         </div>
     </c:if>
-    
-    
-    
+  
 <%  
     }   
 %>
 
 	<!-- 배송지 관리 페이지 -->
     <a href="../Delivery/deliveryAddressList">배송지 관리</a>
-    
+    	
     <script type="text/javascript">
     
- 	// 모달 열기 버튼을 클릭하면 모달을 표시합니다.
-    document.getElementById('sellerInquiry').addEventListener('click', function() {
-        document.getElementById('myModal').style.display = 'block';
-    });
+    //const memberId = '${memberDetails.getUsername() }';
+    
+    $(document).ready(function(){
+    	// 해당 버튼의 부모 요소로부터 productId 가져오기
+        let productId;
+        // 세션에서 memberId 가져오기
+        let memberId; // JSP 코드를 사용하여 세션 데이터 가져오기
+        let buttons;
+    	// 공통 함수로 이벤트 리스너 추가
+    	function addModalEventListener(buttonClass, modalClass) {
+    	    buttons = document.querySelectorAll(buttonClass);
+    	    buttons.forEach(function(button) {
+    	        button.addEventListener('click', function() {
+    	            let modal = document.querySelector(modalClass);
+    	            modal.style.display = 'block';
+    	            // 해당 버튼의 부모 요소로부터 productId 가져오기
+    	            productId = button.closest('.order-box').querySelector('[name="productId"]').value;
+    	            // 세션에서 memberId 가져오기
+    	            memberId = '${memberId}'; // JSP 코드를 사용하여 세션 데이터 가져오기
+    	            console.log(productId);
+    	            console.log(memberId);
+    	        });
+    	    });
+    	}
 
-    // 모달의 닫기 버튼을 클릭하면 모달을 숨깁니다.
-    document.querySelector('.close').addEventListener('click', function() {
-        document.getElementById('myModal').style.display = 'none';
-    });
+    	// 각 판매자 문의 버튼에 대한 이벤트 리스너 추	가
+    	addModalEventListener('.sellerInquiry', '.createModal');
 
+    	// 각 판매자 문의 수정 버튼에 대한 이벤트 리스너 추가
+    	addModalEventListener('.inquiryUpdate', '.updateModal');
+    	
+    	// 각 판매자 문의 수정 버튼에 대한 이벤트 리스너 추가
+    	addModalEventListener('.inquiryDelete', '.deleteModal');
+
+    	// 모달 닫기 이벤트 리스너 추가
+    	let closeButtons = document.querySelectorAll('.modal .close');
+    	closeButtons.forEach(function(button) {
+    	    button.addEventListener('click', function() {
+    	        let modal = button.closest('.modal');
+    	        modal.style.display = 'none';
+    	    });
+    	});
+
+    	// 모달 외부 클릭 시 닫기
+    	window.addEventListener('click', function(event) {
+    	    let modals = document.querySelectorAll('.modal');
+    	    modals.forEach(function(modal) {
+    	        if (event.target === modal) {
+    	            modal.style.display = 'none';
+    	        }
+    	    });
+    	});
+    
     // 폼 제출 시 데이터 출력
-    document.getElementById('inquiryForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // 폼의 기본 동작 방지
+    let inquiryCreate = document.querySelectorAll('.createInquiry');
+    inquiryCreate.forEach(function(form) {// inquiryForms에 있는 각 요소에 대해 반복문을 실행합니다.
+        form.addEventListener('submit', function(event) {// 각 요소에 대해 submit 이벤트 핸들러를 추가합니다.
+            event.preventDefault(); // 폼을 제출할 때 페이지를 다시 로드하는 동작을 막습니다.
+            
+            button = form.querySelector('.sellerInquiry');
+            // 입력된 내용 가져오기
+            let inquiryContent = form.querySelector('.content').value;
+           	/* let productId = button.closest('.order-box').querySelector('[name="productId"]').value;
+            let memberId = '${memberId}'; */
+			
+            console.log(productId);
+            console.log(memberId);
+            
+            // TODO: 서버로 데이터 전송
+            let obj = {	
+            	'productId' : productId,
+            	'memberId' : memberId,
+            	'inquiryContent' : inquiryContent
+            }
+            console.log(obj);
+            
+         	// $.ajax로 송수신
+            $.ajax({
+               type : 'POST', // 메서드 타입
+               url : '../inquiry/register', // url
+               headers : { // 헤더 정보
+                  'Content-Type' : 'application/json' // json content-type 설정
+               }, //'Content-Type' : 'application/json' 헤더 정보가 안들어가면 4050에러가 나온다.
+               data : JSON.stringify(obj), // JSON으로 변환
+               success : function(result) { // 전송 성공 시 서버에서 result 값 전송
+                  console.log(result);
+                  if(result == 1) {
+                     alert('문의 성공');
+                  }
+               } // end success 
+            }); // end ajax
+        });// end form()
+    });// end inquiryCreate()
+    
+    let inquiryUpdate = document.querySelectorAll('.updateInquiry');
+    inquiryUpdate.forEach(function(form) {// inquiryForms에 있는 각 요소에 대해 반복문을 실행합니다.
+        form.addEventListener('submit', function(event) {// 각 요소에 대해 submit 이벤트 핸들러를 추가합니다.
+            event.preventDefault(); // 폼을 제출할 때 페이지를 다시 로드하는 동작을 막습니다.
+        	
+            button = form.querySelector('.inquiryUpdate');
+            
+            let inquiryContent = form.querySelector('.content').value;
+            /* let productId = $('#productId').val();
+            let memberId = $('#memberId').val(); */
+            
+            console.log(productId);
+            console.log(memberId);
+            console.log(inquiryContent);
 
-        // 입력된 이름과 내용 가져오기
-        var name = document.getElementById('name').value;
-        var message = document.getElementById('message').value;
-
-        // 모달에 입력된 이름과 내용 출력
-        alert('내용: ' + message);
-    });
+            let obj = {
+            		'productId' : productId,
+                	'memberId' : memberId,
+                	'inquiryContent' : inquiryContent
+            }      
+            console.log(obj);
+            
+            // ajax 요청
+            $.ajax({
+               type : 'PUT', // 메서드 타입
+               url : '../inquiry/modify',// 경로 
+               headers : {
+                  'Content-Type' : 'application/json' // json content-type 설정
+               }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 4050에러가 나온다.
+               data : JSON.stringify(obj), // JSON으로 변환
+               success : function(result) { // 전송 성공 시 서버에서 result 값 전송
+                  console.log(result);
+                  if(result == 1) {
+                     alert('문의 수정 성공!');
+                     window.location.href = '../board/orderlist';
+                  }
+               }
+            });
+        });// end form()
+    });// end inquiryUpdate()deleteInquiry
+    
+ // 삭제 버튼을 클릭하면 선택된 댓글 삭제
+    let inquiryDelete = document.querySelectorAll('.deleteInquiry');
+    inquiryDelete.forEach(function(form) {// inquiryForms에 있는 각 요소에 대해 반복문을 실행합니다.
+        form.addEventListener('submit', function(event) {// 각 요소에 대해 submit 이벤트 핸들러를 추가합니다.
+            event.preventDefault(); // 폼을 제출할 때 페이지를 다시 로드하는 동작을 막습니다.
+    	
+        button = form.querySelector('.inquiryDelete');
+            
+    	let productId = $('#productId').val();
+        let memberId = $('#memberId').val();
+        console.log(productId);
+        console.log(memberId);
+       // ajax 요청
+       $.ajax({
+          type : 'DELETE', 
+          url : '../inquiry/delete',
+          headers : {
+             'Content-Type' : 'application/json'
+          },
+          success : function(result) {
+             console.log(result);
+             if(result == 1) {
+                alert('댓글 삭제 성공!');
+                getAllReply();
+             }
+          }
+       });
+    
+    });// end form()
+    });// end inquiryDelete()
+    
+    }); // end document.ready()
     
     </script>
 	

@@ -12,6 +12,9 @@ public interface InquiryService {
 		// 댓글(문의) 전체 검색
 		List<InquiryVO> getAllInquiry(int productId);
 			 
+		// 댓글(리뷰) 검색
+		InquiryVO selectByInquiry(int productId, String memberId);
+		
 		// 댓글(문의) 수정
 		int updateInquiry(int productId, String memberId, String inquiryContent);
 			 

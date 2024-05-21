@@ -68,9 +68,9 @@ public class ReviewServiceImple implements ReviewService{
 
 	// 瘩臂(府轰) 昏力
 	@Override
-	public int deleteReview(int reviewId, int productId) {
+	public int deleteReview(int productId, String memberId) {
 		log.info("deleteReview()");
-		int deleteRes = reviewMapper.deleteReview(reviewId);
+		int deleteRes = reviewMapper.deleteReview(productId, memberId);
 		log.info(deleteRes + "青 昏力");
 		return deleteRes;
 	}

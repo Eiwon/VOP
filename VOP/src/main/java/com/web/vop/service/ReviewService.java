@@ -22,7 +22,7 @@ public interface ReviewService {
 	int updateReview(int reviewId, String reviewContent, float reviewStar);
 		 
 	// ¥Ò±€(∏Æ∫‰) ªË¡¶
-	int deleteReview(int reviewId, int productId);
+	int deleteReview(int productId, String memberId);
 
 	
 } 

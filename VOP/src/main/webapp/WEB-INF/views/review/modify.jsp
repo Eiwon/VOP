@@ -93,7 +93,7 @@
      $('#btnUpdate').click(function(){
         console.log(this);
 
-        let reviewId = ${reviewId};// 나중에 경로 정해 졌을때 데이터가 회원 Id, 상품 Id OR 댓글 id만 있으면 됨
+        let reviewId = ${reviewId};
         let reviewStar = selectedStar// 리뷰(별)
         let reviewContent = $('#reviewContent').val();
         let productId = ${productId};

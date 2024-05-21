@@ -25,7 +25,7 @@ public interface ReviewMapper {
 	 int updateReview(ReviewVO reviewVO);
 	 
 	 // ¥Ò±€(∏Æ∫‰) ªË¡¶
-	 int deleteReview(int reviewId);
+	 int deleteReview(@Param("productId")int productId, @Param("memberId")String memberId);
 	 
 	 
 	
