@@ -1,10 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication var="memberDetails" property="principal"/>
+</sec:authorize>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- jquery 라이브러리 import -->
 <script src="https://code.jquery.com/jquery-3.7.1.js">
 </script>
@@ -361,11 +365,21 @@
 		
 		
 		function setLoginBox(){
-			let memberId = '<%= request.getSession().getAttribute("memberId")%>';
-			console.log(memberId);
+			let memberDetails = '${memberDetails}';
+			console.log('현재 로그인 memberDetails : ' + memberDetails);
+			let memberId = null;
+			let memberAuth = null;
+			
+			if(memberDetails != 'anonymousUser'){
+				memberId = '${memberDetails.memberVO.memberId }';
+				memberAuth = '${memberDetails.memberVO.memberAuth}';
+			}
+			
+			console.log('security memberId : ' + memberId);
+			console.log('security memberAuth : ' + memberAuth);
 			let form = '';
 			
-			if(memberId == 'null') { // 로그인 상태가 아닐 경우
+			if(memberId == '') { // 로그인 상태가 아닐 경우
 				form = '<a href="../member/login">로그인</a>&nbsp&nbsp&nbsp' + 
 					'<a href="../member/register">회원가입</a>';
 			}else {

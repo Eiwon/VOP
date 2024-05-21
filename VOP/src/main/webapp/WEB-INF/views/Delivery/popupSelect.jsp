@@ -77,7 +77,7 @@
 			const popupStat = {
 					'url' : 'popupRegister',
 					'name' : 'popupDeliveryRegister',
-					'option' : 'width=500, height=600, top=50, left=400'
+					'option' : 'width=1000, height=600, top=50, left=400'
 			};
 			
 			// 팝업 창 띄우기

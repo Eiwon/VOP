@@ -1,6 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication var="memberDetails" property="principal"/>
+</sec:authorize>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,8 +26,9 @@
 				<strong>내 정보</strong>
 				<div id="my_info">
 					<a href="myInfo">내 정보 확인 / 수정</a>
-					<a href="seller">판매자 페이지</a>
+					<a href="orderlist">주문 목록</a>
 					<a href="delivery">배송지 관리</a>
+					<a href="seller">판매자 페이지</a>
 				</div>
 			</div>
 		</div>
@@ -34,16 +39,14 @@
 
 	</div>
 	<script type="text/javascript">
-		const memberId = '<%= request.getSession().getAttribute("memberId")%>';
-		let memberAuth = '${memberAuth }';
+		const memberId = '${memberDetails.getUsername() }';
+		let memberAuth = '${memberDetails.getAuthorities() }';
 		let paymentList;
-		memberAuth = 'admin'; // 테스트용 임시 값
-		let tagMyInfo = $('#my_info');
 		let tagPrintForm = $('#print_form');
 		
 		$(document).ready(function(){
 		
-			if(memberAuth == 'admin'){
+			if(memberAuth == '관리자'){
 				loadAdminService();
 			}
 			

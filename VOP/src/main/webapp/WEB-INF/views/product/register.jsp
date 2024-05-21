@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication var="memberDetails" property="principal"/>
+</sec:authorize>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,7 +16,7 @@
 		<form id="productForm" action="register" method="post" enctype="multipart/form-data">
 			<div>
 				판매자
-				<input type="text" name="memberId" value='<%=request.getSession().getAttribute("memberId") %>' readonly>
+				<input type="text" name="memberId" value='${memberDetails.getUsername() }' readonly>
 			</div>
 			<div>
 				<input type="text" id="product_name" name="productName" placeholder="상품명" >

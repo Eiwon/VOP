@@ -11,6 +11,14 @@
 </head>
 <body>
 <h2>배송지 등록</h2>
+
+<%
+	// 세션 객체 가져오기
+	HttpSession sessionJSP = request.getSession();
+	// 세션에 저장된 memberId 가져오기
+	String memberId = (String) sessionJSP.getAttribute("memberId");
+%>
+
 <form id="deliveryForm" action="register" method="post">
     <label for="receiverName">받는 사람:</label>
     <input type="text" id="receiverName" name="receiverName" required><br><br>
@@ -61,6 +69,47 @@
     }
 </script>
 <script>
+
+	//서버에서 memberId 가져오기
+	var memberId = "<%= session.getAttribute("memberId") %>";
+	
+	 // 서버에 기본 배송지 여부를 확인하는 AJAX 요청을 보내는 함수
+    function checkDefaultAddress() {
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                url: 'checkDefaultAddress', // 서버 엔드포인트 URL
+                method: 'GET', // GET 방식으로 요청
+                data: { memberId: memberId },
+                success: function(response) {
+                    resolve(response.hasDefaultAddress); // 응답의 기본 배송지 여부를 반환
+                },
+                error: function(err) {
+                    console.error("기본 배송지 확인 실패:", err);
+                    resolve(false); // 오류가 발생하면 기본 배송지는 없다고 가정
+                }
+            });
+        });
+    }
+	
+ 	// 기본 배송지로 설정할 때 실행되는 함수
+    function setDefault(deliveryId) {
+        // 새로운 기본 배송지 ID를 서버에 전달하기 위해 Ajax 요청 보내기
+        $.ajax({
+            url: '/delivery/updateDefault', // 서버 엔드포인트 URL
+            method: 'PUT', // PUT 방식으로 요청
+            contentType: 'application/json',
+            data: JSON.stringify({ deliveryId: deliveryId }), // 새로운 기본 배송지 ID 전달
+            success: function(response) {
+                // 성공적으로 서버에서 처리된 경우에 실행할 코드
+                console.log('기본 배송지 설정이 성공적으로 처리되었습니다.');
+            },
+            error: function(err) {
+                // 서버에서 오류가 발생한 경우에 실행할 코드
+                console.error('기본 배송지 설정 중 오류가 발생했습니다:', err);
+            }
+        });
+    }
+	 
 	//저장 버튼 클릭 시 폼 유효성 검사 후 제출 및 페이지 이동
 	document.getElementById("deliveryForm").addEventListener("submit", function(event) {
     	var receiverName = document.getElementById("receiverName").value;
@@ -78,19 +127,36 @@
             event.preventDefault(); // 폼 제출 막기
         }
 
+     	
+        
         // 기본 배송지로 설정되었는지 확인
         var isDefault = document.getElementById("isDefault").checked;
-        if (isDefault && !receiverName) {
-            alert("기본 배송지로 설정하려면 받는 사람 정보가 필요합니다.");
-            event.preventDefault(); // 폼 제출 막기
+        if (isDefault) {
+        	event.preventDefault(); // 기본 제출 동작 중단
+        	// 기본 배송지 여부를 확인하기 위해 서버에 AJAX 요청을 보냄
+        	checkDefaultAddress().then(function(isExistingDefault) {
+        		if(isExistingDefault) {
+        			// 기본 배송지가 이미 설정되어 있으면 사용자에게 변경 여부를 확인
+        			if(confirm("기본 배송지가 이미 설정되어 있습니다. 변경하시겠습니까?")){
+        				document.getElementById("deliveryForm").submit(); // 사용자가 확인하면 폼 제출
+        			}
+        		} else {
+        			document.getElementById("deliveryForm").submit(); // 기본 배송지가 없으면 폼 제출
+        		}
+        	}); 
         }
+        
+        
     });
 
     // 휴대폰 번호 형식 체크 함수
     function checkPhoneNumber(receiverPhone) {
     var phoneRegex = /^010-\d{4}-\d{4}$/;
     return phoneRegex.test(receiverPhone);
-}
+	}
+    
+    
+   
 </script>
 </body>
 </html>           

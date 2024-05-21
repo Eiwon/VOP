@@ -5,12 +5,15 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.OrderVO;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.OrderService;
@@ -22,8 +25,8 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class BoardController {// 메인 페이지 구현 컨트롤러
 
-	@Autowired
-	private MemberService memberService;
+	//@Autowired
+	//private MemberService memberService;
 	
 	@GetMapping("/main") 
 	public void mainGET() {
@@ -41,22 +44,9 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 	
 	// 마이페이지 호출하기 -> 세션이 있을 경우 이동, 없으면 로그인 페이지로 이동
 	@GetMapping("/mypage") 
-	public String mypageGET(Model model, HttpServletRequest request) {
+	public void mypageGET(Model model) {
 		System.out.println("mypage.jsp 이동");
-		String path = "";
 		log.info("mypageGET()");
-		
-		String memberId = (String)request.getSession().getAttribute("memberId");
-		log.info("유저 아이디 : " + memberId);
-		
-		if(memberId == null) {
-			path = "redirect:../member/login";
-		}else {
-			String memberAuth = memberService.getMemberAuth(memberId);
-			model.addAttribute("memberAuth", memberAuth);
-			path = "board/mypage";
-		}
-		return path;
 	}//end mypageGET()
 	
 	
@@ -64,29 +54,21 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 	OrderService orderService;
 	
 	@GetMapping("/orderlist") 
-	public String orderlistGET(Model model, HttpServletRequest request) { // 주문목록 페이지 불러오기
+	public void orderlistGET(Model model, @AuthenticationPrincipal MemberDetails memberDetails) { // 주문목록 페이지 불러오기
 		System.out.println("orderlist.jsp 이동");
 		log.info("orderlistGET()");
 		
-		String path = "";
-		String memberId = (String)request.getSession().getAttribute("memberId");
-		log.info("memberId : " + memberId);
+		String memberId = memberDetails.getUsername();
 		
-		if(memberId == null) {
-			path = "redirect:../member/login";
-		}else {
-			// 주문 목록 가져오기 
-			List<OrderVO> orderList = orderService.getOrderListByMemberId(memberId);
-			log.info("orderList : " + orderList);
+		// 주문 목록 가져오기 
+		List<OrderVO> orderList = orderService.getOrderListByMemberId(memberId);
+		log.info("orderList : " + orderList);
 			
-			model.addAttribute("orderList", orderList);
+		model.addAttribute("orderList", orderList);
 			
-			String memberAuth = memberService.getMemberAuth(memberId);
-			model.addAttribute("memberAuth", memberAuth);
+		//String memberAuth = memberService.getMemberAuth(memberId);
+		//model.addAttribute("memberAuth", memberAuth);
 			
-			path = "/board/orderlist";
-		}
-		return path;
 	}//end orderlistGET()
 	
 	
@@ -132,7 +114,7 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 	@GetMapping("/delivery")
 	public String deliveryGET() {
 		log.info("delivery controller로 redirection");
-		return "redirect:../delivery/delivery";
+		return "redirect:../Delivery/delivery";
 	} // end deliveryGET
 	
 	

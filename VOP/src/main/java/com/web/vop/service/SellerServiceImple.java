@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.SellerVO;
+import com.web.vop.persistence.Constant;
 import com.web.vop.persistence.MemberMapper;
 import com.web.vop.persistence.SellerMapper;
 import com.web.vop.util.PageMaker;
@@ -48,6 +49,7 @@ public class SellerServiceImple implements SellerService{
 	@Override
 	public int registerRequest(SellerVO sellerVO) {
 		log.info("판매자 권한 요청 등록");
+		sellerVO.setRequestState(Constant.STATE_APPROVAL_WAIT);
 		int res = sellerMapper.insertRequest(sellerVO);
 		log.info(res + "행 추가 성공");
 		return res;
@@ -66,10 +68,8 @@ public class SellerServiceImple implements SellerService{
 		log.info("판매자 권한 부여 / 회수");
 		int res = sellerMapper.updateAdminContent(sellerVO);
 		log.info(res + "행 수정 성공");
-		if(sellerVO.getRequestState().equals("승인")) { // 승인되었다면 회원 권한 변경
-			memberMapper.updateMemberAuth(sellerVO.getMemberId(), "판매자");
-		}else {
-			memberMapper.updateMemberAuth(sellerVO.getMemberId(), "일반");
+		if(sellerVO.getRequestState().equals(Constant.STATE_APPROVED)) { // 승인되었다면 회원 권한 변경
+			memberMapper.updateMemberAuth(sellerVO.getMemberId(), Constant.AUTH_SELLER);
 		}
 		return res;
 	} // end approveRequest

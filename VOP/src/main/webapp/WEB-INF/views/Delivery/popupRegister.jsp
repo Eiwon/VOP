@@ -117,9 +117,7 @@ tr {
 				headers : {
 					'Content-Type' : 'application/json'
 				},
-				data : JSON.stringify({
-					'deliveryVO' : deliveryVO
-				}),
+				data : JSON.stringify(deliveryVO),
 				success : function(result){
 					console.log(result);
 					if(result == 1){

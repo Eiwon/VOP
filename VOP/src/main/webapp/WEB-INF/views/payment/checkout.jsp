@@ -148,7 +148,7 @@
 		
 		
 		$(document).ready(function(){
-			
+			console.log(paymentWrapper);
 			setInfo();
 			$('#btn_payment').click(function(){
 				payment();
@@ -160,11 +160,11 @@
 			$('#member_name').text(memberVO.memberName);
 			$('#member_email').text(memberVO.memberEmail);
 			$('#member_phone').text(memberVO.memberPhone);
-			$('#receiverName').text(deliveryVO.receiverName);
-			$('#receiverAddress').text(deliveryVO.receiverAddress);
-			$('#deliveryAddressDetails').text(deliveryVO.deliveryAddressDetails);
-			$('#receiverPhone').text(deliveryVO.receiverPhone);
-			$('#requirement').text(deliveryVO.requirement);
+			$('#receiverName').val(deliveryVO.receiverName);
+			$('#receiverAddress').val(deliveryVO.receiverAddress);
+			$('#deliveryAddressDetails').val(deliveryVO.deliveryAddressDetails);
+			$('#receiverPhone').val(deliveryVO.receiverPhone);
+			$('#requirement').val(deliveryVO.requirement);
 			tagOrderList.html(makeOrderInfo());
 			
 			

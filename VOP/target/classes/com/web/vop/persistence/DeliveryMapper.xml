@@ -19,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 배송지 등록 -->
    <insert id="insertDelivery"> 
-   		INSERT INTO DELIVERY (DELIVERY_ID, MEMBER_ID, RECEIVER_NAME, RECEIVER_ADDRESS, RECEIVER_PHONE, REQUIREMENT, DELIVERY_ADDRESS_DETAILS,  IS_DEFAULT)
+   		INSERT INTO DELIVERY
    		VALUES (
    			DELIVERY_SEQ.NEXTVAL, #{memberId}, #{receiverName}, #{receiverAddress},
    			#{receiverPhone}, #{requirement}, #{deliveryAddressDetails}, #{isDefault}
@@ -53,7 +53,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    	<select id="selectBydeliveryId" resultMap="DeliveryResultMap">
 		SELECT * FROM DELIVERY WHERE DELIVERY_ID = #{deliveryId} AND MEMBER_ID = #{memberId}
 	</select>
+
+   <!-- 기본 배송지 조회 -->
+   <select id="cntIsDefault" resultType="Integer">
+		SELECT COUNT(*) FROM DELIVERY WHERE MEMBER_ID = #{memberId} AND IS_DEFAULT = 1
+	</select>
 	
+	<!-- 기존 기본 배송지를 0으로 업데이트 -->
+      <update id="updateDefault">
+       	UPDATE DELIVERY
+       	SET IS_DEFAULT = 0
+       	WHERE MEMBER_ID = #{memberId} AND IS_DEFAULT = 1
+   	 </update>
+	
+	<!-- 새로운 기본 배송지를 1로 설정 -->
+    <update id="updateNewDefault">
+      	UPDATE DELIVERY
+        SET IS_DEFAULT = 1
+        WHERE DELIVERY_ID = #{deliveryId} AND MEMBER_ID = #{memberId}
+    </update>
+
+	<!-- memberId로 기본 배송지 검색 -->
+	<select id="selectDefaultByMemberId" resultMap="DeliveryResultMap">
+		SELECT * FROM DELIVERY WHERE MEMBER_ID = #{memberId} AND IS_DEFAULT = 1
+	</select>
+
    
 </mapper>
 	

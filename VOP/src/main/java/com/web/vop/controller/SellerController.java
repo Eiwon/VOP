@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.SellerVO;
+import com.web.vop.persistence.Constant;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.SellerService;
 import com.web.vop.util.PageMaker;
@@ -122,7 +123,7 @@ public class SellerController {
 		log.info("모든 승인 대기중인 권한요청 조회");
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
-		List<SellerVO> list = sellerService.getRequestByState("승인 대기중", pageMaker);
+		List<SellerVO> list = sellerService.getRequestByState(Constant.STATE_APPROVAL_WAIT, pageMaker);
 		log.info(list);
 		
 		pageMaker.update();
@@ -140,7 +141,7 @@ public class SellerController {
 		log.info("모든 승인된 요청 조회");
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
-		List<SellerVO> list = sellerService.getRequestByState("승인", pageMaker);
+		List<SellerVO> list = sellerService.getRequestByState(Constant.STATE_APPROVED, pageMaker);
 		log.info(list);
 		
 		pageMaker.update();
