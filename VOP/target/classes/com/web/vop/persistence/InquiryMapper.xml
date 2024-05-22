@@ -47,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 댓글(문의) 삭제 -->
    <delete id="deleteInquiry">
-      DELETE FROM INQUIRY
+      DELETE FROM INQUIRY	
       WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
    </delete>
    
