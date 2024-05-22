@@ -33,8 +33,8 @@ public interface DeliveryMapper {
 	
 	// 새로운 기본 배송지를 1로 설정
  	int updateNewDefault(@Param("deliveryId") int deliveryId, @Param("memberId") String memberId);
-	
- 	// memberId로 기본 배송지 검색
+
+	// memberId로 기본 배송지 검색
 	public DeliveryVO selectDefaultByMemberId(String memberId);
 
 	

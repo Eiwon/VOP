@@ -31,4 +31,5 @@ public interface DeliveryService {
 	
 	// memberId로 기본 배송지 검색
 	DeliveryVO getDefaultDelivery(String memberId);
+
 }

@@ -60,11 +60,14 @@ public class DeliveryRESTController {
 	
 
 	// 배송지 수정 페이지에서 deliveryId로 배송 조회
-
-	
 	@GetMapping("/restDeliveryUpdate")
-    public ResponseEntity<DeliveryVO> getDeliveryInfoByDeliveryId(@RequestParam("deliveryId") int deliveryId,@RequestParam("memberId") String memberId, Model model) {
+    public ResponseEntity<DeliveryVO> getDeliveryInfoByDeliveryId(@RequestParam("deliveryId") int deliveryId,
+    		@AuthenticationPrincipal MemberDetails memberDetails, Model model) {
         log.info("getDeliveryInfoByDeliveryId");
+        
+        // 인증된 사용자의 ID를 가져옵니다.
+        String memberId = memberDetails.getUsername();
+        log.info("memberId: " + memberId);
         
         DeliveryVO delivery = deliveryService.getDeliveryById(deliveryId, memberId);
         log.info("delivery" + delivery);
@@ -72,9 +75,6 @@ public class DeliveryRESTController {
         
         // 사용자가 선택한 배송지 선택 정보 View로 전달
         model.addAttribute("delivery", delivery);
-        
-        // 사용자가 선택한 배송지의 deliveryId View로 전달
-        model.addAttribute("deliveryId", deliveryId);
         
         return new ResponseEntity<DeliveryVO>(delivery, HttpStatus.OK);
     }//end getDeliveryInfoByDeliveryId()
@@ -112,6 +112,7 @@ public class DeliveryRESTController {
 	} // end registerDelivery
 	
 	
+	// 기본 배송지가 설정되어 있는지 확인
 	@GetMapping("/checkDefaultAddress")
 	public Map<String, Boolean> checkDefaultAddress(@RequestParam String memberId){
 		log.info("checkDefaultAddress() - memberId : " + memberId);
@@ -125,11 +126,13 @@ public class DeliveryRESTController {
 	
 	// 기존 배송지의 기본 배송지 = 0 으로 업데이트
  	@PutMapping("/delivery/updateDefault")
-	  public ResponseEntity<String> updateDefault(@RequestBody Map<String, Integer> requestMap) {
+	  public ResponseEntity<String> updateDefault(@RequestBody Map<String, Integer> requestMap,
+			  @AuthenticationPrincipal MemberDetails memberDetails) {
+		 		log.info("updateDefault()");
         		int newDefaultDeliveryId = requestMap.get("deliveryId");
-        		String memberId = "회원 아이디"; // 실제로는 세션 등에서 가져오는 코드 필요
-        		log.info("updateDefault()");
-
+        		String memberId = memberDetails.getUsername(); // 실제로는 세션 등에서 가져오는 코드 필요
+        		log.info("memberId : " + memberId);
+        		
 	        try {
             	// 기본 배송지를 업데이트하는 서비스 메서드 호출
             	deliveryService.setDefaultDelivery(newDefaultDeliveryId, memberId);
