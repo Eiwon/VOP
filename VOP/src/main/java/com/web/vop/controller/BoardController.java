@@ -57,7 +57,7 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 	public void orderlistGET(Model model, @AuthenticationPrincipal MemberDetails memberDetails) { // 주문목록 페이지 불러오기
 		System.out.println("orderlist.jsp 이동");
 		log.info("orderlistGET()");
-		
+			
 		String memberId = memberDetails.getUsername();
 		
 		// 주문 목록 가져오기 

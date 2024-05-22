@@ -58,6 +58,7 @@ public class InquiryRESTController {
 			 @RequestBody InquiryVO inquiryVO
 	         ){	
 	      log.info("updateInquiry()");
+	      log.info("·Î±×");
 	      
 	      log.info("inquiryVO() : " + inquiryVO);
 	      

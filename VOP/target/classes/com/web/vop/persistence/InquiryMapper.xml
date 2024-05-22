@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <select id="selectListByInquiry" resultMap="inquiryResultMap">
       SELECT * FROM INQUIRY
       WHERE PRODUCT_ID = #{productId}
-      ORDER BY INQUIRY_ID
+      ORDER BY INQUIRY_ID DESC
    </select>
    
    
@@ -41,7 +41,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	 <!-- 댓글(문의) 수정 --><!-- 수정 기능 넣을지 말지 고민 중 -->
    <update id="updateInquiry">
       UPDATE INQUIRY
-      SET INQUIRY_CONTENT = #{inquiryContent}
+      SET INQUIRY_CONTENT = #{inquiryContent},
+      INQUIRY_DATE_CREATED = SYSDATE
       WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
    </update>
    

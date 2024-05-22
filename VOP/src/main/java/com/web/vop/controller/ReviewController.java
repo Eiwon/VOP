@@ -70,7 +70,7 @@ public class ReviewController {
 	@GetMapping("/modify")
 	public void updateReviewGET(Model model, Integer productId, Integer imgId, String memberId) {
 		log.info("updateReviewGET()");
-		
+
 		log.info("productId : " + productId);
 		log.info("imgId : " + imgId);
 		

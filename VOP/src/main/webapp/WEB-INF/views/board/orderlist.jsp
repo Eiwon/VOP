@@ -3,12 +3,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="javax.servlet.http.HttpSession" %>
-<!-- 
+
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
 </sec:authorize> 
- -->
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -347,22 +347,15 @@
 
 <h1> 주문 목록 </h1>
 
-<%
+<%-- <%
 	// 세션 객체 가져오기
 	HttpSession sessionJSP = request.getSession();
 	// 세션에 저장된 memberId 가져오기
 	String memberId = (String) sessionJSP.getAttribute("memberId");
-%>
+%> --%>
 
-<%
-	if(memberId == null) {
-		response.sendRedirect("../member/login");
-	} else {
-%>
-	<!-- 
 	<h1>${memberDetails.getUsername() }</h1>
-	<h1>${memberDetails.getAuthority() }</h1>
-	 -->
+
 	
     <c:forEach items="${orderList}" var="order">
         <div class="order-box">
@@ -457,9 +450,9 @@
         </div>
     </c:if>
   
-<%  
+<%-- <%  
     }   
-%>
+%> --%>
 
 	<!-- 배송지 관리 페이지 -->
     <a href="../Delivery/deliveryAddressList">배송지 관리</a>

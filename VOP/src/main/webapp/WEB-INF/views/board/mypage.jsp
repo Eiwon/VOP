@@ -20,6 +20,7 @@
 <title>마이페이지</title>
 </head>
 <body>
+	<a href="../board/main">VOP</a>
 	<div class="info_container">
 		<div class="side_bar">
 			<div> 

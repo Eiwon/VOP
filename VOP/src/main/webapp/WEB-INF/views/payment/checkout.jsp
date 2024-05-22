@@ -149,10 +149,10 @@
 		
 		$(document).ready(function(){
 			console.log(paymentWrapper);
-			setInfo();
 			$('#btn_payment').click(function(){
 				payment();
 			}); // end btnPayment.click
+			setInfo();
 			
 		}); // end document.ready
 		
@@ -260,7 +260,6 @@
 			let IMP = window.IMP;
 			IMP.init('imp04667313'); // 가맹점 식별코드 설정(포트원 홈페이지에서 확인)
 			let paymentId;
-			
 			paymentVO.chargePrice = calcChargePrice(); // 최종 결제 금액 계산
 			
 			console.log('request paymentId');
@@ -294,7 +293,6 @@
 					}
 				} // end success 
 			}); // end ajax
-			
 		} // end payment
 		
 		

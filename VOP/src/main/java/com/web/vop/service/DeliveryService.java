@@ -23,15 +23,14 @@ public interface DeliveryService {
 	// 배송지 상세 조회 by deliveryId and memberId
 	DeliveryVO getDeliveryById(int deliveryId, String memberId);
 	
-<<<<<<< HEAD
+
 	// 기본 배송지 조회 
 	boolean hasDefaultAddress(String memberId);
 	
 	// 기본 배송지 설정하기
 	void setDefaultDelivery(int deliveryId, String memberId);
 	
-=======
+
 	// memberId로 기본 배송지 검색
 	DeliveryVO getDefaultDelivery(String memberId);
->>>>>>> 482ef065dc7c83123d2e8bd29eccb170ee022ed9
 }

@@ -1,10 +1,14 @@
 package com.web.vop.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,14 +19,26 @@ import com.web.vop.service.InquiryService;
 
 import lombok.extern.log4j.Log4j;
 
-//@Controller
-//@RequestMapping("/inquiry")
-//@Log4j
-//public class InquiryController {
-//
-//	@Autowired
-//	private InquiryService inquiryService;
-//
+@Controller
+@RequestMapping("/inquiry")
+@Log4j
+public class InquiryController {
+
+	@Autowired
+	private InquiryService inquiryService;
+	
+	
+	@GetMapping("/list")
+	public String listInquiryGET(Model model, Integer productId) {
+		log.info("listInquiryGET()");
+		List<InquiryVO> listInquiry = inquiryService.getAllInquiry(productId);
+		
+		log.info("listInquiry : " + listInquiry);
+		
+		model.addAttribute("listInquiry", listInquiry);
+		return "redirect:../inquiry/list";
+	}
+	
 //	@PostMapping("/delete") // DELETE : 댓글(리뷰) 삭제 // 나중에 데이터 받는 거에 따라 달라짐
 //	public String deleteInquiry(Integer productId, String memberId){
 //		log.info("deleteInquiry()");
@@ -49,4 +65,4 @@ import lombok.extern.log4j.Log4j;
 //	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 //	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
 //	   }// end deleteInquiry()
-//}
+}

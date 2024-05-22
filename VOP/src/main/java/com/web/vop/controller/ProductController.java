@@ -70,6 +70,7 @@ public class ProductController {
  			"완구/취미", "문구/오피스", "반려동물용품", "헬스/건강식품"};
 	
 	// 상품 상세 정보 조회
+	
 	@GetMapping("/detail")
 	public void productDetailGET(Model model, Integer productId) {
 		log.info("productDetailGET()");
