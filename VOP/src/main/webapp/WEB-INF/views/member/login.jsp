@@ -9,8 +9,15 @@
 <body>
 	<div>
 		<form action="login" method="POST">
-			<input type="text" name="memberId" placeholder="아이디"><br>
-			<input type="password" name="memberPw" placeholder="비밀번호"><br>
+			<div>
+				아이디 <input type="text" name="memberId" placeholder="아이디">
+			</div>
+			<div>
+				비밀번호 <input type="password" name="memberPw" placeholder="비밀번호">
+			</div>
+			<div>
+				자동 로그인 <input type="checkbox" name="rememberMe">
+			</div>
 			<input type="submit" value="로그인">
 		</form>
 		<div>

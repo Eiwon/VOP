@@ -8,12 +8,30 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
+import org.springframework.stereotype.Service;
 
+@Service
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
+
+	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
-		// TODO Auto-generated method stub
-		super.onAuthenticationSuccess(request, response, authentication);
+		
+		String uri = request.getContextPath();
+
+		SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
+		String savedPage = (String) request.getSession().getAttribute("prevPage");
+		
+		if(savedRequest != null) {
+			uri = savedRequest.getRedirectUrl();
+		}else if (savedPage != null){
+			uri = savedPage;
+			request.getSession().removeAttribute("prevPage");
+		}
+		
+		response.sendRedirect(uri);
 	}
 }

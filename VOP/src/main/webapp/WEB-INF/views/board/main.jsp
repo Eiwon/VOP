@@ -221,7 +221,6 @@
         <a href="../member/login">로그인</a>
         <a href="../member/register">회원가입</a>
     </div>
-    
 	
 	<div class="category">
         <span>카테고리</span>
@@ -383,7 +382,7 @@
 				form = '<a href="../member/login">로그인</a>&nbsp&nbsp&nbsp' + 
 					'<a href="../member/register">회원가입</a>';
 			}else {
-				form = '<a href="../member/logout">로그 아웃</a>';
+				form = '<form action="../member/logout" method="POST"><input type="submit" value="로그아웃"></form>';
 			}
 			boxLogin.html(form);
 		} // end setLoginBox
