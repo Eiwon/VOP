@@ -19,5 +19,4 @@ public class InquiryVO {
 	private int productId;
 	private String inquiryContent;
 	private Date inquiryDateCreated;
-	private int parentId;
 }

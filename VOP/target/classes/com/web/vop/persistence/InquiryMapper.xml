@@ -13,15 +13,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="productId" column="PRODUCT_ID"/>
       <result property="inquiryContent" column="INQUIRY_CONTENT"/>
       <result property="inquiryDateCreated" column="INQUIRY_DATE_CREATED"/>
-      <result property="parentId" column="PARENT_ID"/>
    </resultMap>
 	
 	
 	<!-- 댓글(문의) 입력 -->
    <insert id="insertInquiry">
       INSERT INTO INQUIRY 
-      (INQUIRY_ID, MEMBER_ID, PRODUCT_ID, INQUIRY_CONTENT, INQUIRY_DATE_CREATED, PARENT_ID)
-	  VALUES (INQUIRY_SEQ.NEXTVAL , #{memberId}, #{productId}, #{inquiryContent}, SYSDATE, #{parentId});
+      (INQUIRY_ID, MEMBER_ID, PRODUCT_ID, INQUIRY_CONTENT, INQUIRY_DATE_CREATED)
+	  VALUES (INQUIRY_SEQ.NEXTVAL , #{memberId}, #{productId}, #{inquiryContent}, SYSDATE)
    </insert>
    
     <!-- 댓글(문의) 전체 검색 -->
@@ -31,11 +30,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       ORDER BY INQUIRY_ID
    </select>
    
+   
+   <!-- 댓글(문의) productId 그리고 memberId통해 검색 -->
+   <!-- 우선 사용 안함 -->
+   <select id="selectByInquiry" resultMap="inquiryResultMap">
+   		SELECT * FROM INQUIRY
+	 	WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
+   </select>
+   
 	 <!-- 댓글(문의) 수정 --><!-- 수정 기능 넣을지 말지 고민 중 -->
    <update id="updateInquiry">
       UPDATE INQUIRY
       SET INQUIRY_CONTENT = #{inquiryContent}
-      WHERE REVIEW_ID = #{productId} AND MEMBER_ID = #{memberId}
+      WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
    </update>
    
    <!-- 댓글(문의) 삭제 -->

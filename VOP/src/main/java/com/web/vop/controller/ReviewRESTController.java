@@ -72,7 +72,7 @@ public class ReviewRESTController {
 				// 상품 댓글 카운터 수정
 				int updateRes = productService.updateReviewNum(productId, reviewNum);
 				
-				
+				// 리뷰 평균 관련 코드
 				// productId에 해당하는 상품 조회 // 업그레이드 된 상태
 				ProductVO productVO = productService.getProductById(productId);
 				
@@ -172,30 +172,5 @@ public class ReviewRESTController {
 	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	   }// end updateReview()
-	 
-	 @DeleteMapping("/{reviewId}/{productId}") // DELETE : 댓글(리뷰) 삭제 // 나중에 데이터 받는 거에 따라 달라짐
-	   public ResponseEntity<Integer> deleteReview(
-	         @PathVariable("reviewId") int reviewId,
-	         @PathVariable("productId") int productId) {
-	      log.info("deleteReview()");
-	      // reviewId 확인 로그
-	      log.info("reviewId = " + reviewId);
-	      
-	      // productId에 해당하는 reviewId의 댓글(리뷰)
-	      int result = reviewService.deleteReview(reviewId, productId);
-	      
-	      // 삭제가 완료 되었을때 댓글 총 갯수 감소
-	      if(result == 1) {
-	    	  // 상품 테이블에 댓글 총 갯수 감소
-			  int res = productService.reviewNumDown(productId);
-			  log.info(res + "행 댓글 감소");
-			}
-	      
-	      log.info(result + "행 댓글 삭제");
-	      
-	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
-	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
-	   }// end deleteReview()
 
-	
 }

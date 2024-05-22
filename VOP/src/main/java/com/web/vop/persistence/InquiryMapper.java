@@ -2,24 +2,30 @@ package com.web.vop.persistence;
 
 import java.util.List;
 
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.web.vop.domain.InquiryVO;
+
 
 
 @Mapper
 public interface InquiryMapper {
 	
-	 // ´ñ±Û(¸®ºä) µî·Ï
+	 // ´ñ±Û(¹®ÀÇ) µî·Ï
 	 int insertInquiry(InquiryVO inquiryVO);
 	 
-	 // ´ñ±Û(¸®ºä) ÀüÃ¼ °Ë»ö
+	 // ´ñ±Û(¹®ÀÇ) ÀüÃ¼ °Ë»ö
 	 List<InquiryVO> selectListByInquiry(int productId);
+
+	 // ´ñ±Û(¹®ÀÇ) productId ±×¸®°í memberId ÅëÇØ °Ë»ö
+	 InquiryVO selectByInquiry(@Param("productId")int productId, @Param("memberId")String memberId);
 	 
-	 // ´ñ±Û(¸®ºä) ¼öÁ¤
+	 // ´ñ±Û(¹®ÀÇ) ¼öÁ¤
 	 int updateInquiry(InquiryVO inquiryVO);
 	 
-	 // ´ñ±Û(¸®ºä) »èÁ¦
+	 // ´ñ±Û(¹®ÀÇ) »èÁ¦
 	 int deleteInquiry(int productId, String memberId);
 	 
 }
