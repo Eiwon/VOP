@@ -54,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT * FROM DELIVERY WHERE DELIVERY_ID = #{deliveryId} AND MEMBER_ID = #{memberId}
 	</select>
 	
-<<<<<<< HEAD
+
    <!-- 기본 배송지 조회 -->
    <select id="cntIsDefault" resultType="Integer">
 		SELECT COUNT(*) FROM DELIVERY WHERE MEMBER_ID = #{memberId} AND IS_DEFAULT = 1
@@ -74,13 +74,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE DELIVERY_ID = #{deliveryId} AND MEMBER_ID = #{memberId}
     </update>
 	
-=======
+
 	<!-- memberId로 기본 배송지 검색 -->
 	<select id="selectDefaultByMemberId" resultMap="DeliveryResultMap">
 		SELECT * FROM DELIVERY WHERE MEMBER_ID = #{memberId} AND IS_DEFAULT = 1
 	</select>
 	
->>>>>>> 482ef065dc7c83123d2e8bd29eccb170ee022ed9
+
    
 </mapper>
 	
