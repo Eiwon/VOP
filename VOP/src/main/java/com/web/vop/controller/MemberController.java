@@ -30,17 +30,17 @@ public class MemberController {
 	@Autowired
 	MemberService memberService;
 	
-	@GetMapping("/login")
-	public void loginGET() {
-		System.out.println("login 페이지 이동");
-		log.info("login 페이지 이동 요청");
-	} // end loginGET
-	
 	@GetMapping("/register")
 	public void registerGET() {
 		System.out.println("회원가입 페이지 이동");
 		log.info("회원 가입 페이지 요청");
 	} // end registerGET
+	
+	@GetMapping("/login")
+	public void loginGET() {
+		System.out.println("login 페이지 이동");
+		log.info("login 페이지 이동 요청");
+	} // end loginGET
 	
 	@GetMapping("/findAccount")
 	public void findAccount() {

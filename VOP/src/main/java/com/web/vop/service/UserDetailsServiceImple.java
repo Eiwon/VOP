@@ -29,11 +29,10 @@ public class UserDetailsServiceImple implements UserDetailsService{
 		
 		if(memberVO == null) {
 			log.info("잘못된 ID 또는 비밀번호");
-			return null;
+			throw new UsernameNotFoundException("UsernameNotFound");
 		}
 		MemberDetails memberDetails = new MemberDetails();
 		memberDetails.setMemberVO(memberVO);
-		
 		return memberDetails;
 	} // end loadUserByUsername
 

@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication var="memberDetails" property="principal"/>
+</sec:authorize> 
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,16 +12,11 @@
 <title>배송지 등록</title>
 <!-- 우편번호 API 스크립트 -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
 </head>
 <body>
 <h2>배송지 등록</h2>
 
-<%
-	// 세션 객체 가져오기
-	HttpSession sessionJSP = request.getSession();
-	// 세션에 저장된 memberId 가져오기
-	String memberId = (String) sessionJSP.getAttribute("memberId");
-%>
 
 <form id="deliveryForm" action="register" method="post">
     <label for="receiverName">받는 사람:</label>
@@ -71,7 +70,7 @@
 <script>
 
 	//서버에서 memberId 가져오기
-	var memberId = "<%= session.getAttribute("memberId") %>";
+	const memberId = '${memberDetails.getUsername() }';
 	
 	 // 서버에 기본 배송지 여부를 확인하는 AJAX 요청을 보내는 함수
     function checkDefaultAddress() {

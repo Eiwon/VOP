@@ -36,5 +36,6 @@ public interface DeliveryMapper {
 
 	// memberId로 기본 배송지 검색
 	public DeliveryVO selectDefaultByMemberId(String memberId);
+
 	
 }

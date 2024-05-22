@@ -43,12 +43,12 @@
 </head>
 <body>
 	
-	<%
+	<%-- <%
 	// 세션 객체 가져오기
 	HttpSession sessionJSP = request.getSession();
 	// 세션에 저장된 memberId 가져오기
 	String memberId = (String) sessionJSP.getAttribute("memberId");
-	%>
+	%> --%>
 	
 	<h1>리뷰 작성</h1>
 	

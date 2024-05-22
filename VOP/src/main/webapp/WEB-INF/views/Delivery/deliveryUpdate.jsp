@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication var="memberDetails" property="principal"/>
+</sec:authorize> 
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,12 +16,6 @@
 <body>
 <h2>배송지 수정</h2>
 
-<%
-	// 세션 객체 가져오기
-	HttpSession sessionJSP = request.getSession();
-	// 세션에 저장된 memberId 가져오기
-	String memberId = (String) sessionJSP.getAttribute("memberId");
-%>
 
 <form id="delivery" action="update" method="post">
 	<input type="hidden" id="deliveryId" name="deliveryId" value="${delivery.deliveryId}">
@@ -85,7 +83,7 @@
     $(document).ready(function() {
         $("#deleteButton").click(function() {
             var deliveryId = $("#deliveryId").val();
-            var memberId = '<%= memberId %>';
+            const memberId = '${memberDetails.getUsername() }';
 
             // 배송지 삭제를 위한 Ajax 요청
             $.ajax({
@@ -123,7 +121,6 @@
     $(document).ready(function() {
     	
     	var deliveryId = $("#deliveryId").val(); // deliveryId가 페이지 로드 시 설정되어 있어야 한다
-    	
     	
     	console.log('deliveryId : ' + deliveryId);
         // 서버에서 해당 배송지 정보를 받아오는 Ajax 요청 

@@ -10,6 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -18,7 +20,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 // root-context.xml과 동일
 @Configuration
-@ComponentScan(basePackages = {"com.web.vop.service"})
+@ComponentScan(basePackages = {"com.web.vop.service", "com.web.vop.handler"})
 @EnableAspectJAutoProxy
 @MapperScan(basePackages = {"com.web.vop.persistence"})
 @EnableTransactionManagement // 트랜잭션 관리 활성화
@@ -50,4 +52,12 @@ public class RootConfig {
    public PlatformTransactionManager transactionManager() {
       return new DataSourceTransactionManager(dataSource());
    }
+   
+   @Bean
+	public PersistentTokenRepository tokenRepository() {
+		JdbcTokenRepositoryImpl tokenRepositoryImple = new JdbcTokenRepositoryImpl();
+		tokenRepositoryImple.setDataSource(dataSource());
+		return tokenRepositoryImple;
+	}
+   
 } // end RootConfig
