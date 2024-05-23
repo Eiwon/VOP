@@ -3,12 +3,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="javax.servlet.http.HttpSession" %>
-<!-- 
+
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
 </sec:authorize> 
- -->
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -347,22 +347,15 @@
 
 <h1> 주문 목록 </h1>
 
-<%
+<%-- <%
 	// 세션 객체 가져오기
 	HttpSession sessionJSP = request.getSession();
 	// 세션에 저장된 memberId 가져오기
 	String memberId = (String) sessionJSP.getAttribute("memberId");
-%>
+%> --%>
 
-<%
-	if(memberId == null) {
-		response.sendRedirect("../member/login");
-	} else {
-%>
-	<!-- 
 	<h1>${memberDetails.getUsername() }</h1>
-	<h1>${memberDetails.getAuthority() }</h1>
-	 -->
+
 	
     <c:forEach items="${orderList}" var="order">
         <div class="order-box">
@@ -396,13 +389,7 @@
 	                
 	                <!-- 판매자 문의 코드 -->
 	                <button class="sellerInquiry">판매자 문의</button>
-	                
-	                <!-- 판매자 수정 코드 -->
-	                <button class="inquiryUpdate">판매자 문의 수정</button>
-	                
-	                <!-- 판매자 삭제 코드 -->
-	                <button class="inquiryDelete">판매자 문의 삭제</button>
-	                
+
 					<!-- 판매자 문의 등록 모달 -->
 					<div class="modal sellerModal createModal">
     					<div class="modal-content">
@@ -417,7 +404,10 @@
         					</form>    
     					</div>
 					</div>
-
+					
+					<!-- 판매자 수정 코드 -->
+	                <button class="inquiryUpdate">판매자 문의 수정</button>
+	                
 					<!-- 판매자 문의 수정 모달 -->
 					<div class="modal sellerModal updateModal">
     					<div class="modal-content">
@@ -432,6 +422,9 @@
         					</form>    
     					</div>
 					</div>
+					
+					<!-- 판매자 삭제 코드 -->
+	                <button class="inquiryDelete">판매자 문의 삭제</button>
 					
 	                <!-- 판매자 문의 삭제 모달 -->
 					<div class="modal sellerModal deleteModal">
@@ -457,9 +450,9 @@
         </div>
     </c:if>
   
-<%  
+<%-- <%  
     }   
-%>
+%> --%>
 
 	<!-- 배송지 관리 페이지 -->
     <a href="../Delivery/deliveryAddressList">배송지 관리</a>
@@ -525,11 +518,10 @@
         form.addEventListener('submit', function(event) {// 각 요소에 대해 submit 이벤트 핸들러를 추가합니다.
             event.preventDefault(); // 폼을 제출할 때 페이지를 다시 로드하는 동작을 막습니다.
             
-            button = form.querySelector('.sellerInquiry');
+            /* button = form.querySelector('.sellerInquiry'); */
             // 입력된 내용 가져오기
             let inquiryContent = form.querySelector('.content').value;
-           	/* let productId = button.closest('.order-box').querySelector('[name="productId"]').value;
-            let memberId = '${memberId}'; */
+
 			
             console.log(productId);
             console.log(memberId);
@@ -565,11 +557,9 @@
         form.addEventListener('submit', function(event) {// 각 요소에 대해 submit 이벤트 핸들러를 추가합니다.
             event.preventDefault(); // 폼을 제출할 때 페이지를 다시 로드하는 동작을 막습니다.
         	
-            button = form.querySelector('.inquiryUpdate');
+            /* button = form.querySelector('.inquiryUpdate'); */
             
             let inquiryContent = form.querySelector('.content').value;
-            /* let productId = $('#productId').val();
-            let memberId = $('#memberId').val(); */
             
             console.log(productId);
             console.log(memberId);
@@ -597,26 +587,28 @@
                      window.location.href = '../board/orderlist';
                   }
                }
-            });
+            }); // ajax
         });// end form()
     });// end inquiryUpdate()deleteInquiry
     
- // 삭제 버튼을 클릭하면 선택된 댓글 삭제
+ 	// 삭제 버튼을 클릭하면 선택된 댓글 삭제
     let inquiryDelete = document.querySelectorAll('.deleteInquiry');
     inquiryDelete.forEach(function(form) {// inquiryForms에 있는 각 요소에 대해 반복문을 실행합니다.
         form.addEventListener('submit', function(event) {// 각 요소에 대해 submit 이벤트 핸들러를 추가합니다.
             event.preventDefault(); // 폼을 제출할 때 페이지를 다시 로드하는 동작을 막습니다.
     	
-        button = form.querySelector('.inquiryDelete');
+        /* button = form.querySelector('.inquiryDelete'); */
             
-    	let productId = $('#productId').val();
-        let memberId = $('#memberId').val();
+    	/* let productId = $('#productId').val();
+        let memberId = $('#memberId').val(); */
         console.log(productId);
         console.log(memberId);
+        
+        
        // ajax 요청
        $.ajax({
           type : 'DELETE', 
-          url : '../inquiry/delete',
+          url : '../inquiry/' + productId + '/' + memberId,
           headers : {
              'Content-Type' : 'application/json'
           },
@@ -624,11 +616,10 @@
              console.log(result);
              if(result == 1) {
                 alert('댓글 삭제 성공!');
-                getAllReply();
+                window.location.href = '../board/orderlist';
              }
           }
        });
-    
     });// end form()
     });// end inquiryDelete()
     

@@ -99,6 +99,7 @@
                         <label for="star1">&#9733;</label>
                     </fieldset>
                 </div>
+                
             </div>
             <img class="product-image" src="../product/showImg?imgId=${ProductVO.imgId}" alt="${ProductVO.productName}">
         </div>
@@ -106,6 +107,9 @@
             <c:forEach var="ReviewVO" items="${reviewList}">
                 <c:if test="${ReviewVO.productId == ProductVO.productId}">
                     <p>리뷰 내용 : ${ReviewVO.reviewContent}</p>
+                    <fmt:formatDate value="${ReviewVO.reviewDateCreated }"
+                  		pattern="yyyy-MM-dd HH:mm:ss" var="reviewDateCreated" />
+               		<td>${reviewDateCreated }</td>
                 </c:if>
             </c:forEach>
         </div>
