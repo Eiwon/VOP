@@ -40,12 +40,13 @@
 	</div>
 	<script type="text/javascript">
 		const memberId = '${memberDetails.getUsername() }';
-		let memberAuth = '${memberDetails.getAuthorities() }';
+		let memberAuth = '${memberDetails.getAuth() }';
 		let paymentList;
 		let tagPrintForm = $('#print_form');
 		
 		$(document).ready(function(){
-		
+			console.log('현재 id : ' + memberId);
+			console.log('현재 권한 : ' + memberAuth);
 			if(memberAuth == '관리자'){
 				loadAdminService();
 			}
@@ -56,7 +57,7 @@
 		
 		function loadAdminService(){
 			let form = '<a href="admin">관리자 페이지</a>';
-			tagMyInfo.append(form);
+			$('#my_info').append(form);
 			
 		} // end loadAdminService
 		

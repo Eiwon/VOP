@@ -55,8 +55,7 @@
 	<div id="searchResult">
 		<c:forEach var="productVO" items="${productList}">
 			<div class="product_container" onclick="toDetails(this)">
-					<img alt="등록된 이미지가 없습니다." 
-					src="showImg?imgId=${productVO.imgId }">
+					<img alt="${productVO.imgId }">
 					<div class="productId" hidden="hidden">${productVO.productId }</div>
 					<div>${productVO.productName }</div>
 					<div>${productVO.productPrice }</div>
@@ -91,10 +90,30 @@
 			
 		}); // end btnSearch.click
 	
+		$(document).ready(function(){
+			
+			loadImg();
+		}); // end document.ready
+		
+		
 		function toDetails(input){
 			let productId = $(input).find('.productId').text();
 			location.href = 'detail?productId=' + productId;
 		} // end toDetails
+		
+		function loadImg(){
+			$(document).find('img').each(function(){
+				let target = $(this);
+				let imgId = target.attr("alt");
+				$.ajax({
+					method : 'GET',
+					url : '../image/' + imgId,
+					success : function(result){
+						target.attr('src', result);
+					}
+				}); // end ajax
+			});
+		} // end loadImg
 		
 	</script>
 </body>

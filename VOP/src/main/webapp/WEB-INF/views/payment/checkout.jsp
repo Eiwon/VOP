@@ -160,13 +160,16 @@
 			$('#member_name').text(memberVO.memberName);
 			$('#member_email').text(memberVO.memberEmail);
 			$('#member_phone').text(memberVO.memberPhone);
-			$('#receiverName').val(deliveryVO.receiverName);
-			$('#receiverAddress').val(deliveryVO.receiverAddress);
-			$('#deliveryAddressDetails').val(deliveryVO.deliveryAddressDetails);
-			$('#receiverPhone').val(deliveryVO.receiverPhone);
-			$('#requirement').val(deliveryVO.requirement);
-			tagOrderList.html(makeOrderInfo());
 			
+			if(deliveryVO != null){ // 기본 배송지로 등록된 배송지가 있을 경우에만 출력
+				$('#receiverName').val(deliveryVO.receiverName);
+				$('#receiverAddress').val(deliveryVO.receiverAddress);
+				$('#deliveryAddressDetails').val(deliveryVO.deliveryAddressDetails);
+				$('#receiverPhone').val(deliveryVO.receiverPhone);
+				$('#requirement').val(deliveryVO.requirement);
+			}
+			
+			tagOrderList.html(makeOrderInfo());
 			
 			//if(memberVO.auth == 'membership') 일단 모든 유저에 멤버십 적용
 			paymentVO.membershipDiscount = 20;

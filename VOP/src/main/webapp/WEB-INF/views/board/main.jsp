@@ -243,10 +243,6 @@
         </div>
 	</div>
 		
-	
-	
-	
-	
 	<!-- VOP 링크 추가 -->
     <a href="main" class="vop-link">VOP</a>
     
@@ -256,7 +252,6 @@
         	location.reload();
    	 });
 	</script>
-    
     <!-- 카테고리 드롭다운 -->
     <div class="search-container">
           <!-- 카테고리 선택 드롭다운 -->
@@ -282,7 +277,6 @@
             <option value="헬스/건강식품">헬스/건강식품</option>
           </select> 
           
-           
         <!-- 검색 입력창 -->
         <input type="text" id="searchInput" class="search-input" placeholder="검색어를 입력하세요">
         <!-- 검색 버튼 -->
@@ -304,15 +298,6 @@
         	<a href="basket">장바구니</a>
     </div>
 </div>
-
-<script>
-    $(document).ready(function(){
-        // 페이지 맨 위로 가기 버튼 클릭 이벤트
-        $('#btnTop').click(function(){
-            $('html, body').animate({scrollTop: 0}, 'slow'); // 스크롤을 맨 위로 부드럽게 이동
-        });
-    });
-</script>
 
 <script>
     $(document).ready(function(){
@@ -389,27 +374,33 @@
 		
 		
 		function printRecentList(){
-			
 			$.ajax({
 				method : 'GET',
 				url : '../product/recent',
 				success : function(result){ // result = 최근 등록된 5개 ProductVO
 					console.log(result);
-					let str = "";
-					for(x in result){ 
-						str += '<li class="product_box" onclick="toDetails(this)">' +
-								'<img alt="등록된 이미지가 없습니다." src="../product/showImg?imgId=' + result[x].imgId + '"><br>' +
-								'<strong class="product_name">' + result[x].productName + '</strong><br>' + 
-								'<strong class="product_price">' + result[x].productPrice + '</strong><br>' + 
-								'<span class="review_num">' + result[x].reviewNum + '</span>' +
-								
-								'<input hidden="hidden" class="product_id" value="' + result[x].productId + '"/>' +
-								'</li>';
+					let productList = result;
+					for(x in productList){ 
+						let boxProduct = $('<li class="product_box" onclick="toDetails(this)"></li>');
+						let selected = productList[x];
+						$.ajax({
+							method : 'GET',
+							url : '../image/' + selected.imgId,
+							success : function(result){
+								let tagImg = $('<img>');
+								tagImg.attr('src', result);
+								boxProduct.append(tagImg);
+								boxProduct.append($('<br><strong class="product_name">' + selected.productName + '</strong><br>'));
+								boxProduct.append($('<strong class="product_price">' + selected.productPrice + '</strong><br>'));
+								boxProduct.append($('<span class="review_num">' + selected.reviewNum + '</span>'));
+								boxProduct.append($('<input hidden="hidden" class="product_id" value="' + selected.productId + '"/>'));
+							}
+						}); // end ajax
+						listRecent.append(boxProduct);
 					}
-					listRecent.html(str);
-					
 				} // end success
 			}); // end ajax
+		
 		} // end printRecentList
 		
 		function printRecommendByCategory(){ // 카테고리 별 최고 리뷰 상품 5개씩 출력
@@ -417,24 +408,34 @@
 				method : 'GET',
 				url : '../product/bestReview',
 				success : function(result){ // result : key=카테고리명, value=해당 카테고리의 최고리뷰 상품 List<ProductVO>
-					let form = "";
+					let productList = result;
 					console.log(result);
 					for(x in constCategory){ 
 						const selectedCategory = constCategory[x];
-						form += '<div><h2>' + selectedCategory + '</h2><ul class="flex_list">';
-						for(i in result[selectedCategory]){
-							const selectedList = result[selectedCategory][i];
-							form += '<li class="product_box" onclick="toDetails(this)">' +
-							'<img alt="등록된 이미지가 없습니다." src="../product/showImg?imgId=' + selectedList.imgId + '"><br>' +
-							'<strong class="product_name">' + selectedList.productName + '</strong><br>' + 
-							'<strong class="product_price">' + selectedList.productPrice + '</strong><br>' + 
-							'<span class="review_num">' + selectedList.reviewNum + '</span>' +
-							'<input hidden="hidden" class="product_id" value="' + selectedList.productId + '"/>' +
-							'</li>' ;
+						let listByCategory = $('<div><h2>' + selectedCategory + '</h2></div>'); 
+						let list = $('<ul class="flex_list"></ul>');
+						for(i in productList[selectedCategory]){
+							const selected = productList[selectedCategory][i];
+							let boxProduct = $('<li class="product_box" onclick="toDetails(this)"></li>');
+							$.ajax({
+								method : 'GET',
+								url : '../image/' + selected.imgId,
+								success : function(result){
+									let tagImg = $('<img>');
+									tagImg.attr('src', result);
+									boxProduct.append(tagImg);
+									boxProduct.append($('<br><strong class="product_name">' + selected.productName + '</strong><br>'));
+									boxProduct.append($('<strong class="product_price">' + selected.productPrice + '</strong><br>'));
+									boxProduct.append($('<span class="review_num">' + selected.reviewNum + '</span>'));
+									boxProduct.append($('<input hidden="hidden" class="product_id" value="' + selected.productId + '"/>'));
+								}
+							}); // end ajax
+							
+							list.append(boxProduct);
 						} 
-						form += '</ul></div>';
+						listByCategory.append(list);
+						containerRecommend.append(listByCategory);
 					}
-					containerRecommend.append(form);
 					
 				} // end success
 			}); // end ajax
@@ -447,7 +448,7 @@
 			console.log(selectedId);
 			location.href = '../product/detail?productId=' + selectedId;
 		} // end addDetailsEvent
-
+		
 	</script>
 	
 

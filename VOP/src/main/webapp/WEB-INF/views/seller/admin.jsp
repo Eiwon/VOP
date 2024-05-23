@@ -171,7 +171,7 @@ tr {
 					for(x in list){
 						form += '<tr onclick="popupDetails(this)">' + 
 						'<td class="targetIndex" hidden="hidden">' + x + '</td>' +
-						'<td><img src="../product/showImg?imgId=' + list[x].imgId + '"></td>' +
+						'<td><img alt="' + list[x].imgId + '"></td>' +
 						'<td class="category">' + list[x].category +'</td>' +
 						'<td class="productName">' + list[x].productName + '</td>' + 
 						'<td class="productPrice">' + list[x].productPrice +'</td>' +
@@ -182,6 +182,7 @@ tr {
 					$('#product_register_req_list_page').html(makePageForm(listMap.productRegisterReq));
 					
 					tagProdutRegisterReqList.html(form);
+					loadImg(tagProdutRegisterReqList);
 				} // end success
 			}); // end ajax
 			
@@ -202,7 +203,7 @@ tr {
 					for(x in list){
 						form += '<tr onclick="popupDetails(this)">' + 
 						'<td class="targetIndex" hidden="hidden">' + x + '</td>' +
-						'<td><img src="../product/showImg?imgId=' + list[x].imgId + '"></td>' +
+						'<td><img alt="' + list[x].imgId + '"></td>' +
 						'<td class="category">' + list[x].category +'</td>' +
 						'<td class="productName">' + list[x].productName + '</td>' + 
 						'<td class="productPrice">' + list[x].productPrice +'</td>' +
@@ -213,6 +214,7 @@ tr {
 					$('#product_delete_req_list_page').html(makePageForm(listMap.productDeleteReq));
 					
 					tagProductDeleteReqList.html(form);
+					loadImg(tagProductDeleteReqList);
 				} // end success
 			}); // end ajax
 			
@@ -296,7 +298,19 @@ tr {
 			} // end popup.onbeforeunload
 		} // end popupSellerRegister
 		
-		
+		function loadImg(input){
+			$(input).find('img').each(function(){
+				let target = $(this);
+				let imgId = target.attr("alt");
+				$.ajax({
+					method : 'GET',
+					url : '../image/' + imgId,
+					success : function(result){
+						target.attr('src', result);
+					}
+				}); // end ajax
+			});
+		} // end loadImg
 		
 	</script>
 	

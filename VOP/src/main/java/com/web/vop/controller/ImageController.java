@@ -11,10 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.web.vop.domain.ImageVO;
+import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.ImageService;
 import com.web.vop.util.FileUploadUtil;
 
@@ -26,29 +28,26 @@ import lombok.extern.log4j.Log4j;
 public class ImageController {
 	
 	@Autowired
-	ImageService imageService;
+	private ImageService imageService;
+	
+	@Autowired
+	private AWSS3Service awsS3Service;
+	
 	
 	// 이미지 파일 요청
-	@GetMapping(value = "/show", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	@GetMapping("/{imgId}")
 	@ResponseBody
-	public ResponseEntity<Resource> showImg(int imgId){
+	public ResponseEntity<String> showImg(@PathVariable("imgId") int imgId){
 		log.info("showImg() : " + imgId);
-		ImageVO imageVO = imageService.getImageById(imgId);
-		if(imageVO == null) {
-			return new ResponseEntity<Resource>(null, null, HttpStatus.OK);
-		}
+		String imgUrl = "";
 		
-		String fullPath = imageVO.getImgPath() + File.separator + imageVO.getImgChangeName();
-			
-		HttpHeaders headers = new HttpHeaders();
-		// 다운로드할 파일 이름을 헤더에 설정
-		headers.add(HttpHeaders.CONTENT_DISPOSITION,
-				"attachment; filename=" + fullPath + "." + imageVO.getImgExtension());
-
-		Resource resource = FileUploadUtil.getFile(fullPath, imageVO.getImgExtension());
-	       
-	    return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+		imgUrl = awsS3Service.getImageUrl(imgId);
+		
+		
+	    return new ResponseEntity<String>(imgUrl, HttpStatus.OK);
 	} // end showImg
+	
+	
 	
 	
 	

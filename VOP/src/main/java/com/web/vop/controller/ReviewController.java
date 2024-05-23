@@ -7,7 +7,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.web.vop.domain.ImageVO;
+import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.domain.ReviewVO;
 import com.web.vop.service.ImageService;
@@ -46,9 +49,8 @@ public class ReviewController {
 		
 		log.info("productId : " + productId);
 		log.info("imgId : " + imgId);
-		
-		
 
+		// imgId통해 이미지 조회
 		ImageVO imageVO = imageService.getImageById(imgId);
 		
 		String imgRealName = imageVO.getImgRealName();
@@ -68,15 +70,20 @@ public class ReviewController {
 	
 	// 댓글(리뷰) 수정 GET
 	@GetMapping("/modify")
-	public void updateReviewGET(Model model, Integer productId, Integer imgId, String memberId) {
+	public void updateReviewGET(Model model, Integer productId, Integer imgId, @AuthenticationPrincipal MemberDetails memberDetails) {
 		log.info("updateReviewGET()");
 		
+		String memberId = memberDetails.getUsername();
+		
+		log.info("memberId = " + memberId);
 		log.info("productId : " + productId);
 		log.info("imgId : " + imgId);
 		
+		// productId, memberId를 통행 reviewVO 조회
 		ReviewVO reviewVO = reviewService.selectByReview(productId, memberId);
 		int reviewId = ((ReviewVO) reviewVO).getReviewId();
-
+		
+		// imgId통해 이미지 조회
 		ImageVO imageVO = imageService.getImageById(imgId);
 		
 		String imgRealName = imageVO.getImgRealName();
@@ -96,18 +103,21 @@ public class ReviewController {
 	
 //	// 댓글(리뷰) 전체 검색 GET
 	@GetMapping("/list") // GET : 댓글(리뷰) 선택(all)
-	public void readAllReviewMemberId(Model model, String memberId){
+	public void readAllReviewMemberId(Model model, @AuthenticationPrincipal MemberDetails memberDetails){
 		log.info("readAllReviewMemberId()");
 		
-		// productId 확인 로그
+		String memberId = memberDetails.getUsername();
+		
+		// memberId 확인 로그
 		log.info("memberId = " + memberId);
 		
-		// productId에 해당하는 댓글(리뷰) list을 전체 검색
+		// memberId에 해당하는 댓글(리뷰) list을 전체 검색
 		List<ReviewVO> reviewList = reviewService.getAllReviewMemberId(memberId);
 		
-
+		// 상품 리스트 정의
 		List<ProductVO> productList = new ArrayList<>(); // productList 초기화
-
+		
+		// 회원이 작성 한 댓글 리스트에서 해당 상품 조회
 		for (ReviewVO vo : reviewList) {
 		    ProductVO product = productService.getProductById(vo.getProductId()); // 단일 ProductVO 반환
 		    productList.add(product); // productList에 product 추가
@@ -116,14 +126,23 @@ public class ReviewController {
 		log.info("productList : " + productList);
 		log.info("reviewList" + reviewList);
 		
+		// 회원이 리뷰 작성 한 리스트
 		model.addAttribute("productList", productList);
+		
+		// 회원이 작성한 리뷰
 		model.addAttribute("reviewList", reviewList);
 	}// end readAllReview()
 	
-	@PostMapping("/delete") // DELETE : 댓글(리뷰) 삭제 // 나중에 데이터 받는 거에 따라 달라짐
-	   public String deleteReview(Integer productId, String memberId){
+	@Transactional(value = "transactionManager") // 리뷰 삭제 후 상품의 리뷰 총 갯수 검색 후 다시 상품 총 갯수 컬럼 등록
+	@PostMapping("/delete") // DELETE : 댓글(리뷰) 삭제 
+	   public String deleteReview(Integer productId, @AuthenticationPrincipal MemberDetails memberDetails){
 	      log.info("deleteReview()");
-
+	      
+	      String memberId = memberDetails.getUsername();
+			
+		  // memberId 확인 로그
+		  log.info("memberId = " + memberId);
+	      
 	      // 소수점 첫 째 자리까지만 출력
 	      DecimalFormat df = new DecimalFormat("#.#");
 	      

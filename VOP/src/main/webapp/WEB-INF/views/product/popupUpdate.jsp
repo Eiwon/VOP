@@ -120,6 +120,8 @@ img {
 				deleteRequest();
 			});
 			
+			loadImg();
+			
 		}); // end document.ready
 		
 		
@@ -138,11 +140,11 @@ img {
 			$('#productRemains').val(productDetails.productRemains);
 			$('#productPlace').val(productDetails.productPlace);
 			$('#productState').text(productDetails.productState);
-			$('#productThumbnail').html('<img src="showImg?imgId=' + productDetails.imgId + '">');
+			$('#productThumbnail').html('<img alt="' + productDetails.imgId + '">');
 			
 			let imgDetailsForm = '';
 			for (x in productDetails.imgIdDetails){
-				imgDetailsForm += '<img src="showImg?imgId=' + productDetails.imgIdDetails[x] + '"><br>';
+				imgDetailsForm += '<img alt="' + productDetails.imgIdDetails[x] + '"><br>';
 			}
 			$('#productDetails').html(imgDetailsForm);
 			
@@ -273,7 +275,19 @@ img {
             }
 		} // end resizeImg
 		
-		
+		function loadImg(){
+			$(document).find('img').each(function(){
+				let target = $(this);
+				let imgId = target.attr("alt");
+				$.ajax({
+					method : 'GET',
+					url : '../image/' + imgId,
+					success : function(result){
+						target.attr('src', result);
+					}
+				}); // end ajax
+			});
+		} // end loadImg
 	</script>
 	
 		
