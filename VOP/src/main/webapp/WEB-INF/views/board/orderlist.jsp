@@ -4,6 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="javax.servlet.http.HttpSession" %>
 
+<!-- 시큐리티 회원id 관련 코드 -->
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
@@ -353,7 +354,8 @@
 	// 세션에 저장된 memberId 가져오기
 	String memberId = (String) sessionJSP.getAttribute("memberId");
 %> --%>
-
+	
+	<!-- 회원id -->
 	<h1>${memberDetails.getUsername() }</h1>
 
 	
@@ -383,7 +385,7 @@
 
 	                 <!-- 리뷰 관리 코드 -->
 	                 <form action="../review/list" method="get">
-	                	<input type="hidden" name="memberId" value="${memberId}">
+	                	<input type="hidden" name="memberId" value="${memberDetails.getUsername()}">
 	                	<button type="submit">리뷰 관리</button>
 	                </form>
 	                
@@ -396,7 +398,7 @@
         				<span class="close">&times;</span>
         				<h2>판매자 문의</h2>
         					<form class="createInquiry">
-            					<input type="hidden" id="memberId" name="memberId" value="${memberId}">
+            					<input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
             					<input type="hidden" id="productId" name="productId" value="${order.productId}">
             					<label for="message">내용:</label><br>
             					<textarea class="content" name="content"></textarea><br>
@@ -414,7 +416,7 @@
         				<span class="close">&times;</span>
         				<h2>판매자 수정</h2>
         					<form class="updateInquiry">
-            					<input type="hidden" id="memberId" name="memberId" value="${memberId}">
+            					<input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
             					<input type="hidden" id="productId" name="productId" value="${order.productId}">
             					<label for="message">내용:</label><br>
             					<textarea class="content" name="content"></textarea><br>
@@ -431,7 +433,7 @@
     					<div class="modal-content">
         				<span class="close">&times;</span>
 	                	<form class="deleteInquiry">
-	                		<input type="hidden" id="memberId" name="memberId" value="${memberId}">
+	                		<input type="hidden" id="memberId" name="memberId" value="${${memberDetails.getUsername()}">
             				<input type="hidden" id="productId" name="productId" value="${order.productId}">
             				<button type="submit">삭제하시 겠습니까?</button>
 	                	</form>
@@ -459,7 +461,7 @@
     	
     <script type="text/javascript">
     
-    //const memberId = '${memberDetails.getUsername() }';
+    const memberId = '${memberDetails.getUsername() }';
     
     $(document).ready(function(){
     	// 해당 버튼의 부모 요소로부터 productId 가져오기
@@ -512,6 +514,7 @@
     	    });
     	});
     
+    // 판매자 문의 코드 
     // 폼 제출 시 데이터 출력
     let inquiryCreate = document.querySelectorAll('.createInquiry');
     inquiryCreate.forEach(function(form) {// inquiryForms에 있는 각 요소에 대해 반복문을 실행합니다.

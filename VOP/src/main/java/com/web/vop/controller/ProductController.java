@@ -2,6 +2,7 @@ package com.web.vop.controller;
 
 import java.util.UUID;
 
+
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
@@ -74,16 +75,14 @@ public class ProductController {
 	public void productDetailGET(Model model, Integer productId) {
 		log.info("productDetailGET()");
 		
-		// 소수점 첫 째 자리까지만 출력
-		DecimalFormat df = new DecimalFormat("#.#");//
-		
 		log.info("productId : " + productId);
 		// productId에 해당하는 상품 조회 
 		ProductVO productVO = productService.getProductById(productId);	
 		
-		// 이미지 코드
+		// 이미지 코드 조회
 		ImageVO imageVO = imageService.getImageById(productVO.getImgId());
 		
+		// 상세 이미지 조회
 		List<ImageVO> imageList = imageService.getByProductId(productId);
 		for(ImageVO image  : imageList) {
 			log.info(image);

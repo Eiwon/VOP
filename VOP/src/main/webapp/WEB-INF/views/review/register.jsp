@@ -1,5 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<!-- 시큐리티 코드 -->
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication var="memberDetails" property="principal"/>
+</sec:authorize> 
     
 <!DOCTYPE html>
 <html>
@@ -43,12 +48,6 @@
 </head>
 <body>
 	
-	<%
-	// 세션 객체 가져오기
-	HttpSession sessionJSP = request.getSession();
-	// 세션에 저장된 memberId 가져오기
-	String memberId = (String) sessionJSP.getAttribute("memberId");
-	%>
 	
 	<h1>리뷰 작성</h1>
 	
@@ -73,7 +72,7 @@
         <input type="radio" name="reviewStar" value="2" id="rate4"><label for="rate4">★</label>
         <input type="radio" name="reviewStar" value="1" id="rate5"><label for="rate5">★</label>
     </fieldset><br>
-    <input type="hidden" id="memberId" value="${memberId}"><!-- 여기 부분 없어도 될뜻 -->
+    <input type="hidden" id="memberId" value="${memberDetails.getUsername()}"><!-- 여기 부분 없어도 될뜻 -->
     <input type="hidden" id="productId" value="${order.productId}"><!-- 여기 부분 없어도 될뜻 -->
     <input type="text" id="reviewContent"><br>
     <button id="btnAdd">등록</button>
@@ -86,6 +85,7 @@
 $(document).ready(function(){
 	
 	let selectedStar; // 전역 변수로 selectedStar 선언
+	let memberId = ${memberDetails.getUsername()};
 	
     // 라디오 버튼 클릭 이벤트 핸들러
     $('#starFieldset input[type="radio"]').click(function() {
@@ -99,12 +99,13 @@ $(document).ready(function(){
 
    // 댓글 입력 코드
    $('#btnAdd').click(function(){
-       let memberId = $('#memberId').val(); // 작성자 데이터
+       
        let productId = ${productId}; 
        let reviewStar = selectedStar;// 리뷰(별)
        let reviewContent = $('#reviewContent').val(); // 댓글 내용
        
        console.log(reviewStar);
+       console.log(memberId);
        
        // javascript 객체 생성
        let obj = {	
@@ -129,6 +130,8 @@ $(document).ready(function(){
                 alert('댓글 입력 성공');
                 // 댓글 입력 완료 하면 마이페이지로 이동
                 window.location.href = '../board/orderlist';
+             } else {
+            	 alert('댓글 입력 실패');
              }
           } // end success 
        }); // end ajax

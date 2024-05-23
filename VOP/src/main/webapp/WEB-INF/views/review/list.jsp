@@ -2,6 +2,11 @@
 <%@ page import="javax.servlet.http.HttpSession" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!-- 시큐리티 memberId 관련 코드 -->
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication var="memberDetails" property="principal"/>
+</sec:authorize> 
 <!DOCTYPE html>
 <html>
 <head>
@@ -61,12 +66,7 @@
 </style>
 </head>
 <body>
-<%
-    // 세션 객체 가져오기
-    HttpSession sessionJSP = request.getSession();
-    // 세션에 저장된 memberId 가져오기
-    String memberId = (String) sessionJSP.getAttribute("memberId");
-%>
+
 <p>댓글 리스트</p>
 
 <c:forEach var="ProductVO" items="${productList}">
@@ -77,17 +77,17 @@
 	                <form action="../review/modify" method="get">
 	                	<input type="hidden" name="productId" value="${ProductVO.productId}">
 	                	<input type="hidden" name="imgId" value="${ProductVO.imgId}">
-	                	<input type="hidden" name="memberId" value="${memberId}">
+	                	<input type="hidden" name="memberId" value="${memberDetails.getUsername()}">
 	                	<button type="submit">리뷰 수정</button>
 	                </form>
             	 <!-- 리뷰 삭제 코드 -->
 	                <form action="../review/delete" method="POST">
 	                	<input type="hidden" name="productId" value="${ProductVO.productId}">
-	                	<input type="hidden" name="memberId" value="${memberId}">
+	                	<input type="hidden" name="memberId" value="${memberDetails.getUsername()}">
 	                	<button type="submit">리뷰 삭제</button>
 	                </form>
-                <h2>${ProductVO.productName}</h2>
-                <p>리뷰 평균: ${ProductVO.reviewAvg}</p>
+                <h2> 상품 이름 : ${ProductVO.productName}</h2>
+                <p>리뷰 평균 : ${ProductVO.reviewAvg}</p>
                 <!-- 리뷰 별점 표시 -->
                 <div id="myform">	
                     <fieldset>

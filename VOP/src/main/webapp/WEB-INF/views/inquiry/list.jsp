@@ -23,25 +23,25 @@
                             ${inquiryDateCreated}
                         </td>
                         <td>
-                            <button id="btnAdd_${InquiryVO.id}" class="btnAdd">답글 작성</button>
-                            <button id="btnModify_${InquiryVO.id}" class="btnModify" style="display:none;">답글 수정</button>
-                            <button id="btnDelete_${InquiryVO.id}" class="btnDelete" style="display:none;">답글 삭제</button>
+                            <button id="btnAdd" class="btnAdd">답글 작성</button>
+                            <button id="btnModify" class="btnModify" style="display:none;">답글 수정</button>
+                            <button id="btnDelete" class="btnDelete" style="display:none;">답글 삭제</button>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="5">
                             <!-- 답글 작성 -->
-                            <div id="inputContainer_${InquiryVO.id}" class="inputContainer" style="text-align: center; margin-top: 10px; display: none;">
+                            <div id="inputContainer" class="inputContainer" style="text-align: center; margin-top: 10px; display: none;">
                                 <!-- 입력 필드와 제출 버튼이 추가될 위치 -->
-                                <input type="text" id="replyAnswer_${InquiryVO.id}" placeholder="답글 작성">
-                                <button id="btnSubmit_${InquiryVO.id}" class="btnSubmit">작성</button>
+                                <input type="text" id="replyAnswer" placeholder="답글 작성">
+                                <button id="btnSubmit" class="btnSubmit">작성</button>
                             </div>
 
                             <!-- 답글 수정 -->
-                            <div id="modifyContainer_${InquiryVO.id}" class="modifyContainer" style="text-align: center; margin-top: 10px; display: none;">
+                            <div id="modifyContainer" class="modifyContainer" style="text-align: center; margin-top: 10px; display: none;">
                                 <!-- 수정 필드와 제출 버튼이 추가될 위치 -->
-                                <input type="text" id="modifyAnswer_${InquiryVO.id}" placeholder="답글 수정">
-                                <button id="btnModifySubmit_${InquiryVO.id}" class="btnModifySubmit">수정</button>
+                                <input type="text" id="modifyAnswer" placeholder="답글 수정">
+                                <button id="btnModifySubmit" class="btnModifySubmit">수정</button>
                             </div>
                         </td>
                     </tr>
