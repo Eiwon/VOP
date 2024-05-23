@@ -125,9 +125,7 @@ public class ReviewRESTController {
 	   public ResponseEntity<Integer> updateReview(
 	         @RequestBody ReviewVO reviewVO
 	         ){
-	      log.info("updateReview()");
-	      
-	      log.info("로그()");
+	      log.info("updateReply()");
 	      
 	  	  // 소수점 첫 째 자리까지만 출력
 	      DecimalFormat df = new DecimalFormat("#.#");

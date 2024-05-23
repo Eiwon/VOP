@@ -29,11 +29,6 @@ public interface DeliveryService {
 	// 기본 배송지 설정하기
 	void setDefaultDelivery(int deliveryId, String memberId);
 	
-
-
-	// memberId로 기본 배송지 검색
-	DeliveryVO getDefaultDelivery(String memberId);
-
 	// memberId로 기본 배송지 검색
 	DeliveryVO getDefaultDelivery(String memberId);
 

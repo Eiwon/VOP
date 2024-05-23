@@ -357,7 +357,6 @@
 
 	
 		$(document).ready(function(){
-			console.log('${memberDetails.memberVO.memberId}');
 			setLoginBox();
 			printRecentList();
 			printRecommendByCategory();

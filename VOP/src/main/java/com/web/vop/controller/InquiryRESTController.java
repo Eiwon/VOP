@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +21,7 @@ import com.web.vop.service.InquiryService;
 import lombok.extern.log4j.Log4j;
 
 @RestController
-@RequestMapping("/inquiry")
+@RequestMapping("inquiry")
 @Log4j
 public class InquiryRESTController {
 	
@@ -58,7 +59,6 @@ public class InquiryRESTController {
 			 @RequestBody InquiryVO inquiryVO
 	         ){	
 	      log.info("updateInquiry()");
-	      log.info("로그");
 	      
 	      log.info("inquiryVO() : " + inquiryVO);
 	      
@@ -69,27 +69,18 @@ public class InquiryRESTController {
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	   }// end updateInquiry()
 	
-	@DeleteMapping("/{productId}/{memberId}") // DELETE : 댓글(리뷰) 삭제 // 나중에 데이터 받는 거에 따라 달라짐
+	@DeleteMapping("/delete") // DELETE : 댓글(리뷰) 삭제 // 나중에 데이터 받는 거에 따라 달라짐
 	   public ResponseEntity<Integer> deleteInquiry(
-			   @PathVariable Integer productId,
-			   @PathVariable String memberId) {
+			   @RequestBody InquiryVO inquiryVO) {
 	      log.info("deleteInquiry()");
-	      log.info("로그");
-//	      log.info("productId : " + inquiryVO.getProductId());
-//	      log.info("memberId : " + inquiryVO.getMemberId());
 	      
-	      log.info("productId : " + productId);
-	      System.out.println("productId : " + productId);
-	      System.out.println("memberId : " + memberId);
-	      log.info("memberId : " + memberId);
+	      log.info("productId : " + inquiryVO.getProductId());
+	      log.info("memberId : " + inquiryVO.getMemberId());
 	      
-//	      // productId에 해당하는 reviewId의 댓글(리뷰)
-//	      int result = inquiryService.deleteInquiry(inquiryVO.getProductId(), inquiryVO.getMemberId());
-	      
-	   // productId에 해당하는 reviewId의 댓글(리뷰)
-	      int result = inquiryService.deleteInquiry(productId, memberId);
+	      // productId에 해당하는 reviewId의 댓글(리뷰)
+	      int result = inquiryService.deleteInquiry(inquiryVO.getProductId(), inquiryVO.getMemberId());
 	
-	      log.info(result + "행 문의 삭제");
+	      log.info(result + "행 댓글 삭제");
 	      
 	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);

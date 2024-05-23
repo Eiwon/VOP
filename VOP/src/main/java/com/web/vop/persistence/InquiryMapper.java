@@ -26,6 +26,6 @@ public interface InquiryMapper {
 	 int updateInquiry(InquiryVO inquiryVO);
 	 
 	 // 댓글(문의) 삭제
-	 int deleteInquiry(@Param("productId")int productId, @Param("memberId")String memberId);
+	 int deleteInquiry(int productId, String memberId);
 	 
 }

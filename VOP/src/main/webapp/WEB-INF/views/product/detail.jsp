@@ -4,10 +4,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!-- 세션 사용할수 있게하는 코드 -->
 <%@ page import="javax.servlet.http.HttpSession" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<sec:authorize access="isAuthenticated()">
-	<sec:authentication var="memberDetails" property="principal"/>
-</sec:authorize> 
     
 <!DOCTYPE html>
 <html>
@@ -31,10 +27,6 @@
     text-shadow: 0 0 0 #f0f0f0;
 }
 
-.reviewStars {
-    color: #f0d000; /* 별 색상 */
-}
-
 
 /* end 리뷰 별 폼 스타일 */
 
@@ -43,16 +35,14 @@
 </head>
 <body>
 
-	<%-- <%
+	<%
 	// 세션 객체 가져오기
 	HttpSession sessionJSP = request.getSession();
 	// 세션에 저장된 memberId 가져오기
 	String memberId = (String) sessionJSP.getAttribute("memberId");
-	%> --%>
+	%>
 	
 	<a href="../board/main">VOP</a>
-	
-	<h1>${memberDetails.getUsername() }</h1>
 
 	<!-- 상품 상세 페이지 제작 중 -->
 	<h2>상품 상세 페이지</h2>
@@ -110,16 +100,15 @@
      </div>
  	
  	
-	 <!-- 장바구니 버튼 -->
-	
-	 <!-- 세션 아이디가 있는 경우 -->
-     <c:if test="${empty memberDetails.getUsername() }">
+	<!-- 장바구니 버튼 -->
+    <!-- 세션 아이디가 있는 경우 -->
+     <c:if test="${empty memberId}">
     	<button id="btnBasket" disabled="disabled">장바구니</button>
     	<p>로그인 후 장바구니 가능합니다.</p>
 	 </c:if>
-	<!-- 세션 아이디가 없는 경우 -->
-	<c:if test="${not empty memberDetails.getUsername() }">
-    	<button id="btnBasket" >장바구니</button>
+	<!-- 세션 아이디가 없 경우 -->
+	<c:if test="${not empty memberId}">
+    	<button id="btnBasket">장바구니</button>
 	</c:if>
 	
 	<!-- 장바구니 링크 -->
@@ -127,19 +116,17 @@
  	
 	<!-- 바로구매 버튼 --><!-- 로그인된 세션 아이디 전달 -->
     <form id="checkoutForm" action="../payment/checkout" method="POST">
-    	<%-- <input type="hidden" name="memberId" value="${memberId}"> --%>
-    	
-        <input type="hidden" name="memberId" value="${memberDetails.getUsername() }">
+        <input type="hidden" name="memberId" value="${memberId}">
         <input type="hidden" name="productIds" value="${productVO.productId}">
         <input type="hidden" name="productNums" value="1">
         <!-- 세션 아이디가 있는 경우 -->
 
-     <c:if test="${empty memberDetails.getUsername() }">
+     <c:if test="${empty memberId}">
     	<button type="submit" disabled="disabled">바로구매</button>
     	<p>로그인 후 결제 가능합니다.</p>
 	 </c:if>
 	<!-- 세션 아이디가 없 경우 -->
-	<c:if test="${not empty memberDetails.getUsername() }">
+	<c:if test="${not empty memberId}">
     	<button type="submit" >바로구매</button> 
 	</c:if>
     </form>
@@ -153,8 +140,6 @@
         	<img src="showImg?imgId=${image.imgId}" alt="${image.imgRealName}.${image.imgExtension}">
     	</c:forEach>
 	</div>
-	
-	
      
      <!-- 댓글 화면 코드 및 가운데 정렬 -->
      <p>댓글</p>
@@ -165,11 +150,6 @@
      
      <script type="text/javascript">
      
- 	 const memberId = '${memberDetails.getUsername() }';
- 	 let productId = ${productVO.productId};
-     console.log(memberId);
- 	
- 	 
   	 // 수량 입력 필드 가져오기
      let quantityInput = document.getElementById("quantity");
      // 상품 가격을 표시하는 span 요소 가져오기
@@ -189,13 +169,12 @@
          // 현재 수량을 productNums에 적용하는 코드
          document.querySelector('input[name="productNums"]').value = quantity;
      });
-      
+     
      
 // 별표시를 업데이트하는 함수
 function displayStars() {
     let value = parseInt("${productVO.reviewAvg}"); // 리뷰 별점을 정수 형으로 변환
     let stars = document.querySelectorAll('#myform label'); // 별 표시 기능 가져오기
-    console.log("value: " + value);
     for (let i = 0; i < stars.length; i++) {
         if (i < value) {
             stars[i].style.color = '#f0d000'; // 선택된 별보다 작은 값의 별은 노란색으로 표시
@@ -211,8 +190,9 @@ $(document).ready(function() {
 
     // 장바구니
     $('#btnBasket').click(function(){
-    	
-        let productNum = $('#quantity').val(); // 수량 
+    	let productId = ${productVO.productId}; // 게시판 번호 데이터
+        let memberId = "${memberId}"; // 작성자 데이터 // Strgin 형태여서 ""가 들어감
+        let productNum = $('#quantity').val(); // 수량
         // javascript 객체 생성
         let obj = {
               'productId' : productId,
@@ -241,7 +221,10 @@ $(document).ready(function() {
 
     // 댓글(리뷰) 전체 검색 // 이미지 및 좋아요 아직 추가 안함
     function getAllReview() {
-    	 
+        let productId = ${productVO.productId};
+
+        console.log(productId);
+        
         let url = '../review/all/' + productId;
         console.log(url);
         $.getJSON(
@@ -270,7 +253,6 @@ $(document).ready(function() {
                     // 별점 숫자를 가져와서 별 모양으로 변환
                     let starsHTML = ''; // 별 모양 HTML을 저장할 변수
                     let reviewStar = parseInt(this.reviewStar); // 문자열을 정수로 변환
-                    
                     for (let i = 1; i <= 5; i++) {
                         if (i <= reviewStar) {
                             starsHTML += '&#9733;'; // 별 모양 HTML 코드 추가
@@ -287,14 +269,15 @@ $(document).ready(function() {
                         this.memberId +
                         '&nbsp;&nbsp;' // 공백
                         +
-                        '<span class="reviewStars">' + starsHTML + '</span>'// 별점 표시 
+                        '<span>' + starsHTML + '</span>' + // 별점 표시
                         +
-                        '&nbsp;&nbsp;'
+                        this.reviewStar +
+                        '&nbsp;&nbsp;' // 공백
                         +
-                        dateString + ' ' + timeString // 작성 시간 (날짜와 시간)
+                        dateString + ' ' + timeString + // 작성 시간 (날짜와 시간)
                         +
                         '&nbsp;&nbsp;' +
-                        '<input type="text" id="reviewContent" value="' + this.reviewContent + '"readonly>' // 내용
+                        '<input type="text" id="reviewContent" value="' + this.reviewContent + '">' // 내용
                         +
                         '&nbsp;&nbsp;' 
                         +

@@ -92,7 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		INSERT INTO PRODUCT VALUES (
    		PRODUCT_SEQ.NEXTVAL, #{memberId}, #{productName}, #{productPrice},
    		0, #{productRemains}, #{productPlace}, #{productState}, #{category}, 
-   		#{imgId}, SYSDATE, 0
+   		#{imgId}, SYSDATE 
    		)
 	</insert>
 	

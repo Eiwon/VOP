@@ -8,7 +8,6 @@
 <title>판매 신청</title>
 </head>
 <body>
-	<a href="../board/main">VOP</a>
 	<div>
 		<h2>판매자 등록 신청</h2>
 	</div>

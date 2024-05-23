@@ -36,7 +36,6 @@ tr {
 <title>등록한 상품 조회</title>
 </head>
 <body>
-	<a href="../board/main">VOP</a>
 	<div>
 		<strong>${memberDetails.getUsername() } 님이 등록한 상품</strong>
 	</div>
@@ -44,7 +43,7 @@ tr {
 		<tbody id="product_list"></tbody>
 		<tfoot id="product_list_page"></tfoot>
 	</table>
-	
+
 	<script type="text/javascript">
 		let productMap = {}; // 상품 목록과 페이지 정보를 저장할 객체 선언
 		
@@ -74,14 +73,7 @@ tr {
 								'<td class="category">' + list[x].category + '</td>' + 
 								'<td class="productName">' + list[x].productName + '</td>' + 
 								'<td class="productPrice">' + list[x].productPrice + '</td>' + 
-								'</tr>' + 	
-								'<tr>' + 
-					            '<td colspan="5">' + 
-								'<form action="../inquiry/list" method="get">' + 
-							    '<input type="hidden" name="productId" value="' + list[x].productId + '">' +
-							    '<button type="submit">문의 목록 가기</button>' +
-							    '</form>' + 
-							    '</tr>';
+								'</tr>';
 					}
 					// 페이지 생성 후 등록
 					$('#product_list_page').html(makePageForm(productMap));
