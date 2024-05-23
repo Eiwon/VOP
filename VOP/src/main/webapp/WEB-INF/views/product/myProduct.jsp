@@ -73,7 +73,14 @@ tr {
 								'<td class="category">' + list[x].category + '</td>' + 
 								'<td class="productName">' + list[x].productName + '</td>' + 
 								'<td class="productPrice">' + list[x].productPrice + '</td>' + 
-								'</tr>';
+								'</tr>' +
+								'<tr>' + 
+			            		'<td colspan="5">' + 
+								'<form action="../inquiry/list" method="get">' + 
+					    		'<input type="hidden" name="productId" value="' + list[x].productId + '">' +
+					    		'<button type="submit">문의 목록 가기</button>' +
+					    		'</form>' + 
+					    		'</tr>';
 					}
 					// 페이지 생성 후 등록
 					$('#product_list_page').html(makePageForm(productMap));

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.web.vop.domain.InquiryVO;
 import com.web.vop.service.InquiryService;
@@ -27,16 +28,18 @@ public class InquiryController {
 	@Autowired
 	private InquiryService inquiryService;
 	
-	
+	// 문의 전체 검색 코드
+	// 해당 상품id에 있는 문의 검색
 	@GetMapping("/list")
-	public String listInquiryGET(Model model, Integer productId) {
+	public void listInquiryGET(Model model, Integer productId) {
 		log.info("listInquiryGET()");
+		log.info("productId : " + productId);
 		List<InquiryVO> listInquiry = inquiryService.getAllInquiry(productId);
 		
 		log.info("listInquiry : " + listInquiry);
 		
 		model.addAttribute("listInquiry", listInquiry);
-		return "redirect:../inquiry/list";
+//		model.addAttribute("listInquiry", productName);
 	}
 	
 //	@PostMapping("/delete") // DELETE : 댓글(리뷰) 삭제 // 나중에 데이터 받는 거에 따라 달라짐

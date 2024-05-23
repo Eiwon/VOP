@@ -9,65 +9,95 @@
 </head>
 <body>
 	<table>
-	  <tbody>
-	  	<c:if test="${not empty listInquiry}"><!-- listInquiry null이 아니면 밑에 코드 실행  -->
-         <c:forEach var="InquiryVO" items="${listInquiry}">
-            <tr>
-               <td>${InquiryVO.productId}</td>
-               <td>${InquiryVO.inquiryContent}</td>
-               <td>${InquiryVO.memberId}</td>
-               <!-- boardDateCreated 데이터 포멧 변경 -->
-               <fmt:formatDate value="${InquiryVO.inquiryDateCreated}"
-                  pattern="yyyy-MM-dd HH:mm:ss" var="inquiryDateCreated" />
-               <td>${inquiryDateCreated}</td>
-            </tr>
-            <button id="btnAdd" >답글 작성</button> 
-            <button id="btnModify" >답글 수정</button> 
-            <button id="btnDelete" >답글 삭제</button> 
-         </c:forEach>
-        </c:if>
-        <!-- listInquiry null이면 코드 실행 -->
-        <c:otherwise>
-        	<p>문의 사항이 없습니다.</p>
-    	</c:otherwise>
-      </tbody>
-    </table>
+    <tbody>
+        <c:choose>
+            <c:when test="${not empty listInquiry}">
+                <c:forEach var="InquiryVO" items="${listInquiry}">
+                    <tr>
+                        <td>회원ID : ${InquiryVO.memberId}</td>
+                        <td>상품ID : ${InquiryVO.productId}</td>
+                        <td>문의 내용 : ${InquiryVO.inquiryContent}</td>
+                        <td>
+                            <!-- boardDateCreated 데이터 포멧 변경 -->
+                            <fmt:formatDate value="${InquiryVO.inquiryDateCreated}" pattern="yyyy-MM-dd HH:mm:ss" var="inquiryDateCreated" />
+                            ${inquiryDateCreated}
+                        </td>
+                        <td>
+                            <button id="btnAdd_${InquiryVO.id}" class="btnAdd">답글 작성</button>
+                            <button id="btnModify_${InquiryVO.id}" class="btnModify" style="display:none;">답글 수정</button>
+                            <button id="btnDelete_${InquiryVO.id}" class="btnDelete" style="display:none;">답글 삭제</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            <!-- 답글 작성 -->
+                            <div id="inputContainer_${InquiryVO.id}" class="inputContainer" style="text-align: center; margin-top: 10px; display: none;">
+                                <!-- 입력 필드와 제출 버튼이 추가될 위치 -->
+                                <input type="text" id="replyAnswer_${InquiryVO.id}" placeholder="답글 작성">
+                                <button id="btnSubmit_${InquiryVO.id}" class="btnSubmit">작성</button>
+                            </div>
+
+                            <!-- 답글 수정 -->
+                            <div id="modifyContainer_${InquiryVO.id}" class="modifyContainer" style="text-align: center; margin-top: 10px; display: none;">
+                                <!-- 수정 필드와 제출 버튼이 추가될 위치 -->
+                                <input type="text" id="modifyAnswer_${InquiryVO.id}" placeholder="답글 수정">
+                                <button id="btnModifySubmit_${InquiryVO.id}" class="btnModifySubmit">수정</button>
+                            </div>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </c:when>
+            <c:otherwise>
+                <tr>
+                    <td colspan="5"><p>문의 사항이 없습니다.</p></td>
+                </tr>
+            </c:otherwise>
+        </c:choose>
+    </tbody>
+</table>
+
     
     <script type="text/javascript">
     // 코드 작성 예정
     $(document).ready(function(){
     	
-    	// 답글 작성 코드
-    	$('#btnAdd').click(function(){
-        	let boardId = $('#boardId').val(); // 게시판 번호 데이터
-            let memberId = $('#memberId').val(); // 작성자 데이터
-            let replyContent = $('#replyContent').val(); // 댓글 내용
-            // javascript 객체 생성
-            let obj = {
-                  'boardId' : boardId,
-                  'memberId' : memberId,
-                  'replyContent' : replyContent
-            }
-            console.log(obj);
-            
-            // $.ajax로 송수신
-            $.ajax({
-               type : 'POST', // 메서드 타입
-               url : '../reply', // url
-               headers : { // 헤더 정보
-                  'Content-Type' : 'application/json' // json content-type 설정
-               }, //'Content-Type' : 'application/json' 헤더 정보가 안들어가면 4050에러가 나온다.
-               data : JSON.stringify(obj), // JSON으로 변환
-               success : function(result) { // 전송 성공 시 서버에서 result 값 전송
-                  console.log(result);
-                  if(result == 1) {
-                     alert('댓글 입력 성공');
-                     getAllReply(); // 함수 호출
-                  }
-               }
-            });
-         }); // end btnAdd.click()
-    )}; // end document
+    	// 답글 작성 클릭 했을 때 화면띄어주는 역할
+    	$('#btnAdd').click(function() {
+            // #inputContainer의 표시 여부를 토글합니다.
+            $('#inputContainer').toggle();
+            // 다른 컨테이너는 숨깁니다.
+            $('#modifyContainer, #deleteContainer').hide();
+        });
+		
+    	// 답글 수정 클릭 했을 때 화면띄어주는 역할
+        $('#btnModify').click(function() {
+            // #modifyContainer의 표시 여부를 토글합니다.
+            $('#modifyContainer').toggle();
+            // 다른 컨테이너는 숨깁니다.
+            $('#inputContainer, #deleteContainer').hide();
+        });
+
+		// 답글 작성 비동기 코드
+        $('#btnSubmit').click(function() {
+            let input = $('#replyAnswer').val();
+            alert('작성된 답글: ' + input);
+            // 여기에 AJAX 호출 등 필요한 코드를 추가하세요.
+        });
+		
+    	// 답글 수정 비동기 코드
+        $('#btnModifySubmit').click(function() {
+        	let input = $('#modifyAnswer').val();
+            alert('수정된 답글: ' + input);
+            // 여기에 AJAX 호출 등 필요한 코드를 추가하세요.
+        });
+		
+     	// 답글 삭제 비동기 코드
+        $('#btnDelete').click(function() {
+            alert('답글이 삭제되었습니다.');
+            // 여기에 AJAX 호출 등 필요한 코드를 추가하세요.
+        });
+        
+    }); // end document
     </script>
 </body>
 </html>
