@@ -1,13 +1,7 @@
 package com.web.vop.controller;
 
-import java.util.UUID;
-
-
-import javax.servlet.http.HttpServletRequest;
-
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -156,8 +150,6 @@ public class ProductController {
 	    
 	    return "redirect:../seller/sellerRequest";
 	} // end registerPOST
-
-	
 
 	@GetMapping("search")
 	public void search(Model model, String category, String word, Pagination pagination) {
@@ -432,18 +424,6 @@ public class ProductController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	} // end getWaitProduct
 	
-	
-//	private int delete(int productId) {
-//		List<ImageVO> imageList = productService.deleteProduct(productId);
-//		
-//		if(imageList.size() > 0) { // 서버에 저장된 이미지 삭제
-//			log.info("관련 이미지 : " + imageList.size() + "건");
-//			for(ImageVO image : imageList) {
-//				FileUploadUtil.deleteFile(image);
-//			}
-//		}
-//		return imageList.size();
-//	} // end delete
 } 
 	
 	

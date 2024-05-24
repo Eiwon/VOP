@@ -29,9 +29,6 @@ public class ProductServiceImple implements ProductService{
 	private ProductMapper productMapper;
 	
 	@Autowired
-	private ImageService imageService;
-	
-	@Autowired
 	private ImageMapper imageMapper;
 	
 	// 상품 상세 정보 검색
@@ -211,7 +208,7 @@ public class ProductServiceImple implements ProductService{
 		log.info("getDetails()");
 		ProductDetailsDTO details = productMapper.selectDetails(productId);
 		log.info(details);
-		List<Integer> imgIds = imageService.getImgId(productId);
+		List<Integer> imgIds = imageMapper.selectImgIdByProductId(productId);
 		if(imgIds != null) {
 			log.info(imgIds);
 			details.setImgIdDetails(imgIds);			

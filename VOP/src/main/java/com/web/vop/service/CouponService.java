@@ -19,6 +19,6 @@ public interface CouponService {
 	public int getCouponNum(CouponVO couponVO); 
 	
 	// 쿠폰 사용 처리
-	public int useUpCoupon(CouponVO couponVO);
+	//public int useUpCoupon(CouponVO couponVO);
 	
 }
