@@ -43,6 +43,7 @@
 </head>
 <body>
 	
+	<!-- 메인으로 이동하는 링크 -->
 	<a href="../board/main">VOP</a>
 	
 	<h1>${memberDetails.getUsername() }</h1>
@@ -149,9 +150,12 @@
 	
      
      <!-- 댓글 화면 코드 및 가운데 정렬 -->
-     <p>댓글</p>
      
-      <div id="replies"></div>
+      <p>댓글</p>
+      <div id="review"></div>
+      
+      <p>문의(댓댓글)</p>
+      <div id="inquiry"></div>
 
      <!-- 좋아요 표시 제작 예정? -->
      
@@ -197,7 +201,8 @@ function displayStars() {
     }
 }// end displayStars()
 
-$(document).ready(function() {
+$(document).ready(function() { 
+	
 	displayStars(); // 별 표시 함수
     getAllReview(); // 댓글(리뷰) 전체 검색 메소드
 
@@ -294,10 +299,15 @@ $(document).ready(function() {
                         '</div>';
                 }); // end each()
 
-                $('#replies').html(list); // 저장된 데이터를 replies div 표현
+                $('#review').html(list); // 저장된 데이터를 replies div 표현
             } // end function()
         ); // end getJSON()
     } // end getAllReply()
+    
+    // 문의(댓댓글) 전체 검색
+    function getAllReview() {
+    	
+    } // end getAllReview()
     
     loadImg();
 }); // end document

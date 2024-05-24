@@ -267,7 +267,6 @@
 
 </head>
 <body>
-
    
 	<div class="category">
         <span>카테고리</span>
@@ -433,7 +432,7 @@
     					<div class="modal-content">
         				<span class="close">&times;</span>
 	                	<form class="deleteInquiry">
-	                		<input type="hidden" id="memberId" name="memberId" value="${${memberDetails.getUsername()}">
+	                		<input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
             				<input type="hidden" id="productId" name="productId" value="${order.productId}">
             				<button type="submit">삭제하시 겠습니까?</button>
 	                	</form>

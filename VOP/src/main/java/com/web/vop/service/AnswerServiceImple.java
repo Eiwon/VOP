@@ -28,20 +28,28 @@ public class AnswerServiceImple implements AnswerService{
 	}
 	
 	// 댓댓글(답변) 전체 검색
-//	@Override
-//	public List<AnswerVO> getAllAnswer(int productId) {
-//		log.info("getAllAnswer()");
-//		List<AnswerVO> result = answerMapper.selectListByAnswer(productId);
-//		return result;
-//	}
+	@Override
+	public List<AnswerVO> getAllAnswer(int productId) {
+		log.info("getAllAnswer()");
+		List<AnswerVO> result = answerMapper.selectListByProductId(productId);
+		return result;
+	}
+	
+	// 댓댓글(답변) 전체 검색
+	@Override
+	public List<AnswerVO> getAllAnswerInquiryId(int inquiryId) {
+		log.info("getAllAnswer()");
+		List<AnswerVO> result = answerMapper.selectListByInquiryId(inquiryId);
+		return result;
+	}
 	
 	// 댓댓글(답변) 수정
 	@Override
-	public int updateAnswer(int productId, String memberId, String answerContent) {
+	public int updateAnswer(int inquiryId, String memberId, String answerContent) {
 		log.info("updateAnswer()");
 		AnswerVO answerVO = new AnswerVO();
 		// reviewVO에 각 변경사항 변수들 저장
-		answerVO.setProductId(productId);
+		answerVO.setProductId(inquiryId);
 		answerVO.setMemberId(memberId);
 		answerVO.setAnswerContent(answerContent);
 		int updateRes = answerMapper.updateAnswer(answerVO);
@@ -51,9 +59,9 @@ public class AnswerServiceImple implements AnswerService{
 
 	// 댓댓글(답변) 삭제
 	@Override
-	public int deleteAnswer(int productId, String memberId) {
+	public int deleteAnswer(int inquiryId, String memberId) {
 		log.info("deleteAnswer()");
-		int deleteRes = answerMapper.deleteAnswer(productId, memberId);
+		int deleteRes = answerMapper.deleteAnswer(inquiryId, memberId);
 		log.info(deleteRes + "행 삭제");
 		return deleteRes;
 	}

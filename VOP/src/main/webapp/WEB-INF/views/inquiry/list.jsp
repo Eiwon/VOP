@@ -1,6 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!-- 시큐리티 회원id 관련 코드 -->
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication var="memberDetails" property="principal"/>
+</sec:authorize> 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,6 +20,7 @@
             <c:when test="${not empty listInquiry}">
                 <c:forEach var="InquiryVO" items="${listInquiry}">
                     <tr>
+                    	<td>문의ID : ${InquiryVO.inquiryId}</td>
                         <td>회원ID : ${InquiryVO.memberId}</td>
                         <td>상품ID : ${InquiryVO.productId}</td>
                         <td>문의 내용 : ${InquiryVO.inquiryContent}</td>
@@ -23,9 +30,9 @@
                             ${inquiryDateCreated}
                         </td>
                         <td>
-                            <button id="btnAdd" class="btnAdd">답글 작성</button>
-                            <button id="btnModify" class="btnModify" style="display:none;">답글 수정</button>
-                            <button id="btnDelete" class="btnDelete" style="display:none;">답글 삭제</button>
+                            <button class="btnAdd" data-inquiryid="${InquiryVO.inquiryId}"  data-productid="${InquiryVO.productId}">답글 작성</button>
+                            <button class="btnModify" data-inquiryid="${InquiryVO.inquiryId}" style="display:none;">답글 수정</button>
+                            <button class="btnDelete" data-inquiryid="${InquiryVO.inquiryId}" style="display:none;">답글 삭제</button>
                         </td>
                     </tr>
                     <tr>
@@ -60,43 +67,123 @@
     <script type="text/javascript">
     // 코드 작성 예정
     $(document).ready(function(){
+
+    	const memberId = '${memberDetails.getUsername()}';
     	
     	// 답글 작성 클릭 했을 때 화면띄어주는 역할
     	$('#btnAdd').click(function() {
+    		// 현재 버튼의 데이터를 가져옵니다.
+            let inquiryId = $(this).data('inquiryid');
+            let productId = $(this).data('productid');
+            
             // #inputContainer의 표시 여부를 토글합니다.
             $('#inputContainer').toggle();
             // 다른 컨테이너는 숨깁니다.
             $('#modifyContainer, #deleteContainer').hide();
-        });
+            
+            // 전송할 데이터 설정
+            $('#btnSubmit').data('inquiryid', inquiryId).data('productid', productId);
+        }); // end btnAdd
 		
     	// 답글 수정 클릭 했을 때 화면띄어주는 역할
         $('#btnModify').click(function() {
+        	// 현재 버튼의 데이터를 가져옵니다.
+            let inquiryId = $(this).data('inquiryid');
+            
             // #modifyContainer의 표시 여부를 토글합니다.
             $('#modifyContainer').toggle();
             // 다른 컨테이너는 숨깁니다.
             $('#inputContainer, #deleteContainer').hide();
-        });
+            
+            // 전송할 데이터 설정
+            $('#btnModifySubmit').data('inquiryid', inquiryId);
+        }); // end btnModify
 
 		// 답글 작성 비동기 코드
         $('#btnSubmit').click(function() {
-            let input = $('#replyAnswer').val();
-            alert('작성된 답글: ' + input);
-            // 여기에 AJAX 호출 등 필요한 코드를 추가하세요.
-        });
+            let answerContent = $('#replyAnswer').val();
+            let inquiryId = $(this).data('inquiryid');
+            let productId = $(this).data('productid');
+            
+            let obj = {
+            		'inquiryId' : inquiryId,
+                    'memberId' : memberId,
+                    'answerContent' : answerContent
+              }
+              console.log(obj);
+              // $.ajax로 송수신
+              $.ajax({
+                 type : 'POST', // 메서드 타입
+                 url : '설정예정', // url
+                 headers : { // 헤더 정보
+                    'Content-Type' : 'application/json' // json content-type 설정
+                 }, //'Content-Type' : 'application/json' 헤더 정보가 안들어가면 4050에러가 나온다.
+                 data : JSON.stringify(obj), // JSON으로 변환
+                 success : function(result) { // 전송 성공 시 서버에서 result 값 전송
+                    console.log(result);
+                    if(result == 1) {
+                       alert('답변 입력 성공');
+                    }
+                 }
+              });
+        }); // end btnSubmit
 		
     	// 답글 수정 비동기 코드
         $('#btnModifySubmit').click(function() {
-        	let input = $('#modifyAnswer').val();
-            alert('수정된 답글: ' + input);
-            // 여기에 AJAX 호출 등 필요한 코드를 추가하세요.
-        });
+        	let answerContent = $('#modifyAnswer').val();
+        	let answerContent = $('#replyAnswer').val();
+        	let inquiryId = $(this).data('inquiryid');
+             
+             let obj = {
+             		 'inquiryId' : inquiryId,
+                     'memberId' : memberId,
+                     'answerContent' : answerContent
+               }
+              console.log(obj);
+             
+        	// ajax 요청
+            $.ajax({
+               type : 'PUT', 
+               url : '설정예정',
+               headers : {
+                  'Content-Type' : 'application/json'
+               },
+               data : replyContent, 
+               success : function(result) {
+                  console.log(result);
+                  if(result == 1) {
+                     alert('답변 수정 성공!');
+                  }
+               }
+            });
+        }); // end btnModifySubmit
 		
      	// 답글 삭제 비동기 코드
         $('#btnDelete').click(function() {
-            alert('답글이 삭제되었습니다.');
-            // 여기에 AJAX 호출 등 필요한 코드를 추가하세요.
-        });
-        
+        	let inquiryId
+        	 let obj = {
+            		'inquiryId' : inquiryId,
+                    'memberId' : memberId
+              }
+             console.log(obj);
+        	// ajax 요청
+            $.ajax({
+               type : 'DELETE', 
+               url : '설정예정',
+               headers : {
+                  'Content-Type' : 'application/json'
+               },
+               
+               data : obj,
+               success : function(result) {
+                  console.log(result);
+                  if(result == 1) {
+                     alert('답변 삭제 성공!');
+                  }
+               }
+            });
+         }); // end btnDelete()
+
     }); // end document
     </script>
 </body>

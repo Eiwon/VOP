@@ -164,7 +164,7 @@
 			if(deliveryVO != null){ // 기본 배송지로 등록된 배송지가 있을 경우에만 출력
 				$('#receiverName').val(deliveryVO.receiverName);
 				$('#receiverAddress').val(deliveryVO.receiverAddress);
-				$('#deliveryAddressDetails').val(deliveryVO.deliveryAddressDetails);
+				$('#deliveryAddressDetails').val(deliveryVO.receiverAddressDetails);
 				$('#receiverPhone').val(deliveryVO.receiverPhone);
 				$('#requirement').val(deliveryVO.requirement);
 			}
@@ -345,7 +345,7 @@
 				console.log("팝업 닫힘");
 				deliveryVO.receiverName = $('#receiverName').val();
 				deliveryVO.receiverAddress = $('#receiverAddress').val();
-				deliveryVO.deliveryAddressDetails = $('#deliveryAddressDetails').val();
+				deliveryVO.receiverAddressDetails = $('#deliveryAddressDetails').val();
 				deliveryVO.receiverPhone = $('#receiverPhone').val();
 				deliveryVO.requirement = $('#requirement').val();
 				

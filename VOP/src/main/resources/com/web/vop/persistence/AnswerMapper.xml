@@ -25,26 +25,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </insert>
    
    <!-- 댓댓글(답변) 전체 검색 -->
-   <!-- 사용안함 
-   <select id="selectListByInquiry" resultMap="answerResultMap">
+   <!-- 사용안함 -->
+   <select id="selectListByProductId" resultMap="answerResultMap">
+      SELECT * FROM ANSWER
+      WHERE PRODUCT_ID = #{productId}
+      ORDER BY ANSWER_ID
+   </select>
+   
+   <!-- 댓댓글(답변) 전체 검색 -->
+   <!-- 사용안함 -->
+   <select id="selectListByInquiryId" resultMap="answerResultMap">
       SELECT * FROM ANSWER
       WHERE INQUIRY_ID = #{inquiryId}
       ORDER BY ANSWER_ID
    </select>
-   -->
+   
    
    <!-- 댓댓글(답변) 수정 --><!-- 수정 기능 넣을지 말지 고민 중 -->
    <update id="updateAnswer">
       UPDATE ANSWER
       SET ANSWER_CONTENT = #{answerContent}
-      WHERE REVIEW_ID = #{productId} AND MEMBER_ID = #{memberId}
+      WHERE REVIEW_ID = #{inquiryId} AND MEMBER_ID = #{memberId}
    </update>
    
    <!-- 댓댓글(답변) 삭제 -->
    <delete id="deleteAnswer">
       DELETE FROM ANSWER
-      WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
+      WHERE PRODUCT_ID = #{inquiryId} AND MEMBER_ID = #{memberId}
    </delete>
+   
+   
    
 
 

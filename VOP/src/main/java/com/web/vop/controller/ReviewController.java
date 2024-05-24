@@ -42,7 +42,7 @@ public class ReviewController {
 	@Autowired
 	private ProductService productService;
 	
-	// 댓글(리뷰) 등록 GET
+	// 댓글(리뷰) 등록 GET 이동
 	@GetMapping("/register")
 	public void createReviewGET(Model model, Integer productId, Integer imgId) {
 		log.info("createReviewGET()");
@@ -68,7 +68,7 @@ public class ReviewController {
 	} // end loginGET
 	
 	
-	// 댓글(리뷰) 수정 GET
+	// 댓글(리뷰) 수정 GET 이동
 	@GetMapping("/modify")
 	public void updateReviewGET(Model model, Integer productId, Integer imgId, @AuthenticationPrincipal MemberDetails memberDetails) {
 		log.info("updateReviewGET()");
@@ -133,7 +133,6 @@ public class ReviewController {
 		model.addAttribute("reviewList", reviewList);
 	}// end readAllReview()
 	
-	@Transactional(value = "transactionManager") // 리뷰 삭제 후 상품의 리뷰 총 갯수 검색 후 다시 상품 총 갯수 컬럼 등록
 	@PostMapping("/delete") // DELETE : 댓글(리뷰) 삭제 
 	   public String deleteReview(Integer productId, @AuthenticationPrincipal MemberDetails memberDetails){
 	      log.info("deleteReview()");
@@ -143,46 +142,47 @@ public class ReviewController {
 		  // memberId 확인 로그
 		  log.info("memberId = " + memberId);
 	      
-	      // 소수점 첫 째 자리까지만 출력
-	      DecimalFormat df = new DecimalFormat("#.#");
+//	      // 소수점 첫 째 자리까지만 출력
+//	      DecimalFormat df = new DecimalFormat("#.#");
 	      
-	      // productId에 해당하는 reviewId의 댓글(리뷰)
+	      // productId와 memberId 해당하는 댓글(리뷰) 삭제
 	      int result = reviewService.deleteReview(productId, memberId);
    
-	   			if(result == 1) {
-	   				
-	   				// 현재 상품 댓글 카운터 
-	   				int reviewNum =  productService.selectReviewByCount(productId);
-	   				
-	   				// 댓글 총 갯수 로그
-	   				log.info("reviewNum : " + reviewNum);
-	   				
-	   				// 상품 댓글 카운터 수정
-	   				int updateRes = productService.updateReviewNum(productId, reviewNum);
-	   				
-	   				// 리뷰 평균 관련 코드
-	   				// productId에 해당하는 상품 조회 // 업그레이드 된 상태
-	   				ProductVO productVO = productService.getProductById(productId);
-	   				
-	   				int res = 0; // 댓글 입력시 소수점 입력 불가
-	   				String reviewAvg = "0";
-	   				if(productVO.getReviewNum() != 0) { //0 이하일 때 무한의 에러가 나와온다.
-	   					// 리뷰 총 합
-	   					res = productService.selectReviewStar(productId);
-	   					log.info("리뷰(별) : " + res);
-	   					
-	   					// 리뷰 평균 값 reviewStar
-	   					reviewAvg = df.format((float)res / productVO.getReviewNum());
-	   					
-	   					log.info("res : " + res);
-	   					log.info("reviewAvg : " + reviewAvg);
-	   					
-	   					// 리뷰 평균값 업데이트
-	   					updateRes = productService.updateReviewAvg(productId, reviewAvg);
-
-	   					log.info("updateRes : " + updateRes);
-	   				}
-	   			}
+//	   			if(result == 1) {
+//	   				
+//	   				// 현재 상품 댓글 카운터 
+//	   				int reviewNum =  productService.selectReviewByCount(productId);
+//	   				
+//	   				// 댓글 총 갯수 로그
+//	   				log.info("reviewNum : " + reviewNum);
+//	   				
+//	   				// 상품 댓글 카운터 수정
+//	   				int updateRes = productService.updateReviewNum(productId, reviewNum);
+//	   				
+//	   				// 리뷰 평균 관련 코드
+//	   				// productId에 해당하는 상품 조회 // 업그레이드 된 상태
+//	   				ProductVO productVO = productService.getProductById(productId);
+//	   				
+//	   				int res = 0; // 댓글 입력시 소수점 입력 불가
+//	   				String reviewAvg = "0";
+//	   				if(productVO.getReviewNum() != 0) { //0 이하일 때 무한의 에러가 나와온다.
+//	   					
+//	   					// 삭제 후 해당 상품의 리뷰 총 합
+//	   					res = productService.selectReviewStar(productId);
+//	   					log.info("리뷰(별) : " + res);
+//	   					
+//	   					// 리뷰 평균 값 reviewStar
+//	   					reviewAvg = df.format((float)res / productVO.getReviewNum());
+//	   					
+//	   					log.info("res : " + res);
+//	   					log.info("reviewAvg : " + reviewAvg);
+//	   					
+//	   					// 리뷰 평균값 업데이트
+//	   					updateRes = productService.updateReviewAvg(productId, reviewAvg);
+//
+//	   					log.info("updateRes : " + updateRes);
+//	   				}
+//	   			}
 
 	      log.info(result + "행 댓글 삭제");
 	      

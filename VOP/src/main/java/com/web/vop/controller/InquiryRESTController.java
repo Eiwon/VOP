@@ -15,18 +15,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.web.vop.domain.AnswerVO;
 import com.web.vop.domain.InquiryVO;
+import com.web.vop.persistence.AnswerMapper;
 import com.web.vop.service.InquiryService;
 
 import lombok.extern.log4j.Log4j;
 
 @RestController
-@RequestMapping("inquiry")
+@RequestMapping("/inquiryRest")
 @Log4j
 public class InquiryRESTController {
 	
 	@Autowired
 	private InquiryService inquiryService;
+	
+	@Autowired
+	private AnswerMapper answerMapper;
 	
 	@PostMapping("/register") // POST : 댓글(문의) 입력
 	public ResponseEntity<Integer> createInquiry(@RequestBody InquiryVO inquiryVO){
@@ -42,16 +47,18 @@ public class InquiryRESTController {
 	}// end createInquiry()
 	
 	
-	@GetMapping("설정 예정") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
+	@GetMapping("/list") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
 	public ResponseEntity<List<InquiryVO>> readAllInquiry(
-			@PathVariable("productId") int productId){
+			@RequestBody int productId){
 		log.info("readAllInquiry()");
 		
 		// productId에 해당하는 댓글(리뷰) list을 전체 검색
-		List<InquiryVO> list = inquiryService.getAllInquiry(productId);
+		List<InquiryVO> inquiryList = inquiryService.getAllInquiry(productId);
+		
+//		List<AnswerVO> answerList = answerMapper.selectListByInquiryId(productId);
 		
 		// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
-		return new ResponseEntity<List<InquiryVO>>(list, HttpStatus.OK);
+		return new ResponseEntity<List<InquiryVO>>(inquiryList, HttpStatus.OK);
 	}// end readAllInquiry()
 	
 	@PutMapping("/modify") // PUT : 댓글(리뷰) 수정 // 나중에 데이터 받는 거에 따라 달라짐
@@ -78,7 +85,7 @@ public class InquiryRESTController {
 	      log.info("memberId : " + inquiryVO.getMemberId());
 	      
 	      // productId에 해당하는 reviewId의 댓글(리뷰)
-	      int result = inquiryService.deleteInquiry(inquiryVO.getProductId(), inquiryVO.getMemberId());
+	      int result = inquiryService.deleteInquiry(inquiryVO.getProductId(), inquiryVO.getMemberId(), inquiryVO.getInquiryId());
 	
 	      log.info(result + "행 댓글 삭제");
 	      

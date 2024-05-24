@@ -48,7 +48,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
    <!-- 댓글 총 갯수 검색  -->
    <!-- resultType="java.lang.Integer" 단일 값때만 사용, 코드 추가해서 테스트 통과 -->
-   <!--  우선 사용안함 보류 -->
    <select id="selectReviewCount" resultType="Integer">
     	SELECT COUNT(*) AS PRODUCT FROM REVIEW 
     	WHERE PRODUCT_ID = #{productId}

@@ -19,5 +19,5 @@ public interface InquiryService {
 		int updateInquiry(int productId, String memberId, String inquiryContent);
 			 
 		// 댓글(문의) 삭제
-		int deleteInquiry(int productId, String memberId);
+		int deleteInquiry(int productId, String memberId, int inquiryId);
 }
