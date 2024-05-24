@@ -1,6 +1,7 @@
 package com.web.vop.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -20,13 +21,26 @@ public class OrderServiceImple implements OrderService {
 	@Autowired
 	OrderMapper orderMapper;
 	
-	@Override
-	public Date getExpectDateByPaymentId(int paymentId) { // 배송 예정일 조회
+	public Date getExpectDateByPaymentId(int paymentId) { // 배송 예정일 조회 (TEST 중)
 		 log.info("getExpectDateByPaymentId()");
-		 Date orderList = orderMapper.selectByExpectDeliveryDate(paymentId);
-		 log.info("배송 예정일 : " + orderList);
-		return orderList;
-	}
+		 Date paymentDate = orderMapper.selectByExpectDeliveryDate(paymentId);
+		 
+		 if (paymentDate == null) {
+	            log.error(paymentDate, null);
+	            throw new IllegalArgumentException("해당 paymentId에 대한 결제일을 찾을 수 없습니다.");
+	        }
+		 log.info("결제일 : " + paymentDate);
+		 
+		 // 캘린더를 이용해 결제일에서 2일을 더한 후 반환한다
+		 Calendar calendar = Calendar.getInstance();
+		 calendar.setTime(paymentDate);
+		 calendar.add(Calendar.DAY_OF_YEAR, 2);
+		 
+		 Date expectDate = calendar.getTime();
+		 
+		 log.info("배송 예정일 : " + expectDate);
+		return expectDate;
+	}//end getExpectDateByPaymentId
 
 	@Override
 	public int getPaymentId(int paymentId) { // 송장 번호 조회
