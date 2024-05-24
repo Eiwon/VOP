@@ -77,8 +77,8 @@ public class DeliveryServiceImple implements DeliveryService{
 		DeliveryVO result = deliveryMapper.selectDefaultByMemberId(memberId);
 		return result;
 	} // end getDefaultDelivery
-	
-	// 기본 배송지 조회
+
+	// 기본 배송지 카운트
 	@Override
 	public boolean hasDefaultAddress(String memberId) {
 		log.info("hasDefaultAddress()");
@@ -86,27 +86,30 @@ public class DeliveryServiceImple implements DeliveryService{
 		log.info("기본 배송지 개수: " + count);
 		return  count > 0;
 	}//end hasDefaultAddress()
+	
+	//등록하는 deliveryId의 기본배송지를 1로 바꾸기
+	@Override
+	public int updateNewDefault(int deliveryId, String memberId) {
+		log.info("updateNewDefault() - deliveryId: " +  deliveryId);
+		log.info("updateNewDefault() - memberId: " +memberId);
+		int res = deliveryMapper.updateNewDefault(deliveryId, memberId);
+		log.info(res + "행 기본배송지 등록 완료");
+		return res;
+	}//end updateNewDefault
 
 	
-	// 기본 배송지 설정하기
+	//해당하는 memberid의 나머지 기본배송지 목록을 0으로 바꾸기
 	@Override
-	public void setDefaultDelivery(int deliveryId, String memberId) {
-		log.info("setDefaultDelivery() with deliveryId: {}" + deliveryId);
-		log.info("setDefaultDelivery() with memberId: {}" + memberId);
-		
-		  try {
-		        // 기존 기본 배송지를 0으로 업데이트
-		        int updateDefaultResult = deliveryMapper.updateDefault(memberId);
-		        log.info("기존의 기본 배송지를 0으로 업데이트 : " + updateDefaultResult + "행 수정");
-		        
-		        // 새로운 기본 배송지를 1로 설정
-		        int updateNewDefaultResult = deliveryMapper.updateNewDefault(deliveryId, memberId);
-		        log.info("새로운 배송지를 기본 배송지로 설정: " + updateNewDefaultResult + "행 수정");
-		    } catch (Exception e) {
-		        log.error(e);
-		        throw e; // 재throw 하여 상위 레이어에서도 예외를 처리할 수 있도록 
-		    }
-	}//end setDefaultDelivery()
+	public int updateDefault(String memberId) {
+		log.info("updateDefault() - memberId : " + memberId);
+		int res = deliveryMapper.updateDefault(memberId);
+		log.info(res + "행 기본배송지 해지 완료");
+		return res;
+	} //end updateNewDefault
+
+	
+	
+	
 
 
 	

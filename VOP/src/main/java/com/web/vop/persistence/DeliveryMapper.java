@@ -28,10 +28,10 @@ public interface DeliveryMapper {
 	// 기본 배송지 개수 조회
 	int cntIsDefault(@Param("memberId") String memberId);
 	
-	// 기존 기본 배송지를 0으로 업데이트
+	// memberid의 나머지 기본배송지 목록을 0으로 바꾸기
 	int updateDefault(String memberId);
 	
-	// 새로운 기본 배송지를 1로 설정
+	// 등록하는 배송지의 isdefault = 1로 설정
  	int updateNewDefault(@Param("deliveryId") int deliveryId, @Param("memberId") String memberId);
 
 	// memberId로 기본 배송지 검색
