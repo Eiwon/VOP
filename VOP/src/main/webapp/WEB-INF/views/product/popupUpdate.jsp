@@ -198,9 +198,14 @@ img {
 		let formProduct = $('#formProduct');
 		
 		formProduct.submit(function update(){
+			if(!confirm("변경시 관리자의 승인 전까지 판매가 중지됩니다. 변경하시겠습니까?")){
+				 event.preventDefault();
+				 return;
+			}
 			formProduct.append('<input type="hidden" name="productId" value="' + productDetails.productId + '">');
 			formProduct.append('<input type="hidden" name="imgId" value="' + productDetails.imgId + '">');
 			formProduct.append('<input type="hidden" name="productState" value="승인 대기중">');
+			alert("변경 사항은 관리자의 승인 후 반영됩니다.");
 		});
 		
 		function deleteRequest() {

@@ -121,6 +121,7 @@ tr {
 				success : function(result){
 					console.log(result);
 					if(result == 1){
+						
 						window.close();
 					}
 				} // end success
