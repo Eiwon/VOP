@@ -14,7 +14,7 @@ public interface MemberService {
 	public String checkIdDup(String memberId);
 	
 	// 로그인
-	public String checkLogin(String memberId, String memberPw);
+	public boolean checkLogin(String memberId, String memberPw);
 	
 	// 회원 정보 수정
 	public int updateMember(MemberVO memberVO);

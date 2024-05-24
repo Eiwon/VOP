@@ -22,7 +22,7 @@ import com.web.vop.service.AnswerService;
 import lombok.extern.log4j.Log4j;
 
 @RestController
-@RequestMapping("설정 예정2")
+@RequestMapping("/answer")
 @Log4j
 public class AnswerRESTController {
 	

@@ -460,13 +460,13 @@
     	
     <script type="text/javascript">
     
-    const memberId = '${memberDetails.getUsername() }';
+    const memberId = "${memberDetails.getUsername()}";
     
     $(document).ready(function(){
     	// 해당 버튼의 부모 요소로부터 productId 가져오기
         let productId;
         // 세션에서 memberId 가져오기
-        let memberId; // JSP 코드를 사용하여 세션 데이터 가져오기
+        /* let memberId; */ // JSP 코드를 사용하여 세션 데이터 가져오기
         let buttons;
     	// 공통 함수로 이벤트 리스너 추가
     	function addModalEventListener(buttonClass, modalClass) {
@@ -478,7 +478,7 @@
     	            // 해당 버튼의 부모 요소로부터 productId 가져오기
     	            productId = button.closest('.order-box').querySelector('[name="productId"]').value;
     	            // 세션에서 memberId 가져오기
-    	            memberId = '${memberId}'; // JSP 코드를 사용하여 세션 데이터 가져오기
+    	            /* memberId = '${memberId}'; */ // JSP 코드를 사용하여 세션 데이터 가져오기
     	            console.log(productId);
     	            console.log(memberId);
     	        });
@@ -524,7 +524,6 @@
             // 입력된 내용 가져오기
             let inquiryContent = form.querySelector('.content').value;
 
-			
             console.log(productId);
             console.log(memberId);
             
@@ -539,7 +538,7 @@
          	// $.ajax로 송수신
             $.ajax({
                type : 'POST', // 메서드 타입
-               url : '../inquiry/register', // url
+               url : '../inquiryRest/register', // url
                headers : { // 헤더 정보
                   'Content-Type' : 'application/json' // json content-type 설정
                }, //'Content-Type' : 'application/json' 헤더 정보가 안들어가면 4050에러가 나온다.
@@ -577,7 +576,7 @@
             // ajax 요청
             $.ajax({
                type : 'PUT', // 메서드 타입
-               url : '../inquiry/modify',// 경로 
+               url : '../inquiryRest/modify',// 경로 
                headers : {
                   'Content-Type' : 'application/json' // json content-type 설정
                }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 4050에러가 나온다.
@@ -603,17 +602,23 @@
             
     	/* let productId = $('#productId').val();
         let memberId = $('#memberId').val(); */
-        console.log(productId);
-        console.log(memberId);
-        
+        console.log("productId : " + productId);
+        console.log("memberId : " + memberId);
+		
+        let obj = {
+        		'productId' : productId,
+            	'memberId' : memberId
+        }      
+        console.log(obj);
         
        // ajax 요청
        $.ajax({
           type : 'DELETE', 
-          url : '../inquiry/' + productId + '/' + memberId,
+          url : '../inquiryRest/delete',
           headers : {
              'Content-Type' : 'application/json'
           },
+          data : JSON.stringify(obj), // JSON으로 변환
           success : function(result) {
              console.log(result);
              if(result == 1) {

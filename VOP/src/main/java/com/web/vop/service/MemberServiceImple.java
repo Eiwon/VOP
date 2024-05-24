@@ -49,11 +49,13 @@ public class MemberServiceImple implements MemberService{
 	} // end checkIdDup
 
 	@Override
-	public String checkLogin(String memberId, String memberPw) { // 로그인
+	public boolean checkLogin(String memberId, String memberPw) { // 로그인
 		log.info("Member Service checkLogin()");
-		String result = memberMapper.selectMemberIdWithPw(memberId, memberPw);
-		log.info("로그인 시도 결과 : " + result);
-		return result;
+		MemberVO memberVO = memberMapper.selectByMemberId(memberId);
+		boolean comp = passwordEncoder.matches(memberPw, memberVO.getMemberPw());
+		log.info("비교 결과 : " + comp);
+		
+		return comp;
 	} // end checkLogin
 
 	@Override

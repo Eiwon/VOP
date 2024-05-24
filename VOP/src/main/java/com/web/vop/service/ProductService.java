@@ -37,7 +37,7 @@ public interface ProductService {
 	int updateReviewNum(int productId, int reviewNum);
 	
 	// 상품 등록
-	int registerProduct(ProductVO productVO, MultipartFile thumbnail, MultipartFile[] details) throws IOException;
+	int registerProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details) throws IOException;
 	
 	// 카테고리로 상품 검색
 	List<ProductVO> searchByCategory(String category, PageMaker pageMaker);
@@ -74,8 +74,19 @@ public interface ProductService {
 	ProductDetailsDTO getDetails(int productId);
 	
 	// 상품 정보 변경
-	int updateProduct(ProductVO productVO, MultipartFile thumbnail, MultipartFile[] details) throws IOException;
+	int updateProduct(ProductVO productVO, ImageVO newThumbnail, List<ImageVO> newDetails) throws IOException;
 	
 	// 상품 삭제 요청
 	public int deleteProductRequest(int productId);
+	
+	// 상품과 관련된 모든 이미지 검색
+	List<ImageVO> getAllProductImg(int productId);
+	
+	// 상품의 썸네일 검색
+	ImageVO getProductThumbnail(int imgId);
+	
+	// 상품의 세부 이미지 검색
+	List<ImageVO> getProductDetails(int productId);
+	
+	
 }

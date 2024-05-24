@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!-- 시큐리티 코드 -->
+<%@ page import="javax.servlet.http.HttpSession" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
@@ -48,8 +49,9 @@
 </head>
 <body>
 	
-	
 	<h1>리뷰 작성</h1>
+	
+	<h1>${memberDetails.getUsername() }</h1>
 	
 	<div>
 		<p>상품 번호 "${productId}"</p>
@@ -57,11 +59,9 @@
 	
 	<p>이미지 썸네일</p>
 	  <div>
-    	<img src="../product/showImg?imgId=${imgId}" alt="${imgRealName}.${imgExtension}">
+    	<img alt="${imgId}">
 	  </div>
-	  
 
-	
 <div id="myform">
     
     <fieldset id="starFieldset">
@@ -85,7 +85,22 @@
 $(document).ready(function(){
 	
 	let selectedStar; // 전역 변수로 selectedStar 선언
-	let memberId = ${memberDetails.getUsername()};
+	let memberId = "${memberDetails.getUsername()}";
+	loadImg();
+	// 이미지 없을때 이름과 확장명 보여주는 코드
+	function loadImg(){
+		$(document).find('img').each(function(){
+			let target = $(this);
+			let imgId = target.attr("alt");
+			$.ajax({
+				method : 'GET',
+				url : '../image/' + imgId,
+				success : function(result){
+					target.attr('src', result);
+				}
+			}); // end ajax
+		});
+	} // end loadImg
 	
     // 라디오 버튼 클릭 이벤트 핸들러
     $('#starFieldset input[type="radio"]').click(function() {

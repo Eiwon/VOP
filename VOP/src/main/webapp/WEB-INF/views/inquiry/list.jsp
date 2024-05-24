@@ -6,11 +6,11 @@
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
 </sec:authorize> 
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>문의 리스트</title>
 </head>
 <body>
@@ -30,9 +30,12 @@
                             ${inquiryDateCreated}
                         </td>
                         <td>
-                            <button class="btnAdd" data-inquiryid="${InquiryVO.inquiryId}"  data-productid="${InquiryVO.productId}">답글 작성</button>
-                            <button class="btnModify" data-inquiryid="${InquiryVO.inquiryId}" style="display:none;">답글 수정</button>
-                            <button class="btnDelete" data-inquiryid="${InquiryVO.inquiryId}" style="display:none;">답글 삭제</button>
+                            <!-- 수정: 클래스 이름을 btnAdd로 변경 -->
+            				<button class="btnAdd" data-inquiryid="${InquiryVO.inquiryId}"  data-productid="${InquiryVO.productId}">답글 작성</button>
+            				<!-- 수정: 클래스 이름을 btnModify로 변경 -->
+            				<button class="btnModify" data-inquiryid="${InquiryVO.inquiryId}" style="display:none;">답글 수정</button>
+            				<!-- 수정: 클래스 이름을 btnDelete로 변경 -->
+            				<button class="btnDelete" data-inquiryid="${InquiryVO.inquiryId}" style="display:none;">답글 삭제</button>
                         </td>
                     </tr>
                     <tr>
@@ -114,7 +117,7 @@
               // $.ajax로 송수신
               $.ajax({
                  type : 'POST', // 메서드 타입
-                 url : '설정예정', // url
+                 url : '../answer/register', // url
                  headers : { // 헤더 정보
                     'Content-Type' : 'application/json' // json content-type 설정
                  }, //'Content-Type' : 'application/json' 헤더 정보가 안들어가면 4050에러가 나온다.
@@ -131,7 +134,7 @@
     	// 답글 수정 비동기 코드
         $('#btnModifySubmit').click(function() {
         	let answerContent = $('#modifyAnswer').val();
-        	let answerContent = $('#replyAnswer').val();
+        	
         	let inquiryId = $(this).data('inquiryid');
              
              let obj = {
@@ -144,7 +147,7 @@
         	// ajax 요청
             $.ajax({
                type : 'PUT', 
-               url : '설정예정',
+               url : '../answer/modify',
                headers : {
                   'Content-Type' : 'application/json'
                },
@@ -169,7 +172,7 @@
         	// ajax 요청
             $.ajax({
                type : 'DELETE', 
-               url : '설정예정',
+               url : '../answer/delete',
                headers : {
                   'Content-Type' : 'application/json'
                },

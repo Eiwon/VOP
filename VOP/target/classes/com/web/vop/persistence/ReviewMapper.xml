@@ -22,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <!-- 댓글(리뷰) 입력 -->
    <insert id="insertReview">
       INSERT INTO REVIEW (REVIEW_ID, MEMBER_ID, PRODUCT_ID, REVIEW_CONTENT
-      , REVIEW_DATE_CREATED, REVIEW_STAR, REVIEW_LIKE)
+      , REVIEW_DATE_CREATED, REVIEW_STAR, REVIEW_LIKE, IMG_ID)
       VALUES (REVIEW_SEQ.NEXTVAL, #{memberId}, #{productId}, #{reviewContent}
       , SYSDATE, #{reviewStar}, 0, 0)<!-- 0 좋아요는 댓글 작성 하는 사람 이외 다른 사람이 수정 해야 한다. -->
    </insert>

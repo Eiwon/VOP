@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.web.vop.domain.ImageVO;
 
-@Service
 public interface ImageService {
 	
 	// 이미지 검색 (상품 메인)
@@ -33,4 +32,8 @@ public interface ImageService {
 	
 	// imgId로 업데이트
 	int updateImgById(ImageVO imageVO);
+	
+	// 최근 등록한 이미지 검색
+	int getRecentImgId();
+	
 }
