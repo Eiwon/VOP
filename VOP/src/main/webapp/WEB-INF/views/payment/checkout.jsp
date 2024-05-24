@@ -342,17 +342,7 @@
 			
 			// 팝업 창 띄우기
 			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
-			popup.onbeforeunload = function(){
-				// 팝업 닫힐 때 실행
-				/* console.log("팝업 닫힘");
-				deliveryVO.receiverName = $('#receiverName').val();
-				deliveryVO.receiverAddress = $('#receiverAddress').val();
-				deliveryVO.deliveryAddressDetails = $('#deliveryAddressDetails').val();
-				deliveryVO.receiverPhone = $('#receiverPhone').val();
-				deliveryVO.requirement = $('#requirement').val();
-				
-				console.log(deliveryVO); */
-			} // end popup.onbeforeunload
+			
 		} // end showDeliveryPopup
 		function saveDelivery(delivery){
 			console.log("팝업 닫힘");

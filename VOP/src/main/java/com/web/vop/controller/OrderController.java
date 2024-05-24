@@ -23,7 +23,7 @@ public class OrderController {
 	@Autowired
 	OrderService orderService;
 	
-	@GetMapping("/orderlist") 
+	//@GetMapping("/orderlist") 
 	public void orderlistGET() { // 주문목록 페이지 불러오기
 		System.out.println("orderlist.jsp 이동");
 		log.info("orderlistGET()");
