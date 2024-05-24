@@ -72,14 +72,15 @@
 	//서버에서 memberId 가져오기
 	const memberId = '${memberDetails.getUsername() }';
 	
-	 // 서버에 기본 배송지 여부를 확인하는 AJAX 요청을 보내는 함수
+	 // 기본 배송지 있는지 조회 
     function checkDefaultAddress() {
         return new Promise(function(resolve, reject) {
             $.ajax({
-                url: 'checkDefaultAddress', // 서버 엔드포인트 URL
+                url: '/checkDefaultAddress', // 서버 엔드포인트 URL
                 method: 'GET', // GET 방식으로 요청
                 data: { memberId: memberId },
                 success: function(response) {
+                	
                     resolve(response.hasDefaultAddress); // 응답의 기본 배송지 여부를 반환
                 },
                 error: function(err) {
@@ -90,25 +91,45 @@
         });
     }
 	
- 	// 기본 배송지로 설정할 때 실행되는 함수
-    function setDefault(deliveryId) {
+ 	// 해당하는 memberid의 나머지 기본배송지 목록을 0으로 바꾸기 (테스트)
+    function setDefault(memberId) {
         // 새로운 기본 배송지 ID를 서버에 전달하기 위해 Ajax 요청 보내기
         $.ajax({
-            url: '/delivery/updateDefault', // 서버 엔드포인트 URL
+            url: '/updateDefault', // 서버 엔드포인트 URL
             method: 'PUT', // PUT 방식으로 요청
             contentType: 'application/json',
-            data: JSON.stringify({ deliveryId: deliveryId }), // 새로운 기본 배송지 ID 전달
+            data: JSON.stringify({ memberId: memberId }), // 새로운 기본 배송지 ID 전달
             success: function(response) {
                 // 성공적으로 서버에서 처리된 경우에 실행할 코드
-                console.log('기본 배송지 설정이 성공적으로 처리되었습니다.');
+                console.log('기본 배송지 설정이 해제되었습니다.');
             },
             error: function(err) {
                 // 서버에서 오류가 발생한 경우에 실행할 코드
-                console.error('기본 배송지 설정 중 오류가 발생했습니다:', err);
+                console.error('기본 배송지 설정 해지 중 오류가 발생했습니다:', err);
             }
         });
     }
 	 
+ 	// 기존에 있는 배송지를 일반 배송지로 설정(테스트)
+ 	function setNewDefault(deliveryId) {
+        // 새로운 기본 배송지 ID를 서버에 전달하기 위해 Ajax 요청 보내기
+        $.ajax({
+            url: '/updateNewDefault', // 서버 엔드포인트 URL
+            method: 'PUT', // PUT 방식으로 요청
+            contentType: 'application/json',
+            data: JSON.stringify({ deliveryId: deliveryId , memberId: memberId}), // 새로운 기본 배송지 ID 전달
+            success: function(response) {
+                // 성공적으로 서버에서 처리된 경우에 실행할 코드
+                console.log('기본 배송지 설정이 등록되었습니다.');
+            },
+            error: function(err) {
+                // 서버에서 오류가 발생한 경우에 실행할 코드
+                console.error('기본 배송지 등록 중 오류가 발생했습니다:', err);
+            }
+        });
+    }
+ 	
+ 	
 	//저장 버튼 클릭 시 폼 유효성 검사 후 제출 및 페이지 이동
 	document.getElementById("deliveryForm").addEventListener("submit", function(event) {
     	var receiverName = document.getElementById("receiverName").value;

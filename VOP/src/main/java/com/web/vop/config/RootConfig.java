@@ -10,6 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -24,6 +25,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @EnableAspectJAutoProxy
 @MapperScan(basePackages = {"com.web.vop.persistence"})
 @EnableTransactionManagement // 트랜잭션 관리 활성화
+@EnableScheduling // 스케줄러 활성화
 public class RootConfig {
    
    @Bean // 스프링 bean으로 설정

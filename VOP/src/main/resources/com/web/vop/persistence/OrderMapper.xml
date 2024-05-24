@@ -18,19 +18,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="memberId" column="MEMBER_ID"/>
 
    </resultMap>
-
-	<resultMap type="com.web.vop.domain.DeliveryVO" id="DeliveryResultMap">
-      <id property="deliveryId" column="DELIVERY_ID" /> 
-      <result property="memberId" column="MEMBER_ID"/>
-      <result property="receiverName" column="RECEIVER_NAME"/>
-      <result property="receiverAddress" column="RECEIVER_ADDRESS"/>
-      <result property="receiverPhone" column="RECEIVER_PHONE"/>
-      <result property="requirement" column="REQUIREMENT"/>
-      <result property="memberId" column="MEMBER_ID"/> <!-- memberId 추가 하기 -->
-   </resultMap>
+   
    
 	<!-- 배송지 상세 조회 (배송 예정일) -->
-	<select id="selectByExpectDeliveryDate" resultType="Date">
+	<select id="selectByExpectDeliveryDate" resultType="java.util.Date">
 		SELECT EXPECT_DELIVERY_DATE FROM "ORDER" WHERE PAYMENT_ID = #{paymentId}
 	</select>
 
@@ -43,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="insertOrder">
 		INSERT INTO "ORDER" VALUES (
 			ORDER_SEQ.NEXTVAL, #{paymentId}, #{productId}, #{productName}, #{productPrice}, #{purchaseNum},
-			SYSDATE +2, #{imgId}, #{memberId}
+			 SYSDATE + 2, #{imgId}, #{memberId}
 		)
 	</insert>
 	

@@ -18,7 +18,7 @@ import com.web.vop.service.OrderService;
 import lombok.extern.log4j.Log4j;
 
 @RestController
-@RequestMapping("/board")
+@RequestMapping("/order")
 @Log4j
 public class OrderRESTController {
 
@@ -26,7 +26,7 @@ public class OrderRESTController {
 	OrderService orderService;
 	
 	// 주문 목록 요청
-	//@GetMapping("/orderList")
+	@GetMapping("/orderList")
 	public ResponseEntity<List<OrderVO>> getOrderList(@AuthenticationPrincipal MemberDetails memberDetails){
 		log.info("getOrderList()"); 
 		String memberId = memberDetails.getUsername();

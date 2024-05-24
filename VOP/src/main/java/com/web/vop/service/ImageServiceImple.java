@@ -58,10 +58,8 @@ public class ImageServiceImple implements ImageService{
 	} // end getImgId
 
 	@Override
-	public int removeById(int imgId) { // 서버에 저장된 이미지 삭제 후 DB 정보 삭제
+	public int removeById(int imgId) { // DB 정보 삭제
 		log.info("removeById() : " + imgId);
-		ImageVO imageVO = imageMapper.selectByImgId(imgId);
-		FileUploadUtil.deleteFile(imageVO);
 		int res = imageMapper.deleteById(imgId);
 		
 		return res;

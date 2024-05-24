@@ -144,7 +144,7 @@ $(document).ready(function(){
              if(result == 1) {
                 alert('댓글 입력 성공');
                 // 댓글 입력 완료 하면 마이페이지로 이동
-                window.location.href = '../board/orderlist';
+                window.location.href = '../order/orderlist';
              } else {
             	 alert('댓글 입력 실패');
              }

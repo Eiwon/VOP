@@ -15,7 +15,7 @@ import com.web.vop.service.OrderService;
 
 import lombok.extern.log4j.Log4j;
 
-@RequestMapping("/board")
+@RequestMapping("/order")
 @Controller
 @Log4j
 public class OrderController {
@@ -23,7 +23,7 @@ public class OrderController {
 	@Autowired
 	OrderService orderService;
 	
-	//@GetMapping("/orderlist") 
+	@GetMapping("/orderlist") 
 	public void orderlistGET() { // 주문목록 페이지 불러오기
 		System.out.println("orderlist.jsp 이동");
 		log.info("orderlistGET()");

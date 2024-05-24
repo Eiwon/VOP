@@ -335,7 +335,7 @@
     <div class="user-links">
         	<a href="mypage">마이페이지</a>
         	<div class="submenu">
-        		<a href="orderlist">주문목록</a>
+        		<a href="../order/orderlist">주문목록</a>
         		<a href="#">취소/반품</a>
         		<a href="#">찜리스트</a>
         	</div>	
@@ -357,7 +357,7 @@
 	<!-- 회원id -->
 	<h1>${memberDetails.getUsername() }</h1>
 
-	
+	<div id="order-container">
     <c:forEach items="${orderList}" var="order">
         <div class="order-box">
             <div class="order-details">
@@ -443,6 +443,7 @@
             </div>
         </div>
     </c:forEach>
+    </div>
     
     <!-- 주문 목록이 비어있을 때 -->
     <c:if test="${empty orderList}">
@@ -631,6 +632,44 @@
     });// end inquiryDelete()
     
     }); // end document.ready()
+    
+    
+ // 주문목록 
+    $(document).ready(function() {
+        $.ajax({
+          type: "GET",
+          url: "/order/orderList",
+          success: function(orderList) {
+              orderList.forEach(function(order) {
+                  var orderBox =
+                       '<div class="order-box">' +
+                       '<div class="order-details">' +
+                       '<p>예상 배송일: ' + order.expectDeliveryDate + '</p>';
+
+              // 이미지 목록 표시
+               order.imageList.forEach(function(image) {
+                        orderBox += '<img src="showImg?imgId=' + image.imgId + '" alt="' + image.imgRealName + '.' + image.imgExtension + '">';
+                    });
+
+                    orderBox +=
+                        '<div>' +
+                        '<p>상품명: ' + order.productName + '</p>' +
+                        '<p>상품 가격: ' + order.productPrice + '원</p>' +
+                        '<p>상품 수량: ' + order.purchaseNum + '개</p>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>';
+
+                    $('#order-container').append(orderBox);
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX 오류:', status, error);
+            }
+        });
+    });
+
+
     
     </script>
 	
