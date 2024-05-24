@@ -34,15 +34,6 @@ public class ProductServiceImple implements ProductService{
 	@Autowired
 	private ImageMapper imageMapper;
 	
-	@Autowired
-	private String thumbnailUploadPath;
-	
-	@Autowired
-	private String uploadPath;
-	
-	@Autowired
-	private AWSS3Service awsS3Service; 
-	
 	// 상품 상세 정보 검색
 	@Override
 	public ProductVO getProductById(int productId) {
@@ -104,46 +95,26 @@ public class ProductServiceImple implements ProductService{
 
 	@Transactional(value = "transactionManager")
 	@Override
-	public int registerProduct(ProductVO productVO, MultipartFile thumbnail, MultipartFile[] details) throws IOException { // 등록 성공시, 등록한 상품 id 반환
+	public int registerProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details) throws IOException { // 등록 성공시, 등록한 상품 id 반환
 		log.info("registerProduct : " + productVO);
 		int res = 0;
 		
-		ImageVO imgThumbnail = null;
-		List<ImageVO> imgDetails = new ArrayList<>();
-		
-		// 모든 파일을 imageVO로 변환
-		if (!thumbnail.isEmpty()) { // 파일이 있는 경우
-			imgThumbnail = FileUploadUtil.toImageVO(thumbnail, thumbnailUploadPath);
-		}
-		if(!details[0].isEmpty()) {
-			for (MultipartFile file : details) {
-				imgDetails.add(FileUploadUtil.toImageVO(file, uploadPath));
-			}
-		}
-		
 		// DB에 상품 정보 등록
-		if(thumbnail != null) {
-			int imgId = imageService.registerImage(imgThumbnail);
+		if(thumbnail != null) { 
+			// 썸네일 등록
+			imageMapper.insertImg(thumbnail);
+			int imgId = imageMapper.selectRecentImgId();
 			productVO.setImgId(imgId);
 		}
+		
+		// 상품 등록
 		productVO.setProductState(Constant.STATE_SELL);
 		productMapper.insertProduct(productVO);
 		int productId = productMapper.selectLastInsertId();
 		
-		for(ImageVO detail : imgDetails) {
+		for(ImageVO detail : details) {
 			detail.setProductId(productId);
 			res = imageMapper.insertImg(detail);
-		}
-		 
-		if(res == 1) { // DB 저장 성공시 서버에 저장 
-		    if(imgThumbnail != null) {
-					awsS3Service.uploadIcon(thumbnail, imgThumbnail);
-		    }
-		    if (!details[0].isEmpty()) {
-		    	for(int i = 0; i < imgDetails.size(); i++) {
-		    		awsS3Service.uploadImage(details[i], imgDetails.get(i));	    			
-		    	}
-		    }
 		}
 		return res;
 	} // end registerProduct
@@ -202,7 +173,7 @@ public class ProductServiceImple implements ProductService{
 		int imgId = target.getImgId();
 		
 		// 상품 이미지도 삭제해야함
-		List<ImageVO> imageList = imageMapper.selectAllbyProductId(productId);
+		List<ImageVO> imageList = imageMapper.selectByProductId(productId);
 		ImageVO imageVO = imageMapper.selectByImgId(imgId);
 		if(imageVO != null) {
 			imageList.add(imageVO);
@@ -210,13 +181,9 @@ public class ProductServiceImple implements ProductService{
 		// DB에 저장된 이미지 정보 삭제
 		imageMapper.deleteById(imgId);
 		productMapper.deleteProduct(productId);
-		imageMapper.deleteProductImage(productId);
+		int res = imageMapper.deleteByProductId(productId);
 		
-		for(ImageVO image : imageList) {
-			awsS3Service.removeImage(image);
-		}
-		
-		return 1;
+		return res;
 	} // end deleteProduct
 
 	@Override
@@ -254,40 +221,26 @@ public class ProductServiceImple implements ProductService{
 
 	@Transactional(value = "transactionManager")
 	@Override
-	public int updateProduct(ProductVO productVO, MultipartFile thumbnail, MultipartFile[] details) throws IOException {
+	public int updateProduct(ProductVO productVO, ImageVO newThumbnail, List<ImageVO> newDetails) throws IOException {
 		log.info("updateProduct()");
 		int productId = productVO.getProductId();
 		int oldThumbnailId = productVO.getImgId();
 		
-		ImageVO thumbnailVO = null;
-		List<ImageVO> detailsList = new ArrayList<>();
-
-		// DB 변경
-		// 변경할 이미지가 있다면, DB에 저장하기 위해 VO로 변환
-		if (!thumbnail.isEmpty()) {
-			thumbnailVO = FileUploadUtil.toImageVO(thumbnail, thumbnailUploadPath);
-		}
-		if (!details[0].isEmpty()) {
-			for (MultipartFile detail : details) {
-				detailsList.add(FileUploadUtil.toImageVO(detail, uploadPath));
-			}
-		}
-		
 		// thumbnail 이미지 변경
-		if(thumbnailVO != null) {// 이미지가 변경되었다면, 기존 이미지 삭제, 새 이미지 추가
+		if(newThumbnail != null) {// 이미지가 변경되었다면, 기존 이미지 삭제, 새 이미지 추가
 			if(productVO.getImgId() > 0) {
 				imageMapper.deleteById(oldThumbnailId);
 			}
-			imageMapper.insertImg(thumbnailVO);
+			imageMapper.insertImg(newThumbnail);
 			int newImgId = imageMapper.selectRecentImgId();
 			log.info(newImgId);
 			productVO.setImgId(newImgId);
 		}
 		
 		// details 이미지 변경
-		if(detailsList.size() > 0) {
+		if(newDetails.size() > 0) {
 			imageMapper.deleteByProductId(productId);
-			for(ImageVO detail : detailsList) {
+			for(ImageVO detail : newDetails) {
 				detail.setProductId(productId);
 				imageMapper.insertImg(detail);
 			}
@@ -296,17 +249,6 @@ public class ProductServiceImple implements ProductService{
 		// 상품 변경점 저장
 		productMapper.updateProduct(productVO);
 		int res = productMapper.updateState(productVO.getProductState(), productId);
-		
-		if (res == 1) { // 저장 성공시 서버에 파일 저장
-			if (!thumbnail.isEmpty()) {
-				awsS3Service.uploadIcon(thumbnail, thumbnailVO);
-			}
-			if (!details[0].isEmpty()) {
-				for (int i = 0; i < details.length; i++) {
-					awsS3Service.uploadImage(details[i], detailsList.get(i));
-				}
-			}
-		}
 		
 		return res;
 	} // end updateProduct
@@ -319,6 +261,24 @@ public class ProductServiceImple implements ProductService{
 				
 		return res;
 	} // end deleteProductRequest
+
+	@Override
+	public List<ImageVO> getAllProductImg(int productId) {
+		log.info("상품의 모든 이미지 검색");
+		return imageMapper.selectAllbyProductId(productId);
+	} // end getAllProductImg
+
+	@Override
+	public ImageVO getProductThumbnail(int imgId) {
+		log.info("상품의 썸네일 이미지 검색");
+		return imageMapper.selectByImgId(imgId);
+	} // end getProductThumbnail
+
+	@Override
+	public List<ImageVO> getProductDetails(int productId) {
+		log.info("상품의 세부 이미지 검색");
+		return imageMapper.selectByProductId(productId);
+	} // end getProductDetails
 	
 
 	

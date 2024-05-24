@@ -59,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 			.defaultSuccessUrl("/board/main", false);
 
 		
-		http.rememberMe() 
+		http.rememberMe() // 자동 로그인
 			.key("key") 
 			.rememberMeParameter("rememberMe")
 			.rememberMeCookieName("rememberMe") 

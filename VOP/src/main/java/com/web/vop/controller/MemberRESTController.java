@@ -70,13 +70,12 @@ public class MemberRESTController {
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end resetPassword
 	
-	@PostMapping("/checkMember")
-	public ResponseEntity<Integer> checkMember(@AuthenticationPrincipal MemberDetails memberDetails, @RequestParam String memberPw){
+	@PostMapping("/check")
+	public ResponseEntity<Boolean> checkMember(@AuthenticationPrincipal MemberDetails memberDetails, @RequestParam String memberPw){
 		log.info("비밀번호 확인");
-		String checkedId = memberService.checkLogin(memberDetails.getUsername(), memberPw);
+		boolean comp = memberService.checkLogin(memberDetails.getUsername(), memberPw);
 		
-		int res = (checkedId == null) ? 0 : 1;
-		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+		return new ResponseEntity<Boolean>(comp, HttpStatus.OK);
 	} // end checkMember
 	
 	

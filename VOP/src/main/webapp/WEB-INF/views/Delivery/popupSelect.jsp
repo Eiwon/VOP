@@ -94,11 +94,7 @@
 			console.log(targetIdx + '번 배송지 선택됨');
 			let parent = $(opener.document);
 			
-			parent.find('#receiverName').val(deliveryList[targetIdx].receiverName);
-			parent.find('#receiverAddress').val(deliveryList[targetIdx].receiverAddress);
-			parent.find('#deliveryAddressDetails').val(deliveryList[targetIdx].deliveryAddressDetails);
-			parent.find('#receiverPhone').val(deliveryList[targetIdx].receiverPhone);
-			parent.find('#requirement').val(deliveryList[targetIdx].requirement);
+			window.opener.saveDelivery(deliveryList[targetIdx]);
 			
 			window.close();
 			
