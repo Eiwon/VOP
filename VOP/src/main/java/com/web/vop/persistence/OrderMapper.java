@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.web.vop.domain.DeliveryVO;
 import com.web.vop.domain.OrderVO;
 
 

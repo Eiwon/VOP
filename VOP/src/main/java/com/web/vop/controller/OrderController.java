@@ -15,7 +15,7 @@ import com.web.vop.service.OrderService;
 
 import lombok.extern.log4j.Log4j;
 
-@RequestMapping("/board")
+@RequestMapping("/order")
 @Controller
 @Log4j
 public class OrderController {

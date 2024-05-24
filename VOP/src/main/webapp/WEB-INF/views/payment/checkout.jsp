@@ -176,6 +176,10 @@
 			
 			setPaymentInfo();
 			
+			 // 기본 배송지가 1개 이상인 경우에 대한 예외 처리 (기본 배송지 설정 TEST 중 입니다)
+		    if(deliveryVOList.length > 1){
+		        alert("기본 배송지가 1개 이상입니다! 변경해주세요.");
+		        window.location.href = "/Delivery/deliveryAddressList"; // 메인 페이지로 이동
 			
 		} // end setInfo
 		
