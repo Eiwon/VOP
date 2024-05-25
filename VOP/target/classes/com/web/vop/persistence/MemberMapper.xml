@@ -39,8 +39,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 계정 정보 수정 -->
 	<update id="updateMember">
-		UPDATE MEMBER SET MEMBER_PW = #{memberPw}, MEMBER_EMAIL = #{memberEmail}, MEMBER_PHONE = #{memberPhone}
-		WHERE MEMBER_ID = #{memberId}
+		UPDATE MEMBER SET MEMBER_NAME = #{memberName},
+			MEMBER_EMAIL = #{memberEmail}, MEMBER_PHONE = #{memberPhone}
+			WHERE MEMBER_ID = #{memberId}
 	</update>
 	
 	<!-- 계정 권한 변경 -->

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.web.vop.domain.MemberDetails;
@@ -19,6 +20,9 @@ public class UserDetailsServiceImple implements UserDetailsService{
 
 	@Autowired
 	private MemberMapper memberMapper;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -37,4 +41,14 @@ public class UserDetailsServiceImple implements UserDetailsService{
 	} // end loadUserByUsername
 
 	
+	public int updateMember(MemberVO memberVO) { // 회원 정보 수정
+		log.info("Member Service updateMember()");
+		String memberPw = memberVO.getMemberPw();
+		if(memberPw != null) { // 비밀번호 변경 요청시, 비밀번호 암호화
+			memberVO.setMemberPw(passwordEncoder.encode(memberPw));
+		}
+		int res = memberMapper.updateMember(memberVO);
+		log.info(res + "행 수정 성공");
+		return res;
+	} // end updateMember
 }

@@ -25,9 +25,6 @@ public class SellerServiceImple implements SellerService{
 	@Autowired
 	SellerMapper sellerMapper;
 	
-	@Autowired
-	ProductService productService;
-	
 	@Override
 	public List<SellerVO> getRequestByState(String requestState, PageMaker pageMaker) {
 		log.info(requestState + "인 판매자 권한 요청 조회");

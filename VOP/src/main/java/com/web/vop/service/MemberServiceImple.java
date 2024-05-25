@@ -61,6 +61,10 @@ public class MemberServiceImple implements MemberService{
 	@Override
 	public int updateMember(MemberVO memberVO) { // 회원 정보 수정
 		log.info("Member Service updateMember()");
+		String memberPw = memberVO.getMemberPw();
+		if(memberPw != null) { // 비밀번호 변경 요청시, 비밀번호 암호화
+			memberVO.setMemberPw(passwordEncoder.encode(memberPw));
+		}
 		int res = memberMapper.updateMember(memberVO);
 		log.info(res + "행 수정 성공");
 		return res;

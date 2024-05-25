@@ -117,7 +117,9 @@ tr{
 				'<td><input type="password" id="memberPw" name="memberPw" onblur="validCheck(this)"></td><td></td></tr>' +
 				'<tr><td>비밀번호 확인</td>' +
 				'<td><input type="password" id="memberPwChk"><br><strong class="alert"></strong></td></tr>' +
-				'</tbody></table></form>';
+				'</tbody></table>' + 
+				'<td><input type="submit"></td>' + 
+				'</form>';
 			
 			$('#form').html(form);
 			
