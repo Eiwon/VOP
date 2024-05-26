@@ -21,6 +21,7 @@
 </style>
 <title>결제 페이지</title>
 </head>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	<div>
 		<h2>주문 / 결제</h2>

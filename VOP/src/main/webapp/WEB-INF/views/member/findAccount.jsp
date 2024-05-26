@@ -7,6 +7,7 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>계정 정보 찾기</title>
 </head>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	<h2>아이디 찾기</h2>
 	<div id="findAccount">

@@ -34,6 +34,7 @@ tr {
 </style>
 <title>관리자 페이지</title>
 </head>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	<div>
 		<h2>관리자 페이지</h2>

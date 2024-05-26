@@ -11,6 +11,7 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>상품 등록</title>
 </head>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	<div>
 		<form id="productForm" action="register" method="post" enctype="multipart/form-data">
