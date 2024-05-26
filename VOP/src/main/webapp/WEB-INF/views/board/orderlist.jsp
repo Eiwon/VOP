@@ -354,11 +354,6 @@
 	String memberId = (String) sessionJSP.getAttribute("memberId");
 %>
 
-<%
-	if(memberId == null) {
-		response.sendRedirect("../member/login");
-	} else {
-%>
 	<!-- 
 	<h1>${memberDetails.getUsername() }</h1>
 	<h1>${memberDetails.getAuthority() }</h1>
