@@ -75,11 +75,11 @@ tr {
 			</tr>
 			<tr>
 				<td>썸네일</td>
-				<td><img src="../product/showImg?imgId=${productDetails.imgId}"></td>
+				<td><img alt="${productDetails.imgId}"></td>
 			</tr>
 			<c:forEach items="${productDetails.imgIdDetails }" var="imgId">
 			<tr>
-				<td><img src="../product/showImg?imgId=${imgId}"></td>
+				<td><img alt="${imgId}"></td>
 			</tr>
 			</c:forEach>
 		</tbody>
@@ -96,6 +96,12 @@ tr {
 		let btnApprove = $('#btn_approve');
 		let btnRefuse = $('#btn_refuse');
 		const productState = '${productDetails.productState }';
+		
+		$(document).ready(function(){
+			loadImg();
+		}); // end document.ready
+		
+		
 		
 		// 상품 상태가 '삭제 대기중'이면 상품 삭제 / 취소 버튼 출력
 		if(productState == '삭제 대기중'){
@@ -162,7 +168,20 @@ tr {
 				date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
 		return formatted;
 	} // end toDate
-		
+	
+	function loadImg(){
+		$(document).find('img').each(function(){
+			let target = $(this);
+			let imgId = target.attr("alt");
+			$.ajax({
+				method : 'GET',
+				url : '../image/' + imgId,
+				success : function(result){
+					target.attr('src', result);
+				}
+			}); // end ajax
+		});
+	} // end loadImg
 		
 	</script>
 </body>

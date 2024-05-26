@@ -7,6 +7,7 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>장바구니</title>
 </head>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	
 	<div id="basket_container">
@@ -67,11 +68,10 @@
 					let str = "";
 					let imgPath = "";
 					for(x in basketList){
-						imgPath = basketList[x].imgId == 0 ? "" : "../product/showImg?imgId=" + basketList[x].imgId;
 						
 						str += '<tr class="basket_item">' +
 							'<td><input type="checkbox" class="chk_product"></td>' +
-							'<td><img src="' + imgPath + '"></td>' +
+							'<td><img alt="' + basketList[x].imgId + '"></td>' +
 							'<td class="product_id" hidden="hidden">' + basketList[x].productId + '</td>' +
 							'<td class="product_name">' + basketList[x].productName + '</td>' +
 							'<td class="product_price">' + basketList[x].productPrice + '</td>' +
@@ -87,6 +87,7 @@
 							'</tr>';
 					} // end for
 					tagBasketList.html(str);
+					loadImg(tagBasketList);
 					calcTotalExpense();
 					
 					$('.basket_item').each(function(){
@@ -307,6 +308,20 @@
 		function getTargetId(input){
 			return $(input).parents('.basket_item').find('.product_id').text();
 		} // end getTargetId
+		
+		function loadImg(input){
+			$(input).find('img').each(function(){
+				let target = $(this);
+				let imgId = target.attr("alt");
+				$.ajax({
+					method : 'GET',
+					url : '../image/' + imgId,
+					success : function(result){
+						target.attr('src', result);
+					}
+				}); // end ajax
+			});
+		} // end loadImg
 	</script>
 	
 </body>

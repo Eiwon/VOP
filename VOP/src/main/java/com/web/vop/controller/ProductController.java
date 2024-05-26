@@ -1,11 +1,7 @@
 package com.web.vop.controller;
 
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-
 import java.io.File;
-import java.text.DecimalFormat;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +34,7 @@ import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.ProductDetailsDTO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.persistence.Constant;
+import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.ImageService;
 import com.web.vop.service.ProductService;
 import com.web.vop.util.FileUploadUtil;
@@ -57,13 +54,16 @@ public class ProductController {
 	private ProductService productService;
 	
 	@Autowired
+	private ImageService imageService;
+	
+	@Autowired
+	private AWSS3Service awsS3Service;
+	
+	@Autowired
 	private String thumbnailUploadPath;
 	
 	@Autowired
 	private String uploadPath;
-	
-	@Autowired
-	private ImageService imageService;
 	
 	private static final String[] categoryList = {"여성패션", "남성패션", "남녀 공용 의류", "유아동 패션", "뷰티", "출산/유아동", 
  			"식품", "주방용품", "생활용품", "홈인테리어", "가전디지털", "스포츠/레저", "자동차 용품", "도서/음반/DVD", 
@@ -74,16 +74,14 @@ public class ProductController {
 	public void productDetailGET(Model model, Integer productId) {
 		log.info("productDetailGET()");
 		
-		// 소수점 첫 째 자리까지만 출력
-		DecimalFormat df = new DecimalFormat("#.#");//
-		
 		log.info("productId : " + productId);
 		// productId에 해당하는 상품 조회 
 		ProductVO productVO = productService.getProductById(productId);	
 		
-		// 이미지 코드
+		// 이미지 코드 조회
 		ImageVO imageVO = imageService.getImageById(productVO.getImgId());
 		
+		// 상세 이미지 조회
 		List<ImageVO> imageList = imageService.getByProductId(productId);
 		for(ImageVO image  : imageList) {
 			log.info(image);
@@ -119,9 +117,9 @@ public class ProductController {
 		productVO.setMemberId(memberDetails.getUsername());
 		log.info(productVO);
 		log.info("파일 명 : " + thumbnail.getOriginalFilename());
+		
 		ImageVO imgThumbnail = null;
 		List<ImageVO> imgDetails = new ArrayList<>();
-		
 		
 		// 모든 파일을 imageVO로 변환
 		if (!thumbnail.isEmpty()) { // 파일이 있는 경우
@@ -132,24 +130,26 @@ public class ProductController {
 				imgDetails.add(FileUploadUtil.toImageVO(file, uploadPath));
 			}
 		}
-		// DB에 상품 정보 등록
-	    int res = productService.registerProduct(productVO, imgThumbnail, imgDetails);
-	    log.info("상품 등록 결과 : " + res);
+		
+		try {
+			int res = productService.registerProduct(productVO, imgThumbnail, imgDetails);
+			if(res == 1) { // DB 등록 성공시 S3 서버에 이미지 저장
+		    	if(imgThumbnail != null) { // 썸네일 등록
+					awsS3Service.uploadIcon(thumbnail, imgThumbnail);
+			    }
+		    	if (!details[0].isEmpty()) { // 세부정보 이미지 등록
+			    	for(int i = 0; i < imgDetails.size(); i++) {
+		    		awsS3Service.uploadImage(details[i], imgDetails.get(i));	    			
+		    		}
+			    }
+		    }
+			log.info("상품 등록 결과 : " + res);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	    
-	    if(res == 1) { // DB 저장 성공시 서버에 저장 
-	    	if(imgThumbnail != null) {
-	    		FileUploadUtil.saveIcon(thumbnailUploadPath, thumbnail, imgThumbnail.getImgChangeName());
-	    	}
-	    	if (!details[0].isEmpty()) {
-	    		for(int i = 0; i < imgDetails.size(); i++) {
-	    			FileUploadUtil.saveFile(uploadPath, details[i], imgDetails.get(i).getImgChangeName());	    			
-	    		}
-	    	}
-	    }
 	    return "redirect:../seller/sellerRequest";
 	} // end registerPOST
-
-	
 
 	@GetMapping("search")
 	public void search(Model model, String category, String word, Pagination pagination) {
@@ -268,33 +268,45 @@ public class ProductController {
 	public String updateProduct(ProductVO productVO, MultipartFile thumbnail, MultipartFile[] details) {
 		log.info("----------상품 수정---------------------");
 		log.info("상품 정보 : " + productVO + ", 썸네일 유무 : " + !thumbnail.isEmpty());
-		ImageVO thumbnailVO = null;
-		List<ImageVO> detailsList = new ArrayList<>();
-
-		// DB 변경
-		// 변경할 이미지가 있다면, DB에 저장하기 위해 VO로 변환
+		
+		ImageVO newThumbnail = null;
+		ImageVO oldThumbnail = null;
+		List<ImageVO> newDetails = new ArrayList<>();
+		List<ImageVO> oldDetails = new ArrayList<>();
+		
+		// 변경할 이미지가 있다면 DB에 저장하기 위해 VO로 변환, 기존 이미지를 S3 서버에서 삭제하기 위해 이미지 정보를 불러옴
 		if (!thumbnail.isEmpty()) {
-			thumbnailVO = FileUploadUtil.toImageVO(thumbnail, thumbnailUploadPath);
+			newThumbnail = FileUploadUtil.toImageVO(thumbnail, thumbnailUploadPath);
+			oldThumbnail = productService.getProductThumbnail(productVO.getImgId());
 		}
 		if (!details[0].isEmpty()) {
+			oldDetails = productService.getProductDetails(productVO.getProductId());
 			for (MultipartFile detail : details) {
-				detailsList.add(FileUploadUtil.toImageVO(detail, uploadPath));
+				newDetails.add(FileUploadUtil.toImageVO(detail, uploadPath));
 			}
 		}
-
-		// 변경할 정보를 service에 전달 (transaction 필요)
-		int res = productService.updateProduct(productVO, thumbnailVO, detailsList);
-
-		if (res == 1) { // 저장 성공시 서버에 파일 저장
-			if (!thumbnail.isEmpty()) {
-				FileUploadUtil.saveIcon(thumbnailUploadPath, thumbnail, thumbnailVO.getImgChangeName());
-			}
-			if (!details[0].isEmpty()) {
-				for (int i = 0; i < details.length; i++) {
-					FileUploadUtil.saveFile(uploadPath, details[i], detailsList.get(i).getImgChangeName());
+		
+		// 변경할 정보를 service에 전달
+		try {
+			int res = productService.updateProduct(productVO, newThumbnail, newDetails);
+			if (res == 1) { // 저장 성공시 서버에 파일 저장
+				if (!thumbnail.isEmpty()) {
+					awsS3Service.removeImage(oldThumbnail);
+					awsS3Service.uploadIcon(thumbnail, newThumbnail);
+				}
+				if (!details[0].isEmpty()) {
+					for(ImageVO oldDetail : oldDetails) {
+						awsS3Service.removeImage(oldDetail);
+					}
+					for (int i = 0; i < details.length; i++) {
+						awsS3Service.uploadImage(details[i], newDetails.get(i));
+					}
 				}
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		
 		return "redirect:popupUpdate?productId=" + productVO.getProductId();
 	} // end updateProduct
 
@@ -340,7 +352,19 @@ public class ProductController {
 	@ResponseBody
 	public ResponseEntity<Integer> deleteProduct(@RequestBody ProductVO productVO) {
 		log.info("상품 삭제 : " + productVO.getProductId());
-		int res = delete(productVO.getProductId());
+		
+		// 삭제할 상품의 img 정보 불러오기
+		List<ImageVO> imgList = productService.getAllProductImg(productVO.getProductId());
+		
+		// 상품 삭제
+		int res = productService.deleteProduct(productVO.getProductId());
+		
+		// 서버에서 모든 관련 이미지 삭제
+		if(res == 1) {
+			for(ImageVO image : imgList) {
+			awsS3Service.removeImage(image);
+			}
+		}
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end updateProductState
@@ -356,7 +380,8 @@ public class ProductController {
 		if (productState.equals(Constant.STATE_SELL)) {
 			res = productService.setProductState(Constant.STATE_REMOVE_WAIT, productId);
 		} else if (!productState.equals(Constant.STATE_REMOVE_WAIT)) {
-			res = delete(productId);
+			productService.deleteProduct(productId);
+			//res = delete(productId);
 		}
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
@@ -399,18 +424,6 @@ public class ProductController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	} // end getWaitProduct
 	
-	
-	private int delete(int productId) {
-		List<ImageVO> imageList = productService.deleteProduct(productId);
-		
-		if(imageList.size() > 0) { // 서버에 저장된 이미지 삭제
-			log.info("관련 이미지 : " + imageList.size() + "건");
-			for(ImageVO image : imageList) {
-				FileUploadUtil.deleteFile(image);
-			}
-		}
-		return imageList.size();
-	} // end delete
 } 
 	
 	

@@ -23,11 +23,14 @@ public interface DeliveryService {
 	// 배송지 상세 조회 by deliveryId and memberId
 	DeliveryVO getDeliveryById(int deliveryId, String memberId);
 	
-	// 기본 배송지 조회 
+	// 기본 배송지 카운트
 	boolean hasDefaultAddress(String memberId);
 	
-	// 기본 배송지 설정하기
-	void setDefaultDelivery(int deliveryId, String memberId);
+	// 등록하는 deliveryId의 기본배송지를 1로 바꾸기
+	int updateNewDefault(int deliveryId, String memberId);
+	
+	// 해당하는 memberId의 나머지 기본 배송지 목록을 0으로 바꾸기 
+	int updateDefault(String memberId);
 	
 	// memberId로 기본 배송지 검색
 	DeliveryVO getDefaultDelivery(String memberId);

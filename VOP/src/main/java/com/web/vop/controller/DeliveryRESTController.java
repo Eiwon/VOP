@@ -124,27 +124,33 @@ public class DeliveryRESTController {
 	}// end  checkDefaultAddress()
 	
 	
-	// 기존 배송지의 기본 배송지 = 0 으로 업데이트
- 	@PutMapping("/delivery/updateDefault")
-	  public ResponseEntity<String> updateDefault(@RequestBody Map<String, Integer> requestMap,
+	// 해당하는 memberid의 나머지 기본배송지 목록을 0으로 바꾸기 
+ 	@PutMapping("/updateDefault")
+	  public ResponseEntity<Integer> updateDefault(
 			  @AuthenticationPrincipal MemberDetails memberDetails) {
-		 		log.info("updateDefault()");
-        		int newDefaultDeliveryId = requestMap.get("deliveryId");
-        		String memberId = memberDetails.getUsername(); // 실제로는 세션 등에서 가져오는 코드 필요
-        		log.info("memberId : " + memberId);
-        		
-	        try {
-            	// 기본 배송지를 업데이트하는 서비스 메서드 호출
-            	deliveryService.setDefaultDelivery(newDefaultDeliveryId, memberId);
-            	return ResponseEntity.ok("기본 배송지가 성공적으로 업데이트되었습니다.");
-        		} catch (Exception e) {
-            	log.error("기본 배송지 업데이트 중 오류 발생: " + e.getMessage());
-            	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("기본 배송지 업데이트 중 오류가 발생했습니다.");
-        	}
-    }// end updateDefault()
+		 	log.info("updateDefault() -  해당하는 memberid의 나머지 기본배송지 목록을 0으로 바꾸기");
+        	String memberId = memberDetails.getUsername(); 
+        	log.info("memberId : " + memberId);
+        	
+        	int res = deliveryService.updateDefault(memberId);
+        	log.info("해당 아이디의 기본 배송지 목록이 해지되었습니다.");
+        	
+        	return new ResponseEntity<Integer>(res, HttpStatus.OK);
+ 	}// end updateDefault()
 	
-
-	
-	
+        	
+    // 등록하는 deliveryId의 기본배송지를 1로 바꾸기
+ 	@PutMapping("/updateNewDefault")
+ 	 public ResponseEntity<Integer> updateNewDefault(@RequestParam int deliveryId,
+ 			@AuthenticationPrincipal MemberDetails memberDetails){
+ 		log.info("updateNewDefault() - 등록하는 deliveryId의 기본배송지를 1로 바꾸기");
+ 		String memberId = memberDetails.getUsername(); 
+    	log.info("memberId : " + memberId);
+    	
+ 		int res = deliveryService.updateNewDefault(deliveryId, memberId);
+ 		log.info("해당 아이디의 기본 배송지 목록이 설정되었습니다.");
+ 		
+ 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+ 	}//end updateDefault()
 	
 }//end DeliveryRESTController()

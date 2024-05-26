@@ -125,12 +125,12 @@
 					for(x in orderList){
 						orderListForm += '<tr class="order_box" onclick="toDetails(this)">' +
 							'<td hidden="hidden" class="order_num">' + x + '</td>' +
-							'<td><img src="../product/showImg?imgId=' + orderList[x].imgId + '"></td>' +
+							'<td><img alt="' + orderList[x].imgId + '"></td>' +
 							'<td>' + orderList[x].productName + '<br>' + orderList[x].purchaseNum + '<br>' +
 							orderList[x].productPrice * orderList[x].purchaseNum + '</td></tr>';
 					}
 					$('#order_list').html(orderListForm);
-					
+					loadImg($('#order_list'));
 				} // end success
 			}); // end ajax
 			
@@ -152,7 +152,19 @@
 			console.log(orderList[index].productId);
 		} // end toDetails
 		
-		
+		function loadImg(input){
+			$(input).find('img').each(function(){
+				let target = $(this);
+				let imgId = target.attr("alt");
+				$.ajax({
+					method : 'GET',
+					url : '../image/' + imgId,
+					success : function(result){
+						target.attr('src', result);
+					}
+				}); // end ajax
+			});
+		} // end loadImg
 	</script>
 </body>
 </html>

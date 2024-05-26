@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.web.vop.domain.ImageVO;
@@ -33,11 +34,6 @@ public class ImageServiceImple implements ImageService{
 	public int registerImage(ImageVO imageVO) { // 이미지 등록 후 id 반환
 		log.info("registerImage() : " + imageVO.getImgRealName());
 		int res = imageMapper.insertImg(imageVO);
-		if(res == 1) {
-			res = imageMapper.selectRecentImgId();
-		}else {
-			res = -1;
-		}
 		return res;
 	} // end registerImage
 	
@@ -62,10 +58,8 @@ public class ImageServiceImple implements ImageService{
 	} // end getImgId
 
 	@Override
-	public int removeById(int imgId) { // 서버에 저장된 이미지 삭제 후 DB 정보 삭제
+	public int removeById(int imgId) { // DB 정보 삭제
 		log.info("removeById() : " + imgId);
-		ImageVO imageVO = imageMapper.selectByImgId(imgId);
-		FileUploadUtil.deleteFile(imageVO);
 		int res = imageMapper.deleteById(imgId);
 		
 		return res;
@@ -82,4 +76,9 @@ public class ImageServiceImple implements ImageService{
 		log.info("updateImgById()");
 		return imageMapper.updateById(imageVO);
 	} // end setImgById
+
+	@Override
+	public int getRecentImgId() {
+		return imageMapper.selectRecentImgId();
+	}
 }

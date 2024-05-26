@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -41,12 +42,7 @@
 </style>
 </head>
 <body>
-	<%
-	// 세션 객체 가져오기
-	HttpSession sessionJSP = request.getSession();
-	// 세션에 저장된 memberId 가져오기
-	String memberId = (String) sessionJSP.getAttribute("memberId");
-	%>
+
 	
 	<h1>리뷰 수정</h1>
 	

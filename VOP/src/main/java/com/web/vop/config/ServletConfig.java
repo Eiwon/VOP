@@ -33,16 +33,17 @@ public class ServletConfig implements WebMvcConfigurer {
       registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
    }
    
+   
    // 파일을 저장할 경로 bean 생성
    @Bean
    public String uploadPath() { // 상품 상세정보 이미지 저장 경로
       //return "C:\\upload\\ex04";
-	  return "C:\\upload\\productDetail";
+	  return "productDetails/";
    }
    
    @Bean
    public String thumbnailUploadPath() { // 상품 썸네일 이미지 저장 경로
-	  return "C:\\upload\\productThumbnail";
+	  return "productThumbnail/";
    }
    
    // MultipartResolver bean 생성

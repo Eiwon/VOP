@@ -10,6 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -24,13 +25,14 @@ import com.zaxxer.hikari.HikariDataSource;
 @EnableAspectJAutoProxy
 @MapperScan(basePackages = {"com.web.vop.persistence"})
 @EnableTransactionManagement // 트랜잭션 관리 활성화
+@EnableScheduling // 스케줄러 활성화
 public class RootConfig {
    
    @Bean // 스프링 bean으로 설정
    public DataSource dataSource() { // DataSource 객체 리턴 메서드
       HikariConfig config = new HikariConfig(); // 설정 객체
       config.setDriverClassName("oracle.jdbc.OracleDriver"); // jdbc 드라이버 정보
-      config.setJdbcUrl("jdbc:oracle:thin:@vop-db-instance.cd26qugoeupc.ap-northeast-2.rds.amazonaws.com:1521:orcl"); // DB 연결 url
+      config.setJdbcUrl("jdbc:oracle:thin:@vop-master.cd26qugoeupc.ap-northeast-2.rds.amazonaws.com:1521:orcl"); // DB 연결 url
       config.setUsername("vopmaster"); // DB 사용자 아이디
       config.setPassword("vopmaster"); // DB 사용자 비밀번호
       

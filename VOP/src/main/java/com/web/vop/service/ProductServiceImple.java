@@ -1,10 +1,13 @@
 package com.web.vop.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductDetailsDTO;
@@ -24,9 +27,6 @@ public class ProductServiceImple implements ProductService{
 	
 	@Autowired
 	private ProductMapper productMapper;
-	
-	@Autowired
-	private ImageService imageService;
 	
 	@Autowired
 	private ImageMapper imageMapper;
@@ -92,13 +92,19 @@ public class ProductServiceImple implements ProductService{
 
 	@Transactional(value = "transactionManager")
 	@Override
-	public int registerProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details) { // 등록 성공시, 등록한 상품 id 반환
+	public int registerProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details) throws IOException { // 등록 성공시, 등록한 상품 id 반환
 		log.info("registerProduct : " + productVO);
 		int res = 0;
-		if(thumbnail != null) {
-			int imgId = imageService.registerImage(thumbnail);
+		
+		// DB에 상품 정보 등록
+		if(thumbnail != null) { 
+			// 썸네일 등록
+			imageMapper.insertImg(thumbnail);
+			int imgId = imageMapper.selectRecentImgId();
 			productVO.setImgId(imgId);
 		}
+		
+		// 상품 등록
 		productVO.setProductState(Constant.STATE_SELL);
 		productMapper.insertProduct(productVO);
 		int productId = productMapper.selectLastInsertId();
@@ -107,7 +113,6 @@ public class ProductServiceImple implements ProductService{
 			detail.setProductId(productId);
 			res = imageMapper.insertImg(detail);
 		}
-		
 		return res;
 	} // end registerProduct
 	
@@ -159,22 +164,23 @@ public class ProductServiceImple implements ProductService{
 
 	@Transactional(value = "transactionManager")
 	@Override
-	public List<ImageVO> deleteProduct(int productId) {
+	public int deleteProduct(int productId) {
 		log.info("deleteProduct()");
-		int res = 0;
 		ProductVO target = productMapper.selectProduct(productId);
 		int imgId = target.getImgId();
 		
 		// 상품 이미지도 삭제해야함
-		List<ImageVO> imageList = imageMapper.selectAllbyProductId(productId);
-		imageList.add(imageMapper.selectByImgId(imgId));
-		
+		List<ImageVO> imageList = imageMapper.selectByProductId(productId);
+		ImageVO imageVO = imageMapper.selectByImgId(imgId);
+		if(imageVO != null) {
+			imageList.add(imageVO);
+		}
 		// DB에 저장된 이미지 정보 삭제
 		imageMapper.deleteById(imgId);
 		productMapper.deleteProduct(productId);
-		imageMapper.deleteProductImage(productId);
+		int res = imageMapper.deleteByProductId(productId);
 		
-		return imageList;
+		return res;
 	} // end deleteProduct
 
 	@Override
@@ -202,7 +208,7 @@ public class ProductServiceImple implements ProductService{
 		log.info("getDetails()");
 		ProductDetailsDTO details = productMapper.selectDetails(productId);
 		log.info(details);
-		List<Integer> imgIds = imageService.getImgId(productId);
+		List<Integer> imgIds = imageMapper.selectImgIdByProductId(productId);
 		if(imgIds != null) {
 			log.info(imgIds);
 			details.setImgIdDetails(imgIds);			
@@ -212,30 +218,31 @@ public class ProductServiceImple implements ProductService{
 
 	@Transactional(value = "transactionManager")
 	@Override
-	public int updateProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details) {
+	public int updateProduct(ProductVO productVO, ImageVO newThumbnail, List<ImageVO> newDetails) throws IOException {
 		log.info("updateProduct()");
 		int productId = productVO.getProductId();
 		int oldThumbnailId = productVO.getImgId();
 		
 		// thumbnail 이미지 변경
-		if(thumbnail != null) {// 이미지가 변경되었다면, 기존 이미지 삭제, 새 이미지 추가
+		if(newThumbnail != null) {// 이미지가 변경되었다면, 기존 이미지 삭제, 새 이미지 추가
 			if(productVO.getImgId() > 0) {
 				imageMapper.deleteById(oldThumbnailId);
 			}
-			imageMapper.insertImg(thumbnail);
+			imageMapper.insertImg(newThumbnail);
 			int newImgId = imageMapper.selectRecentImgId();
 			log.info(newImgId);
 			productVO.setImgId(newImgId);
 		}
 		
 		// details 이미지 변경
-		if(details.size() > 0) {
+		if(newDetails.size() > 0) {
 			imageMapper.deleteByProductId(productId);
-			for(ImageVO detail : details) {
+			for(ImageVO detail : newDetails) {
 				detail.setProductId(productId);
 				imageMapper.insertImg(detail);
 			}
 		}
+		
 		// 상품 변경점 저장
 		productMapper.updateProduct(productVO);
 		int res = productMapper.updateState(productVO.getProductState(), productId);
@@ -251,6 +258,24 @@ public class ProductServiceImple implements ProductService{
 				
 		return res;
 	} // end deleteProductRequest
+
+	@Override
+	public List<ImageVO> getAllProductImg(int productId) {
+		log.info("상품의 모든 이미지 검색");
+		return imageMapper.selectAllbyProductId(productId);
+	} // end getAllProductImg
+
+	@Override
+	public ImageVO getProductThumbnail(int imgId) {
+		log.info("상품의 썸네일 이미지 검색");
+		return imageMapper.selectByImgId(imgId);
+	} // end getProductThumbnail
+
+	@Override
+	public List<ImageVO> getProductDetails(int productId) {
+		log.info("상품의 세부 이미지 검색");
+		return imageMapper.selectByProductId(productId);
+	} // end getProductDetails
 	
 
 	

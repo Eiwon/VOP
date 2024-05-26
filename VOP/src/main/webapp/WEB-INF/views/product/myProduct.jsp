@@ -35,6 +35,7 @@ tr {
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>등록한 상품 조회</title>
 </head>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	<div>
 		<strong>${memberDetails.getUsername() } 님이 등록한 상품</strong>
@@ -65,20 +66,39 @@ tr {
 					productMap.pageMaker = result.pageMaker; // 가져온 데이터를 저장
 					
 					const list = productMap.list;
-
+					
 					for (x in list) {
 						form += '<tr onclick="popupUpdate(this)">' +
 								'<td class="targetIndex" hidden="hidden">'+ x + '</td>' +
-								'<td><img src="showImg?imgId='+ list[x].imgId + '"></td>' +
+								'<td><img alt="' + list[x].imgId + '"></td>' +
 								'<td class="category">' + list[x].category + '</td>' + 
 								'<td class="productName">' + list[x].productName + '</td>' + 
 								'<td class="productPrice">' + list[x].productPrice + '</td>' + 
-								'</tr>';
+								'</tr>' +
+								'<tr>' + 
+			            		'<td colspan="5">' + 
+								'<form action="../inquiry/list" method="get">' + 
+					    		'<input type="hidden" name="productId" value="' + list[x].productId + '">' +
+					    		'<button type="submit">문의 목록 가기</button>' +
+					    		'</form>' + 
+					    		'</tr>';
 					}
 					// 페이지 생성 후 등록
 					$('#product_list_page').html(makePageForm(productMap));
 
 					$('#product_list').html(form);
+					$('#product_list').find('img').each(function(){
+						let target = $(this);
+						let imgId = target.attr("alt");
+						$.ajax({
+							method : 'GET',
+							url : '../image/' + imgId,
+							success : function(result){
+								target.attr('src', result);
+							}
+						}); // end ajax
+					});
+					
 				} // end success
 			}); // end ajax
 

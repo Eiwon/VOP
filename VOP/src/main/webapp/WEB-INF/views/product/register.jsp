@@ -11,6 +11,7 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>상품 등록</title>
 </head>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	<div>
 		<form id="productForm" action="register" method="post" enctype="multipart/form-data">
@@ -79,38 +80,28 @@
 	<script type="text/javascript">
 		let productName = $('#product_name');
 		let productPrice = $('#product_price');
-		//let productCategory = $('#category');
 		let productRemains = $('#product_remains');
 		let productPlace = $('#product_place');
-		const blockedExtension = new RegExp("exe|sh|php|jsp|aspx|zip|alz");
-		// 이미지 확장자 필터
 		
 		$("#productForm").submit(function(event) {
             let inputThumbnail = $("#inputThumbnail"); // File input 요소 참조
             let file = inputThumbnail.prop('files')[0]; // file 객체 참조
-            let fileName = inputThumbnail.val();   
             
-            if (!file) { // file이 없는 경우
-               alert("파일을 선택하세요.");
-               event.preventDefault();
-               return;
+            if(!checkFileValid(file)){
+            	event.preventDefault();
+            	return;
             }
             
-            if (blockedExtensions.test(fileName)) { // 차단된 확장자인 경우
-               alert("이 확장자의 파일은 첨부할 수 없습니다.");
-               event.preventDefault();
-               return;
-            }
-
-            let maxSize = 10 * 1024 * 1024; // 10 MB 
-            if (file.size > maxSize) {
-               alert("파일 크기가 너무 큽니다. 최대 크기는 10MB입니다.");
-               event.preventDefault();
-            }
-            
-            let inputDetails = $("#imgDetails");
+            let inputDetails = $("#inputDetails");
             let files = inputDetails.prop('files');
-            // 유효성 체크 추가 필요
+            
+            for(let x = 0; x < files.length; x++){
+            	console.log(files[x].name);
+            	if(!checkFileValid(files[x])){
+            		event.preventDefault();
+                	return;
+            	}
+            }
             
          }); //end imgForm.submit
 		
@@ -143,6 +134,26 @@
              }
         	 previewDetails.html(str);
          } // end showDetailsPreview()
+         
+         function checkFileValid(file){
+
+        	 const blockedExtension = new RegExp("exe|sh|php|jsp|aspx|zip|alz");
+             if (!file) { // file이 없는 경우
+                alert("파일을 선택하세요.");
+                return false;
+             }
+             
+             if (blockedExtensions.test(file.name)) { // 차단된 확장자인 경우
+                alert("이 확장자의 파일은 첨부할 수 없습니다.");
+                return false;
+             }
+
+             let maxSize = 10 * 1024 * 1024; // 10 MB 
+             if (file.size > maxSize) {
+                alert("파일 크기가 너무 큽니다. 최대 크기는 10MB입니다.");
+                return false;
+             }
+         }
          
 	</script>
 	

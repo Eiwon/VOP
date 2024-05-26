@@ -3,12 +3,15 @@ package com.web.vop.util;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -120,7 +123,6 @@ public class FileUploadUtil {
         }
         
         File thumbnail = new File(realUploadPath, uuid);
-        
         try {
 			BufferedImage bi = ImageIO.read(file.getInputStream()); // 저장된 파일을 읽어온다
 			BufferedImage icon = new BufferedImage(120, 120, BufferedImage.TYPE_3BYTE_BGR); // icon 저장할 공간 생성
@@ -138,16 +140,10 @@ public class FileUploadUtil {
     	String imgRealName = file.getOriginalFilename();
     	return new ImageVO(0, 0, uploadPath, subStrName(imgRealName), imgChangedName, subStrExtension(imgRealName));
     } // end toImageVO
-    
-    // @param imgPath : 파일 업로드 경로
-    // @param changedName : 파일명
-    // @param extension : 확장자 명
-    // @GetMapping(value = "/요청 경로", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	// @ResponseBody
-	// public ResponseEntity<Resource> 메소드 이름(){} 로 비동기 메소드 만들고, 이 메소드 실행 결과를 리턴하면 됩니다.
-    // 클라이언트 측은 <img src="요청 경로?검색 대상 정보"> 로 비동기 요청 보내면 됩니다.
+ 
     public static Resource getFile(String fullPath, String extension) { // 저장된 파일 불러오기
     	Resource resource = new FileSystemResource(fullPath);
+ 
         log.info("이미지 불러오기 완료");
         return resource;
     } // end getFile

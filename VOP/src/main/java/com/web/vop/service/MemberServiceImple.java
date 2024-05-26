@@ -49,16 +49,22 @@ public class MemberServiceImple implements MemberService{
 	} // end checkIdDup
 
 	@Override
-	public String checkLogin(String memberId, String memberPw) { // 로그인
+	public boolean checkLogin(String memberId, String memberPw) {
 		log.info("Member Service checkLogin()");
-		String result = memberMapper.selectMemberIdWithPw(memberId, memberPw);
-		log.info("로그인 시도 결과 : " + result);
-		return result;
+		MemberVO memberVO = memberMapper.selectByMemberId(memberId);
+		boolean comp = passwordEncoder.matches(memberPw, memberVO.getMemberPw());
+		log.info("비교 결과 : " + comp);
+		
+		return comp;
 	} // end checkLogin
 
 	@Override
 	public int updateMember(MemberVO memberVO) { // 회원 정보 수정
 		log.info("Member Service updateMember()");
+		String memberPw = memberVO.getMemberPw();
+		if(memberPw != null) { // 비밀번호 변경 요청시, 비밀번호 암호화
+			memberVO.setMemberPw(passwordEncoder.encode(memberPw));
+		}
 		int res = memberMapper.updateMember(memberVO);
 		log.info(res + "행 수정 성공");
 		return res;
@@ -83,7 +89,8 @@ public class MemberServiceImple implements MemberService{
 	@Override
 	public int updatePw(String memberId, String memberPw) { // 비밀번호 변경
 		log.info("Member Service updatePw()");
-		int res = memberMapper.updateMemberPw(memberId, memberPw);
+		String encryptPw = passwordEncoder.encode(memberPw);
+		int res = memberMapper.updateMemberPw(memberId, encryptPw);
 		log.info(res + "행 수정 성공");
 		return res;
 	} // end updatePw

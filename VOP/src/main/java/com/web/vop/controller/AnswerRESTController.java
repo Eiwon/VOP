@@ -22,7 +22,7 @@ import com.web.vop.service.AnswerService;
 import lombok.extern.log4j.Log4j;
 
 @RestController
-@RequestMapping("설정 예정2")
+@RequestMapping("/answer")
 @Log4j
 public class AnswerRESTController {
 	
@@ -56,30 +56,35 @@ public class AnswerRESTController {
 //	}// end readAllAnswer()
 	
 	// 댓댓글(답변) 수정
-	@PutMapping("/{productId}/{memberId}") // PUT : 댓글(리뷰) 수정 // 나중에 데이터 받는 거에 따라 달라짐
+	@PutMapping("/modify") // PUT : 댓글(리뷰) 수정 // 나중에 데이터 받는 거에 따라 달라짐
 	   public ResponseEntity<Integer> updateAnswer(
-	         @PathVariable("productId") int productId,
-	         @PathVariable("memberId") String memberId,
-	         @RequestBody String  answerContent
+			   @RequestBody AnswerVO answerVO
 	         ){	
 	      log.info("updateAnswer()");
 	      
+	      int inquiryId = answerVO.getInquiryId();
+	      String memberId = answerVO.getMemberId();
+	      String answerContent = answerVO.getAnswerContent();
+	      
 	      // reviewId에 해당하는 댓글(리뷰)의 reviewContent, reviewStar, imgId의 내용을 수정 할 수 있습니다.
-	      int result = answerService.updateAnswer(productId, memberId, answerContent);
+	      int result = answerService.updateAnswer(inquiryId, memberId, answerContent);
 	      
 	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	   }// end updateAnswer()
 	
 	// 댓댓글(답변) 삭제
-	@DeleteMapping("/{productId}/{memberId}") // DELETE : 댓글(리뷰) 삭제 // 나중에 데이터 받는 거에 따라 달라짐
+	@DeleteMapping("/delete") // DELETE : 댓글(리뷰) 삭제 // 나중에 데이터 받는 거에 따라 달라짐
 	   public ResponseEntity<Integer> deleteAnswer(
-	         @PathVariable("productId") int productId,
-	         @PathVariable("memberId") String memberId) {
+			   @RequestBody AnswerVO answerVO) {
 	      log.info("deleteAnswer()");
 	      
+	      int inquiryId = answerVO.getInquiryId();
+	      
+	      String memberId = answerVO.getMemberId();
+	      
 	      // productId에 해당하는 reviewId의 댓글(리뷰)
-	      int result = answerService.deleteAnswer(productId, memberId);
+	      int result = answerService.deleteAnswer(inquiryId, memberId);
 	
 	      log.info(result + "행 댓글 삭제");
 	      

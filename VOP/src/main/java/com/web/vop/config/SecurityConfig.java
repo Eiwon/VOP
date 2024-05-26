@@ -2,6 +2,7 @@ package com.web.vop.config;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -58,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 			.defaultSuccessUrl("/board/main", false);
 
 		
-		http.rememberMe() 
+		http.rememberMe() // 자동 로그인
 			.key("key") 
 			.rememberMeParameter("rememberMe")
 			.rememberMeCookieName("rememberMe") 

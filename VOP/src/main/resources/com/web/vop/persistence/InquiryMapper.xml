@@ -51,4 +51,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
    </delete>
    
+   
+   
 </mapper>

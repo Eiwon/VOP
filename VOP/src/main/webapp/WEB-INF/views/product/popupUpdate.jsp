@@ -120,6 +120,8 @@ img {
 				deleteRequest();
 			});
 			
+			loadImg();
+			
 		}); // end document.ready
 		
 		
@@ -138,11 +140,11 @@ img {
 			$('#productRemains').val(productDetails.productRemains);
 			$('#productPlace').val(productDetails.productPlace);
 			$('#productState').text(productDetails.productState);
-			$('#productThumbnail').html('<img src="showImg?imgId=' + productDetails.imgId + '">');
+			$('#productThumbnail').html('<img alt="' + productDetails.imgId + '">');
 			
 			let imgDetailsForm = '';
 			for (x in productDetails.imgIdDetails){
-				imgDetailsForm += '<img src="showImg?imgId=' + productDetails.imgIdDetails[x] + '"><br>';
+				imgDetailsForm += '<img alt="' + productDetails.imgIdDetails[x] + '"><br>';
 			}
 			$('#productDetails').html(imgDetailsForm);
 			
@@ -196,9 +198,14 @@ img {
 		let formProduct = $('#formProduct');
 		
 		formProduct.submit(function update(){
+			if(!confirm("변경시 관리자의 승인 전까지 판매가 중지됩니다. 변경하시겠습니까?")){
+				 event.preventDefault();
+				 return;
+			}
 			formProduct.append('<input type="hidden" name="productId" value="' + productDetails.productId + '">');
 			formProduct.append('<input type="hidden" name="imgId" value="' + productDetails.imgId + '">');
 			formProduct.append('<input type="hidden" name="productState" value="승인 대기중">');
+			alert("변경 사항은 관리자의 승인 후 반영됩니다.");
 		});
 		
 		function deleteRequest() {
@@ -273,7 +280,19 @@ img {
             }
 		} // end resizeImg
 		
-		
+		function loadImg(){
+			$(document).find('img').each(function(){
+				let target = $(this);
+				let imgId = target.attr("alt");
+				$.ajax({
+					method : 'GET',
+					url : '../image/' + imgId,
+					success : function(result){
+						target.attr('src', result);
+					}
+				}); // end ajax
+			});
+		} // end loadImg
 	</script>
 	
 		

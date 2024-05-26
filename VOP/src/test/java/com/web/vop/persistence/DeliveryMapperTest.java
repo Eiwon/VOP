@@ -2,6 +2,7 @@ package com.web.vop.persistence;
 
 import java.util.List;
 
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.web.vop.config.RootConfig;
 import com.web.vop.config.WebConfig;
 import com.web.vop.domain.DeliveryVO;
+
 
 import lombok.extern.log4j.Log4j;
 
@@ -22,6 +24,8 @@ public class DeliveryMapperTest {
 	@Autowired
 	private DeliveryMapper deliveryMapper;
 	
+	
+	
 	@Test
 	public void test() {
 		//insertDelivery();
@@ -29,16 +33,16 @@ public class DeliveryMapperTest {
 		//updateDelivery();
 		//deleteDelivery();
 		//getMemberId();
-		//countIsDefault();
+		countIsDefault();
 		//resetDefault();
-		setNewDefault();
+		//setNewDefault();
 		
 	}
 	
-	
+
 	// 새로운 기본 배송지를 1로 설정
 	private void setNewDefault() {
-		int res = deliveryMapper.updateNewDefault(1, "adminTest123");
+		int res = deliveryMapper.updateNewDefault(4, "user01");
 		log.info("새로운 기본 배송지 " + res + "수정 성공");
 		if(res == 0) {
 			log.info("기본 배송지 수정 실패");
@@ -56,11 +60,12 @@ public class DeliveryMapperTest {
 
 	// 기본 배송지 조회
 	private void countIsDefault() {
-		int res = deliveryMapper.cntIsDefault("adminTest123");
+		int res = deliveryMapper.cntIsDefault("user01");
 		log.info("cntIsDefault : " + res + "개");
 		if (res == 0) {
             log.info("기본 배송지가 없습니다.");
         }
+		
 	}
 
 	// 배송지 조회 by memberId

@@ -1,8 +1,10 @@
 package com.web.vop.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductDetailsDTO;
@@ -35,7 +37,7 @@ public interface ProductService {
 	int updateReviewNum(int productId, int reviewNum);
 	
 	// 상품 등록
-	int registerProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details);
+	int registerProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details) throws IOException;
 	
 	// 카테고리로 상품 검색
 	List<ProductVO> searchByCategory(String category, PageMaker pageMaker);
@@ -57,7 +59,7 @@ public interface ProductService {
 	String selectStateByProductId(int productId);
 		
 	// productId로 상품 삭제
-	List<ImageVO> deleteProduct(int productId);
+	int deleteProduct(int productId);
 	
 	// 카테고리를 지정하여, 리뷰 수가 가장 많은 5개의 상품 검색
 	List<ProductVO> getTopProductInCategory(String category);
@@ -72,8 +74,19 @@ public interface ProductService {
 	ProductDetailsDTO getDetails(int productId);
 	
 	// 상품 정보 변경
-	int updateProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details);
+	int updateProduct(ProductVO productVO, ImageVO newThumbnail, List<ImageVO> newDetails) throws IOException;
 	
 	// 상품 삭제 요청
 	public int deleteProductRequest(int productId);
+	
+	// 상품과 관련된 모든 이미지 검색
+	List<ImageVO> getAllProductImg(int productId);
+	
+	// 상품의 썸네일 검색
+	ImageVO getProductThumbnail(int imgId);
+	
+	// 상품의 세부 이미지 검색
+	List<ImageVO> getProductDetails(int productId);
+	
+	
 }
