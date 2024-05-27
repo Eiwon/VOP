@@ -7,6 +7,7 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>장바구니</title>
 </head>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	
 	<div id="basket_container">

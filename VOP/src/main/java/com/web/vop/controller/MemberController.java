@@ -6,10 +6,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.web.vop.domain.MemberDetails;
+import com.web.vop.domain.MemberVO;
 import com.web.vop.service.MemberService;
+import com.web.vop.service.UserDetailsServiceImple;
 
 import lombok.extern.log4j.Log4j;
 
@@ -20,6 +23,9 @@ public class MemberController {
 
 	@Autowired
 	MemberService memberService;
+	
+	@Autowired
+	UserDetailsServiceImple UserDetailsService;
 	
 	@GetMapping("/register")
 	public void registerGET() {
@@ -49,5 +55,22 @@ public class MemberController {
 		String memberId = memberDetails.getUsername();
 		model.addAttribute("memberVO", memberService.getMemberInfo(memberId));
 	} // end modifyGET
+
+	@PostMapping("/modify")
+	public String modifyPOST(MemberVO memberVO, @AuthenticationPrincipal MemberDetails memberDetails) {
+		log.info("회원 정보 수정 : " + memberVO);
+		String returnPath;
+		
+		String newPw = memberVO.getMemberPw();
+		if(newPw.length() == 0) {
+			newPw = null;
+		}
+		
+		memberVO.setMemberId(memberDetails.getUsername());
+		int res = memberService.updateMember(memberVO);
+		returnPath = (res == 1) ? "redirect:../board/myPage" : "redirect:modify";
+		
+		return returnPath;
+	} // end modifyPOST
 	
 }

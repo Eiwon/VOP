@@ -97,5 +97,4 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 		return "redirect:../Delivery/delivery";
 	} // end deliveryGET
 	
-	
 }//end MainController

@@ -19,6 +19,7 @@
 </style>
 <title>마이페이지</title>
 </head>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	<div class="info_container">
 		<div class="side_bar">

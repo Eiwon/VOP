@@ -13,8 +13,22 @@
 <html>
 <head>
 <meta charset="UTF-8">
+
 <!-- jquery 라이브러리 import -->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+<!-- 카카오 공유 api 관련 코드 -->
+<!-- 위에 있는 이유는 밑에 있는 코드들이 적용 되야해서 -->
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+  	integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"
+  	type="text/javascript">
+</script>
+
+<!-- Kakao JavaScript SDK를 초기화하는 코드입니다. -->
+<script>
+Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaScript 키 입력
+</script>
+
 <title>상품 상세 조회</title>
 <style>
 /* 리뷰 별 폼 스타일 */
@@ -38,18 +52,34 @@
 
 /* end 리뷰 별 폼 스타일 */
 
+/* 오른쪽 정렬 코드 */
+.right-align {
+    display: flex;
+    justify-content: flex-end;
+  }
+
 </style>
 
 </head>
 <body>
-	
-	<!-- 메인으로 이동하는 링크 -->
-	<a href="../board/main">VOP</a>
-	
-	<h1>${memberDetails.getUsername() }</h1>
+
+	<!-- 맨위에 있는 로그 -->
+	<jsp:include page="../include/header.jsp"></jsp:include>
 
 	<!-- 상품 상세 페이지 제작 중 -->
 	<h2>상품 상세 페이지</h2>
+	
+	
+
+	
+	
+	<!-- 카카오 공유 아이콘 -->
+	<div class="right-align">
+	<a id="kakaotalk-sharing-btn" href="javascript:;">
+  		<img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+    	 /><!-- alt="카카오톡 공유 버튼" 나중에 추가 해야함 현재 사용시 에러남 -->
+	</a>
+	</div>
 
 	  <div>
       <p>카테고리 : ${productVO.category }</p>
@@ -91,9 +121,7 @@
  	 <div>
         <p>상품 가격 : <span id="totalPrice">${productVO.productPrice}</span></p>
     </div>
-     
-     <!-- 상품 증감 -->
- 
+
      <!-- 현재 선택된 상품 수량 -->
 	 <input type="number" id="quantity" value="1" min="1" max="99" maxlength="2">
 
@@ -103,9 +131,8 @@
       <p>판매자 : ${productVO.memberId}</p>
      </div>
  	
- 	
+	 
 	 <!-- 장바구니 버튼 -->
-	
 	 <!-- 세션 아이디가 없는 경우 -->
      <c:if test="${empty memberDetails.getUsername() }">
     	<button id="btnBasket" disabled="disabled">장바구니</button>
@@ -115,6 +142,7 @@
 	<c:if test="${not empty memberDetails.getUsername() }">
     	<button id="btnBasket" >장바구니</button>
 	</c:if>
+	<!-- end 장바구니 버튼 -->
 	
 	<!-- 장바구니 링크 -->
  	<a href="../basket/main">장바구니 바로가기</a>
@@ -136,25 +164,23 @@
     	<button type="submit" >바로구매</button> 
 	</c:if>
     </form>
-
+    <!-- end 바로구매 버튼 -->
 
      <!-- 상품 설명 이미지 -->
      <p>상품 이미지 설명</p>
      
-     <div>
+     <div id="kakaotalk-sharing-btn" href="javascript:;">
     	<c:forEach items="${imageList}" var="image">
-        	<img alt="${image.imgId}">
+        	<img alt="${image.imgId}" style="margin-right: 10px;"> <!-- 이미지 간격 조정 -->
     	</c:forEach>
-	</div>
-	
-	
-     
+	</div> 
+
      <!-- 댓글 화면 코드 및 가운데 정렬 -->
      
       <p>댓글</p>
       <div id="review"></div>
       
-      <p>문의(댓댓글)</p>
+      <p>문의(대댓글)</p>
       <div id="inquiry"></div>
 
      <!-- 좋아요 표시 제작 예정? -->
@@ -164,8 +190,47 @@
  	 const memberId = '${memberDetails.getUsername() }';
  	 let productId = ${productVO.productId};
      console.log(memberId);
- 	
- 	 
+     
+  	 // 썸네일 이미지 ID 변수 정의 (이 ID가 맞는지 확인해야 합니다)
+     const thumbnailImgId = '${productVO.imgId}';
+     
+     /* 카카오 공유 관련 api 코드 */
+     function initKakaoShare(imageUrl) {
+     Kakao.Share.createDefaultButton({
+    	    container: '#kakaotalk-sharing-btn',// 버튼 id
+    	    objectType: 'commerce',
+    	    content: {
+    	      title: 
+    	    	  'VOP 상품 + 카테고리 : "${productVO.category }" + 상품 이름 :"${productVO.productName }"' +
+    	    	  '"상품 번호 : ${productVO.productId }" + 상품 가격 : "${productVO.productPrice}" + 리뷰 평균 : "${productVO.reviewAvg}"',
+    	    	  // 공유시 제목 
+    	      imageUrl: imageUrl,// 썸네일 이미지 가져오는 기능(월래는 url를 통해 이미지 불려 옴)
+    	      link: {
+    	        // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
+    	        mobileWebUrl: 'http://localhost:8080/vop/board/main', //카카오 api에 등록된 경로
+    	        webUrl: 'http://localhost:8080/vop/board/main',
+    	      },
+    	    },
+    	    commerce: { // 상품 설명
+    	      productName: 'VOP 상품 : "${productVO.productName}"', // 상품 이름
+    	      regularPrice: ${productVO.productPrice}, // 상품 가격
+    	      discountRate: 10, // 상품 할인율
+    	      discountPrice: ${productVO.productPrice} * 0.9, // 상품 할인 후 가격
+    	    },
+    	    buttons: [
+    	      {
+    	        title: '상품 보러가기', // 공유 했을때 버튼
+    	        link: { // 클릭시 이동하는 링크
+    	          mobileWebUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 앱 버전
+    	          webUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 웹 버전
+    	        },
+    	      },
+    	    ],
+    	  });
+     }/* end 카카오 공유 관련 api 코드 */
+     
+     
+     /* 상품 수량 관련 코드 */
   	 // 수량 입력 필드 가져오기
      let quantityInput = document.getElementById("quantity");
      // 상품 가격을 표시하는 span 요소 가져오기
@@ -185,6 +250,7 @@
          // 현재 수량을 productNums에 적용하는 코드
          document.querySelector('input[name="productNums"]').value = quantity;
      });
+     /* end 상품 수량 관련 코드 */
       
      
 // 별표시를 업데이트하는 함수
@@ -202,7 +268,7 @@ function displayStars() {
 }// end displayStars()
 
 $(document).ready(function() { 
-	
+	loadImg(); // 이미지 불려오는 메소드
 	displayStars(); // 별 표시 함수
     getAllReview(); // 댓글(리뷰) 전체 검색 메소드
 
@@ -309,7 +375,7 @@ $(document).ready(function() {
     	
     } // end getAllReview()
     
-    loadImg();
+    //loadImg(); 위에로 이동 하였습니다.
 }); // end document
 	function loadImg(){
 		$(document).find('img').each(function(){
@@ -320,9 +386,14 @@ $(document).ready(function() {
 				url : '../image/' + imgId,
 				success : function(result){
 					target.attr('src', result);
-				}
+					// 카카오 공유시 썸네일 이미지 사용하기 위해 사용
+					if (imgId === thumbnailImgId) {
+				          // 썸네일 이미지 URL을 카카오 공유 설정에 사용
+				          initKakaoShare(result);
+				        }
+				}// end success
 			}); // end ajax
-		});
+		});//end document
 	} // end loadImg
      </script>
 

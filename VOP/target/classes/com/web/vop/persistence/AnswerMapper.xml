@@ -45,13 +45,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <update id="updateAnswer">
       UPDATE ANSWER
       SET ANSWER_CONTENT = #{answerContent}
-      WHERE REVIEW_ID = #{inquiryId} AND MEMBER_ID = #{memberId}
+      WHERE INQUIRY_ID = #{inquiryId} AND MEMBER_ID = #{memberId}
    </update>
    
    <!-- 댓댓글(답변) 삭제 -->
    <delete id="deleteAnswer">
       DELETE FROM ANSWER
-      WHERE PRODUCT_ID = #{inquiryId} AND MEMBER_ID = #{memberId}
+      WHERE INQUIRY_ID = #{inquiryId} AND MEMBER_ID = #{memberId}
    </delete>
    
    
