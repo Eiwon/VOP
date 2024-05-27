@@ -29,10 +29,6 @@
 </div>
 	<script type="text/javascript">
 	
-		let boxCategory = $('#boxCategory');
-		let inputSearch = $('.search-input');
-		let btnSearch = $('.search-button');
-		let boxLogin = $('#box_login');
 		let listRecent = $('#recent_list');
 		let containerRecommend = $('#recommend_container');
 		
@@ -40,45 +36,10 @@
 			"식품", "주방용품", "생활용품", "홈인테리어", "가전디지털", "스포츠/레저", "자동차 용품", "도서/음반/DVD", 
 			"완구/취미", "문구/오피스", "반려동물용품", "헬스/건강식품"];
         
-		btnSearch.click(function(){
-		    console.log("선택된 카테고리 : " + boxCategory.val());
-		    console.log("입력된 검색어 : " + inputSearch.val());
-
-		    location.href = "../product/search?category=" + boxCategory.val() + "&word=" + inputSearch.val();
-
-		}); // end btnSearch.click
-
-	
 		$(document).ready(function(){
-			setLoginBox();
 			printRecentList();
 			printRecommendByCategory();
 		}); // end document.ready
-		
-		
-		function setLoginBox(){
-			let memberDetails = '${memberDetails}';
-			console.log('현재 로그인 memberDetails : ' + memberDetails);
-			let memberId = null;
-			let memberAuth = null;
-			
-			if(memberDetails != 'anonymousUser'){
-				memberId = '${memberDetails.memberVO.memberId }';
-				memberAuth = '${memberDetails.memberVO.memberAuth}';
-			}
-			
-			console.log('security memberId : ' + memberId);
-			console.log('security memberAuth : ' + memberAuth);
-			let form = '';
-			
-			if(memberId == '') { // 로그인 상태가 아닐 경우
-				form = '<a href="../member/login">로그인</a>&nbsp&nbsp&nbsp' + 
-					'<a href="../member/register">회원가입</a>';
-			}else {
-				form = '<form action="../member/logout" method="POST"><input type="submit" value="로그아웃"></form>';
-			}
-			boxLogin.html(form);
-		} // end setLoginBox
 		
 		
 		function printRecentList(){

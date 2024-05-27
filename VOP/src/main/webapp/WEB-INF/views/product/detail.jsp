@@ -7,14 +7,16 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
+	<jsp:include page="../include/alarm.jsp"></jsp:include>
 </sec:authorize> 
-    
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <!-- jquery 라이브러리 import -->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <title>상품 상세 조회</title>
 <style>
 /* 리뷰 별 폼 스타일 */
@@ -43,11 +45,6 @@
 </head>
 <body>
 	
-	<!-- 메인으로 이동하는 링크 -->
-	<a href="../board/main">VOP</a>
-	
-	<h1>${memberDetails.getUsername() }</h1>
-
 	<!-- 상품 상세 페이지 제작 중 -->
 	<h2>상품 상세 페이지</h2>
 

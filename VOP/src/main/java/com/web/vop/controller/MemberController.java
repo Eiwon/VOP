@@ -68,7 +68,7 @@ public class MemberController {
 		
 		memberVO.setMemberId(memberDetails.getUsername());
 		int res = memberService.updateMember(memberVO);
-		returnPath = (res == 1) ? "redirect:../board/myPage" : "redirect:modify";
+		returnPath = (res == 1) ? "redirect:../board/mypage" : "redirect:modify";
 		
 		return returnPath;
 	} // end modifyPOST
