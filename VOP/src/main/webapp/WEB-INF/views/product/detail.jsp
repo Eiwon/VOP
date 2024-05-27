@@ -7,8 +7,9 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
+	<jsp:include page="../include/alarm.jsp"></jsp:include>
 </sec:authorize> 
-    
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,6 +29,8 @@
 <script>
 Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaScript 키 입력
 </script>
+
+<jsp:include page="../include/header.jsp"></jsp:include>
 
 <title>상품 상세 조회</title>
 <style>
@@ -62,9 +65,6 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
 
 </head>
 <body>
-
-	<!-- 맨위에 있는 로그 -->
-	<jsp:include page="../include/header.jsp"></jsp:include>
 
 	<!-- 상품 상세 페이지 제작 중 -->
 	<h2>상품 상세 페이지</h2>

@@ -86,7 +86,7 @@
 	</div>
 		
 	<div>
-		<button> 돌아가기 </button>
+		<button onclick="toHome()"> 돌아가기 </button>
 		
 	</div>
 	
@@ -165,6 +165,12 @@
 				}); // end ajax
 			});
 		} // end loadImg
+		
+		function toHome(){
+			location.href = "../board/main";
+		} // end toHome
+		
+		
 	</script>
 </body>
 </html>

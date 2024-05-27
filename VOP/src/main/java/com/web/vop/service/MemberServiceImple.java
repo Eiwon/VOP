@@ -96,9 +96,10 @@ public class MemberServiceImple implements MemberService{
 	} // end updatePw
 
 	@Override
-	public int deleteMember(String memberId) { // È¸¿ø Å»Åð
+	public int deleteMember(String memberId, String memberPw) { // È¸¿ø Å»Åð
 		log.info("Member Service deleteMember()");
-		int res = memberMapper.deleteMember(memberId);
+		String encryptPw = passwordEncoder.encode(memberPw);
+		int res = memberMapper.deleteMember(memberId, encryptPw);
 		log.info(res + "Çà »èÁ¦ ¼º°ø");
 		return res;
 	} // end deleteMember

@@ -4,12 +4,14 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
+	<jsp:include page="../include/alarm.jsp"></jsp:include>
 </sec:authorize>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <style type="text/css">
 .container {
 	flex-direction: row;
@@ -19,7 +21,7 @@
 </style>
 <title>마이페이지</title>
 </head>
-<jsp:include page="../include/header.jsp"></jsp:include>
+
 <body>
 	<div class="info_container">
 		<div class="side_bar">
@@ -27,7 +29,7 @@
 				<strong>내 정보</strong>
 				<div id="my_info">
 					<a href="myInfo">내 정보 확인 / 수정</a>
-					<a href="..order/orderlist">주문 목록</a>
+					<a href="../order/orderlist">주문 목록</a>
 					<a href="delivery">배송지 관리</a>
 					<a href="seller">판매자 페이지</a>
 				</div>
@@ -37,7 +39,6 @@
 			
 			
 		</div>
-
 	</div>
 	<script type="text/javascript">
 		const memberId = '${memberDetails.getUsername() }';
