@@ -32,8 +32,8 @@ public class DeliveryMapperTest {
 		//getDeliveryById();
 		//updateDelivery();
 		//deleteDelivery();
-		//getMemberId();
-		countIsDefault();
+		getMemberId();
+		//countIsDefault();
 		//resetDefault();
 		//setNewDefault();
 		
@@ -51,7 +51,7 @@ public class DeliveryMapperTest {
 
 	// 기존 기본 배송지를 0으로 업데이트
 	private void resetDefault() {
-		int res = deliveryMapper.updateDefault("adminTest123");
+		int res = deliveryMapper.updateDefault("user01");
 		log.info("기본 배송지 : " + res + "개 수정");
 		if(res == 0) {
 			log.info("해당 아이디는 기본 배송지가 없습니다.");
@@ -70,7 +70,7 @@ public class DeliveryMapperTest {
 
 	// 배송지 조회 by memberId
 	private void getMemberId() {
-		List<DeliveryVO> list = deliveryMapper.selectByMemberId("admin12345");
+		List<DeliveryVO> list = deliveryMapper.selectByMemberId("user01");
 		log.info(list);
 		
 	}

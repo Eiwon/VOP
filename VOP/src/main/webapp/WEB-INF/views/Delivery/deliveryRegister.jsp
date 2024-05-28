@@ -37,7 +37,7 @@
     <input type="checkbox" id="isDefault" name="isDefault" value="1" checked>
     <label for="isDefault">기본 배송지로 설정</label><br><br>
 
-    <button type="submit">저장</button>
+    <button type="submit" id="registerBtn">저장</button>
 
 </form>
 
@@ -68,9 +68,9 @@
     }
 </script>
 <script>
-
-	//서버에서 memberId 가져오기
+	
 	const memberId = '${memberDetails.getUsername() }';
+	console.log('member ID:', memberId); 
 	
 	 // 기본 배송지 있는지 조회 
     function checkDefaultAddress() {
@@ -91,43 +91,41 @@
         });
     }
 	
+    
+    
  	// 해당하는 memberid의 나머지 기본배송지 목록을 0으로 바꾸기 (테스트)
-    function setDefault(memberId) {
-        // 새로운 기본 배송지 ID를 서버에 전달하기 위해 Ajax 요청 보내기
-        $.ajax({
-            url: '/updateDefault', // 서버 엔드포인트 URL
-            method: 'PUT', // PUT 방식으로 요청
-            contentType: 'application/json',
-            data: JSON.stringify({ memberId: memberId }), // 새로운 기본 배송지 ID 전달
-            success: function(response) {
-                // 성공적으로 서버에서 처리된 경우에 실행할 코드
-                console.log('기본 배송지 설정이 해제되었습니다.');
-            },
-            error: function(err) {
-                // 서버에서 오류가 발생한 경우에 실행할 코드
-                console.error('기본 배송지 설정 해지 중 오류가 발생했습니다:', err);
-            }
-        });
-    }
-	 
- 	// 기존에 있는 배송지를 일반 배송지로 설정(테스트)
- 	function setNewDefault(deliveryId) {
-        // 새로운 기본 배송지 ID를 서버에 전달하기 위해 Ajax 요청 보내기
-        $.ajax({
-            url: '/updateNewDefault', // 서버 엔드포인트 URL
-            method: 'PUT', // PUT 방식으로 요청
-            contentType: 'application/json',
-            data: JSON.stringify({ deliveryId: deliveryId , memberId: memberId}), // 새로운 기본 배송지 ID 전달
-            success: function(response) {
-                // 성공적으로 서버에서 처리된 경우에 실행할 코드
-                console.log('기본 배송지 설정이 등록되었습니다.');
-            },
-            error: function(err) {
-                // 서버에서 오류가 발생한 경우에 실행할 코드
-                console.error('기본 배송지 등록 중 오류가 발생했습니다:', err);
-            }
-        });
-    }
+    $(document).ready(function() {
+    	
+    	const memberId = '${memberDetails.getUsername()}';
+        console.log('member ID:', memberId);
+        
+    	$('#registerBtn').click(function(event) {
+    		console.log('이벤트 핸들러');
+    		event.preventDefault(); // 기본 폼 제출 동작을 막음
+    		
+        	const dataToSend = {
+           		 'memberId': 'memberId'
+        	};
+        	
+        	$.ajax({
+                url: '/updateDefault', // 서버 엔드포인트 URL
+                method: 'PUT', // PUT 방식으로 요청
+                contentType: 'application/json',
+                data: JSON.stringify(dataToSend), // 새로운 기본 배송지 ID 전달
+                success: function(response) {
+                    // 성공적으로 서버에서 처리된 경우에 실행할 코드
+                    console.log('기본 배송지 설정이 해제되었습니다.',response);
+                },
+                error: function(err) {
+                    // 서버에서 오류가 발생한 경우에 실행할 코드
+                    console.error('기본 배송지 설정 해지 중 오류가 발생했습니다:', err);
+                }
+            });
+    	});
+	});
+ 
+ 	
+ 	
  	
  	
 	//저장 버튼 클릭 시 폼 유효성 검사 후 제출 및 페이지 이동
