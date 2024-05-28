@@ -47,8 +47,30 @@ public class ImageController {
 	    return new ResponseEntity<String>(imgUrl, HttpStatus.OK);
 	} // end showImg
 	
+	// 주문목록 이미지 파일
+	@GetMapping(value = "/showImg", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	@ResponseBody
+	public ResponseEntity<Resource> showImgByOrderId(int imgId) {
+	    log.info("showImgByOrderId() : " + imgId);
+	    ImageVO imageVO = imageService.getImageById(imgId);
+	    if (imageVO == null) {
+	        return new ResponseEntity<Resource>(null, null, HttpStatus.OK);
+	    }
+	    String fullPath = imageVO.getImgPath() + File.separator + imageVO.getImgChangeName();
+	    HttpHeaders headers = new HttpHeaders();
+	    // 다운로드할 파일 이름을 헤더에 설정
+	    headers.add(HttpHeaders.CONTENT_DISPOSITION,
+	            "attachment; filename=" + fullPath + "." + imageVO.getImgExtension());
+
+	    Resource resource = FileUploadUtil.getFile(fullPath, imageVO.getImgExtension());
+	   
+	    return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+	} // end showImgByOrderId
 	
 	
 	
+}// end ImageController()
+	 
 	
-}
+	
+

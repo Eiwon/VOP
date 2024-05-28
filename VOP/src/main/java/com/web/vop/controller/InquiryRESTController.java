@@ -47,9 +47,9 @@ public class InquiryRESTController {
 	}// end createInquiry()
 	
 	
-	@GetMapping("/list") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
+	@GetMapping("/list/{productId}") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
 	public ResponseEntity<List<InquiryVO>> readAllInquiry(
-			@RequestBody int productId){
+			@PathVariable("productId") int productId){
 		log.info("readAllInquiry()");
 		
 		// productId에 해당하는 댓글(리뷰) list을 전체 검색

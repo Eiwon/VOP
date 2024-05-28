@@ -42,18 +42,18 @@ public class AnswerRESTController {
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}// end createAnswer()
 	
-	// 댓댓글(답변) 전체 검색
-//	@GetMapping("설정 예정") // GET : 댓댓글(답변) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
-//	public ResponseEntity<List<AnswerVO>> readAllAnswer(
-//			@PathVariable("productId") int productId){
-//		log.info("readAllAnswer()");
-//		
-//		// productId에 해당하는 댓댓글(답변) list을 전체 검색
-//		List<AnswerVO> list = answerService.getAllAnswer(productId);
-//		
-//		// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
-//		return new ResponseEntity<List<AnswerVO>>(list, HttpStatus.OK);
-//	}// end readAllAnswer()
+	 //댓댓글(답변) 전체 검색
+	@GetMapping("/list/{productId}") // GET : 댓댓글(답변) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
+	public ResponseEntity<List<AnswerVO>> readAllAnswer(
+			@PathVariable("productId") int productId){
+		log.info("readAllAnswer()");
+		
+		// productId에 해당하는 댓댓글(답변) list을 전체 검색
+		List<AnswerVO> list = answerService.getAllAnswer(productId);
+		
+		// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
+		return new ResponseEntity<List<AnswerVO>>(list, HttpStatus.OK);
+	}// end readAllAnswer()
 	
 	// 댓댓글(답변) 수정
 	@PutMapping("/modify") // PUT : 댓글(리뷰) 수정 // 나중에 데이터 받는 거에 따라 달라짐

@@ -24,11 +24,22 @@ public class OrderController {
 	OrderService orderService;
 	
 	@GetMapping("/orderlist") 
-	public void orderlistGET() { // 주문목록 페이지 불러오기
-		System.out.println("orderlist.jsp 이동");
+	public String orderlistGET(Model model,@AuthenticationPrincipal MemberDetails memberDetails) { // 주문목록 페이지 불러오기
 		log.info("orderlistGET()");
-	
-	}//end orderlistGET()
+		
+		// 사용자가 로그인한 경우에만 주문 목록을 표시하도록 합니다.
+	    if (memberDetails != null && memberDetails.getUsername() != null) {
+	        List<OrderVO> orderList = orderService.getOrderListByMemberId(memberDetails.getUsername());
+	        log.info(orderList);
+	        model.addAttribute("orderList", orderList);
+	        model.addAttribute("memberDetails", memberDetails);
+	        return "order/orderlist"; // 주문 목록 페이지로 이동
+	    } else {
+	        // 로그인하지 않은 경우에는 로그인 페이지로 리다이렉트
+	        return "redirect:/member/login";
+	    }
+
+	}//end orderlistGET
 	
 	
 	

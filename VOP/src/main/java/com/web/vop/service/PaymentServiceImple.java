@@ -125,6 +125,16 @@ public class PaymentServiceImple implements PaymentService {
 		
 		return payment; 
 	} // end getRecentPayment
+
+	
+	// 배송조회 
+	@Override
+	public List<PaymentVO> getPaymentByPaymentId(int paymentId) {
+		log.info("getPaymentByPaymentId()");
+		List<PaymentVO> list = paymentMapper.selectPaymentByPaymentId(paymentId);
+		log.info("베송조회 by paymentId : " + list);
+		return list;
+	}// end getPaymentByPaymentId()
 	
 	
 	

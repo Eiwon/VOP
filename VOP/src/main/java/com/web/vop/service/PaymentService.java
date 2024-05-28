@@ -1,5 +1,7 @@
 package com.web.vop.service;
 
+import java.util.List;
+
 import com.web.vop.domain.PaymentVO;
 import com.web.vop.domain.PaymentWrapper;
 
@@ -16,5 +18,7 @@ public interface PaymentService {
 	
 	// 최근에 등록된 결제 결과 검색 by memberId
 	public PaymentWrapper getRecentPayment(String memberId);
-		
+	
+	// 배송조회 
+	public List<PaymentVO> getPaymentByPaymentId(int paymentId);
 }

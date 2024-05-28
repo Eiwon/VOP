@@ -49,7 +49,6 @@ public class InquiryServiceImple implements InquiryService{
 	@Override
 	public int updateInquiry(int productId, String memberId, String inquiryContent) {
 		log.info("updateInquiry()");
-		log.info("로그1");
 		
 		InquiryVO inquiryVO = new InquiryVO();
 		log.info("inquiryVO : " + inquiryVO);
@@ -70,7 +69,8 @@ public class InquiryServiceImple implements InquiryService{
 		if(deleteRes == 1) {
 			int result = answerMapper.deleteAnswer(inquiryId, memberId);
 			log.info("result : " + result);
-		}
+		} 
+		log.info(deleteRes + "행 댓글이 삭제되었습니다.");
 		return deleteRes;
 	}
 	

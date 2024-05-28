@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,7 +49,7 @@ public class DeliveryRESTController {
 	
 	// Delivery 정보를 JSON 형태로 반환한 API 엔드포인트
 	@GetMapping("/getDeliveryInfo")
-	public ResponseEntity<Integer> getDeliveryInfo(@RequestParam("paymentId") int paymentId) {
+	public ResponseEntity<Integer> getDeliveryInfo(@PathVariable("paymentId") int paymentId) {
 		log.info("getDeliveryInfo()");
 		int result = orderService.getPaymentId(paymentId);
 		log.info("paymentId : "  + result);
@@ -114,7 +113,9 @@ public class DeliveryRESTController {
 	
 	// 기본 배송지가 설정되어 있는지 확인
 	@GetMapping("/checkDefaultAddress")
-	public Map<String, Boolean> checkDefaultAddress(@RequestParam String memberId){
+	public Map<String, Boolean> checkDefaultAddress(@RequestParam String memberId,
+			@AuthenticationPrincipal MemberDetails memberDetails){
+		
 		log.info("checkDefaultAddress() - memberId : " + memberId);
 		boolean hasDefault = deliveryService.hasDefaultAddress(memberId);
 		log.info("기본 배송지 존재 ? " + hasDefault);
@@ -127,15 +128,14 @@ public class DeliveryRESTController {
 	// 해당하는 memberid의 나머지 기본배송지 목록을 0으로 바꾸기 
  	@PutMapping("/updateDefault")
 	  public ResponseEntity<Integer> updateDefault(
-			  @AuthenticationPrincipal MemberDetails memberDetails) {
+			  @RequestBody String memberId) {
 		 	log.info("updateDefault() -  해당하는 memberid의 나머지 기본배송지 목록을 0으로 바꾸기");
-        	String memberId = memberDetails.getUsername(); 
         	log.info("memberId : " + memberId);
         	
         	int res = deliveryService.updateDefault(memberId);
         	log.info("해당 아이디의 기본 배송지 목록이 해지되었습니다.");
-        	
-        	return new ResponseEntity<Integer>(res, HttpStatus.OK);
+        
+        	return new ResponseEntity<Integer>(res, HttpStatus.OK);        		  
  	}// end updateDefault()
 	
         	

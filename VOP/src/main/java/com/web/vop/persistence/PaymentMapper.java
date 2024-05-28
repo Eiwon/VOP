@@ -1,5 +1,7 @@
 package com.web.vop.persistence;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.web.vop.domain.PaymentVO;
@@ -16,4 +18,6 @@ public interface PaymentMapper {
 	// 최근에 등록된 결제 결과 검색 by memberId
 	public PaymentVO selectLastPayment(String memberId);
 	
+	// 배송조회 
+	public List<PaymentVO> selectPaymentByPaymentId(int paymentId);
 }
