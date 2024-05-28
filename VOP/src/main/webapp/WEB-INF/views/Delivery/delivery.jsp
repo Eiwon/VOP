@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -18,54 +19,43 @@
 
 </head>
 <body>
-	<h2>배송 조회</h2>
-	<form action="delivery" method="POST">
-		<div>
-			<p>배송예정일 : </p>
-			<input type="text" name="expectDeliveryDate" value="${OrderVO.expectDeliveryDate }" readonly>
-		</div>
-	
-		<div>
-			<p>송장 번호 : </p>
-			<input type="text" name="paymentId" value="${OrderVO.paymentId }" readonly>
-		</div>
-		
-		
-	</form>
-	
-	
-	  <div class="box">
-	    <div class="label">받는 사람:</div>
-	    <div id="receiverName"></div>
-	    <div class="label">받는 주소:</div>
-	    <div id="receiverAddress"></div>
-	    <div class="label">배송요청사항:</div>
-	    <div id="requirement"></div>
-	  </div>
-	
-	<script>
-	// 서버로부터 데이터를 받아오는 함수
-	function fetchData() {
-	  $.ajax({
-		  url : '/Delivery/getDeliveryInfo',
-		  method : 'GET',
-		  success : function(data) {
-			  document.getElementById("receiverName").innerText = data.receiverName;
-			  document.getElementById("receiverAddress").innerText = data.receiverAddress;
-			  document.getElementById("requirement").innerText = data.requirement;
-		  },
-		  error: function(xhr, status, error) {
-			  console.error('AJAX 오류 :', status, error);
-		  }
-	  });
-	
-	}
-	
-	// 페이지 로드시 데이터를 받아오도록 설정
-	$(document).ready(function() {
-		fetchData();
-	});
-	</script>
 
+<!-- ${param.paymentId} -->
+
+	<h2>배송 조회</h2>
+	<div>
+    <p>배송예정일 : ${date}</p>
+    <p>송장 번호 : ${getPayment}</p>
+  </div>
+
+  <div class="box">
+     <c:forEach items="${paymentList}" var="payment">
+        <div class="label">받는 사람:</div>
+        <div>${payment.receiverName}</div><br>
+        <div class="label">받는 주소:</div>
+        <div>${payment.deliveryAddress}</div><br>
+        <div class="label">배송요청사항:</div>
+        <div>${payment.requirement}</div>
+    </c:forEach>
+  </div>
+  
+  <script>
+  	$(document).ready(function(){
+  		let expectedDate = new Date("${date}");
+  		let currentDate = new Date();
+  		
+  		if (currentDate < expectedDate) {
+  			$("#deliveryStatus").text("배송 예정일 : " + formatDate(expectedDate));
+  		} else {
+  			$("#deliveryStatus").text("배송 완료 되었습니다! 배송 완료일 : " + formatDate(expectedDate) + ")" );
+  		}
+  	});
+  	
+  	function formatDate(date){
+  		let formattedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
+  		return formattedDate;
+  	}
+  </script>
+	
 </body>
 </html>

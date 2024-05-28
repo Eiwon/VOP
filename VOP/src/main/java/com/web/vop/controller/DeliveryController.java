@@ -1,7 +1,7 @@
 package com.web.vop.controller;
 
+import java.util.Date;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -14,8 +14,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.web.vop.domain.DeliveryVO;
 import com.web.vop.domain.MemberDetails;
+import com.web.vop.domain.PaymentVO;
 import com.web.vop.service.DeliveryService;
 import com.web.vop.service.MemberService;
+import com.web.vop.service.OrderService;
+import com.web.vop.service.PaymentService;
+
 import lombok.extern.log4j.Log4j;
 
 @Controller
@@ -29,12 +33,34 @@ public class DeliveryController {
     @Autowired
     MemberService memberService;
     
+    @Autowired
+    OrderService orderService;
+    
+    @Autowired
+    PaymentService paymentService;
     
     // 마이페이지에서 주문목록 > 배송조회 페이지로 이동
     @GetMapping("/delivery")
-    public void deliveryGET() {
-        log.info("delivery 페이지 이동 요청");
-    }//end deliveryGET()
+    public String deliveryGET(@RequestParam("paymentId") int paymentId, Model model) {
+        log.info("deliveryGET - paymentId : " + paymentId);
+        // 배송 예정일 조회
+    	Date date = orderService.getExpectDateByPaymentId(paymentId);
+    	 log.info("date : " + date);
+        model.addAttribute("date", date);
+        
+        // 송장번호 조회 
+        int getPayment = orderService.getPaymentId(paymentId);
+        log.info("getPayment : " + getPayment);
+        model.addAttribute("getPayment", getPayment);
+        
+        // 주문 조회 by paymentId 
+        List<PaymentVO> paymentList = paymentService.getPaymentByPaymentId(paymentId);
+        log.info("paymentList : " + paymentList);
+        model.addAttribute("paymentList", paymentList);
+        
+        
+        return "/Delivery/delivery";  // delivery.jsp 로 이동
+    }
     
     
     // 배송지 관리 페이지로 이동

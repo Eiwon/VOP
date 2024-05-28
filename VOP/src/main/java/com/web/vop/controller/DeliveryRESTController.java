@@ -49,7 +49,7 @@ public class DeliveryRESTController {
 	
 	// Delivery 정보를 JSON 형태로 반환한 API 엔드포인트
 	@GetMapping("/getDeliveryInfo")
-	public ResponseEntity<Integer> getDeliveryInfo(@RequestParam("paymentId") int paymentId) {
+	public ResponseEntity<Integer> getDeliveryInfo(@PathVariable("paymentId") int paymentId) {
 		log.info("getDeliveryInfo()");
 		int result = orderService.getPaymentId(paymentId);
 		log.info("paymentId : "  + result);

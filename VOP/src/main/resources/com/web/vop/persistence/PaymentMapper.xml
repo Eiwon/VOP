@@ -41,5 +41,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		)
 	</select>
 	
+	<!-- 배송조회  -->
+	 <select id="selectPaymentByPaymentId" resultMap="PaymentResultMap">
+		SELECT * FROM PAYMENT WHERE PAYMENT_ID = #{paymentId}
+	</select>
 	
 </mapper>

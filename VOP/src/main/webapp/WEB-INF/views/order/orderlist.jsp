@@ -1,3 +1,4 @@
+<%@page import="com.web.vop.domain.OrderVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -9,7 +10,9 @@
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
 </sec:authorize> 
-
+<%
+    OrderVO orderVO = new OrderVO(); // OrderVO 객체 생성
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -93,9 +96,11 @@
             <div class="order-details">
                 <p>예상 배송일 : ${order.expectDeliveryDate}</p>
                 	<!-- 이미지 목록 표시 -->
-					<c:forEach items="${imageUrl}" var="image">
-    					<img src="${image}" alt="Image">
-					</c:forEach>
+					<div>
+    					<c:forEach items="${imageList}" var="image">
+                        	<img alt="${image.imgId}" src="" />
+                    	</c:forEach>
+					</div>	
                 <div>
                     <p>상품명 : ${order.productName}</p>
                     <p>상품 가격 : ${order.productPrice} 원</p>
@@ -103,7 +108,7 @@
                 </div>
             </div>
             <div class="order-buttons">
-                <a href=""><button>배송 조회</button></a>
+                <a href="../Delivery/delivery?paymentId=${order.paymentId}"><button>배송 조회</button></a>
                 
                 	<!-- 리뷰 쓰기 코드 -->
 	                <form action="../review/register" method="get">
@@ -362,18 +367,27 @@
     }); // end document.ready()
     
     function loadImg(){
-		$(document).find('img').each(function(){
-			let target = $(this);
-			let imgId = target.attr("alt");
-			$.ajax({
-				method : 'GET',
-				url : '../image/' + imgId,
-				success : function(result){
-					target.attr('src', result);
-				}
-			}); // end ajax
-		});
-	} // end loadImg
+        $(document).find('img').each(function(){
+            let target = $(this);
+            let imgId = target.attr("alt");
+            console.log("Requesting image with imgId:", imgId); // 콘솔 로그 추가
+            $.ajax({
+                method : 'GET',
+                url : '../showImg?imgId=' + imgId,
+                success : function(result){
+                    console.log("Image successfully loaded for imgId:", imgId); // 콘솔 로그 추가
+                    target.attr('src', result);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error("Error loading image for imgId:", imgId, textStatus, errorThrown); // 에러 로그 추가
+                }
+            }); // end ajax
+        });
+    } // end loadImg
+
+    $(document).ready(function(){
+        loadImg();
+    });
     
     </script>
 	
