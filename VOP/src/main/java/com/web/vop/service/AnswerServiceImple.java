@@ -22,6 +22,7 @@ public class AnswerServiceImple implements AnswerService{
 	@Override
 	public int createAnswer(AnswerVO answerVO) {
 		log.info("createAnswer()");
+		log.info("answerVO : " + answerVO);
 		int insertRes = answerMapper.insertAnswer(answerVO);
 		log.info(insertRes + "행 댓댓글(답변) 등록");
 		return insertRes;
@@ -49,7 +50,7 @@ public class AnswerServiceImple implements AnswerService{
 		log.info("updateAnswer()");
 		AnswerVO answerVO = new AnswerVO();
 		// reviewVO에 각 변경사항 변수들 저장
-		answerVO.setProductId(inquiryId);
+		answerVO.setInquiryId(inquiryId);
 		answerVO.setMemberId(memberId);
 		answerVO.setAnswerContent(answerContent);
 		int updateRes = answerMapper.updateAnswer(answerVO);
