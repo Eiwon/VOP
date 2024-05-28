@@ -15,6 +15,7 @@
 <body>
 	<div>
 		<form id="productForm" action="register" method="post" enctype="multipart/form-data">
+			<%-- <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }"> --%>
 			<div>
 				판매자
 				<input type="text" name="memberId" value='${memberDetails.getUsername() }' readonly>
@@ -49,7 +50,6 @@
 					<option value="반려동물용품">반려동물용품</option>
 					<option value="헬스/건강식품">헬스/건강식품</option>
 				</select> 
-				<!-- <input type="text" name="category"> -->
 			</div>
 			<div>
 				<input type="number" id="product_remains" name="productRemains" placeholder="수량">

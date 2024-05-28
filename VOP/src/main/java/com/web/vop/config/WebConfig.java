@@ -19,7 +19,7 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
    @Override
    protected Class<?>[] getServletConfigClasses() {
       
-      return new Class[] {ServletConfig.class}; // ServletConfig 클래스 리턴
+      return new Class[] {ServletConfig.class, WebSocketConfig.class}; // ServletConfig 클래스 리턴
    }
 
    
