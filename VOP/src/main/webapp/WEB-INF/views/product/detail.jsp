@@ -182,6 +182,11 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
       
       <p>문의(대댓글)</p>
       <div id="inquiry"></div>
+      
+      <div>
+      	<h3>배송/교환/반품 안내</h3>
+      	<p></p>
+      </div>
 
      <!-- 좋아요 표시 제작 예정? -->
      
@@ -369,7 +374,7 @@ $(document).ready(function() {
         ); // end getJSON()
     } // end getAllReply()
     
-   /*  // 문의(댓댓글) 전체 검색
+    // 문의(댓글) 전체 검색
     function getAllInquiry() {
     	
     	let url = '../inquiryRest/list/' + productId;
@@ -386,7 +391,104 @@ $(document).ready(function() {
 
                 // $(컬렉션).each() : 컬렉션 데이터를 반복문으로 꺼내는 함수
                 $(data).each(function() {
-    } // end getAllReview() */
+                	 // this : 컬렉션의 각 인덱스 데이터를 의미
+                    console.log(this);
+
+                    // 전송된 replyDateCreated는 문자열 형태이므로 날짜 형태로 변환이 필요
+                    let inquiryDateCreated = new Date(this.reviewDateCreated);
+                    
+                    // 날짜와 시간을 문자열로 변환하여 가져오기
+                    let dateString = inquiryDateCreated.toLocaleDateString();
+                    let timeString = inquiryDateCreated.toLocaleTimeString();
+
+                    // 댓글 이미지 및 좋아요 추가 해야함
+                    list += '<div>' +
+                        '<pre>' +
+                        '<input type="hidden" id="inquiry" value="' + this.inquiry + '">' // inquiry 추가해서 id을 바꾸지 못하게 해야함
+                        +
+                        this.memberId +
+                        '&nbsp;&nbsp;' // 공백
+                        +
+                        dateString + ' ' + timeString // 작성 시간 (날짜와 시간)
+                        +
+                        '&nbsp;&nbsp;' 
+                        +
+                        '<input type="text" id="inquiryContent" value="' + this.inquiryContent + '"readonly>' // 내용
+                        +
+                        '</pre>' 
+                        +
+                        '</div>';
+                        
+                    // 해당 inquiryId 출력
+                    let inquiryId = this.inquiry;
+                    
+                    console.log(inquiryId);
+                    
+                    getAllAccess(inquiryId);
+                    
+                }); // end each()
+                
+                
+                $('#inquiry').html(list); // 저장된 데이터를 inquiry div 표현
+            } // end function()
+        ); // end getJSON()
+    } // end getAllInquiry()
+    
+    // 문의(댓댓글) 전체 검색
+    function getAllAccess(inquiryId) {
+    	
+    	console.log(inquiryId);
+    	 
+    	let url = '../access/list/' + productId;
+        console.log(url);
+        $.getJSON(
+            url,
+            function(data) {
+                // data : 서버에서 전송받은 list 데이터가 저장되어 있음.
+                // getJSON()에서 json 데이터는 
+                // javascript object로 자동 parsing됨.
+                console.log(data);
+
+                let list = ''; // 댓글 데이터를 HTML에 표현할 문자열 변수
+
+                // $(컬렉션).each() : 컬렉션 데이터를 반복문으로 꺼내는 함수
+                $(data).each(function() {
+                	 // this : 컬렉션의 각 인덱스 데이터를 의미
+                    console.log(this);
+
+                    // 전송된 replyDateCreated는 문자열 형태이므로 날짜 형태로 변환이 필요
+                    let accessDateCreated = new Date(this.reviewDateCreated);
+                    
+                    // 날짜와 시간을 문자열로 변환하여 가져오기
+                    let dateString = accessDateCreated.toLocaleDateString();
+                    let timeString = accessDateCreated.toLocaleTimeString();
+
+                    // 댓글 이미지 및 좋아요 추가 해야함 
+                    if(inquiryId == this.access){
+                    	list += '<div>' +
+                        '<pre>' +
+                        '<input type="hidden" id="access" value="' + this.access + '">' // access 추가해서 id을 바꾸지 못하게 해야함
+                        +
+                        this.memberId +
+                        '&nbsp;&nbsp;' // 공백
+                        +
+                        dateString + ' ' + timeString // 작성 시간 (날짜와 시간)
+                        +
+                        '&nbsp;&nbsp;' 
+                        +
+                        '<input type="text" id="accessContent" value="' + this.accessContent + '"readonly>' // 내용
+                        +
+                        '</pre>' 
+                        +
+                        '</div>';
+                    }
+                    
+                }); // end each()
+
+            } // end function()
+        ); // end getJSON()
+    } // end getAllInquiry()
+
     
     //loadImg(); 위에로 이동 하였습니다.
 }); // end document
