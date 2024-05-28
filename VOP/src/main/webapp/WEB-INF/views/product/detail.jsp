@@ -301,7 +301,6 @@ $(document).ready(function() {
         });
      }); // end btnAdd.click()
      
-
     // 댓글(리뷰) 전체 검색 // 이미지 및 좋아요 아직 추가 안함
     function getAllReview() {
     	 
@@ -370,10 +369,24 @@ $(document).ready(function() {
         ); // end getJSON()
     } // end getAllReply()
     
-    // 문의(댓댓글) 전체 검색
-    function getAllReview() {
+   /*  // 문의(댓댓글) 전체 검색
+    function getAllInquiry() {
     	
-    } // end getAllReview()
+    	let url = '../inquiryRest/list/' + productId;
+        console.log(url);
+        $.getJSON(
+            url,
+            function(data) {
+                // data : 서버에서 전송받은 list 데이터가 저장되어 있음.
+                // getJSON()에서 json 데이터는 
+                // javascript object로 자동 parsing됨.
+                console.log(data);
+
+                let list = ''; // 댓글 데이터를 HTML에 표현할 문자열 변수
+
+                // $(컬렉션).each() : 컬렉션 데이터를 반복문으로 꺼내는 함수
+                $(data).each(function() {
+    } // end getAllReview() */
     
     //loadImg(); 위에로 이동 하였습니다.
 }); // end document
