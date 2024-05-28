@@ -75,18 +75,77 @@
     <input type="hidden" id="memberId" value="${memberDetails.getUsername()}"><!-- 여기 부분 없어도 될뜻 -->
     <input type="hidden" id="productId" value="${order.productId}"><!-- 여기 부분 없어도 될뜻 -->
     <input type="text" id="reviewContent"><br>
+    <div>
+		<strong>상세정보 이미지</strong>
+		<input id="inputDetails" type="file" name="details" multiple="multiple" onchange="showDetailsPreview()">
+		<div id="previewDetails"></div>
+	</div>
     <button id="btnAdd">등록</button>
-    
-    
-</div>
+    </div>
 
 <script type="text/javascript">
+
+function showDetailsPreview(){
+	
+	function checkDetailsFiles(event) {
+	    let inputDetails = $("#inputDetails");
+	    let files = inputDetails.prop('files');
+	    
+	    for (let x = 0; x < files.length; x++) {
+	        console.log(files[x].name);
+	        if (!checkFileValid(files[x])) {
+	            event.preventDefault();
+	            return;
+	        }
+	    }
+	}
+	
+	$("#productForm").submit(function(event) {
+	    checkDetailsFiles(event);
+	});
+        
+  function showDetailsPreview(){ 
+	 // 이미지 미리보기 (세부정보)
+	 console.log("changed");
+	 let previewDetails = $('#previewDetails');
+	 
+	 let inputDetails = $("#inputDetails");
+    let files = inputDetails.prop('files');
+    let str = "";
+    console.log(files.length);
+    for(let x = 0; x < files.length; x++){
+   	 let fileUrl = URL.createObjectURL(files[x]);
+   	 str += '<img src="' + fileUrl + '">';
+    }
+	 previewDetails.html(str);
+} // end showDetailsPreview()
+
+function checkFileValid(file){
+
+	 const blockedExtension = new RegExp("exe|sh|php|jsp|aspx|zip|alz");
+    if (!file) { // file이 없는 경우
+       alert("파일을 선택하세요.");
+       return false;
+    }
+    
+    if (blockedExtensions.test(file.name)) { // 차단된 확장자인 경우
+       alert("이 확장자의 파일은 첨부할 수 없습니다.");
+       return false;
+    }
+
+    let maxSize = 10 * 1024 * 1024; // 10 MB 
+    if (file.size > maxSize) {
+       alert("파일 크기가 너무 큽니다. 최대 크기는 10MB입니다.");
+       return false;
+    }
+}
    
 $(document).ready(function(){
-	
+		
 	let selectedStar; // 전역 변수로 selectedStar 선언
 	let memberId = "${memberDetails.getUsername()}";
 	loadImg();
+	
 	// 이미지 없을때 이름과 확장명 보여주는 코드
 	function loadImg(){
 		$(document).find('img').each(function(){
@@ -121,6 +180,8 @@ $(document).ready(function(){
        
        console.log(reviewStar);
        console.log(memberId);
+       
+       $("#productForm").submit();
        
        // javascript 객체 생성
        let obj = {	

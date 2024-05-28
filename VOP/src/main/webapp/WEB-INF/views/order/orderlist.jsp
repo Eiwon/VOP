@@ -212,7 +212,7 @@
     	    });
     	}
 
-    	// 각 판매자 문의 버튼에 대한 이벤트 리스너 추	가
+    	// 각 판매자 문의 버튼에 대한 이벤트 리스너 추가
     	addModalEventListener('.sellerInquiry', '.createModal');
 
     	// 각 판매자 문의 수정 버튼에 대한 이벤트 리스너 추가
@@ -263,7 +263,7 @@
             console.log(obj);
             
          	// $.ajax로 송수신
-           /*  $.ajax({
+            $.ajax({
                type : 'POST', // 메서드 타입
                url : '../inquiryRest/register', // url
                headers : { // 헤더 정보
@@ -276,7 +276,7 @@
                      alert('문의 성공');
                   }
                } // end success 
-            }); // end ajax */
+            }); // end ajax 
         });// end form()
     });// end inquiryCreate()
     
@@ -301,7 +301,7 @@
             console.log(obj);
             
             // ajax 요청
-            /* $.ajax({
+            $.ajax({
                type : 'PUT', // 메서드 타입
                url : '../inquiryRest/modify',// 경로 
                headers : {
@@ -312,10 +312,9 @@
                   console.log(result);
                   if(result == 1) {
                      alert('문의 수정 성공!');
-                     window.location.href = '../board/orderlist';
                   }
                }
-            }); // ajax */
+            }); // ajax 
         });// end form()
     });// end inquiryUpdate()deleteInquiry
     
@@ -339,7 +338,7 @@
         console.log(obj);
         
        // ajax 요청
-       /* $.ajax({
+       $.ajax({
           type : 'DELETE', 
           url : '../inquiryRest/delete',
           headers : {
@@ -350,10 +349,9 @@
              console.log(result);
              if(result == 1) {
                 alert('댓글 삭제 성공!');
-                window.location.href = '../board/orderlist';
              }
           }
-       }); */
+       }); 
     });// end form()
     });// end inquiryDelete()
     
