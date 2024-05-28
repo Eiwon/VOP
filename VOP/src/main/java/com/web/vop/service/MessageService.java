@@ -18,4 +18,6 @@ public interface MessageService {
 	// 지정 메세지 삭제(admin)
 	public int removeById(int messageId);
 	
+	// 지정 수신자 메시지 삭제
+	public int removeByReceiverId(String receiverId);
 }

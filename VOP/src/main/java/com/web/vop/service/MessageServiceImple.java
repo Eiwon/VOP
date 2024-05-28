@@ -42,4 +42,10 @@ public class MessageServiceImple implements MessageService{
 		return messageMapper.deleteById(messageId);
 	} // end removeById
 
+	@Override
+	public int removeByReceiverId(String receiverId) {
+		log.info("removeByReceiverId");
+		return messageMapper.deleteByReceiverId(receiverId);
+	} // end removeByReceiverId
+
 }

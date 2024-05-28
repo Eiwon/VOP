@@ -20,4 +20,8 @@ public interface MessageMapper {
 
 	// 지정 메세지 삭제(admin)
 	public int deleteById(int messageId);
+	
+	// 지정 유저에 대한 메시지 삭제
+	public int deleteByReceiverId(String receiverId);
+	
 }
