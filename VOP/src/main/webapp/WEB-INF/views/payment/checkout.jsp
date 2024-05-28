@@ -21,6 +21,7 @@
 </style>
 <title>결제 페이지</title>
 </head>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	<div>
 		<h2>주문 / 결제</h2>
@@ -164,7 +165,7 @@
 			if(deliveryVO != null){ // 기본 배송지로 등록된 배송지가 있을 경우에만 출력
 				$('#receiverName').val(deliveryVO.receiverName);
 				$('#receiverAddress').val(deliveryVO.receiverAddress);
-				$('#deliveryAddressDetails').val(deliveryVO.deliveryAddressDetails);
+				$('#deliveryAddressDetails').val(deliveryVO.receiverAddressDetails);
 				$('#receiverPhone').val(deliveryVO.receiverPhone);
 				$('#requirement').val(deliveryVO.requirement);
 			}
@@ -343,7 +344,19 @@
 			
 			// 팝업 창 띄우기
 			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
-			
+
+			popup.onbeforeunload = function(){
+				// 팝업 닫힐 때 실행
+				/* console.log("팝업 닫힘");
+				deliveryVO.receiverName = $('#receiverName').val();
+				deliveryVO.receiverAddress = $('#receiverAddress').val();
+				deliveryVO.receiverAddressDetails = $('#deliveryAddressDetails').val();
+				deliveryVO.receiverPhone = $('#receiverPhone').val();
+				deliveryVO.requirement = $('#requirement').val();
+				
+				console.log(deliveryVO); */
+			} // end popup.onbeforeunload
+
 		} // end showDeliveryPopup
 		function saveDelivery(delivery){
 			console.log("팝업 닫힘");

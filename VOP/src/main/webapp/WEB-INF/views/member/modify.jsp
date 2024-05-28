@@ -5,7 +5,7 @@
 <sec:authentication var="memberDetails" property="principal"/>
 <html>
 <head>
-<meta charset="EUC-KR">
+<meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <style type="text/css">
@@ -15,6 +15,7 @@ tr{
 </style>
 <title>회원 정보 수정</title>
 </head>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	<div>
 		<div>
@@ -48,6 +49,13 @@ tr{
 				'memberName' : '${memberDetails.memberVO.memberName}',
 				'memberPhone' : '${memberDetails.memberVO.memberPhone}',
 				'memberEmail' : '${memberDetails.memberVO.memberEmail}'
+		};
+		let validList = {
+				'memberPw' : true,
+				'memberPwChk' : true,
+				'memberName' : true,
+				'memberPhone' : true,
+				'memberEmail' : true
 		};
 		let expMap = {
 				'memberPw' : {
@@ -104,29 +112,41 @@ tr{
 		
 		function printModify(){
 			$('#subtitle').text("회원 정보 변경");
-			let form = '<form action="modify" method="POST"><table><tbody>' +
+			let form = '<form action="modify" method="POST" id="formUpdate"><table><tbody>' +
 				'<tr><td>아이디</td>' +
 				'<td><input type="text" value="${memberDetails.getUsername() }" readonly></td><td></td></tr>' +
 				'<tr><td>이름</td>' +
-				'<td><input type="text" name="memberName" value="${memberDetails.memberVO.memberName }" onblur="validCheck(this)"></td><td></td></tr>' +
+				'<td><input type="text" name="memberName" value="${memberDetails.memberVO.memberName }" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
 				'<tr><td>휴대폰 번호</td>' +
-				'<td><input type="text" name="memberPhone" value="${memberDetails.memberVO.memberPhone }" onblur="validCheck(this)"></td><td></td></tr>' +
+				'<td><input type="text" name="memberPhone" value="${memberDetails.memberVO.memberPhone }" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
 				'<tr><td>Email</td>' +
-				'<td><input type="text" name="memberEmail" value="${memberDetails.memberVO.memberEmail }" onblur="validCheck(this)"></td><td></td></tr>' +
+				'<td><input type="text" name="memberEmail" value="${memberDetails.memberVO.memberEmail }" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
 				'<tr><td>비밀번호</td>' +
-				'<td><input type="password" id="memberPw" name="memberPw" onblur="validCheck(this)"></td><td></td></tr>' +
+				'<td><input type="password" id="memberPw" name="memberPw" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
 				'<tr><td>비밀번호 확인</td>' +
-				'<td><input type="password" id="memberPwChk"><br><strong class="alert"></strong></td></tr>' +
-				'</tbody></table></form>';
+				'<td><input type="password" id="memberPwChk"></td><td class="alert"></td></tr>' +
+				'</tbody></table>' + 
+				'<td><input type="submit"></td>' + 
+				'</form>';
 			
 			$('#form').html(form);
 			
 			$('#memberPwChk').blur(function(){
 				comparePw();
 			});
+			$('#formUpdate').submit(function(event){
+				for(x in validList){
+					if(validList[x] == false){
+						alert("잘못된 입력 : " + x);
+						event.preventDefault();
+						return;
+					}
+				}
+				
+			}); // end formUpdate submit
 		} // end printModify
 		
-		function test(){
+		/* function test(){
 			new daum.Postcode({
 		        oncomplete: function(data) {
 		            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
@@ -134,39 +154,55 @@ tr{
 		            console.log(data);
 		        }
 		    }).open();
-		}
+		} */
 		
 		function comparePw(){
 			let pwVal = $('#memberPw').val();
 			let pwChkVal = $('#memberPwChk').val();
+			let msg;
 			
-			if(pwVal.length == 0 || pwChkVal.length == 0){
-				return;
+			if(pwVal.length == 0){
+				msg = '';
+				validList.memberPw = true;
+				validList.memberPwChk = true;
+			}else if(pwVal == pwChkVal){
+				msg = '비밀번호가 일치합니다.';
+				validList.memberPwChk = true;
+			}else {
+				msg = '비밀번호가 일치하지 않습니다.';
+				validList.memberPwChk = false;
 			}
-			let msg = (pwVal == pwChkVal) ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.';
 				
-			$('#memberPwChk').siblings('.alert').text(msg);
+			$('#memberPwChk').parents('tr').find('.alert').text(msg);
 			console.log(msg);
 		} // end comparePw
 		
 		function validCheck(input){
 			let type = $(input).attr('name');
 			let inputVal = $(input).val();
+			let boxMsg = $(input).parents('tr').find('.alert');
 			
 			console.log('validCheck = ' + type + ' : ' + inputVal);
 			if(inputVal == memberOrigin[type]){ // 입력값이 기존과 같을 경우
-				console.log('변경사항 없음');
+				boxMsg.text('');
+				validList[type] = true;
 				return;
 			}
+			
 			console.log('input changed');
 			if(inputVal.length == 0){
-				console.log('변경할 내용을 입력해주세요.');
+				boxMsg.text('변경할 내용을 입력해주세요.');
+				validList[type] = false;
 				return;
 			}else {
 				if(expMap[type].exp.test(inputVal)){
-					console.log(expMap[type].success);
+					// 정규표현식 일치
+					boxMsg.text(expMap[type].success);
+					validList[type] = true;
 				}else{
-					console.log(expMap[type].fail);
+					// 정규표현식 불일치
+					boxMsg.text(expMap[type].fail);
+					validList[type] = false;
 				}
 			}	
 			if(type == 'memberPw'){

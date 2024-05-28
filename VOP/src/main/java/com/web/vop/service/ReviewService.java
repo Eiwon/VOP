@@ -19,7 +19,7 @@ public interface ReviewService {
 	ReviewVO selectByReview(int productId, String memberId);
 		 
 	// ´ñ±Û(¸®ºä) ¼öÁ¤
-	int updateReview(int reviewId, String reviewContent, float reviewStar);
+	int updateReview(int reviewId, String reviewContent, float reviewStar, int productId);
 		 
 	// ´ñ±Û(¸®ºä) »èÁ¦
 	int deleteReview(int productId, String memberId);

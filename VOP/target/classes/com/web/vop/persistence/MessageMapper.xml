@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.web.vop.persistence.MessageMapper">
+
+   <resultMap type="com.web.vop.domain.MessageVO"
+      id="messageResultMap">
+      <result property="messageId" column="MESSAGE_ID" /> 
+      <result property="type" column="TYPE" />
+      <result property="title" column="TITLE"/>
+      <result property="content" column="CONTENT"/>
+      <result property="writerId" column="WRITER_ID"/>
+      <result property="receiverId" column="RECEIVER_ID"/>
+      <result property="dateCreated" column="DATE_CREATED"/>
+      <result property="callbackInfo" column="CALLBACK_INFO"/>
+   </resultMap>
+   
+   <!-- 메세지 등록 -->
+   <insert id="insertMessage">
+   		INSERT INTO MESSAGE VALUES
+   			(MESSAGE_SEQ.NEXTVAL, #{type}, #{title}, #{content}, #{writerId}, #{receiverId}, SYSDATE, #{callbackInfo}) 
+   </insert>
+	
+	<!-- receiver id로 수신 가능한 모든 메세지 검색 -->
+   <select id="selectByReceiverId" resultMap="messageResultMap">
+   		SELECT * FROM MESSAGE WHERE RECEIVER_ID = #{receiverId} OR TYPE = 'notice'
+   </select>   
+   
+   <!-- 지정 메세지 삭제(client) -->
+   <delete id="deleteByIdExceptNotice">
+   		DELETE MESSAGE WHERE MESSAGE_ID = #{messageId} AND TYPE != 'notice'
+   </delete>
+   
+   <!-- 지정 메세지 삭제(admin) -->
+   <delete id="deleteById">
+   		DELETE MESSAGE WHERE MESSAGE_ID = #{messageId}
+   </delete>
+   
+ </mapper>

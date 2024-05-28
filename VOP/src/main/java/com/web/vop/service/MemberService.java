@@ -32,7 +32,7 @@ public interface MemberService {
 	public int updatePw(String memberId, String memberPw);
 	
 	// 회원 탈퇴
-	public int deleteMember(String memberId);
+	public int deleteMember(String memberId, String memberPw);
 	
 	// 이름, 전화번호로 아이디 검색
 	public String findByNameAndPhone(String memberName, String memberPhone);

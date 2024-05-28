@@ -7,14 +7,16 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
+	<jsp:include page="../include/alarm.jsp"></jsp:include>
 </sec:authorize> 
-    
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <!-- jquery 라이브러리 import -->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <title>상품 상세 조회</title>
 <style>
 /* 리뷰 별 폼 스타일 */
@@ -43,10 +45,6 @@
 </head>
 <body>
 	
-	<a href="../board/main">VOP</a>
-	
-	<h1>${memberDetails.getUsername() }</h1>
-
 	<!-- 상품 상세 페이지 제작 중 -->
 	<h2>상품 상세 페이지</h2>
 
@@ -149,9 +147,12 @@
 	
      
      <!-- 댓글 화면 코드 및 가운데 정렬 -->
-     <p>댓글</p>
      
-      <div id="replies"></div>
+      <p>댓글</p>
+      <div id="review"></div>
+      
+      <p>문의(댓댓글)</p>
+      <div id="inquiry"></div>
 
      <!-- 좋아요 표시 제작 예정? -->
      
@@ -197,7 +198,8 @@ function displayStars() {
     }
 }// end displayStars()
 
-$(document).ready(function() {
+$(document).ready(function() { 
+	
 	displayStars(); // 별 표시 함수
     getAllReview(); // 댓글(리뷰) 전체 검색 메소드
 
@@ -294,10 +296,15 @@ $(document).ready(function() {
                         '</div>';
                 }); // end each()
 
-                $('#replies').html(list); // 저장된 데이터를 replies div 표현
+                $('#review').html(list); // 저장된 데이터를 replies div 표현
             } // end function()
         ); // end getJSON()
     } // end getAllReply()
+    
+    // 문의(댓댓글) 전체 검색
+    function getAllReview() {
+    	
+    } // end getAllReview()
     
     loadImg();
 }); // end document

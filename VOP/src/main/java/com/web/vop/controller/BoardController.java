@@ -50,8 +50,6 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 	}//end mypageGET()
 	
 	
-	
-	
 	// 고객센터 호출하기
 	@GetMapping("inquiry") 
 	public void inquiryGET() {

@@ -1,0 +1,21 @@
+package com.web.vop.service;
+
+import java.util.List;
+
+import com.web.vop.domain.MessageVO;
+
+public interface MessageService {
+
+	// 메세지 등록
+	public int registerMessage(MessageVO messageVO);
+		
+	// receiver id로 수신 가능한 모든 메세지 검색
+	public List<MessageVO> getMyMessage(String receiverId);
+		
+	// 지정 메세지 삭제(client)
+	public int removeExceptNotice(int messageId);
+
+	// 지정 메세지 삭제(admin)
+	public int removeById(int messageId);
+	
+}

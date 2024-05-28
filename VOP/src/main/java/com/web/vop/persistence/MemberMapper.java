@@ -26,7 +26,7 @@ public interface MemberMapper {
 	
 	public int updateMemberPw(@Param("memberId") String memberId, @Param("memberPw") String memberPw);
 	
-	public int deleteMember(String memberId);
+	public int deleteMember(@Param("memberId") String memberId, @Param("memberPw") String memberPw);
 	
 	public String selectByNameAndPhone(@Param("memberName") String memberName, @Param("memberPhone") String memberPhone);
 }

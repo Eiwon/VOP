@@ -26,7 +26,7 @@ public class OrderRESTController {
 	OrderService orderService;
 	
 	// 주문 목록 요청
-	//@GetMapping("/orderList")
+	@GetMapping("/myOrder")
 	public ResponseEntity<List<OrderVO>> getOrderList(@AuthenticationPrincipal MemberDetails memberDetails){
 		log.info("getOrderList()"); 
 		String memberId = memberDetails.getUsername();

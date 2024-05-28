@@ -5,9 +5,11 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<jsp:include page="../include/alarm.jsp"></jsp:include>
 <style type="text/css">
 .search_table {
 	border: 1px solid black;
+	width: 1000px;
 }
 
 td {
@@ -34,9 +36,14 @@ tr {
 </style>
 <title>관리자 페이지</title>
 </head>
+<jsp:include page="../include/header.jsp"></jsp:include>
+
 <body>
 	<div>
 		<h2>관리자 페이지</h2>
+	</div>
+	<div>
+		<input type="button" value="모든 사용자에게 알림 보내기" onclick="sendNotice()">
 	</div>
 	<div>
 		<div class="request_container">

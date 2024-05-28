@@ -35,6 +35,7 @@ tr {
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>등록한 상품 조회</title>
 </head>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	<div>
 		<strong>${memberDetails.getUsername() } 님이 등록한 상품</strong>

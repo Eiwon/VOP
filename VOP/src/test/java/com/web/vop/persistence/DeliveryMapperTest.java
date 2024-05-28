@@ -2,6 +2,7 @@ package com.web.vop.persistence;
 
 import java.util.List;
 
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import com.web.vop.config.RootConfig;
 import com.web.vop.config.WebConfig;
 import com.web.vop.domain.DeliveryVO;
 
+
 import lombok.extern.log4j.Log4j;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -21,6 +23,8 @@ public class DeliveryMapperTest {
 
 	@Autowired
 	private DeliveryMapper deliveryMapper;
+	
+	
 	
 	@Test
 	public void test() {
@@ -35,7 +39,7 @@ public class DeliveryMapperTest {
 		
 	}
 	
-	
+
 	// 새로운 기본 배송지를 1로 설정
 	private void setNewDefault() {
 		int res = deliveryMapper.updateNewDefault(4, "user01");

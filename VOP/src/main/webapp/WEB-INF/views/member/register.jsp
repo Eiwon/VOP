@@ -25,6 +25,7 @@ input {
 <meta charset="UTF-8">
 <title>회원 가입</title>
 </head>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <body style="text-align: center;">
 	<div class="form_container">
 	<div>
