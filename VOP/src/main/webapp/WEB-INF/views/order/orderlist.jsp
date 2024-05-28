@@ -93,8 +93,8 @@
             <div class="order-details">
                 <p>예상 배송일 : ${order.expectDeliveryDate}</p>
                 	<!-- 이미지 목록 표시 -->
-					<c:forEach items="${imageList}" var="image">
-					    <img alt="${image.imgId}">
+					<c:forEach items="${imageUrl}" var="image">
+    					<img src="${image}" alt="Image">
 					</c:forEach>
                 <div>
                     <p>상품명 : ${order.productName}</p>
@@ -361,42 +361,6 @@
     
     }); // end document.ready()
     
-    
- // 주문목록 
-    $(document).ready(function() {
-        $.ajax({
-          type: "GET",
-          url: "myOrder",
-          success: function(orderList) {
-              orderList.forEach(function(order) {
-                  var orderBox =
-                       '<div class="order-box">' +
-                       '<div class="order-details">' +
-                       '<p>예상 배송일: ' + order.expectDeliveryDate + '</p>';
-
-              // 이미지 목록 표시
-              order.imageList.forEach(function(image) {
-                        orderBox += '<img alt="' + image.imgId + '">';
-                    });
-
-                    orderBox +=
-                        '<div>' +
-                        '<p>상품명: ' + order.productName + '</p>' +
-                        '<p>상품 가격: ' + order.productPrice + '원</p>' +
-                        '<p>상품 수량: ' + order.purchaseNum + '개</p>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>';
-
-                    $('#order-container').append(orderBox);
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX 오류:', status, error);
-            }
-        });
-    });
-
     function loadImg(){
 		$(document).find('img').each(function(){
 			let target = $(this);
@@ -410,7 +374,6 @@
 			}); // end ajax
 		});
 	} // end loadImg
-    
     
     </script>
 	
