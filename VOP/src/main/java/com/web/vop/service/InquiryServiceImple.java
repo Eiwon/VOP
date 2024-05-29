@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.InquiryVO;
 import com.web.vop.persistence.AnswerMapper;
@@ -61,16 +62,16 @@ public class InquiryServiceImple implements InquiryService{
 	}
 	
 	// 댓글(문의) 삭제
+	@Transactional(value = "transactionManager")// 답변(대댓글)을 먼저 삭제 하고 문의(댓글)데이터를 삭제해야지 외래키 규칙에 맞는다.
 	@Override
-	public int deleteInquiry(int productId, String memberId, int inquiryId) {
+	public int deleteInquiry(int productId, String memberId) {
 		log.info("deleteInquiry()");
-		int deleteRes = inquiryMapper.deleteInquiry(productId, memberId);
+		log.info("productId : " + productId);
+		log.info("memberId : " + memberId);
 		
-		if(deleteRes == 1) {
-			int result = answerMapper.deleteAnswer(inquiryId, memberId);
-			log.info("result : " + result);
-		} 
-		log.info(deleteRes + "행 댓글이 삭제되었습니다.");
+		int deleteRes = inquiryMapper.deleteInquiry(productId, memberId);
+	
+		log.info(deleteRes + "행 댓글이 삭제되었습니다.");	
 		return deleteRes;
 	}
 	

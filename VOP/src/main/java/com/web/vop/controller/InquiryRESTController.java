@@ -85,12 +85,11 @@ public class InquiryRESTController {
 	      log.info("memberId : " + inquiryVO.getMemberId());
 	      
 	      // productId에 해당하는 reviewId의 댓글(리뷰)
-	      int result = inquiryService.deleteInquiry(inquiryVO.getProductId(), inquiryVO.getMemberId(), inquiryVO.getInquiryId());
+	      int result = inquiryService.deleteInquiry(inquiryVO.getProductId(), inquiryVO.getMemberId());
 	
 	      log.info(result + "행 댓글 삭제");
 	      
 	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	   }// end deleteInquiry()
-	
 }

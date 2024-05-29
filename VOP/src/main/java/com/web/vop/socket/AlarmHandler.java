@@ -46,24 +46,24 @@ public class AlarmHandler extends TextWebSocketHandler{
 		log.info("socket message received : " + message.getPayload());
 		MessageVO messageVO = convertMsg(message.getPayload());
 		
-		MessageVO returnMsg = null;
-    	String msgType = messageVO.getType();
-    	String memberId = session.getPrincipal().getName();
-    	log.info(msgType.equals("notice"));
-    	if(msgType.equals("notice")) { // 공지사항 등록 요청
-    		returnMsg = noticeHandler(messageVO, memberId);
-    		unicast(returnMsg);
-    	}else if(msgType.equals("broadcast")){ // 접속 중인 전체 유저에게 송신
-    		returnMsg = messageVO;
-    		broadcast(returnMsg);
-    	}else if(msgType.equals("replyAlarm")) { // 댓글 알림 (클릭시 이벤트 발생)
-    		returnMsg = replyAlarmHandler(messageVO, memberId);
-    		unicast(returnMsg);
-    	}else if(msgType.equals("instanceMsg")) { // 유저 지정 일반 알림
-    		returnMsg = messageVO;
-    		unicast(returnMsg);
-    	}
-		
+//		MessageVO returnMsg = null;
+//    	String msgType = messageVO.getType();
+//    	String memberId = session.getPrincipal().getName();
+//    	log.info(msgType.equals("notice"));
+//    	if(msgType.equals("notice")) { // 공지사항 등록 요청
+//    		returnMsg = noticeHandler(messageVO, memberId);
+//    		unicast(returnMsg);
+//    	}else if(msgType.equals("broadcast")){ // 접속 중인 전체 유저에게 송신
+//    		returnMsg = messageVO;
+//    		broadcast(returnMsg);
+//    	}else if(msgType.equals("replyAlarm")) { // 댓글 알림 (클릭시 이벤트 발생)
+//    		returnMsg = replyAlarmHandler(messageVO, memberId);
+//    		unicast(returnMsg);
+//    	}else if(msgType.equals("instanceMsg")) { // 유저 지정 일반 알림
+//    		returnMsg = messageVO;
+//    		unicast(returnMsg);
+//    	}
+//		
 	} // end handleTextMessage
 	
 	@Override

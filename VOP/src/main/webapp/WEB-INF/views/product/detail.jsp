@@ -68,11 +68,7 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
 
 	<!-- 상품 상세 페이지 제작 중 -->
 	<h2>상품 상세 페이지</h2>
-	
-	
 
-	
-	
 	<!-- 카카오 공유 아이콘 -->
 	<div class="right-align">
 	<a id="kakaotalk-sharing-btn" href="javascript:;">
@@ -374,7 +370,7 @@ $(document).ready(function() {
         ); // end getJSON()
     } // end getAllReply()
     
-    // 문의(댓글) 전체 검색
+   /*  // 문의(댓글) 전체 검색
     function getAllInquiry() {
     	
     	let url = '../inquiryRest/list/' + productId;
@@ -487,7 +483,7 @@ $(document).ready(function() {
 
             } // end function()
         ); // end getJSON()
-    } // end getAllInquiry()
+    } // end getAllInquiry() */
 
     
     //loadImg(); 위에로 이동 하였습니다.
