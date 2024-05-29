@@ -179,6 +179,12 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
       <p>문의(대댓글)</p>
       <div id="inquiry"></div>
       
+      <p>test</p>
+      <div id="test"></div>
+      
+      <p>comments</p>
+      <div id="comments"></div>
+
       <div>
       	<h3>배송/교환/반품 안내</h3>
       	<p></p>
@@ -272,7 +278,9 @@ $(document).ready(function() {
 	loadImg(); // 이미지 불려오는 메소드
 	displayStars(); // 별 표시 함수
     getAllReview(); // 댓글(리뷰) 전체 검색 메소드
-
+    /* getAllInquiry(); 
+    getAllAnswer(); */
+    getAllComments();
     // 장바구니
     $('#btnBasket').click(function(){
     	
@@ -345,7 +353,7 @@ $(document).ready(function() {
                     // 댓글 이미지 및 좋아요 추가 해야함
                     list += '<div>' +
                         '<pre>' +
-                        '<input type="hidden" id="review" value="' + this.review + '">' // readonly 추가해서 id을 바꾸지 못하게 해야함
+                        '<input type="hidden" id="review" value="' + this.reviewId + '">' // readonly 추가해서 id을 바꾸지 못하게 해야함
                         +
                         this.memberId +
                         '&nbsp;&nbsp;' // 공백
@@ -370,120 +378,80 @@ $(document).ready(function() {
         ); // end getJSON()
     } // end getAllReply()
     
-   /*  // 문의(댓글) 전체 검색
-    function getAllInquiry() {
-    	
-    	let url = '../inquiryRest/list/' + productId;
-        console.log(url);
+ // 문의(댓글 및 대댓글) 전체 검색
+    function getAllComments() {
+        let inquiryUrl = '../inquiryRest/list/' + productId;
+        let answerUrl = '../answer/list/' + productId;
+        
+        // 변수 선언
+        let allComments = '';
+
+        // 댓글 데이터 가져오기
         $.getJSON(
-            url,
-            function(data) {
-                // data : 서버에서 전송받은 list 데이터가 저장되어 있음.
-                // getJSON()에서 json 데이터는 
-                // javascript object로 자동 parsing됨.
-                console.log(data);
-
-                let list = ''; // 댓글 데이터를 HTML에 표현할 문자열 변수
-
-                // $(컬렉션).each() : 컬렉션 데이터를 반복문으로 꺼내는 함수
-                $(data).each(function() {
-                	 // this : 컬렉션의 각 인덱스 데이터를 의미
-                    console.log(this);
-
-                    // 전송된 replyDateCreated는 문자열 형태이므로 날짜 형태로 변환이 필요
-                    let inquiryDateCreated = new Date(this.reviewDateCreated);
+            inquiryUrl,
+            function(inquiryData) {
+                // 댓글 데이터 반복
+                $(inquiryData).each(function() {
+                    // 날짜 형식 변환
+                    let commentDateCreated = new Date(this.inquiryDateCreated);
+                    let dateString = commentDateCreated.toLocaleDateString();
+                    let timeString = commentDateCreated.toLocaleTimeString();
+					
                     
-                    // 날짜와 시간을 문자열로 변환하여 가져오기
-                    let dateString = inquiryDateCreated.toLocaleDateString();
-                    let timeString = inquiryDateCreated.toLocaleTimeString();
-
-                    // 댓글 이미지 및 좋아요 추가 해야함
-                    list += '<div>' +
+                   
+                    // 댓글 HTML 생성
+                    let commentHtml = '<div>' +
                         '<pre>' +
-                        '<input type="hidden" id="inquiry" value="' + this.inquiry + '">' // inquiry 추가해서 id을 바꾸지 못하게 해야함
-                        +
+                        '<input type="hidden" class="commentId" value="' + this.inquiryId + '">' +
                         this.memberId +
-                        '&nbsp;&nbsp;' // 공백
-                        +
-                        dateString + ' ' + timeString // 작성 시간 (날짜와 시간)
-                        +
-                        '&nbsp;&nbsp;' 
-                        +
-                        '<input type="text" id="inquiryContent" value="' + this.inquiryContent + '"readonly>' // 내용
-                        +
-                        '</pre>' 
-                        +
+                        '&nbsp;&nbsp;' +
+                        dateString + ' ' + timeString +
+                        '&nbsp;&nbsp;' +
+                        '<input type="text" class="commentContent" value="' + this.inquiryContent + '"readonly>' +
+                        '</pre>' +
                         '</div>';
                         
-                    // 해당 inquiryId 출력
-                    let inquiryId = this.inquiry;
-                    
-                    console.log(inquiryId);
-                    
-                    getAllAccess(inquiryId);
-                    
-                }); // end each()
-                
-                
-                $('#inquiry').html(list); // 저장된 데이터를 inquiry div 표현
-            } // end function()
-        ); // end getJSON()
-    } // end getAllInquiry()
-    
-    // 문의(댓댓글) 전체 검색
-    function getAllAccess(inquiryId) {
-    	
-    	console.log(inquiryId);
-    	 
-    	let url = '../access/list/' + productId;
-        console.log(url);
+                       /*  let commentIdValue = $(commentHtml).find('.commentId').val();
+                        console.log("commentIdValue : " + commentIdValue); 가능*/
+                    // 전체 댓글에 추가
+                    allComments += commentHtml;
+                });
+            }
+        );
+
+        // 대댓글 데이터 가져오기
         $.getJSON(
-            url,
-            function(data) {
-                // data : 서버에서 전송받은 list 데이터가 저장되어 있음.
-                // getJSON()에서 json 데이터는 
-                // javascript object로 자동 parsing됨.
-                console.log(data);
+            answerUrl,
+            function(answerData) {
+                // 대댓글 데이터 반복
+                $(answerData).each(function() {
+                    // 날짜 형식 변환
+                    let commentDateCreated = new Date(this.answerDateCreated);
+                    let dateString = commentDateCreated.toLocaleDateString();
+                    let timeString = commentDateCreated.toLocaleTimeString();
 
-                let list = ''; // 댓글 데이터를 HTML에 표현할 문자열 변수
-
-                // $(컬렉션).each() : 컬렉션 데이터를 반복문으로 꺼내는 함수
-                $(data).each(function() {
-                	 // this : 컬렉션의 각 인덱스 데이터를 의미
-                    console.log(this);
-
-                    // 전송된 replyDateCreated는 문자열 형태이므로 날짜 형태로 변환이 필요
-                    let accessDateCreated = new Date(this.reviewDateCreated);
-                    
-                    // 날짜와 시간을 문자열로 변환하여 가져오기
-                    let dateString = accessDateCreated.toLocaleDateString();
-                    let timeString = accessDateCreated.toLocaleTimeString();
-
-                    // 댓글 이미지 및 좋아요 추가 해야함 
-                    if(inquiryId == this.access){
-                    	list += '<div>' +
+                    // 대댓글 HTML 생성
+                    let commentHtml = '<div>' +
                         '<pre>' +
-                        '<input type="hidden" id="access" value="' + this.access + '">' // access 추가해서 id을 바꾸지 못하게 해야함
-                        +
+                        '<input type="hidden" class="commentId" value="' + this.answerId + '">' +
                         this.memberId +
-                        '&nbsp;&nbsp;' // 공백
-                        +
-                        dateString + ' ' + timeString // 작성 시간 (날짜와 시간)
-                        +
-                        '&nbsp;&nbsp;' 
-                        +
-                        '<input type="text" id="accessContent" value="' + this.accessContent + '"readonly>' // 내용
-                        +
-                        '</pre>' 
-                        +
+                        '&nbsp;&nbsp;' +
+                        dateString + ' ' + timeString +
+                        '&nbsp;&nbsp;' +
+                        '<input type="text" class="commentContent" value="' + this.answerContent + '"readonly>' +
+                        '</pre>' +
                         '</div>';
-                    }
-                    
-                }); // end each()
 
-            } // end function()
-        ); // end getJSON()
-    } // end getAllInquiry() */
+                    // 전체 댓글에 추가
+                    allComments += commentHtml;
+                });
+
+                // HTML에 전체 댓글 추가
+                $('#comments').html(allComments);
+            }
+        );
+    }
+
 
     
     //loadImg(); 위에로 이동 하였습니다.

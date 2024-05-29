@@ -115,7 +115,9 @@
               console.log(result);
               if(result == 1) {
                  alert('댓글 수정 성공!');
-                 window.location.href = '../board/orderlist';
+                 window.location.href = '../order/orderlist';
+              } else {
+            	alert('댓글 수정 실패!');
               }
            }
         });

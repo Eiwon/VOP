@@ -47,7 +47,6 @@ public class AnswerRESTController {
 	public ResponseEntity<List<AnswerVO>> readAllAnswer(
 			@PathVariable("productId") int productId){
 		log.info("readAllAnswer()");
-		
 		// productId에 해당하는 댓댓글(답변) list을 전체 검색
 		List<AnswerVO> list = answerService.getAllAnswer(productId);
 		
