@@ -49,7 +49,7 @@ public class AlarmHandler extends TextWebSocketHandler{
 		MessageVO returnMsg = null;
     	String msgType = messageVO.getType();
     	String memberId = session.getPrincipal().getName();
-    	
+    	log.info(msgType.equals("notice"));
     	if(msgType.equals("notice")) { // 공지사항 등록 요청
     		returnMsg = noticeHandler(messageVO, memberId);
     		unicast(returnMsg);

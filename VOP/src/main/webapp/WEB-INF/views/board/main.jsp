@@ -118,6 +118,37 @@
 			location.href = '../product/detail?productId=' + selectedId;
 		} // end addDetailsEvent
 		
+		function printNotice(){
+			$.ajax({
+				method : 'GET',
+				url : 'notice',
+				success : function(result){
+					console.log(result);
+					let noticeList = result;
+					for(x in noticeList){
+						showPopup(noticeList[x].messageId);
+					}
+					
+				} // end success
+			}); // end ajax
+			
+		} // end printNotice
+		/* function showPopup(messageId){
+			let targetUrl = 'popupNotice?messageId=' + messageId;
+			
+			const popupStat = {
+					'url' : targetUrl,
+					'name' : 'popupNotice',
+					'option' : 'width=500, height=600, top=50, left=400'
+			};
+			
+			// 팝업 창 띄우기
+			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
+			popup.onbeforeunload = function(){
+				// 팝업 닫힐 때 실행
+				console.log("팝업 닫힘");
+			} // end popup.onbeforeunload
+		} // end showSocketPopup */
 	</script>
 	
 

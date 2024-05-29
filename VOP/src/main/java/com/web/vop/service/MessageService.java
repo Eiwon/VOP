@@ -20,4 +20,10 @@ public interface MessageService {
 	
 	// 지정 수신자 메시지 삭제
 	public int removeByReceiverId(String receiverId);
+
+	// 모든 공지 검색
+	public List<MessageVO> getNotice();
+	
+	// messageId로 검색
+	public MessageVO getById(int messageId);
 }

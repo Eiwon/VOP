@@ -43,5 +43,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		DELETE MESSAGE WHERE RECEIVER_ID = #{receiverId}
    </delete>
    
+   <!-- 모든 공지사항 검색 -->
+   <select id="selectNotice" resultMap="messageResultMap">
+   		SELECT * FROM MESSAGE WHERE TYPE = 'notice'
+   </select>
    
+   <!-- messageId로 검색 -->
+   <select id="selectById" resultMap="messageResultMap">
+   		SELECT * FROM MESSAGE WHERE MESSAGE_ID = #{messageId}
+   </select>
  </mapper>
