@@ -30,6 +30,14 @@
 			console.log(chkNoMoreShow.prop('checked'));
 			if(chkNoMoreShow.prop('checked')){
 				// 서버에 쿠키 생성 요청
+				$.ajax({
+					method : 'GET',
+					url : 'blockPopup?messageId=' + messageId,
+					success : function(result){
+						window.close();
+					} // end success
+
+				}); // end ajax
 			}
 		} // end noMoreShow
 	

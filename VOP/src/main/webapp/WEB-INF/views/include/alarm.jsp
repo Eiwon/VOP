@@ -1,9 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<sec:authorize access="isAuthenticated()">
-	<sec:authentication var="memberDetails" property="principal"/>
-</sec:authorize>
 <!DOCTYPE html>
 <html>
 <head>
@@ -89,7 +85,7 @@
 	
 	msgHandler.notice = function(msg){
 		console.log('notice 메시지 수신');
-		showSocketNotification(msg, null);
+		//showSocketNotification(msg, null);
 	}; // 타입이 notice인 메시지 수신시 호출될 함수
 	
 	msgHandler.broadcast = function(msg){

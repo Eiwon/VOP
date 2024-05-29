@@ -3,6 +3,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
+	<jsp:include page="../include/alarm.jsp"></jsp:include>
 </sec:authorize>
 <!DOCTYPE html>
 <html>

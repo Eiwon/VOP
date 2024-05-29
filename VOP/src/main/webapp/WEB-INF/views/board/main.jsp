@@ -1,17 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<sec:authorize access="isAuthenticated()">
-	<sec:authentication var="memberDetails" property="principal"/>
-</sec:authorize>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- jquery 라이브러리 import -->
-<script src="https://code.jquery.com/jquery-3.7.1.js">
-</script>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <title>VOP</title>
 	<style>
@@ -39,6 +33,7 @@
 		$(document).ready(function(){
 			printRecentList();
 			printRecommendByCategory();
+			printNotice();
 		}); // end document.ready
 		
 		
@@ -119,38 +114,55 @@
 		} // end addDetailsEvent
 		
 		function printNotice(){
+			let blockList = [];
+			// 쿠키 디코딩
+			if(document.cookie != ''){
+				let decoded = decodeURIComponent(document.cookie);
+				let splitList = decoded.split(new RegExp('=|;'));
+				console.log(splitList);
+				for(let x = 0; x < splitList.length; x++){
+					if(splitList[x] == 'blockPopup'){
+						blockList = JSON.parse(splitList[x+1]);
+						console.log('차단된 팝업 id : ' + blockList);
+					}
+				}
+			}
+			
 			$.ajax({
 				method : 'GET',
 				url : 'notice',
 				success : function(result){
-					console.log(result);
 					let noticeList = result;
 					for(x in noticeList){
-						showPopup(noticeList[x].messageId);
+						if(!blockList.includes(noticeList[x].messageId)){ // 차단 목록에 등록되지 않은 메시지만 출력
+							showPopup(noticeList[x].messageId);
+						}
 					}
-					
 				} // end success
 			}); // end ajax
-			
 		} // end printNotice
-		/* function showPopup(messageId){
+		
+		function showPopup(messageId){
 			let targetUrl = 'popupNotice?messageId=' + messageId;
 			
 			const popupStat = {
-					'url' : targetUrl,
-					'name' : 'popupNotice',
-					'option' : 'width=500, height=600, top=50, left=400'
+					url : targetUrl,
+					name : 'popupNotice' + messageId,
+					option : 'width=500, height=600, top=50, left=400'
 			};
-			
+			console.log(popupStat.url);
 			// 팝업 창 띄우기
 			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
+			if(popup == null){
+				alert('팝업을 허용해주세요.  크롬 설정->개인정보보호 및 보안->사이트설정->팝업 및 리디렉션에서 설정 가능합니다.');
+				return;
+			}
 			popup.onbeforeunload = function(){
 				// 팝업 닫힐 때 실행
 				console.log("팝업 닫힘");
 			} // end popup.onbeforeunload
-		} // end showSocketPopup */
+		} // end showSocketPopup
 	</script>
-	
 
 </body>
 </html>
