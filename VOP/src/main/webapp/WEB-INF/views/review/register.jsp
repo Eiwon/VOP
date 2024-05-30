@@ -2,9 +2,10 @@
     pageEncoding="UTF-8"%>
 <!-- 시큐리티 코드 -->
 <%@ page import="javax.servlet.http.HttpSession" %>
+
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
-	<sec:authentication var="memberDetails" property="principal"/>
+    <sec:authentication var="memberDetails" property="principal"/>
 </sec:authorize> 
 <jsp:include page="../include/header.jsp"></jsp:include>
 <!DOCTYPE html>
@@ -48,19 +49,19 @@
 
 </head>
 <body>
-	
-	<h1>리뷰 작성</h1>
-	
-	<h1>${memberDetails.getUsername() }</h1>
-	
-	<div>
-		<p>상품 번호 "${productId}"</p>
-	</div>
-	
-	<p>이미지 썸네일</p>
-	  <div>
-    	<img alt="${imgId}">
-	  </div>
+    
+    <h1>리뷰 작성</h1>
+    
+    <h1>${memberDetails.getUsername() }</h1>
+    
+    <div>
+        <p>상품 번호 "${productId}"</p>
+    </div>
+    
+    <p>이미지 썸네일</p>
+      <div>
+        <img alt="${imgId}">
+      </div>
 
 <div id="myform">
     
@@ -75,92 +76,34 @@
     <input type="hidden" id="memberId" value="${memberDetails.getUsername()}"><!-- 여기 부분 없어도 될뜻 -->
     <input type="hidden" id="productId" value="${order.productId}"><!-- 여기 부분 없어도 될뜻 -->
     <input type="text" id="reviewContent"><br>
-    <div>
-		<strong>상세정보 이미지</strong>
-		<input id="inputDetails" type="file" name="details" multiple="multiple" onchange="showDetailsPreview()">
-		<div id="previewDetails"></div>
-	</div>
     <button id="btnAdd">등록</button>
-    </div>
+</div>
 
 <script type="text/javascript">
 
-function showDetailsPreview(){
-	
-	function checkDetailsFiles(event) {
-	    let inputDetails = $("#inputDetails");
-	    let files = inputDetails.prop('files');
-	    
-	    for (let x = 0; x < files.length; x++) {
-	        console.log(files[x].name);
-	        if (!checkFileValid(files[x])) {
-	            event.preventDefault();
-	            return;
-	        }
-	    }
-	}
-	
-	$("#productForm").submit(function(event) {
-	    checkDetailsFiles(event);
-	});
-        
-  function showDetailsPreview(){ 
-	 // 이미지 미리보기 (세부정보)
-	 console.log("changed");
-	 let previewDetails = $('#previewDetails');
-	 
-	 let inputDetails = $("#inputDetails");
-    let files = inputDetails.prop('files');
-    let str = "";
-    console.log(files.length);
-    for(let x = 0; x < files.length; x++){
-   	 let fileUrl = URL.createObjectURL(files[x]);
-   	 str += '<img src="' + fileUrl + '">';
-    }
-	 previewDetails.html(str);
-} // end showDetailsPreview()
 
-function checkFileValid(file){
-
-	 const blockedExtension = new RegExp("exe|sh|php|jsp|aspx|zip|alz");
-    if (!file) { // file이 없는 경우
-       alert("파일을 선택하세요.");
-       return false;
-    }
-    
-    if (blockedExtensions.test(file.name)) { // 차단된 확장자인 경우
-       alert("이 확장자의 파일은 첨부할 수 없습니다.");
-       return false;
-    }
-
-    let maxSize = 10 * 1024 * 1024; // 10 MB 
-    if (file.size > maxSize) {
-       alert("파일 크기가 너무 큽니다. 최대 크기는 10MB입니다.");
-       return false;
-    }
-}
    
 $(document).ready(function(){
-		
-	let selectedStar; // 전역 변수로 selectedStar 선언
-	let memberId = "${memberDetails.getUsername()}";
-	loadImg();
-	
-	// 이미지 없을때 이름과 확장명 보여주는 코드
-	function loadImg(){
-		$(document).find('img').each(function(){
-			let target = $(this);
-			let imgId = target.attr("alt");
-			$.ajax({
-				method : 'GET',
-				url : '../image/' + imgId,
-				success : function(result){
-					target.attr('src', result);
-				}
-			}); // end ajax
-		});
-	} // end loadImg
-	
+        
+    let selectedStar; // 전역 변수로 selectedStar 선언
+    let memberId = "${memberDetails.getUsername()}";
+    loadImg();
+    
+    // 이미지 없을때 이름과 확장명 보여주는 코드
+    function loadImg(){
+        $(document).find('img').each(function(){
+            let target = $(this);
+            let imgId = target.attr("alt");
+            $.ajax({
+                method : 'GET',
+                url : '../image/' + imgId,
+                success : function(result){
+                    target.attr('src', result);
+                }
+            }); // end ajax
+        });
+    } // end loadImg
+    
     // 라디오 버튼 클릭 이벤트 핸들러
     $('#starFieldset input[type="radio"]').click(function() {
         // 선택된 별의 값 가져오기
@@ -172,24 +115,22 @@ $(document).ready(function(){
     });
 
    // 댓글 입력 코드
-   $('#btnAdd').click(function(){
+   $('#btnAdd').click(function(event){
        
-       let productId = ${productId}; 
+       let productId = "${productId}"; 
        let reviewStar = selectedStar;// 리뷰(별)
        let reviewContent = $('#reviewContent').val(); // 댓글 내용
        
        console.log(reviewStar);
        console.log(memberId);
        
-       $("#productForm").submit();
-       
        // javascript 객체 생성
-       let obj = {	
+       let obj = {    
              'memberId' : memberId,
              'productId' : productId,
              'reviewStar' : reviewStar,
              'reviewContent' : reviewContent
-       }
+       };
        console.log(obj);
        
        // $.ajax로 송수신
@@ -208,7 +149,7 @@ $(document).ready(function(){
                 window.location.href = '../order/orderlist';
                 sendReplyAlarm(productId);
              } else {
-            	 alert('댓글 입력 실패');
+                 alert('댓글 입력 실패');
              }
           } // end success 
        }); // end ajax
@@ -216,7 +157,7 @@ $(document).ready(function(){
     
   }); // end document.ready()
 
-    </script>
+</script>
 
 </body>
 </html>

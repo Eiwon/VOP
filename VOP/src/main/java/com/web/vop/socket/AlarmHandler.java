@@ -1,6 +1,7 @@
 package com.web.vop.socket;
 
 import java.io.IOException;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -54,7 +55,9 @@ public class AlarmHandler extends TextWebSocketHandler{
     	String memberId = session.getPrincipal().getName();
     	messageVO.setWriterId(memberId);
     	
-    	if(msgType.equals("notice")) { // 공지사항 등록 요청
+    	if(msgType.equals("alert")) {
+    		broadcast(messageVO);
+    	}else if(msgType.equals("notice")) { // 공지사항 등록 요청
     		returnMsg = noticeHandler(messageVO, memberId);
     		unicast(returnMsg);
     	}else if(msgType.equals("instanceMsg")){ // 접속 중인 전체 유저에게 송신

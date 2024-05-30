@@ -1,7 +1,10 @@
 package com.web.vop.config;
 
 import java.util.HashMap;
+
 import java.util.Map;
+
+//import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -35,8 +38,8 @@ public class WebSocketConfig implements WebSocketConfigurer{
 	public ServletServerContainerFactoryBean createWebSocketContainer() {
 		// 메세지의 크기 제한 설정
 		ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
-		container.setMaxTextMessageBufferSize(8192);
-		container.setMaxBinaryMessageBufferSize(8192);
+//		container.setMaxTextMessageBufferSize(8192);
+//		container.setMaxBinaryMessageBufferSize(8192);
 		return container;
 	} // end createWebSocketContainer
 

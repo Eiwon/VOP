@@ -126,7 +126,7 @@ public class DeliveryRESTController {
 	
 	
 	// 해당하는 memberid의 나머지 기본배송지 목록을 0으로 바꾸기 
- 	@PutMapping("/updateDefault")
+ 	/*@PutMapping("/updateDefault")
 	  public ResponseEntity<Integer> updateDefault(
 			  @RequestBody String memberId) {
 		 	log.info("updateDefault() -  해당하는 memberid의 나머지 기본배송지 목록을 0으로 바꾸기");
@@ -152,5 +152,6 @@ public class DeliveryRESTController {
  		
  		return new ResponseEntity<Integer>(res, HttpStatus.OK);
  	}//end updateDefault()
+ 	*/
 	
 }//end DeliveryRESTController()

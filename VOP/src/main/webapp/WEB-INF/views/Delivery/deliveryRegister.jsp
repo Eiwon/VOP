@@ -67,21 +67,39 @@
             }
         }).open();
     }
+
 </script>
+
 <script>
-	
-	const memberId = '${memberDetails.getUsername() }';
-	console.log('member ID:', memberId); 
-	
-	 // 기본 배송지 있는지 조회 
+    const memberId = '${memberDetails.getUsername()}';
+    console.log('member ID:', memberId);
+        
+    // 페이지 로드 시 실행되는 코드
+    $(document).ready(function() {
+
+        // 페이지 로드 시 기본 배송지 여부 확인
+        checkDefaultAddress().then(function(isExistingDefault) {
+            if (isExistingDefault) {
+            	alert("기본 배송지가 설정되어 있습니다.");
+            	// 기본 배송지가 설정되어 있으면 등록 버튼을 비활성화합니다.
+                $('#registerBtn').prop('disabled', true);
+            } else {
+                console.log("기본 배송지가 없습니다.");
+            }
+        });
+    });
+
+    
+
+    // 기본 배송지 있는지 조회 
     function checkDefaultAddress() {
         return new Promise(function(resolve, reject) {
             $.ajax({
-                url: '/checkDefaultAddress', // 서버 엔드포인트 URL
+                url: 'checkDefaultAddress', // 서버 엔드포인트 URL
                 method: 'GET', // GET 방식으로 요청
                 data: { memberId: memberId },
                 success: function(response) {
-                	
+                    console.log('기본 배송지 확인 성공:', response); // true or false 
                     resolve(response.hasDefaultAddress); // 응답의 기본 배송지 여부를 반환
                 },
                 error: function(err) {
@@ -91,91 +109,26 @@
             });
         });
     }
-	
     
-    
- 	// 해당하는 memberid의 나머지 기본배송지 목록을 0으로 바꾸기 (테스트)
-    $(document).ready(function() {
-    	
-    	const memberId = '${memberDetails.getUsername()}';
-        console.log('member ID:', memberId);
-        
-    	$('#registerBtn').click(function(event) {
-    		console.log('이벤트 핸들러');
-    		event.preventDefault(); // 기본 폼 제출 동작을 막음
-    		
-        	const dataToSend = {
-           		 'memberId': 'memberId'
-        	};
-        	
-        	$.ajax({
-                url: '/updateDefault', // 서버 엔드포인트 URL
-                method: 'PUT', // PUT 방식으로 요청
-                contentType: 'application/json',
-                data: JSON.stringify(dataToSend), // 새로운 기본 배송지 ID 전달
-                success: function(response) {
-                    // 성공적으로 서버에서 처리된 경우에 실행할 코드
-                    console.log('기본 배송지 설정이 해제되었습니다.',response);
-                },
-                error: function(err) {
-                    // 서버에서 오류가 발생한 경우에 실행할 코드
-                    console.error('기본 배송지 설정 해지 중 오류가 발생했습니다:', err);
-                }
-            });
-    	});
-	});
- 
- 	
- 	
- 	
- 	
-	//저장 버튼 클릭 시 폼 유효성 검사 후 제출 및 페이지 이동
-	document.getElementById("deliveryForm").addEventListener("submit", function(event) {
-    	var receiverName = document.getElementById("receiverName").value;
-    	var receiverPhone = document.getElementById("receiverPhone").value;
-
-        // 받는 사람, 휴대폰 번호가 비어있는지 확인
-        if (!receiverName || !receiverPhone) {
-            alert("받는 사람, 휴대폰 번호는 필수 입력 사항입니다.");
-            event.preventDefault(); // 폼 제출 막기
+ // 기본 배송지 설정 체크박스 변경 시 이벤트 핸들러
+    $('#isDefault').change(function() {
+        if ($(this).prop('checked')) {
+            console.log("기본 배송지 설정됨");
+            // 기본 배송지가 설정되면 등록 버튼을 비활성화합니다.
+            $('#registerBtn').prop('disabled', true);
+        } else {
+            console.log("기본 배송지 해제됨");
+            // 기본 배송지가 해제되면 등록 버튼을 활성화합니다.
+            $('#registerBtn').prop('disabled', false);
         }
-
-        // 휴대폰 번호 형식 체크
-        if (!checkPhoneNumber(receiverPhone)) {
-            alert("올바른 휴대폰 번호 형식이 아닙니다. 국내 휴대번호만 입력 가능합니다.");
-            event.preventDefault(); // 폼 제출 막기
-        }
-
-     	
-        
-        // 기본 배송지로 설정되었는지 확인
-        var isDefault = document.getElementById("isDefault").checked;
-        if (isDefault) {
-        	event.preventDefault(); // 기본 제출 동작 중단
-        	// 기본 배송지 여부를 확인하기 위해 서버에 AJAX 요청을 보냄
-        	checkDefaultAddress().then(function(isExistingDefault) {
-        		if(isExistingDefault) {
-        			// 기본 배송지가 이미 설정되어 있으면 사용자에게 변경 여부를 확인
-        			if(confirm("기본 배송지가 이미 설정되어 있습니다. 변경하시겠습니까?")){
-        				document.getElementById("deliveryForm").submit(); // 사용자가 확인하면 폼 제출
-        			}
-        		} else {
-        			document.getElementById("deliveryForm").submit(); // 기본 배송지가 없으면 폼 제출
-        		}
-        	}); 
-        }
-        
-        
     });
-
-    // 휴대폰 번호 형식 체크 함수
+    
+ // 휴대폰 번호 형식 체크 함수
     function checkPhoneNumber(receiverPhone) {
-    var phoneRegex = /^010-\d{4}-\d{4}$/;
-    return phoneRegex.test(receiverPhone);
-	}
-    
-    
-   
+        var phoneRegex = /^010-\d{4}-\d{4}$/;
+        return phoneRegex.test(receiverPhone);
+    }
 </script>
+
 </body>
 </html>           

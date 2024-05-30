@@ -358,6 +358,8 @@
     	loadImg();
     }); // end document.ready()
     
+    
+    
     function loadImg(){
     	console.log($(document).find('img'));
         $(document).find('img').each(function(){

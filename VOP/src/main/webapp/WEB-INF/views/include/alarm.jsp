@@ -44,9 +44,16 @@
 	
 	
 	
-	function sendMsg(msg){ //테스트 용
-		webSocket.send('${memberDetails.getUsername()}');
-	} // end sendMsg
+	function sendAlert(){ //테스트 용
+		
+		let content = prompt('송신할 메시지를 입력하세요.');
+		if(content != null){
+			let msg = {};
+			msg.type = 'alert';
+			msg.content = content;
+			webSocket.send(JSON.stringify(msg));
+		}
+	} // end sendAlert
 		
 	function sendNotice(){
 		// 모든 유저에게 공지 송신
@@ -87,9 +94,10 @@
 	
 	// 서버로부터 메시지 수신시 호출되는 함수들
 	
-	msgHandler.system = function(msg){
-		console.log('system 메시지 수신');
-	}; // 타입이 system인 메시지 수신시 호출될 함수
+	msgHandler.alert = function(msg){
+		console.log('alert 메시지 수신');
+		alert(msg.content);
+	}; // 타입이 alert인 메시지 수신시 호출될 함수
 	
 	msgHandler.notice = function(msg){
 		console.log('notice 메시지 수신');
@@ -98,7 +106,7 @@
 	
 	msgHandler.instanceMsg = function(msg){
 		console.log('instance 메시지 수신');
-		alert(msg.content);
+		showSocketNotification(msg.content);
 	}; // 타입이 instanceMsg인 메시지 수신시 호출될 함수 
 	
 	msgHandler.replyAlarm = function(msg){

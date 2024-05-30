@@ -1,29 +1,30 @@
 package com.web.vop.controller;
 
-import java.text.DecimalFormat;
 import java.util.List;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.WebSocketHandler;
 
 import com.web.vop.domain.MessageVO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.domain.ReviewVO;
-import com.web.vop.service.ProductService;
+
 import com.web.vop.service.ReviewService;
 import com.web.vop.socket.AlarmHandler;
+
 
 import lombok.extern.log4j.Log4j;
 
@@ -34,82 +35,39 @@ public class ReviewRESTController {
 	
 	@Autowired
 	private ReviewService reviewService;
+
 	
-	@Autowired
-	private ProductService productService;
-	
-	@Transactional(value = "transactionManager")// 댓글 입력후 댓글 총 갯수 수정 및 리뷰의 평균값 수정
-	@PostMapping("/register") // POST : 댓글(리뷰) 입력
-	public ResponseEntity<Integer> createReviewPOST(@RequestBody ReviewVO reviewVO){
-		log.info("createReview()");
-		
-//		// 소수점 첫 째 자리까지만 출력
-//		DecimalFormat df = new DecimalFormat("#.#");
-	
-		log.info("reviewVO : " + reviewVO);
-		
-		int productId = reviewVO.getProductId();
-		
-		String memberId = reviewVO.getMemberId();
-		
-		log.info("productId :" + productId);
-		log.info("memberId : " + memberId);
-		
-		int result = 0;
-		
-		// 해당 상품에 회원이 댓글를 작성 했는지 확인하기 위해 댓글 검색
-		ReviewVO vo = reviewService.selectByReview(productId, memberId);
-			
-		log.info("vo : " + vo);
-		
-		// 해당 상품에 회원이 댓글(리뷰)를 작성 하지 않았으면는 작성 가능 아니면는 작성 불가
-		if(vo == null) {
-			// reviewVO 입력 받아 댓글(리뷰) 등록
-			result = reviewService.createReview(reviewVO);
-			
-//			// 등록이 완료 되었을때 댓글 총 갯수 증가
-//			if(result == 1) {
-//				
-//				// 현재 상품 댓글 카운터 
-//				int reviewNum =  productService.selectReviewByCount(productId);
-//				
-//				// 댓글 총 갯수 로그
-//				log.info("reviewNum : " + reviewNum);
-//				
-//				// 상품 댓글 카운터 수정
-//				int updateRes = productService.updateReviewNum(productId, reviewNum);
-//				
-//				// 리뷰 평균 관련 코드
-//				// productId에 해당하는 상품 조회 // 업그레이드 된 상태
-//				ProductVO productVO = productService.getProductById(productId);
-//				
-//				int res = 0; // 댓글 입력시 소수점 입력 불가
-//				String reviewAvg = "0";
-//				if(productVO.getReviewNum() != 0) { //0 이하일 때 무한의 에러가 나와온다.
-//					// 리뷰 총 합
-//					res = productService.selectReviewStar(productId);
-//					log.info("리뷰(별) : " + res);
-//					
-//					// 리뷰 평균 값 reviewStar
-//					reviewAvg = df.format((float)res / productVO.getReviewNum());
-//					
-//					log.info("res : " + res);
-//					log.info("reviewAvg : " + reviewAvg);
-//					
-//					// 리뷰 평균값 업데이트
-//					updateRes = productService.updateReviewAvg(productId, reviewAvg);
-//
-//					log.info("updateRes : " + updateRes);
-//				}
-//			}
-			log.info(result + "행 댓글 등록");
-		} else {
-			log.info(memberId + "님은 " + productId + "상품 번호에 이미 댓글(리뷰)를 등록 하였습니다.");
-		}
-		
-		// result값을 전송하여 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
-		return new ResponseEntity<Integer>(result, HttpStatus.OK);
-	}// end createReviewPOST()
+	 @Transactional(value = "transactionManager") // 댓글 입력후 댓글 총 갯수 수정 및 리뷰의 평균값 수정
+	    @PostMapping("/register") // POST : 댓글(리뷰) 입력
+	    public ResponseEntity<Integer> createReviewPOST(@RequestBody ReviewVO reviewVO) {
+
+	        log.info("createReview()");
+	        log.info("reviewVO : " + reviewVO);
+
+	        int productId = reviewVO.getProductId();
+	        String memberId = reviewVO.getMemberId();
+
+	        log.info("productId :" + productId);
+	        log.info("memberId : " + memberId);
+
+	        int res = 0;
+
+	        // 해당 상품에 회원이 댓글을 작성했는지 확인하기 위해 댓글 검색
+	        ReviewVO vo = reviewService.selectByReview(productId, memberId);
+	        log.info("vo : " + vo);
+
+	        // 해당 상품에 회원이 댓글(리뷰)를 작성하지 않았으면 작성 가능, 아니면 작성 불가
+	        if (vo == null) {
+	        	
+	        	 res = reviewService.createReview(reviewVO); // imgDetails 넣어야 함
+	          
+	        } else {
+	            log.info(memberId + "님은 " + productId + "상품 번호에 이미 댓글(리뷰)를 등록 하였습니다.");
+	        }
+
+	        // result 값을 전송하여 리턴하는 방식으로 성공하면 200 OK를 전송합니다.
+	        return new ResponseEntity<>(res, HttpStatus.OK);
+	    }
 	
 	
 	@GetMapping("/all/{productId}") // GET : 댓글(리뷰) 선택(all)
@@ -134,11 +92,11 @@ public class ReviewRESTController {
 	         ){
 	      log.info("updateReview()");
 	      
-	  	  // 소수점 첫 째 자리까지만 출력
-	      DecimalFormat df = new DecimalFormat("#.#");
+//	  	  // 소수점 첫 째 자리까지만 출력
+//	      DecimalFormat df = new DecimalFormat("#.#");
 	      
 	      int reviewId = reviewVO.getReviewId();
-	      
+	      	
 	      float reviewStar = reviewVO.getReviewStar();
 	      
 	      String reviewContent = reviewVO.getReviewContent();

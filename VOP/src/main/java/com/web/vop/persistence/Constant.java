@@ -37,5 +37,5 @@ public interface Constant {
 	public static final String STATE_STOP = "판매 중단";
 	public static final String STATE_REMOVE_WAIT = "삭제 대기중";
 	
-	public static final String DEFAULT_IMG_PATH = "https://vop-s3-bucket.s3.ap-northeast-2.amazonaws.com/nodata.jpg";
+	public static final String DEFAULT_IMG_PATH = "nodata.jpg";
 }
