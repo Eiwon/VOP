@@ -4,6 +4,7 @@
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
 </sec:authorize> 
+<jsp:include page="../include/header.jsp"></jsp:include>
 <!DOCTYPE html>
 <html>
 <head>

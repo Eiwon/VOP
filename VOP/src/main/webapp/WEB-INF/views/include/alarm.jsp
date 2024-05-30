@@ -10,8 +10,8 @@
 
 	<script type="text/javascript">
 	
-	let url = "ws://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/alarm";
-	let webSocket = new WebSocket(url);
+	let socketUrl = "ws://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/alarm";
+	let webSocket = new WebSocket(socketUrl);
 	let msgHandler = {};
 	
 	$(document).ready(function(){
@@ -62,13 +62,21 @@
 		}
 	} // end sendNotice
 	
+	function sendInstanceMsg(){
+		let instanceMsg = prompt('송신할 메시지를 입력하세요.');
+		if(instanceMsg != null){
+			let msg = {};
+			msg.type = 'instanceMsg';
+			msg.content = instanceMsg;
+			webSocket.send(JSON.stringify(msg));
+		}
+	} // end sendInstanceMsg
 	
-	function sendReplyAlarm(receiverId, productId){
-		// 댓글 알림 보내기 (이 파일을 include 후, 댓글 등록시 이 함수가 실행되도록 하면 됩니다)
+	function sendReplyAlarm(productId){
+		// 댓글 알림 보내기
 		
 		let msg = {};
-		msg.type = 'alarmReply';
-		msg.receiver = receiverId;
+		msg.type = 'replyAlarm';
 		msg.callbackInfo = productId;
 		
 		webSocket.send(JSON.stringify(msg));
@@ -88,16 +96,16 @@
 		//showSocketNotification(msg, null);
 	}; // 타입이 notice인 메시지 수신시 호출될 함수
 	
-	msgHandler.broadcast = function(msg){
-		console.log('broadcast 메시지 수신');
+	msgHandler.instanceMsg = function(msg){
+		console.log('instance 메시지 수신');
 		alert(msg.content);
-	}; // 타입이 broadcast인 메시지 수신시 호출될 함수 
+	}; // 타입이 instanceMsg인 메시지 수신시 호출될 함수 
 	
 	msgHandler.replyAlarm = function(msg){
 		console.log('replyAlarm 메시지 수신');
 		
-		showNotification(msg, function(){
-			window.open('../product/detail/productId=' + msg.callbackInfo);
+		showSocketNotification(msg, function(){
+			window.open('../product/detail?productId=' + msg.callbackInfo);
 		});
 		
 	}; // 타입이 alarm인 메시지 수신시 호출될 함수

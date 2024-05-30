@@ -103,7 +103,7 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 	@GetMapping("/delivery")
 	public String deliveryGET() {
 		log.info("delivery controller로 redirection");
-		return "redirect:../Delivery/delivery";
+		return "redirect:../Delivery/deliveryAddressList";
 	} // end deliveryGET
 	
 	@GetMapping("/notice")

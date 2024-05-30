@@ -276,7 +276,7 @@ public class ProductServiceImple implements ProductService{
 		log.info("상품의 세부 이미지 검색");
 		return imageMapper.selectByProductId(productId);
 	} // end getProductDetails
-	
+
 
 	
 }

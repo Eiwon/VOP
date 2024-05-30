@@ -94,4 +94,8 @@ public interface ProductMapper {
 	
 	// 상품 정보 변경
 	int updateProduct(ProductVO productVO);
+	
+	// productId로 판매자 memberId 검색
+	String selectMemberIdById(int productId);
+	
 }

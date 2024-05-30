@@ -84,8 +84,6 @@
         }
         
         
-        
-        
          /* VOP 링크 스타일링 */
         .vop-link {
             
@@ -207,32 +205,43 @@
 </head>
 <body>
 <div class="container2">
+
     <div class="user-links2" id="box_login">
-        <a href="../member/login">로그인</a>
-        <a href="../member/register">회원가입</a>
+    	<sec:authorize access="isAuthenticated()">
+    		<form action="../member/logout" method="POST">
+    			<input type="submit" value="로그아웃">
+    		</form>
+    	</sec:authorize>
+    	<sec:authorize access="isAnonymous()">
+    		<a href="../member/login">로그인</a>
+        	<a href="../member/register">회원가입</a>
+    	</sec:authorize>
     </div>
 	
 	<div class="category">
         <span>카테고리</span>
         <div class="subcategory">
-            <a href="#">패션의류/잡화</a>
-            <a href="#">뷰티</a>
-            <a href="#">출산/유아동</a>
-            <a href="#">식품</a>
-            <a href="#">주방용품</a>
-            <a href="#">생활용품</a>
-            <a href="#">홈인테리어</a>
-            <a href="#">가전디지털</a>
-            <a href="#">스포츠/레저</a>
-            <a href="#">자동차 용품</a>
-            <a href="#">도서/음반/DVD</a>
-            <a href="#">완구/취미</a>
-            <a href="#">문구/오피스</a>
-            <a href="#">반려동물용품</a>
-            <a href="#">헬스/건강식품</a>
+            <a href="">여성패션</a>
+            <a href="">남성패션</a>
+            <a href="">남녀 공용 의류</a>
+            <a href="">유아동 패션</a>
+            <a href="">뷰티</a>
+            <a href="">출산/유아동</a>
+            <a href="">식품</a>
+            <a href="">주방용품</a>
+            <a href="">생활용품</a>
+            <a href="">홈인테리어</a>
+            <a href="">가전디지털</a>
+            <a href="">스포츠/레저</a>
+            <a href="">자동차 용품</a>
+            <a href="">도서/음반/DVD</a>
+            <a href="">완구/취미</a>
+            <a href="">문구/오피스</a>
+            <a href="">반려동물용품</a>
+            <a href="">헬스/건강식품</a>
         </div>
 	</div>
-		
+	
 	<!-- VOP 링크 추가 -->
     <a href="../board/main" class="vop-link">VOP</a>
     
@@ -290,7 +299,6 @@
 	});
 
     $(document).ready(function(){
-    	setLoginBox();
     	
         // 페이지 맨 위로 가기 버튼 클릭 이벤트
         $('#btnTop').click(function(){
@@ -301,32 +309,13 @@
 		    location.href = "../product/search?category=" + $('#boxCategory').val() + "&word=" + $('#searchInput').val();
 		}); // end btnSearch.click
         
+		$('.subcategory').children().each(function(){
+			let link = "../product/search?category=" + $(this).text() + "&word=";
+			$(this).attr('href', link);
+		});
 		
     }); // end document.ready
     
-    function setLoginBox(){
-		let memberDetails = '${memberDetails}';
-		console.log('현재 로그인 memberDetails : ' + memberDetails);
-		let memberId = null;
-		let memberAuth = null;
-		
-		if(memberDetails != 'anonymousUser'){
-			memberId = '${memberDetails.memberVO.memberId }';
-			memberAuth = '${memberDetails.memberVO.memberAuth}';
-		}
-		
-		console.log('security memberId : ' + memberId);
-		console.log('security memberAuth : ' + memberAuth);
-		let form = '';
-		
-		if(memberId == '') { // 로그인 상태가 아닐 경우
-			form = '<a href="../member/login">로그인</a>&nbsp&nbsp&nbsp' + 
-				'<a href="../member/register">회원가입</a>';
-		}else {
-			form = '<form action="../member/logout" method="POST"><input type="submit" value="로그아웃"></form>';
-		}
-		$('#box_login').html(form);
-	} // end setLoginBox
 </script>
 </body>
 </html>

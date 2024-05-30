@@ -24,5 +24,4 @@ public interface ReviewService {
 	// ¥Ò±€(∏Æ∫‰) ªË¡¶
 	int deleteReview(int productId, String memberId);
 
-	
 } 

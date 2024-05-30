@@ -26,4 +26,7 @@ public interface MessageService {
 	
 	// messageId로 검색
 	public MessageVO getById(int messageId);
+	
+	// productId로 판매자 memberId 검색
+	String getSellerIdOf(int productId);
 }

@@ -11,13 +11,6 @@
 <meta charset="UTF-8">
 <style type="text/css">
 
-td {
-	width: 200px;
-}
-.request_container {
-	height: 400px;
-}
-
 .page_list {
 	display: flex;
 	flex-direction: row;
@@ -30,6 +23,9 @@ tbody {
 tr {
 	height: 50px;
 }
+td {
+	width: 200px;
+}
 
 </style>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -41,6 +37,15 @@ tr {
 		<strong>${memberDetails.getUsername() } 님이 등록한 상품</strong>
 	</div>
 	<table>
+		<thead>
+			<tr>
+				<th>썸네일</th>
+				<th>분류</th>
+				<th>상품명</th>
+				<th>가격</th>
+				<th>재고</th>
+			</tr>
+		</thead>
 		<tbody id="product_list"></tbody>
 		<tfoot id="product_list_page"></tfoot>
 	</table>
@@ -68,14 +73,13 @@ tr {
 					const list = productMap.list;
 					
 					for (x in list) {
-						form += '<tr onclick="popupUpdate(this)">' +
+						form += '<tr class="productRow" onclick="popupUpdate(this)">' +
 								'<td class="targetIndex" hidden="hidden">'+ x + '</td>' +
 								'<td><img alt="' + list[x].imgId + '"></td>' +
-								'<td class="category">' + list[x].category + '</td>' + 
+								'<td class="productCategory">' + list[x].category + '</td>' + 
 								'<td class="productName">' + list[x].productName + '</td>' + 
-								'<td class="productPrice">' + list[x].productPrice + '</td>' + 
-								'</tr>' +
-								'<tr>' + 
+								'<td class="productPrice">' + list[x].productPrice + '원</td>' + 
+								'<td class="productRemains">' + list[x].productRemains + '</td>' + 
 			            		'<td colspan="5">' + 
 								'<form action="../inquiry/list" method="get">' + 
 					    		'<input type="hidden" name="productId" value="' + list[x].productId + '">' +

@@ -8,15 +8,18 @@ public interface Constant {
 	
 	// 모두 접근 가능
 	public static final String[] PERMIT_ALL = {
-		"/board/main", "/member", "/basket"
+		"/board/main", "/board/popupNotice", "/member/find**", "/member/login", "/member/register", 
+		"/product/detail", "/product/search", "/review/list"
 	}; 
 	// 로그인한 유저만 접근 가능
 	public static final String[] MEMBER_ONLY = {
-		"/board/mypage", "/board/orderlist", "/delivery/**"
+		"/board/mypage", "/board/orderlist", "/delivery/**", "/member/modify", "/order/**",
+		"/payment/**", "/review/modify", "/review/register", "/seller/sellerRequest", "/member/logout",
+		"/basket/**"
 	};
 	// 판매자만 접근 가능
 	public static final String[] SELLER_ONLY = {
-		"/product/myProduct"	
+			
 	};
 	// 관리자만 접근 가능
 	public static final String[] ADMIN_ONLY = {
@@ -24,7 +27,7 @@ public interface Constant {
 	};
 	// 판매자 & 관리자
 	public static final String[] SELLER_OVER = {
-		"/seller/sellerRequest"
+		"/product/popup**", "/product/myProduct", "/product/register"
 	};
 	
 	
@@ -34,5 +37,5 @@ public interface Constant {
 	public static final String STATE_STOP = "판매 중단";
 	public static final String STATE_REMOVE_WAIT = "삭제 대기중";
 	
-	
+	public static final String DEFAULT_IMG_PATH = "https://vop-s3-bucket.s3.ap-northeast-2.amazonaws.com/nodata.jpg";
 }

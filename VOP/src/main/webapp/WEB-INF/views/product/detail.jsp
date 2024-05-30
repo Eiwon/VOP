@@ -7,7 +7,6 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
-	<jsp:include page="../include/alarm.jsp"></jsp:include>
 </sec:authorize> 
 
 <!DOCTYPE html>
@@ -83,7 +82,7 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
      
        <!-- 썸네일 상품 이미지 -->
       <div>
-    	<img alt="${productVO.imgId}">
+    	<img class="productImg" alt="${productVO.imgId}">
 	  </div>
 
      <div>
@@ -167,7 +166,7 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
      
      <div id="kakaotalk-sharing-btn" href="javascript:;">
     	<c:forEach items="${imageList}" var="image">
-        	<img alt="${image.imgId}" style="margin-right: 10px;"> <!-- 이미지 간격 조정 -->
+        	<img class="productImg" alt="${image.imgId}" style="margin-right: 10px;"> <!-- 이미지 간격 조정 -->
     	</c:forEach>
 	</div> 
 
@@ -489,7 +488,7 @@ $(document).ready(function() {
     //loadImg(); 위에로 이동 하였습니다.
 }); // end document
 	function loadImg(){
-		$(document).find('img').each(function(){
+		$(document).find('.productImg').each(function(){
 			let target = $(this);
 			let imgId = target.attr("alt");
 			$.ajax({

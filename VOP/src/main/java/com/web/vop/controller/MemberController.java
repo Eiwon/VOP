@@ -2,11 +2,14 @@ package com.web.vop.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.web.vop.domain.MemberDetails;
@@ -48,6 +51,18 @@ public class MemberController {
 	public void findPassword() {
 		log.info("비밀번호 찾기 페이지 요청");
 	} // end findPassword
+	
+	@PostMapping("/register") // 회원가입 요청
+	public String registerPOST(MemberVO memberVO) {
+		log.info("회원 가입 요청 : " + memberVO);
+		int res = memberService.registerMember(memberVO);
+		log.info("회원 가입 결과 : " + res);
+		
+		String path = (res == 1) ? "redirect:login" : "redirect:register";
+		
+		return path;
+	} // end registerPOST
+	
 	
 	@GetMapping("/modify")
 	public void modifyGET(Model model, @AuthenticationPrincipal MemberDetails memberDetails) {

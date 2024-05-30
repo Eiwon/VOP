@@ -6,7 +6,7 @@
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
 </sec:authorize> 
-    
+<jsp:include page="../include/header.jsp"></jsp:include>
 <!DOCTYPE html>
 <html>
 <head>
@@ -206,6 +206,7 @@ $(document).ready(function(){
                 alert('댓글 입력 성공');
                 // 댓글 입력 완료 하면 마이페이지로 이동
                 window.location.href = '../order/orderlist';
+                sendReplyAlarm(productId);
              } else {
             	 alert('댓글 입력 실패');
              }

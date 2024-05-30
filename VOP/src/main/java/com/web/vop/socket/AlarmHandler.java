@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -51,18 +54,14 @@ public class AlarmHandler extends TextWebSocketHandler{
     	String memberId = session.getPrincipal().getName();
     	messageVO.setWriterId(memberId);
     	
-    	log.info(msgType.equals("notice"));
     	if(msgType.equals("notice")) { // 공지사항 등록 요청
     		returnMsg = noticeHandler(messageVO, memberId);
     		unicast(returnMsg);
-    	}else if(msgType.equals("broadcast")){ // 접속 중인 전체 유저에게 송신
+    	}else if(msgType.equals("instanceMsg")){ // 접속 중인 전체 유저에게 송신
     		returnMsg = messageVO;
     		broadcast(returnMsg);
     	}else if(msgType.equals("replyAlarm")) { // 댓글 알림 (클릭시 이벤트 발생)
     		returnMsg = replyAlarmHandler(messageVO, memberId);
-    		unicast(returnMsg);
-    	}else if(msgType.equals("instanceMsg")) { // 유저 지정 일반 알림
-    		returnMsg = messageVO;
     		unicast(returnMsg);
     	}
 		
@@ -97,7 +96,7 @@ public class AlarmHandler extends TextWebSocketHandler{
 	} // end afterConnectionClosed
 	
 	
-	private void broadcast(MessageVO message) {
+	public void broadcast(MessageVO message) {
 		log.info("연결된 전체 유저에게 메시지 전송");
 		TextMessage jsonMsg = convertMsg(message);
 		
@@ -121,7 +120,7 @@ public class AlarmHandler extends TextWebSocketHandler{
 		
 	} // end broadcast
 	
-	private void unicast(MessageVO message) {
+	public void unicast(MessageVO message) {
 		log.info("단일 유저에게 메시지 전송");
 		String receiverId = message.getReceiverId();
 		TextMessage jsonMsg = convertMsg(message);
@@ -165,9 +164,11 @@ public class AlarmHandler extends TextWebSocketHandler{
 	} // end noticeHandler
 	
 
-	private MessageVO replyAlarmHandler(MessageVO messageVO, String writerId) {
+	public MessageVO replyAlarmHandler(MessageVO messageVO, String memberId) {
 		MessageVO returnMsg = messageVO;
-		returnMsg.setReceiverId(writerId);
+		String receiverId = messageService.getSellerIdOf(Integer.parseInt(messageVO.getCallbackInfo()));
+		returnMsg.setReceiverId(receiverId);
+		returnMsg.setWriterId(memberId);
 		returnMsg.setContent("등록한 상품에 댓글이 등록되었습니다. 이동하려면 클릭하세요.");
 		return returnMsg;
 	} // end replyAlarmHandler

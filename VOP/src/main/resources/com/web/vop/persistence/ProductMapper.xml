@@ -218,5 +218,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			CATEGORY = #{category}, IMG_ID = #{imgId} WHERE PRODUCT_ID = #{productId}
 	</update>
 	
+	<!-- productId로 판매자 memberId 검색 -->
+	<select id="selectMemberIdById" resultType="String">
+		SELECT MEMBER_ID FROM PRODUCT WHERE PRODUCT_ID = #{productId}
+	</select>
 	
 </mapper>

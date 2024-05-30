@@ -13,6 +13,8 @@ public interface AWSS3Service {
 	
 	public String uploadIcon(MultipartFile file, ImageVO imageVO) throws IOException;
 	
+	public String uploadResizedImage(MultipartFile file, ImageVO imageVO, int width, int height) throws IOException;
+	
 	public String getImageUrl(int imgId);
 	
 	public int removeImage(ImageVO imageVO);

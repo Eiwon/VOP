@@ -42,7 +42,7 @@ public class ImageController {
 		String imgUrl = "";
 		
 		imgUrl = awsS3Service.getImageUrl(imgId);
-		
+		log.info(imgUrl);
 		
 	    return new ResponseEntity<String>(imgUrl, HttpStatus.OK);
 	} // end showImg

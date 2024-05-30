@@ -12,7 +12,6 @@
     </style>
 </head>
 <body>
-
 <div id="recommend_container">
 	<div>
 		<h2>최근 등록된 상품</h2>
