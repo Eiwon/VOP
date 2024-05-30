@@ -23,22 +23,13 @@ public class OrderServiceImple implements OrderService {
 	
 	public Date getExpectDateByPaymentId(int paymentId) { // 배송 예정일 조회 (TEST 중)
 		 log.info("getExpectDateByPaymentId()");
-		 Date paymentDate = orderMapper.selectByExpectDeliveryDate(paymentId);
+		 Date expectDate = orderMapper.selectByExpectDeliveryDate(paymentId);
 		 
-		 if (paymentDate == null) {
-	            log.error(paymentDate, null);
+		 if (expectDate == null) {
+	            log.error(expectDate, null);
 	            throw new IllegalArgumentException("해당 paymentId에 대한 결제일을 찾을 수 없습니다.");
 	        }
-		 log.info("결제일 : " + paymentDate);
-		 
-		 // 캘린더를 이용해 결제일에서 2일을 더한 후 반환한다
-		 Calendar calendar = Calendar.getInstance();
-		 calendar.setTime(paymentDate);
-		 calendar.add(Calendar.DAY_OF_YEAR, 2);
-		 
-		 Date expectDate = calendar.getTime();
-		 
-		 log.info("배송 예정일 : " + expectDate);
+		 log.info("배송예상일 : " + expectDate);
 		return expectDate;
 	}//end getExpectDateByPaymentId
 

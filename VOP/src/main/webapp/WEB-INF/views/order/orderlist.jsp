@@ -96,11 +96,11 @@
             <div class="order-details">
                 <p>예상 배송일 : ${order.expectDeliveryDate}</p>
                 	<!-- 이미지 목록 표시 -->
-					<div>
+					
     					<c:forEach items="${imageList}" var="image">
                         	<img alt="${image.imgId}" src="" />
                     	</c:forEach>
-					</div>	
+						
                 <div>
                     <p>상품명 : ${order.productName}</p>
                     <p>상품 가격 : ${order.productPrice} 원</p>

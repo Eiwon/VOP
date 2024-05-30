@@ -41,19 +41,33 @@
   
   <script>
   	$(document).ready(function(){
-  		let expectedDate = new Date("${date}");
+  	// 서버에서 전송된 날짜 문자열
+  	    let dateStr = "${date}";
+  	    console.log("date : " + dateStr);
+		
+  	// ISO 8601 형식으로 변환된 날짜 문자열을 Date 객체로 파싱
+  		let expectedDate = new Date(dateStr);
+  		console.log("배송예상일 : " + expectedDate);
+  		
   		let currentDate = new Date();
+  		console.log("현재날짜 : " + currentDate);
   		
   		if (currentDate < expectedDate) {
   			$("#deliveryStatus").text("배송 예정일 : " + formatDate(expectedDate));
+  			console.log("formatDate(expectedDate) : " + formatDate(expectedDate));
   		} else {
   			$("#deliveryStatus").text("배송 완료 되었습니다! 배송 완료일 : " + formatDate(expectedDate) + ")" );
   		}
   	});
   	
   	function formatDate(date){
-  		let formattedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
-  		return formattedDate;
+  	    // 날짜 포맷팅
+  	    let year = date.getFullYear();
+  	    let month = ("0" + (date.getMonth() + 1)).slice(-2); // 월은 0부터 시작하므로 1을 더하고 2자리로 포맷팅
+  	    let day = ("0" + date.getDate()).slice(-2); // 일도 2자리로 포맷팅
+  	    
+  	    let formattedDate = year + "-" + month + "-" + day;
+  	    return formattedDate;
   	}
   </script>
 	
