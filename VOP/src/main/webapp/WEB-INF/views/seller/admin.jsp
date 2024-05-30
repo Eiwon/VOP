@@ -43,7 +43,7 @@ tr {
 		<h2>관리자 페이지</h2>
 	</div>
 	<div>
-		<input type="button" value="공지사항 등록(삭제하려면 DB에서 직접 삭제해야 합니다)" onclick="sendNotice()">
+		<input type="button" value="공지사항 등록" onclick="sendNotice()">
 	</div>
 	<div>
 		<div class="request_container">

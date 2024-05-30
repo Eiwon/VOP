@@ -1,5 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    
+<!-- 시큐리티 사용하는 코드 -->
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authorize access="isAuthenticated()">
+    <sec:authentication var="memberDetails" property="principal"/>
+</sec:authorize> 
 
 <!DOCTYPE html>
 <html>
@@ -7,7 +13,7 @@
 <meta charset="UTF-8">
 <title>리뷰 수정</title>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-
+<jsp:include page="../include/header.jsp"></jsp:include>
 <style>
 /* 리뷰 별 폼 스타일 */
 #myform fieldset {
@@ -43,7 +49,6 @@
 </head>
 <body>
 
-	
 	<h1>리뷰 수정</h1>
 	
 	<div>
@@ -51,9 +56,9 @@
 	</div>
 	
 	<p>이미지 썸네일</p>
-	  <div>
-    	<img src="../product/showImg?imgId=${imgId}" alt="${imgRealName}.${imgExtension}">
-	  </div>
+      <div>
+        <img alt="${imgId}">
+      </div>
 	
  	<div id="myform">
  	<fieldset id="starFieldset">
@@ -71,9 +76,28 @@
      
      <script type="text/javascript">
      
+     let memberId = "${memberDetails.getUsername()}";
+     
      $(document).ready(function(){
-    		
+    	 	
+    	 	loadImg();
+    	 	
     		let selectedStar; // 전역 변수로 selectedStar 선언
+  
+    	    // 이미지 없을때 이름과 확장명 보여주는 코드
+    	    function loadImg(){
+    	        $(document).find('img').each(function(){
+    	            let target = $(this);
+    	            let imgId = target.attr("alt");
+    	            $.ajax({
+    	                method : 'GET',
+    	                url : '../image/' + imgId,
+    	                success : function(result){
+    	                    target.attr('src', result);
+    	                }
+    	            }); // end ajax
+    	        });
+    	    } // end loadImg
     		
     	    // 라디오 버튼 클릭 이벤트 핸들러
     	    $('#starFieldset input[type="radio"]').click(function() {
@@ -115,7 +139,7 @@
               console.log(result);
               if(result == 1) {
                  alert('댓글 수정 성공!');
-                 window.location.href = '../order/orderlist';
+                 window.location.href = '../review/list?memberId=' + memberId;
               } else {
             	alert('댓글 수정 실패!');
               }

@@ -23,8 +23,22 @@ public class AnswerServiceImple implements AnswerService{
 	public int createAnswer(AnswerVO answerVO) {
 		log.info("createAnswer()");
 		log.info("answerVO : " + answerVO);
-		int insertRes = answerMapper.insertAnswer(answerVO);
-		log.info(insertRes + "행 댓댓글(답변) 등록");
+		
+		int inquiryId = answerVO.getInquiryId();
+		
+		String memberId = answerVO.getMemberId();
+		
+		log.info("InquiryId : " + inquiryId);
+		log.info("memberId : " + memberId);
+		
+		AnswerVO vo = answerMapper.selectListByInquiryId(inquiryId);
+		
+		int insertRes = 0;
+		if(vo == null) {
+			insertRes = answerMapper.insertAnswer(answerVO);
+			log.info(insertRes + "행 댓댓글(답변) 등록");
+		}
+		
 		return insertRes;
 	}
 	
@@ -36,11 +50,11 @@ public class AnswerServiceImple implements AnswerService{
 		return result;
 	}
 	
-	// 댓댓글(답변) 전체 검색
+	// 댓댓글(답변) 전체 검색(사용안함)
 	@Override
-	public List<AnswerVO> getAllAnswerInquiryId(int inquiryId) {
+	public AnswerVO getAllAnswerInquiryId(int inquiryId) {
 		log.info("getAllAnswer()");
-		List<AnswerVO> result = answerMapper.selectListByInquiryId(inquiryId);
+		AnswerVO result = answerMapper.selectListByInquiryId(inquiryId);
 		return result;
 	}
 	
@@ -48,13 +62,20 @@ public class AnswerServiceImple implements AnswerService{
 	@Override
 	public int updateAnswer(int inquiryId, String memberId, String answerContent) {
 		log.info("updateAnswer()");
-		AnswerVO answerVO = new AnswerVO();
-		// reviewVO에 각 변경사항 변수들 저장
-		answerVO.setInquiryId(inquiryId);
-		answerVO.setMemberId(memberId);
-		answerVO.setAnswerContent(answerContent);
-		int updateRes = answerMapper.updateAnswer(answerVO);
-		log.info(updateRes + "행 댓댓글(답변)이 수정되었습니다.");
+		
+		AnswerVO vo = answerMapper.selectListByInquiryId(inquiryId);
+		
+		int updateRes = 0;
+		if(vo != null) {
+			AnswerVO answerVO = new AnswerVO();
+			// reviewVO에 각 변경사항 변수들 저장
+			answerVO.setInquiryId(inquiryId);
+			answerVO.setMemberId(memberId);
+			answerVO.setAnswerContent(answerContent);
+			updateRes = answerMapper.updateAnswer(answerVO);
+			log.info(updateRes + "행 댓댓글(답변)이 수정되었습니다.");
+		}
+		
 		return updateRes;
 	}
 

@@ -6,9 +6,15 @@ import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -65,6 +71,17 @@ public class ServletConfig implements WebMvcConfigurer {
 
       return resolver;
    }
+   
+
+	/*
+	 * @ExceptionHandler({ Exception.class }) public
+	 * ResponseEntity<RestClientException> handle(NoHandlerFoundException e) {
+	 * return new ResponseEntity<>(new RestClientException("Testing exception"),
+	 * HttpStatus.NOT_FOUND); }
+	 * 
+	 * @Override public void addViewControllers(ViewControllerRegistry registry) {
+	 * registry.addViewController("/404.jsp").setViewName("404"); }
+	 */
    
    
 } // end ServletConfig

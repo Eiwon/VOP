@@ -1,9 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<sec:authorize access="isAuthenticated()">
-	<sec:authentication var="memberDetails" property="principal"/>
-</sec:authorize>
 <!DOCTYPE html>
 <html>
 <head>
@@ -89,9 +85,13 @@
 	
 	msgHandler.notice = function(msg){
 		console.log('notice 메시지 수신');
-		showNotification(msg, null);
-		//alert(msg.content);
+		//showSocketNotification(msg, null);
 	}; // 타입이 notice인 메시지 수신시 호출될 함수
+	
+	msgHandler.broadcast = function(msg){
+		console.log('broadcast 메시지 수신');
+		alert(msg.content);
+	}; // 타입이 broadcast인 메시지 수신시 호출될 함수 
 	
 	msgHandler.replyAlarm = function(msg){
 		console.log('replyAlarm 메시지 수신');
@@ -104,14 +104,14 @@
 	
 	
 	
-	function alarmPermitRequest(){ // 알림창 표시 기능 허가 요청
+	function alarmPermitRequest(){ // 알림창 표시 기능 허가 요청 (허가 거부시 크롬 설정->개인정보보호 및 보안->사이트설정->알림에서 재설정 가능)
 		let permission = Notification.permission;
 		console.log('현재 알림창 설정 : ' + permission);
 		Notification.requestPermission();
 		
 	} // end alarmPermitRequest
 	
-	function showNotification(msg, onclickListener){
+	function showSocketNotification(msg, onclickListener){
 		let option = {
 				body : msg.content,
 				requireInteraction : true,
@@ -120,7 +120,24 @@
 		let notification = new Notification(msg.title, option);
 		notification.addEventListener('click', onclickListener);
 		console.log(notification);
-	} // end showNotification
+	} // end showSocketNotification
+	
+	function showSocketPopup(){
+		let targetUrl = '../board/popupNotice';
+		
+		const popupStat = {
+				'url' : targetUrl,
+				'name' : 'popupNotice',
+				'option' : 'width=500, height=600, top=50, left=400'
+		};
+		
+		// 팝업 창 띄우기
+		let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
+		popup.onbeforeunload = function(){
+			// 팝업 닫힐 때 실행
+			console.log("팝업 닫힘");
+		} // end popup.onbeforeunload
+	} // end showSocketPopup
 	
 	</script>
 	

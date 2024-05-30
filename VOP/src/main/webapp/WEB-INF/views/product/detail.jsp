@@ -173,16 +173,10 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
 
      <!-- 댓글 화면 코드 및 가운데 정렬 -->
      
-      <p>댓글</p>
+      <h3>댓글</h3>
       <div id="review"></div>
       
-      <p>문의(대댓글)</p>
-      <div id="inquiry"></div>
-      
-      <p>test</p>
-      <div id="test"></div>
-      
-      <p>comments</p>
+      <h3>문의(대댓글)</h3>
       <div id="comments"></div>
 
       <div>
@@ -378,13 +372,14 @@ $(document).ready(function() {
         ); // end getJSON()
     } // end getAllReply()
     
- // 문의(댓글 및 대댓글) 전체 검색
     function getAllComments() {
         let inquiryUrl = '../inquiryRest/list/' + productId;
         let answerUrl = '../answer/list/' + productId;
         
         // 변수 선언
         let allComments = '';
+        let inquiryNUM = [];
+        let answerNUM = [];
 
         // 댓글 데이터 가져오기
         $.getJSON(
@@ -393,64 +388,84 @@ $(document).ready(function() {
                 // 댓글 데이터 반복
                 $(inquiryData).each(function() {
                     // 날짜 형식 변환
-                    let commentDateCreated = new Date(this.inquiryDateCreated);
-                    let dateString = commentDateCreated.toLocaleDateString();
-                    let timeString = commentDateCreated.toLocaleTimeString();
-					
-                    
-                   
+                    let inquiryDateCreated = new Date(this.inquiryDateCreated);
+                    let dateString = inquiryDateCreated.toLocaleDateString();
+                    let timeString = inquiryDateCreated.toLocaleTimeString();
+
                     // 댓글 HTML 생성
-                    let commentHtml = '<div>' +
+                    let inquiryList = '<div>' +
                         '<pre>' +
-                        '<input type="hidden" class="commentId" value="' + this.inquiryId + '">' +
+                        '문의 내용 <input type="hidden" class="inquiryId" value="' + this.inquiryId + '">' +
                         this.memberId +
                         '&nbsp;&nbsp;' +
                         dateString + ' ' + timeString +
                         '&nbsp;&nbsp;' +
-                        '<input type="text" class="commentContent" value="' + this.inquiryContent + '"readonly>' +
-                        '</pre>' +
-                        '</div>';
-                        
-                       /*  let commentIdValue = $(commentHtml).find('.commentId').val();
-                        console.log("commentIdValue : " + commentIdValue); 가능*/
-                    // 전체 댓글에 추가
-                    allComments += commentHtml;
-                });
-            }
-        );
-
-        // 대댓글 데이터 가져오기
-        $.getJSON(
-            answerUrl,
-            function(answerData) {
-                // 대댓글 데이터 반복
-                $(answerData).each(function() {
-                    // 날짜 형식 변환
-                    let commentDateCreated = new Date(this.answerDateCreated);
-                    let dateString = commentDateCreated.toLocaleDateString();
-                    let timeString = commentDateCreated.toLocaleTimeString();
-
-                    // 대댓글 HTML 생성
-                    let commentHtml = '<div>' +
-                        '<pre>' +
-                        '<input type="hidden" class="commentId" value="' + this.answerId + '">' +
-                        this.memberId +
-                        '&nbsp;&nbsp;' +
-                        dateString + ' ' + timeString +
-                        '&nbsp;&nbsp;' +
-                        '<input type="text" class="commentContent" value="' + this.answerContent + '"readonly>' +
+                        '<input type="text" class="inquiryContent" value="' + this.inquiryContent + '" readonly>' +
                         '</pre>' +
                         '</div>';
 
                     // 전체 댓글에 추가
-                    allComments += commentHtml;
+                    inquiryNUM.push({
+                        inquiryId: this.inquiryId,
+                        html: inquiryList,
+                        answers: [] // 해당 댓글에 대한 대댓글 리스트
+                    });
                 });
 
-                // HTML에 전체 댓글 추가
-                $('#comments').html(allComments);
+                // 대댓글 데이터 가져오기
+                $.getJSON(
+                    answerUrl,
+                    function(answerData) {
+                        // 대댓글 데이터 반복
+                        $(answerData).each(function() {
+                            // 날짜 형식 변환
+                            let answerDateCreated = new Date(this.answerDateCreated);
+                            let dateString = answerDateCreated.toLocaleDateString();
+                            let timeString = answerDateCreated.toLocaleTimeString();
+
+                            // 대댓글 HTML 생성
+                            let answerList = '<div>' +
+                                '<pre>' +
+                                ' ㄴ답변 내용 <input type="hidden" class="answerId" value="' + this.answerId + '">' +
+                                this.memberId +
+                                '&nbsp;&nbsp;' +
+                                dateString + ' ' + timeString +
+                                '&nbsp;&nbsp;' +
+                                '<input type="text" class="answerContent" value="' + this.answerContent + '" readonly>' +
+                                '</pre>' +
+                                '</div>';
+
+                            // 해당 댓글에 대한 inquiryId 가져오기
+                            let answerInquiryId = this.inquiryId;
+
+                            // 해당 inquiryId를 가진 댓글 찾기
+                            let inquiry = inquiryNUM.find(function(inquiry) {
+                                return inquiry.inquiryId === answerInquiryId;
+                            });
+
+                            if (inquiry) {
+                                // 해당 댓글에 대댓글 추가
+                                inquiry.answers.push(answerList);
+                            }
+                        });
+
+                        // HTML에 전체 댓글과 대댓글 추가
+                        inquiryNUM.forEach(function(inquiry) {
+                            let commentHtml = inquiry.html;
+                            inquiry.answers.forEach(function(answer) {
+                                commentHtml += answer;
+                            });
+                            allComments += commentHtml;
+                        });
+
+                        // comments 엘리먼트에 전체 댓글과 대댓글 추가
+                        $('#comments').html(allComments);
+                    }
+                );
             }
         );
     }
+
 
 
     

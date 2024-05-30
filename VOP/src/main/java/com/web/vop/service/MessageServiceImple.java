@@ -48,4 +48,16 @@ public class MessageServiceImple implements MessageService{
 		return messageMapper.deleteByReceiverId(receiverId);
 	} // end removeByReceiverId
 
+	@Override
+	public List<MessageVO> getNotice() {
+		log.info("getNotice");
+		return messageMapper.selectNotice();
+	} // end getNotice
+
+	@Override
+	public MessageVO getById(int messageId) {
+		log.info("getById");
+		return messageMapper.selectById(messageId);
+	} // end getById
+
 }

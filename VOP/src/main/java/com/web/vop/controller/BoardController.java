@@ -1,22 +1,33 @@
 package com.web.vop.controller;
 
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.web.vop.domain.MemberDetails;
-import com.web.vop.domain.OrderVO;
-import com.web.vop.service.MemberService;
-import com.web.vop.service.OrderService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.vop.domain.MessageVO;
+import com.web.vop.service.MessageService;
 
 import lombok.extern.log4j.Log4j;
 
@@ -25,8 +36,8 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class BoardController {// 메인 페이지 구현 컨트롤러
 
-	//@Autowired
-	//private MemberService memberService;
+	@Autowired
+	private MessageService messageService;
 	
 	@GetMapping("/main") 
 	public void mainGET() {
@@ -94,6 +105,60 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 		log.info("delivery controller로 redirection");
 		return "redirect:../Delivery/delivery";
 	} // end deliveryGET
+	
+	@GetMapping("/notice")
+	@ResponseBody
+	public ResponseEntity<List<MessageVO>> noticeGET() {
+		log.info("모든 공지사항 요청");
+		List<MessageVO> result = messageService.getNotice();
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	} // end noticeGET
+	
+	@GetMapping("/popupNotice")
+	public void popupNoticeGET(Model model, int messageId) {
+		log.info("공지사항 정보 요청 : " + messageId);
+		MessageVO message = messageService.getById(messageId);
+		log.info(message);
+		model.addAttribute("messageVO", message);
+	} // end popupNoticeGET
+	
+	@GetMapping("/blockPopup")
+	@ResponseBody
+	public ResponseEntity<Integer> blockPopup(int messageId, HttpServletResponse response, @CookieValue(name = "blockPopup", required = false) String cookie) {
+		log.info("팝업 차단 쿠키 생성");
+		Cookie newCookie = new Cookie("blockPopup", null);
+		List<Integer> blockList = null;
+		
+		if(cookie == null) { // blockPopup 쿠키가 없으면 생성
+			blockList = new ArrayList<>();
+		}else { // 쿠키가 있으면 차단 목록 불러옴
+			try { 
+				blockList = new ObjectMapper().readValue(URLDecoder.decode(cookie, "UTF-8"), ArrayList.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		blockList.add(messageId);
+		String encoded = null;
+		try {
+			// 세션에는 String만 저장 가능하기 때문에 차단 목록을 JSON으로 변환
+			// 쿠키에는 , 를 저장할 수 없어서 URL 규칙으로 인코딩
+			encoded = URLEncoder.encode(new ObjectMapper().writeValueAsString(blockList), "UTF-8");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		newCookie.setValue((encoded == null) ? cookie : encoded);  
+		
+		LocalDateTime current = new LocalDateTime();
+		int remainSecondOfDay = 86400 - current.getHourOfDay() *3600 - current.getMinuteOfHour() *60 - current.getSecondOfMinute(); 
+		log.info("쿠키 만료 남은 시간 : " + remainSecondOfDay);
+		newCookie.setMaxAge(remainSecondOfDay);
+		response.addCookie(newCookie);
+		
+		return new ResponseEntity<Integer>(1, HttpStatus.OK);
+	} // end blockPopup
+	
 	
 	
 }//end MainController

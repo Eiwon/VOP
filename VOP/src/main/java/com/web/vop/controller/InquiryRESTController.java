@@ -41,7 +41,6 @@ public class InquiryRESTController {
 		// inquiryVO 입력 받아 댓글(문의) 등록
 		int result = inquiryService.createInquiry(inquiryVO);
 		
-		log.info(result + "행 문의 등록");
 		// result값을 전송하여 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}// end createInquiry()

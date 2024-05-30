@@ -16,7 +16,7 @@ public interface AnswerMapper {
 	List<AnswerVO> selectListByProductId(int productId);
 	
 	// ´ñ´ñ±Û(´äº¯) ÀüÃ¼ °Ë»ö
-	List<AnswerVO> selectListByInquiryId(int inquiryId);
+	AnswerVO selectListByInquiryId(int inquiryId);
 		 
 	// ´ñ´ñ±Û(´äº¯) ¼öÁ¤
 	int updateAnswer(AnswerVO answerVO);

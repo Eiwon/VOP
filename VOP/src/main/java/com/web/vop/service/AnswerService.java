@@ -13,7 +13,7 @@ public interface AnswerService {
 	List<AnswerVO> getAllAnswer(int productId);
 	
 	// ´ñ´ñ±Û(´äº¯) ÀüÃ¼ °Ë»ö
-	List<AnswerVO> getAllAnswerInquiryId(int inquiryId);
+	AnswerVO getAllAnswerInquiryId(int inquiryId);
 				 
 	// ´ñ´ñ±Û(´äº¯) ¼öÁ¤
 	int updateAnswer(int inquiryId, String memberId, String answerContent);

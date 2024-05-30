@@ -11,6 +11,7 @@
 	<head>
 	<meta charset="UTF-8">
 	<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+	<jsp:include page="../include/header.jsp"></jsp:include>
 	<title>문의 리스트</title>
 	</head>
 	<body>
@@ -117,7 +118,9 @@
 	           data : JSON.stringify(obj),
 	           success : function(result) {
 	              if(result == 1) {
-	                 alert('답변 입력 성공');
+	                 alert('답변 성공');
+	              } else {
+	            	 alert('답변을 이미 작성 하셨습니다.');
 	              }
 	           }
 	        });
@@ -146,6 +149,8 @@
 	           success : function(result) {
 	              if(result == 1) {
 	                 alert('답변 수정 성공!');
+	              } else {
+	            	 alert('답변이 작성 되어 있지 않습니다.');
 	              }
 	           }
 	        });
@@ -170,6 +175,8 @@
 	           success : function(result) {
 	              if(result == 1) {
 	                 alert('답변 삭제 성공!');
+	              } else {
+	            	 alert('답변이 삭제 실패!');
 	              }
 	           }
 	        });

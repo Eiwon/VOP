@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
-
-
+import com.web.vop.domain.ProductVO;
 import com.web.vop.domain.ReviewVO;
-
+import com.web.vop.service.ProductService;
 import com.web.vop.service.ReviewService;
 
 
@@ -33,9 +32,11 @@ public class ReviewRESTController {
 	
 	@Autowired
 	private ReviewService reviewService;
+	
+	@Autowired
+	private ProductService productService;
 
 	
-	 @Transactional(value = "transactionManager") // 댓글 입력후 댓글 총 갯수 수정 및 리뷰의 평균값 수정
 	    @PostMapping("/register") // POST : 댓글(리뷰) 입력
 	    public ResponseEntity<Integer> createReviewPOST(@RequestBody ReviewVO reviewVO) {
 
@@ -47,9 +48,13 @@ public class ReviewRESTController {
 
 	        log.info("productId :" + productId);
 	        log.info("memberId : " + memberId);
-
+	        
+	        ProductVO productVO = productService.getProductById(productId);
+	        
 	        int res = 0;
-
+	        
+	        if(productVO != null) {
+	        res = 2;
 	        // 해당 상품에 회원이 댓글을 작성했는지 확인하기 위해 댓글 검색
 	        ReviewVO vo = reviewService.selectByReview(productId, memberId);
 	        log.info("vo : " + vo);
@@ -62,6 +67,8 @@ public class ReviewRESTController {
 	        } else {
 	            log.info(memberId + "님은 " + productId + "상품 번호에 이미 댓글(리뷰)를 등록 하였습니다.");
 	        }
+	        
+	       }
 
 	        // result 값을 전송하여 리턴하는 방식으로 성공하면 200 OK를 전송합니다.
 	        return new ResponseEntity<>(res, HttpStatus.OK);
@@ -83,15 +90,12 @@ public class ReviewRESTController {
 		return new ResponseEntity<List<ReviewVO>>(list, HttpStatus.OK);
 	}// end readAllReview()
 	
-	 @Transactional(value = "transactionManager")// 댓글 수정 후 리뷰의 평균 점수 수정
+	
 	 @PutMapping("/modify") // PUT : 댓글(리뷰) 수정 
 	   public ResponseEntity<Integer> updateReview(
 	         @RequestBody ReviewVO reviewVO
 	         ){
 	      log.info("updateReview()");
-	      
-//	  	  // 소수점 첫 째 자리까지만 출력
-//	      DecimalFormat df = new DecimalFormat("#.#");
 	      
 	      int reviewId = reviewVO.getReviewId();
 	      	
@@ -105,32 +109,7 @@ public class ReviewRESTController {
 	      
 	      // reviewId에 해당하는 댓글(리뷰)의 reviewContent, reviewStar, imgId의 내용을 수정 할 수 있습니다.
 	      int result = reviewService.updateReview(reviewId, reviewContent, reviewStar, productId);
-	      
-//	      // productId에 해당하는 상품 조회 // 업그레이드 된 상태
-//		  ProductVO productVO = productService.getProductById(productId);
-//	      
-//	      int res = 0; // 댓글 입력시 소수점 입력 불가
-//		  String reviewAvg = "0";
-//	      
-//	      if(result == 1) {
-//	    	    // 리뷰 총 합
-//				res = productService.selectReviewStar(productId);
-//				log.info("리뷰(별) : " + res);
-//				
-//				// 리뷰 평균 값 reviewStar
-//				reviewAvg = df.format((float)res / productVO.getReviewNum());
-//				
-//				log.info("res : " + res);
-//				log.info("reviewAvg : " + reviewAvg);
-//				
-//				// 리뷰 평균값 업데이트
-//				int updateRes = productService.updateReviewAvg(productId, reviewAvg);
-//
-//				log.info("updateRes : " + updateRes);
-//				
-//				log.info(result + "행 수정 되었습니다.");
-//	      } 
-	      
+
 	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	   }// end updateReview()

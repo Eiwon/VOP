@@ -44,28 +44,37 @@ public class ReviewController {
 	
 	// 댓글(리뷰) 등록 GET 이동
 	@GetMapping("/register")
-	public void createReviewGET(Model model, Integer productId, Integer imgId) {
-		log.info("createReviewGET()");
-		
-		log.info("productId : " + productId);
-		log.info("imgId : " + imgId);
+	public String createReviewGET(Model model, Integer productId, Integer imgId) {
+	    log.info("createReviewGET()");
 
-		// imgId통해 이미지 조회
-		ImageVO imageVO = imageService.getImageById(imgId);
-		
-		String imgRealName = imageVO.getImgRealName();
-		String imgExtension = imageVO.getImgExtension();
-		
-		log.info("imageVO : " + imageVO);
-		
-		log.info("imgRealName : " + imgRealName);
-		log.info("imgExtension : " + imgExtension);
-		
-		model.addAttribute("imgRealName", imgRealName);
-		model.addAttribute("productId", productId);
-		model.addAttribute("imgId", imgId);
-		model.addAttribute("imgExtension", imgExtension);
-	} // end loginGET
+	    log.info("productId : " + productId);
+	    log.info("imgId : " + imgId);
+
+	    ProductVO productVO = productService.getProductById(productId);
+
+	    if (productVO != null) {
+	        // imgId통해 이미지 조회
+	        ImageVO imageVO = imageService.getImageById(imgId);
+
+	        String imgRealName = imageVO.getImgRealName();
+	        String imgExtension = imageVO.getImgExtension();
+
+	        log.info("imageVO : " + imageVO);
+
+	        log.info("imgRealName : " + imgRealName);
+	        log.info("imgExtension : " + imgExtension);
+
+	        model.addAttribute("imgRealName", imgRealName);
+	        model.addAttribute("productId", productId);
+	        model.addAttribute("imgId", imgId);
+	        model.addAttribute("imgExtension", imgExtension);
+	        
+	        return "/review/register"; // 경로 반환
+	    } else {	
+	    	log.info("삭제된 상품입니다.");
+	        return "/board/main"; // 이동할 경로 반환
+	    }
+	}
 	
 	
 	// 댓글(리뷰) 수정 GET 이동

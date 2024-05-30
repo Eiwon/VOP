@@ -29,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       WHERE PRODUCT_ID = #{productId}
       ORDER BY INQUIRY_ID
    </select>
-   
+
    
    <!-- 댓글(문의) productId 그리고 memberId통해 검색 -->
    <!-- 우선 사용 안함 -->

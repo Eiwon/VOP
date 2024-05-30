@@ -14,6 +14,8 @@
 <meta charset="UTF-8">
 <title>리뷰 작성</title>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<!-- 위에 창코드 -->
+<jsp:include page="../include/header.jsp"></jsp:include>
 <style>
 /* 리뷰 별 폼 스타일 */
 #myform fieldset {
@@ -55,7 +57,7 @@
     <h1>${memberDetails.getUsername() }</h1>
     
     <div>
-        <p>상품 번호 "${productId}"</p>
+        <p>상품 번호 : ${productId}</p>
     </div>
     
     <p>이미지 썸네일</p>
@@ -146,9 +148,10 @@ $(document).ready(function(){
              if(result == 1) {
                 alert('댓글 입력 성공');
                 // 댓글 입력 완료 하면 마이페이지로 이동
-                window.location.href = '../order/orderlist';
+                window.location.href = '../review/list?memberId=' + memberId;
              } else {
-                 alert('댓글 입력 실패');
+                 alert('이미 등록하신 리뷰 입니다.');
+                 window.location.href = '../review/list?memberId=' + memberId;
              }
           } // end success 
        }); // end ajax

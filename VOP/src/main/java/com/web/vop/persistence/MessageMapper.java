@@ -23,5 +23,10 @@ public interface MessageMapper {
 	
 	// 지정 유저에 대한 메시지 삭제
 	public int deleteByReceiverId(String receiverId);
+
+	// 모든 공지 검색
+	public List<MessageVO> selectNotice();
 	
+	// messageId로 검색
+	public MessageVO selectById(int messageId);
 }

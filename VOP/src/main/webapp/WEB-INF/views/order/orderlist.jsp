@@ -279,6 +279,10 @@
                   console.log(result);
                   if(result == 1) {
                      alert('문의 성공');
+                  }else if(result == 0){
+                	  alert('상품이 삭제되어 문의 할 수 없습니다.');
+                  }else{
+                	  alert('이미 작성 하신 문의 입니다.');
                   }
                } // end success 
             }); // end ajax 
@@ -316,7 +320,9 @@
                success : function(result) { // 전송 성공 시 서버에서 result 값 전송
                   console.log(result);
                   if(result == 1) {
-                     alert('문의 수정 성공!');
+                    alert('문의 수정 성공!');
+                  } else {
+                  	alert('해당 문의가 없습니다.');
                   }
                }
             }); // ajax 
@@ -353,7 +359,9 @@
           success : function(result) {
              console.log(result);
              if(result == 1) {
-                alert('댓글 삭제 성공!');
+                alert('문의 삭제 성공!');
+             } else {
+            	alert('문의 삭제 실패!');
              }
           }
        }); 
@@ -364,6 +372,7 @@
     
     }); // end document.ready()
     
+    // 이미지 관련 코드
     function loadImg(){
         $(document).find('img').each(function(){
             let target = $(this);
