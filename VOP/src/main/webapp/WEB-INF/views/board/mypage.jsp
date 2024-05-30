@@ -23,10 +23,10 @@
 			<div> 
 				<strong>내 정보</strong>
 				<div id="my_info">
-					<a href="myInfo">내 정보 확인 / 수정</a><br>
-					<a href="../order/orderlist">주문 목록</a><br>
-					<a href="delivery">배송지 관리</a><br>
-					<a href="seller">판매자 페이지</a><br>
+					<a href="myInfo">내 정보 확인 / 수정</a>
+					<a href="../order/orderlist">주문 목록</a>
+					<a href="../Delivery/deliveryAddressList">배송지 관리</a>
+					<a href="seller">판매자 페이지</a>
 				</div>
 			</div>
 		</div>

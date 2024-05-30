@@ -154,11 +154,18 @@ $(document).ready(function() {
     checkDefaultAddress().then(function(isExistingDefault) {
         if (isExistingDefault) {
             alert("기본 배송지가 설정되어 있습니다.");
-            // 기본 배송지가 설정되어 있으면 수정 버튼을 비활성화합니다.
+            // 기본 배송지가 있으면 수정 버튼을 비활성화합니다.
             $('#updateButton').prop('disabled', true);
         } else {
-        	 // 기본 배송지가 있으면 수정 버튼을 비활성화합니다.
-            $('#updateButton').prop('disabled', false);
+        	console.log("기본 배송지가 없습니다.");
+        	// 기본 배송지가 없으면 수정 버튼을 활성화합니다. 
+        	 $('#isDefault').change(function() {
+                 if ($(this).prop('checked')) {
+                     $('#updateButton').prop('disabled', false);
+                 } else {
+                     $('#updateButton').prop('disabled', true);
+                 }
+             });
         }
     });
 });
