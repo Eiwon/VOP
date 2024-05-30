@@ -28,20 +28,9 @@ import com.web.vop.socket.AlarmHandler;
 public class WebSocketConfig implements WebSocketConfigurer{
 
 	
-	/*
-	 * @Override public void registerStompEndpoints(StompEndpointRegistry registry)
-	 * { registry.addEndpoint("/alarm") .withSockJS() .setStreamBytesLimit(512 *
-	 * 1024) .setHttpMessageCacheSize(1000) .setDisconnectDelay(30 * 1000); }
-	 * 
-	 * @Override public void configureMessageBroker(MessageBrokerRegistry config) {
-	 * config.setApplicationDestinationPrefixes("/app");
-	 * config.enableSimpleBroker("/topic", "/queue"); }
-	 */
-	
 	@Override 
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) { 
 		registry.addHandler(alarmHandler(), "/alarm"); // 핸들러 등록
-				//.addInterceptors(new HttpSessionHandshakeInterceptor()) .withSockJS(); 
 	}
 	
 

@@ -20,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <!-- 메시지 등록 -->
    <insert id="insertMessage">
    		INSERT INTO MESSAGE VALUES
-   			(MESSAGE_SEQ.NEXTVAL, #{type}, #{title}, #{content}, #{writerId}, #{receiverId}, SYSDATE, #{callbackInfo}) 
+   			(MESSAGE_SEQ.NEXTVAL, #{type}, #{title, jdbcType=VARCHAR}, #{content}, #{writerId, jdbcType=VARCHAR}, #{receiverId, jdbcType=VARCHAR}, SYSDATE, #{callbackInfo, jdbcType=VARCHAR}) 
    </insert>
 	
 	<!-- receiver id로 수신 가능한 모든 메시지 검색 -->
@@ -43,5 +43,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		DELETE MESSAGE WHERE RECEIVER_ID = #{receiverId}
    </delete>
    
+   <!-- 모든 공지사항 검색 -->
+   <select id="selectNotice" resultMap="messageResultMap">
+   		SELECT * FROM MESSAGE WHERE TYPE = 'notice'
+   </select>
    
+   <!-- messageId로 검색 -->
+   <select id="selectById" resultMap="messageResultMap">
+   		SELECT * FROM MESSAGE WHERE MESSAGE_ID = #{messageId}
+   </select>
  </mapper>

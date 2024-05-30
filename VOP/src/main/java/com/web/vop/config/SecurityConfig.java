@@ -69,7 +69,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 			.loginProcessingUrl("/member/login")
 			.defaultSuccessUrl("/board/main", false);
 
-		
 		http.rememberMe() // 자동 로그인
 			.key("key") 
 			.rememberMeParameter("rememberMe")
@@ -79,7 +78,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 			.userDetailsService(userDetailsServiceImple)
 			.authenticationSuccessHandler(loginSuccessHandler);
 			
-
 		http.logout()
 			.logoutUrl("/member/logout") // 로그아웃 처리 URL
 			.logoutSuccessUrl("/board/main")// 로그아웃 성공 후 이동 페이지
@@ -87,6 +85,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 			.logoutSuccessHandler(logoutSuccessHandler)
 			.invalidateHttpSession(true); // 세션 무효화 설정
 
+		http.exceptionHandling()
+			.accessDeniedPage("/access/denied");
+
+		
 		http.csrf().disable()
 			.sessionManagement() // maximumSessions, maxSessionsPreventsLogin을 설정하기 위해 호출
 			.maximumSessions(1) // 하나의 아이디로 동시에 로그인 할 수 있는 최대치 : 1

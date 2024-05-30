@@ -4,10 +4,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>액세스가 거부되었습니다.</title>
+<title>잘못된 접근입니다</title>
 </head>
 <body>
 
 	<h1>액세스가 거부되었습니다!!!!!</h1>
+	<a href="../board/main"></a>
 </body>
 </html>

@@ -16,6 +16,7 @@ public class MemberDetails implements UserDetails{
 
 	private static final long serialVersionUID = 1L;
 	private MemberVO memberVO;
+	private List<Integer> blockPopupList;
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -68,4 +69,5 @@ public class MemberDetails implements UserDetails{
 		return true;
 	}
 
+	
 }
