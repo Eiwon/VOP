@@ -90,6 +90,8 @@
 
     
 
+ 	
+
     // 기본 배송지 있는지 조회 
     function checkDefaultAddress() {
         return new Promise(function(resolve, reject) {
@@ -127,6 +129,30 @@
         var phoneRegex = /^010-\d{4}-\d{4}$/;
         return phoneRegex.test(receiverPhone);
     }
+ 
+ // 제출 버튼 클릭 시 실행되는 코드
+    $('#deliveryForm').submit(function(event) {
+        // 기본 제출 동작을 중지
+        event.preventDefault();
+
+        // 폼에서 휴대폰 번호 값을 가져옴
+        var receiverPhone = $('#receiverPhone').val();
+
+        // 휴대폰 번호 형식을 체크
+        var isPhoneNumberValid = checkPhoneNumber(receiverPhone);
+
+        // 휴대폰 번호 형식이 올바르지 않은 경우
+        if (!isPhoneNumberValid) {
+            // 사용자에게 알림
+            alert('휴대폰 번호 형식이 올바르지 않습니다. (예: 010-1234-5678)');
+            // 폼 제출을 중지
+            return false;
+        }
+
+        // 휴대폰 번호 형식이 올바른 경우 폼을 제출
+        this.submit();
+    });
+ 
 </script>
 
 </body>
