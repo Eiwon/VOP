@@ -69,5 +69,4 @@ public class MemberDetails implements UserDetails{
 		return true;
 	}
 
-	
 }

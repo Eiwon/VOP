@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,18 +26,9 @@ public class MemberRESTController {
 	
 	@Autowired
 	MemberService memberService;
-	
-	@PostMapping("/register") // 회원가입 요청
-	public ResponseEntity<Integer> registerPOST(@RequestBody MemberVO memberVO) {
-		log.info("회원 가입 요청 : " + memberVO);
-		
-		int res = memberService.registerMember(memberVO);
-		
-		return new ResponseEntity<Integer>(res, HttpStatus.OK);
-	} // end registerPOST
-	
-	@PostMapping("/idDupChk") // id 중복 체크
-	public ResponseEntity<Integer> checkIdDup(@RequestParam String memberId){
+
+	@GetMapping("/idDupChk") // id 중복 체크
+	public ResponseEntity<Integer> checkIdDup(String memberId){
 		log.info("member id 중복 체크" + memberId);
 		String checkedId = memberService.checkIdDup(memberId);
 		
@@ -44,8 +36,8 @@ public class MemberRESTController {
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	} // end checkIdDup
 	
-	@PostMapping("/phoneDupChk") // 휴대폰 번호로 가입여부 체크
-	public ResponseEntity<Integer> checkPhoneDup(@RequestParam String memberPhone){
+	@GetMapping("/phoneDupChk") // 휴대폰 번호로 가입여부 체크
+	public ResponseEntity<Integer> checkPhoneDup(String memberPhone){
 		log.info("member phone 중복 체크 : " + memberPhone);
 		String checkedId = memberService.getIdByPhone(memberPhone);
 		

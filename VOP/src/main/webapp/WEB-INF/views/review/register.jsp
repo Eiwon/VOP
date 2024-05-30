@@ -7,7 +7,7 @@
 <sec:authorize access="isAuthenticated()">
     <sec:authentication var="memberDetails" property="principal"/>
 </sec:authorize> 
-    
+<jsp:include page="../include/header.jsp"></jsp:include>
 <!DOCTYPE html>
 <html>
 <head>
@@ -148,6 +148,7 @@ $(document).ready(function(){
              if(result == 1) {
                 alert('댓글 입력 성공');
                 // 댓글 입력 완료 하면 마이페이지로 이동
+                sendReplyAlarm(productId);
                 window.location.href = '../review/list?memberId=' + memberId;
              } else {
                  alert('이미 등록하신 리뷰 입니다.');

@@ -32,8 +32,8 @@ public class DeliveryMapperTest {
 		//getDeliveryById();
 		//updateDelivery();
 		//deleteDelivery();
-		getMemberId();
-		//countIsDefault();
+		//getMemberId();
+		countIsDefault();
 		//resetDefault();
 		//setNewDefault();
 		

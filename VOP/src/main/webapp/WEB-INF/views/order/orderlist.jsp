@@ -94,12 +94,10 @@
     <c:forEach items="${orderList}" var="order">
         <div class="order-box">
             <div class="order-details">
-                <p>예상 배송일 : ${order.expectDeliveryDate}</p>
+                <p>예상 배송일 : ${order.expectDeliveryDate.toLocaleString()}</p>
                 	<!-- 이미지 목록 표시 -->
 					<div>
-    					<c:forEach items="${imageList}" var="image">
-                        	<img alt="${image.imgId}" src="" />
-                    	</c:forEach>
+                        <img alt="${order.imgId}" src="" />
 					</div>	
                 <div>
                     <p>상품명 : ${order.productName}</p>
@@ -244,7 +242,6 @@
     	        }
     	    });
     	});
-    
     // 판매자 문의 코드 
     // 폼 제출 시 데이터 출력
     let inquiryCreate = document.querySelectorAll('.createInquiry');
@@ -328,7 +325,6 @@
             }); // ajax 
         });// end form()
     });// end inquiryUpdate()deleteInquiry
-    
  	// 삭제 버튼을 클릭하면 선택된 댓글 삭제
     let inquiryDelete = document.querySelectorAll('.deleteInquiry');
     inquiryDelete.forEach(function(form) {// inquiryForms에 있는 각 요소에 대해 반복문을 실행합니다.
@@ -367,20 +363,21 @@
        }); 
     });// end form()
     });// end inquiryDelete()
-    
-    loadImg();
-    
+    	loadImg();
     }); // end document.ready()
-    
+
     // 이미지 관련 코드
+
     function loadImg(){
+    	console.log($(document).find('img'));
         $(document).find('img').each(function(){
+        	
             let target = $(this);
             let imgId = target.attr("alt");
             console.log("Requesting image with imgId:", imgId); // 콘솔 로그 추가
             $.ajax({
                 method : 'GET',
-                url : '../showImg?imgId=' + imgId,
+                url : '../image/' + imgId,
                 success : function(result){
                     console.log("Image successfully loaded for imgId:", imgId); // 콘솔 로그 추가
                     target.attr('src', result);
@@ -391,10 +388,6 @@
             }); // end ajax
         });
     } // end loadImg
-
-    $(document).ready(function(){
-        loadImg();
-    });
     
     </script>
 	

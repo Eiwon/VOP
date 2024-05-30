@@ -5,7 +5,6 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<jsp:include page="../include/alarm.jsp"></jsp:include>
 <style type="text/css">
 .search_table {
 	border: 1px solid black;
@@ -44,6 +43,8 @@ tr {
 	</div>
 	<div>
 		<input type="button" value="공지사항 등록" onclick="sendNotice()">
+		<input type="button" value="전체 유저에게 알림 띄우기" onclick="sendInstanceMsg()">
+		<input type="button" value="전체 유저에게 ALERT 띄우기" onclick="sendAlert()">
 	</div>
 	<div>
 		<div class="request_container">
@@ -89,7 +90,6 @@ tr {
 	
 	
 	<script type="text/javascript">
-		const memberId = '<%= request.getSession().getAttribute("memberId")%>';
 		let tagSellerReqList = $('#seller_req_list');
 		let tagSellerApprovedList = $('#seller_approved_list');
 		let tagProdutRegisterReqList = $('#product_register_req_list');

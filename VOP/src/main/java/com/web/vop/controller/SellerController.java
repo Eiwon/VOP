@@ -1,13 +1,18 @@
 package com.web.vop.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.SellerVO;
 import com.web.vop.persistence.Constant;
@@ -42,9 +48,35 @@ public class SellerController {
 	
 	
 	@GetMapping("sellerRequest")
-	public void sellerRequestGET() {
+	public String sellerRequestGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
 		log.info("판매자 권한 신청 페이지로 이동");
+		SellerVO sellerRequest = null;
+		String memberId = memberDetails.getUsername();
+		
+		List<String> memberAuth = new ArrayList<>();
+		Iterator<? extends GrantedAuthority> iterator = memberDetails.getAuthorities().iterator();
+		
+		while(iterator.hasNext()) {
+			memberAuth.add(iterator.next().getAuthority());
+		}
+		
+		if(memberAuth.contains("ROLE_일반")) {
+			sellerRequest = sellerService.getMyRequest(memberId);
+			if(sellerRequest == null) {
+				return "seller/sellerRequest";
+			}
+			model.addAttribute("sellerRequest", sellerRequest);
+		}
+		return "seller/main";
 	} // end sellerRequestGET
+	
+	@PostMapping("sellerRequest")
+	public String sellerRequestPOST(SellerVO sellerVO, @AuthenticationPrincipal UserDetails memberDetails) {
+		sellerVO.setMemberId(memberDetails.getUsername());
+		log.info("sellerRequestPOST : " + sellerVO);
+		sellerService.registerRequest(sellerVO);
+		return "redirect:sellerRequest";
+	} // end sellerRequestPOST
 	
 	@GetMapping("registerProduct")
 	public String registerProductGET() {
@@ -65,10 +97,11 @@ public class SellerController {
 	
 
 	// 자신의 판매자 권한 요청 조회
-	@GetMapping("/my/{memberId}")
+	@GetMapping("/mySellerReq")
 	@ResponseBody
-	public ResponseEntity<SellerVO> getMyRequest(@PathVariable("memberId") String memberId){
+	public ResponseEntity<SellerVO> getMyRequest(@AuthenticationPrincipal MemberDetails memberDetails){
 		log.info("내 권한요청 조회");
+		String memberId = memberDetails.getUsername();
 		SellerVO result = sellerService.getMyRequest(memberId);
 			
 		return new ResponseEntity<SellerVO>(result, HttpStatus.OK);

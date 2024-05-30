@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.web.vop.domain.MessageVO;
 import com.web.vop.persistence.MessageMapper;
+import com.web.vop.persistence.ProductMapper;
 
 import lombok.extern.log4j.Log4j;
 
@@ -16,6 +17,9 @@ public class MessageServiceImple implements MessageService{
 
 	@Autowired
 	MessageMapper messageMapper;
+	
+	@Autowired
+	ProductMapper productMapper;
 	
 	@Override
 	public int registerMessage(MessageVO messageVO) {
@@ -60,4 +64,9 @@ public class MessageServiceImple implements MessageService{
 		return messageMapper.selectById(messageId);
 	} // end getById
 
+	@Override
+	public String getSellerIdOf(int productId) {
+		log.info("상품 판매자 id 검색");
+		return productMapper.selectMemberIdById(productId);
+	} // end getSellerIdOf
 }
