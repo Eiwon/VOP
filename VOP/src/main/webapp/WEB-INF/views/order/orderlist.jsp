@@ -95,12 +95,12 @@
         <div class="order-box">
             <div class="order-details">
                 <p>예상 배송일 : ${order.expectDeliveryDate}</p>
+                
                 	<!-- 이미지 목록 표시 -->
-					
-    					<c:forEach items="${imageList}" var="image">
-                        	<img alt="${image.imgId}" src="" />
-                    	</c:forEach>
-						
+                        <div>
+    						<img alt="${imgId}">
+						</div>
+             
                 <div>
                     <p>상품명 : ${order.productName}</p>
                     <p>상품 가격 : ${order.productPrice} 원</p>
@@ -364,6 +364,8 @@
     
     }); // end document.ready()
     
+    
+    
     function loadImg(){
         $(document).find('img').each(function(){
             let target = $(this);
@@ -371,7 +373,7 @@
             console.log("Requesting image with imgId:", imgId); // 콘솔 로그 추가
             $.ajax({
                 method : 'GET',
-                url : '../showImg?imgId=' + imgId,
+                url : '../order/showImg/' + imgId,
                 success : function(result){
                     console.log("Image successfully loaded for imgId:", imgId); // 콘솔 로그 추가
                     target.attr('src', result);
@@ -383,9 +385,6 @@
         });
     } // end loadImg
 
-    $(document).ready(function(){
-        loadImg();
-    });
     
     </script>
 	
