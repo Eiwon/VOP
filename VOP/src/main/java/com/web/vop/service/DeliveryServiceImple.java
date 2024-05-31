@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.DeliveryVO;
 import com.web.vop.persistence.DeliveryMapper;
@@ -18,24 +19,27 @@ public class DeliveryServiceImple implements DeliveryService{
 	private DeliveryMapper deliveryMapper;
 	
 	// 배송지 등록
+	@Transactional(value = "transactionManager")
 	@Override
 	public int registerDelivery(DeliveryVO deliveryVo) {
 		log.info("registerDelivery()");
-		try {
-			int res = deliveryMapper.insertDelivery(deliveryVo);			
-			return res;
-		} catch (Exception e) {
-			log.error("배송지 등록 중 오류 발생: " + e.getMessage());
-			
-	        // 사용자에게 오류 페이지를 보여주기
-	        throw new RuntimeException("배송지 등록 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+		
+		if(deliveryVo.getIsDefault() == 1) { // 등록할 배송지가 기본 배송지이면, 기존 기본 배송지를 0으로 변경
+			deliveryMapper.updateDefault(deliveryVo.getMemberId());
 		}
+		int res = deliveryMapper.insertDelivery(deliveryVo);
+		return res;
 	} // end registerDelivery
 	
 	// 배송지 수정
+	@Transactional(value = "transactionManager")
 	@Override
 	public int updateDelivery(DeliveryVO deliveryVo) {
 		log.info("updateDelivery()");
+		
+		if(deliveryVo.getIsDefault() == 1) { // 변경할 배송지가 기본 배송지로 설정되었으면, 기존 기본 배송지를 0으로 변경
+			deliveryMapper.updateDefault(deliveryVo.getMemberId());
+		}
 		int res = deliveryMapper.updateDelivery(deliveryVo);
 		log.info(res + "행 수정");
 		return res;

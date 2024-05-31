@@ -81,13 +81,16 @@
 							value="${memberDetails.getUsername()}">
 						<button type="submit">리뷰 수정</button>
 					</form>
-					<!-- 리뷰 삭제 코드 -->
-					<form action="../review/delete" method="POST">
+					<!-- 리뷰 삭제 동기 코드 -->
+					<!--<form action="../review/delete" method="POST">
 						<input type="hidden" name="productId"
 							value="${ProductVO.productId}"> <input type="hidden"
 							name="memberId" value="${memberDetails.getUsername()}">
-						<button type="submit">리뷰 삭제</button>
-					</form>
+						<button type="submit">리뷰 동기 삭제</button>
+					</form> -->
+					
+					<button class="btnDelete" data-productid="${ProductVO.productId}">리뷰 삭제</button>
+					
 					<h2>상품 이름 : ${ProductVO.productName}</h2>
 				</div>
 				<img alt="${ProductVO.imgId}">
@@ -112,6 +115,9 @@
 	</c:forEach>
 
 	<script type="text/javascript">
+	
+		let memberId = "${memberDetails.getUsername()}";
+	
 		$(document).ready(function() {
 			// 이미지 로드 함수 호출
 			loadImg();
@@ -132,12 +138,12 @@
 						}
 					}); // end ajax
 				});
-			} // end loadImg
+			}// end loadImg
 
 			// 별표시를 업데이트하는 함수
 			function displayStars() {
 				$('.stars').each(function() {
-					let value = parseInt($(this).	attr('data-reviewavg')); // 리뷰 별점을 정수 형으로 변환
+					let value = parseInt($(this).attr('data-reviewavg')); // 리뷰 별점을 정수 형으로 변환
 					let stars = $(this).find('label'); // 별 표시 요소 가져오기
 					for (let i = 0; i < stars.length; i++) {
 						if (i < value) {
@@ -147,8 +153,37 @@
 						}
 					}
 				});
-			}
-		});
+			}// end displayStars()
+			
+			// .btnDelete 클릭 이벤트를 동적으로 바인딩
+			$(document).on('click', '.btnDelete', function() {
+		        let productId = $(this).data('productid'); // productId 가져오기
+
+		        let obj = {
+		            'productId': productId,
+		            'memberId': memberId
+		        }
+		        
+		        // ajax 요청
+		        $.ajax({
+		           type : 'DELETE', // 메서드 타입
+		           url : '../review/delete',// 경로 
+		           headers : {
+		              'Content-Type' : 'application/json' // json content-type 설정
+		           }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 405 에러가 나온다.
+		           data : JSON.stringify(obj), // JSON으로 변환
+		           success : function(result) { // 전송 성공 시 서버에서 result 값 전송
+		              if(result == 1) {
+		                 alert('댓글 삭제 성공!');
+		              } else {
+		            	alert('댓글 삭제 실패!');
+		              }
+		           }
+		        });// end ajax()
+		    }); // end .btnDelete click
+
+		 }); // end document.ready()
+			
 	</script>
 
 </body>

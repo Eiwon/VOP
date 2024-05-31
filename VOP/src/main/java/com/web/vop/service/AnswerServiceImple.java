@@ -31,7 +31,7 @@ public class AnswerServiceImple implements AnswerService{
 		log.info("InquiryId : " + inquiryId);
 		log.info("memberId : " + memberId);
 		
-		AnswerVO vo = answerMapper.selectListByInquiryId(inquiryId);
+		AnswerVO vo = answerMapper.selectListByInquiryId(inquiryId);	
 		
 		int insertRes = 0;
 		if(vo == null) {

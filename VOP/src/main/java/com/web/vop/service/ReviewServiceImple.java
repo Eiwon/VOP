@@ -29,51 +29,63 @@ public class ReviewServiceImple implements ReviewService {
 	@Override
 	public int createReview(ReviewVO reviewVO) {
 		log.info("createReview()");
-		int insertRes = reviewMapper.insertReview(reviewVO);
 		
 		log.info("reviewVO : " + reviewVO);
 		
-		// 소수점 첫 째 자리까지만 출력
-		DecimalFormat df = new DecimalFormat("#.#");
-		
 		int productId = reviewVO.getProductId();
+        String memberId = reviewVO.getMemberId();
+
+        log.info("productId :" + productId);
+        log.info("memberId : " + memberId);
+        
+        // 해당 상품에 회원이 리뷰를 작성 되어있는지 확인 하는코드(나중에 쿼리문에서 효율이게 수정가능)
+        ReviewVO vo = reviewMapper.selectByReview(productId, memberId);
 		
+        log.info("vo : " + vo);
+        int insertRes = 0;
+        
+        if(vo == null) {
+        	
+        	// 리뷰 등록 
+    		insertRes = reviewMapper.insertReview(reviewVO);
+        	
+        	// 소수점 첫 째 자리까지만 출력
+    		DecimalFormat df = new DecimalFormat("#.#");
+    		
+    		// 현재 상품 댓글 카운터
+    		int reviewNum = productMapper.selectReviewCount(productId);
 
-		// 등록이 완료 되었을때 댓글 총 갯수 증가
-		if (insertRes == 1) {
+    		// 댓글 총 갯수 로그
+    		log.info("reviewNum : " + reviewNum);
 
-			// 현재 상품 댓글 카운터
-			int reviewNum = productMapper.selectReviewCount(productId);
+    		// 상품 댓글 카운터 수정
+    		int updateRes = productMapper.updateReviewNum(productId, reviewNum);
 
-			// 댓글 총 갯수 로그
-			log.info("reviewNum : " + reviewNum);
+    		// 리뷰 평균 관련 코드
+    		// productId에 해당하는 상품 조회 // 업그레이드 된 상태
+    		ProductVO productVO = productMapper.selectProduct(productId);
 
-			// 상품 댓글 카운터 수정
-			int updateRes = productMapper.updateReviewNum(productId, reviewNum);
+    		int res = 0; // 댓글 입력시 소수점 입력 불가
+    		String reviewAvg = "0";
+    				
+    		// 리뷰 별 총 합
+    		res = productMapper.selectReviewStar(productId);
+    		log.info("리뷰(별) : " + res);
 
-			// 리뷰 평균 관련 코드
-			// productId에 해당하는 상품 조회 // 업그레이드 된 상태
-			ProductVO productVO = productMapper.selectProduct(productId);
+    		// 리뷰 평균 값 reviewStar
+    		reviewAvg = df.format((float) res / productVO.getReviewNum());
 
-			int res = 0; // 댓글 입력시 소수점 입력 불가
-			String reviewAvg = "0";
-//			if (productVO.getReviewNum() != 0) { // 0 이하일 때 무한의 에러가 나와온다.
-				// 리뷰 총 합
-				res = productMapper.selectReviewStar(productId);
-				log.info("리뷰(별) : " + res);
+    		log.info("res : " + res);
+    		log.info("reviewAvg : " + reviewAvg);
 
-				// 리뷰 평균 값 reviewStar
-				reviewAvg = df.format((float) res / productVO.getReviewNum());
+    		// 리뷰 평균값 업데이트
+    		updateRes = productMapper.updateReviewAvg(productId, reviewAvg);
+    		log.info("updateRes : " + updateRes);
 
-				log.info("res : " + res);
-				log.info("reviewAvg : " + reviewAvg);
-
-				// 리뷰 평균값 업데이트
-				updateRes = productMapper.updateReviewAvg(productId, reviewAvg);
-
-				log.info("updateRes : " + updateRes);
-//			}
-		  }
+        } else {
+            log.info(memberId + "님은 " + productId + "상품 번호에 이미 댓글(리뷰)를 등록 하였습니다.");
+        }
+		
 		return insertRes;
 	}
 

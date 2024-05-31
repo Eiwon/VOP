@@ -72,9 +72,9 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
 	<div class="right-align">
 	<a id="kakaotalk-sharing-btn" href="javascript:;">
   		<img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
-    	 /><!-- alt="카카오톡 공유 버튼" 나중에 추가 해야함 현재 사용시 에러남 -->
+    	 />
 	</a>
-	</div>
+	</div> 
 
 	  <div>
       <p>카테고리 : ${productVO.category }</p>
@@ -207,8 +207,8 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
     	      imageUrl: imageUrl,// 썸네일 이미지 가져오는 기능(월래는 url를 통해 이미지 불려 옴)
     	      link: {
     	        // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
-    	        mobileWebUrl: 'http://localhost:8080/vop/board/main', //카카오 api에 등록된 경로
-    	        webUrl: 'http://localhost:8080/vop/board/main',
+    	        mobileWebUrl: 'http://192.160.0.146:8080/vop/board/main', //카카오 api에 등록된 경로
+    	        webUrl: 'http://192.160.0.146:8080/vop/board/main',
     	      },
     	    },
     	    commerce: { // 상품 설명
@@ -221,8 +221,8 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
     	      {
     	        title: '상품 보러가기', // 공유 했을때 버튼
     	        link: { // 클릭시 이동하는 링크
-    	          mobileWebUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 앱 버전
-    	          webUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 웹 버전
+    	          mobileWebUrl: 'http://192.160.0.146:8080/vop/product/detail?productId=${productVO.productId }', // 앱 버전
+    	          webUrl: 'http://192.160.0.146:8080/vop/product/detail?productId=${productVO.productId }', // 웹 버전
     	        },
     	      },
     	    ],
@@ -464,9 +464,6 @@ $(document).ready(function() {
             }
         );
     }
-
-
-
     
     //loadImg(); 위에로 이동 하였습니다.
 }); // end document

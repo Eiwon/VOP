@@ -16,33 +16,24 @@
         align-items: center;
         margin-bottom: 10px;
     }
+    #deliveryAdd {
+    	border: 1px solid #ccc;
+    	text-align:center;
+        height: 50px;
+    }
 
 </style>
 <meta charset="UTF-8">
 <title>배송지 선택</title>
 </head>
 <body>
-<table border="1">
-    <tbody id="deliveryList" class="delivery-box">
-    	<tr class="delivery-details">
-    		<td class="targetIdx" hidden="hidden"></td>
-    		<td> 수신자 <strong class="receiverName"></strong></td>
-    		<td> 수신자 연락처 <strong class="receiverPhone"></strong></td>
-    		<td> 배송 주소 <strong class="receiverAddress"></strong></td>
-    		<td> 상세 주소 <strong class="deliveryAddressDetails"></strong></td>
-    		<td> 배송시 요청사항 <strong class="requirement"></strong></td>
-    	</tr>
-    </tbody>
-    <tfoot>
-    	<tr class="delivery-details" onclick="addDelivery()">
-        	<td>배송지 추가</td>
-        </tr>
-    </tfoot>
-</table>
 
+<div id="deliveryList"></div>
+<div id="deliveryAdd" onclick="addDelivery()">
+	<strong>배송지 추가</strong>
+</div>
 
 	<script type="text/javascript">
-		const memberId = '<%= request.getSession().getAttribute("memberId")%>';	
 		let deliveryList;
 		let tagDeliveryList = $('#deliveryList');
 		
@@ -87,6 +78,7 @@
 				console.log("팝업 닫힘");
 				showDeliveryList();
 			} // end popup.onbeforeunload
+			
 		} // end addDelivery
 		
 		function selectDelivery(input){
@@ -101,15 +93,63 @@
 		} // end selectDelivery
 		
 		function makeDeliveryForm(deliveryVO, x){
-			const form = '<tr class="delivery-details" onclick="selectDelivery(this)">' +
-	    		'<td class="targetIdx" hidden="hidden">' + x + '</td>' +
-	    		'<td> 수신자 <strong class="receiverName">' + deliveryVO.receiverName + '</strong></td>' +
-	    		'<td> 수신자 연락처 <strong class="receiverPhone">' + deliveryVO.receiverPhone + '</strong></td>' +
-	    		'<td> 배송 주소 <strong class="receiverAddress">' + deliveryVO.receiverAddress + '</strong></td>' +
-	    		'<td> 상세 주소 <strong class="deliveryAddressDetails">' + deliveryVO.deliveryAddressDetails + '</strong></td>' +
-	    		'<td> 배송시 요청사항 <strong class="requirement">' + deliveryVO.requirement + '</strong></td></tr>';
+			let form = 
+				'<div class="delivery-box">' +
+					'<div class="delivery-details" onclick="selectDelivery(this)">' + 
+						'<div class="targetIdx" hidden="hidden">' + x + '</div>' +
+						'<div> 수신자 <strong class="receiverName">' + deliveryVO.receiverName + '</strong></div>' +
+						'<div> 수신자 연락처 <strong class="receiverPhone">' + deliveryVO.receiverPhone + '</strong></div>' +
+						'<div> 배송 주소 <strong class="receiverAddress">' + deliveryVO.receiverAddress + '</strong></div>' +
+						'<div> 상세 주소 <strong class="deliveryAddressDetails">' + deliveryVO.deliveryAddressDetails + '</strong></div>' +
+						'<div> 배송시 요청사항 <strong class="requirement">' + deliveryVO.requirement + '</strong></div>';
+			if(deliveryVO.isDefault == '1'){
+				form += '<div style="color:blue;">기본 배송지</div>';
+			}
+			form +='</div>' +
+					'<div>' + 
+						'<input type="button" value="수정" onclick="showPopupUpdate(this)">' + 
+						'<input type="button" value="삭제" onclick="deleteDelivery(this)">' +
+					'</div>' +
+				'</div>';
 			return form;
 		} // end makeDeliveryForm
+		
+		function showPopupUpdate(input){
+			let targetIdx = $(input).parents('.delivery-box').find('.targetIdx').text();
+			let targetId = deliveryList[targetIdx].deliveryId;
+			
+			const popupStat = {
+					'url' : 'popupUpdate?deliveryId=' + targetId,
+					'name' : 'popupDeliveryUpdate',
+					'option' : 'width=1000, height=600, top=50, left=400'
+			};
+			
+			// 팝업 창 띄우기
+			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
+			popup.onbeforeunload = function(){
+				// 팝업 닫힐 때 실행
+				console.log("팝업 닫힘");
+				showDeliveryList();
+			} // end popup.onbeforeunload
+		} // end showPopupUpdate
+		
+		
+		function deleteDelivery(input){
+			let targetIdx = $(input).parents('.delivery-box').find('.targetIdx').text();
+			let targetId = deliveryList[targetIdx].deliveryId;
+			console.log(targetId);
+			
+			$.ajax({
+				method : 'POST',
+				url : 'delete',
+				data : targetId,
+				success : function(result){
+					console.log(result);
+					showDeliveryList();
+				}
+			}); // end ajax
+			
+		} // end deleteDelivery
 		
 	</script>
 </body>

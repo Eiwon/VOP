@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -159,5 +160,14 @@ public class DeliveryController {
 	public void popupRegisterGET() {
 		log.info("배송지 등록 팝업 이동");
 	} // end popupRegisterGET
+    
+    @GetMapping("/popupUpdate")
+    public String popupUpdateGET(Model model, int deliveryId, @AuthenticationPrincipal UserDetails memberDetails) {
+    	log.info("배송지 수정 팝업 이동");
+    	String memberId = memberDetails.getUsername();
+    	DeliveryVO deliveryVO = deliveryService.getDeliveryById(deliveryId, memberId);
+    	model.addAttribute("deliveryVO", deliveryVO);
+    	return "Delivery/popupRegister";
+    } // end popupUpdateGEt
     
 }//end DeliveryController

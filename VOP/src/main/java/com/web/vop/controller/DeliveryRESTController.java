@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -101,7 +102,7 @@ public class DeliveryRESTController {
 	
 	@PostMapping("/popupRegister")
 	@ResponseBody
-	public ResponseEntity<Integer> registerDelivery(@RequestBody DeliveryVO deliveryVO, @AuthenticationPrincipal MemberDetails memberDetails){
+	public ResponseEntity<Integer> registerDelivery(@RequestBody DeliveryVO deliveryVO, @AuthenticationPrincipal UserDetails memberDetails){
 		log.info("배송지 등록 : " + deliveryVO);
 		String memberId = memberDetails.getUsername();
 		deliveryVO.setMemberId(memberId);
@@ -109,6 +110,17 @@ public class DeliveryRESTController {
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end registerDelivery
+	
+	@PostMapping("/popupUpdate")
+	@ResponseBody
+	public ResponseEntity<Integer> updateDelivery(@RequestBody DeliveryVO deliveryVO, @AuthenticationPrincipal UserDetails memberDetails){
+		log.info("배송지 정보 변경 : " + deliveryVO);
+		String memberId = memberDetails.getUsername();
+		deliveryVO.setMemberId(memberId);
+		int res = deliveryService.updateDelivery(deliveryVO);
+		
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+	} // end updateDelivery
 	
 	
 	// 기본 배송지가 설정되어 있는지 확인

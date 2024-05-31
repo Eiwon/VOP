@@ -172,7 +172,7 @@
 	                	</div>
 					</div>
 	                
-				<a href=""><button>교환/반품 신청</button></a>
+				<!-- <a href=""><button>교환/반품 신청</button></a> -->
             </div>
         </div>
     </c:forEach>
@@ -276,9 +276,9 @@
                   console.log(result);
                   if(result == 1) {
                      alert('문의 성공');
-                  }else if(result == 0){
-                	  alert('상품이 삭제되어 문의 할 수 없습니다.');
-                  }else{
+                  } else if(result == 2){
+                	  alert('삭제된 상품 입니다.');
+                  } else{
                 	  alert('이미 작성 하신 문의 입니다.');
                   }
                } // end success 
@@ -330,11 +330,7 @@
     inquiryDelete.forEach(function(form) {// inquiryForms에 있는 각 요소에 대해 반복문을 실행합니다.
         form.addEventListener('submit', function(event) {// 각 요소에 대해 submit 이벤트 핸들러를 추가합니다.
             event.preventDefault(); // 폼을 제출할 때 페이지를 다시 로드하는 동작을 막습니다.
-    	
-        /* button = form.querySelector('.inquiryDelete'); */
             
-    	/* let productId = $('#productId').val();
-        let memberId = $('#memberId').val(); */
         console.log("productId : " + productId);
         console.log("memberId : " + memberId);
 		

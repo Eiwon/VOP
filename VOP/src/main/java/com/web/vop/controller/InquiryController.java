@@ -30,6 +30,7 @@ public class InquiryController {
 	
 	// 문의 전체 검색 코드
 	// 해당 상품id에 있는 문의 검색
+	// 동기 방식으로 만들었습니다. 근데 상품 상세정보에 비동기로 불려왔습니다.
 	@GetMapping("/list")
 	public void listInquiryGET(Model model, Integer productId) {
 		log.info("listInquiryGET()");

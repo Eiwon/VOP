@@ -37,6 +37,9 @@ tr {
 				<tr>
 					<td><input type="text" id="requirement" placeholder="배송 요구사항"></td>
 				</tr>
+				<tr>
+					<td><input type="checkbox" id="isDefault">기본 배송지로 설정</td>
+				</tr>
 			</tbody>
 		</table>
 		<input type="button" value="저장" onclick="saveDelivery()">
@@ -48,26 +51,57 @@ tr {
 		let tagDeliveryAddressDetails = $('#deliveryAddressDetails');
 		let tagReceiverPhone = $('#receiverPhone');
 		let tagRequirement = $('#requirement');
+		let tagIsDefault = $('#isDefault');
+		
 		let deliveryVO = {};
-		let expMap = {};
-		expMap.receiverName = {
-				exp : new RegExp("^[a-zA-Z가-힣]{2,20}$"),
-				success : "올바른 입력 형식입니다.",
-				fail : "이름은 2~20자의 한글 또는 알파벳이여야 합니다.",
-				isValid : false
-		};
-		expMap.receiverAddress = {
-				exp : new RegExp("^[가-힣a-zA-Z0-9 ]{10,}$"),
-				success : "올바른 입력 형식입니다.",
-				fail : "올바른 주소를 입력해주세요.",
-				isValid : false
-		};
-		expMap.receiverPhone = {
-				exp : new RegExp("^[0-9]{10,15}$"),
-				success : "올바른 입력 형식입니다.",
-				fail : "잘못된 입력 형식입니다",
-				isValid : false
-		};
+		let submitUrl = 'popupRegister';
+		
+		let expMap = {
+				receiverName : {
+							exp : new RegExp("^[a-zA-Z가-힣]{2,20}$"),
+							success : "올바른 입력 형식입니다.",
+							fail : "이름은 2~20자의 한글 또는 알파벳이여야 합니다.",
+							isValid : false
+				},
+				receiverAddress : {
+						exp : new RegExp("^[가-힣a-zA-Z0-9 ]{10,}$"),
+						success : "올바른 입력 형식입니다.",
+						fail : "올바른 주소를 입력해주세요.",
+						isValid : false
+				},
+				receiverPhone : {
+						exp : new RegExp("^[0-9]{10,15}$"),
+						success : "올바른 입력 형식입니다.",
+						fail : "잘못된 입력 형식입니다",
+						isValid : false
+				}
+			};
+		
+		if('${deliveryVO}' != ''){
+			deliveryVO.deliveryId = '${deliveryVO.deliveryId}';
+			deliveryVO.receiverName = '${deliveryVO.receiverName}';
+			deliveryVO.receiverAddress = '${deliveryVO.receiverAddress}';
+			deliveryVO.deliveryAddressDetails = '${deliveryVO.deliveryAddressDetails}';
+			deliveryVO.receiverPhone = '${deliveryVO.receiverPhone}';
+			deliveryVO.requirement = '${deliveryVO.requirement}';
+			deliveryVO.isDefault = '${deliveryVO.isDefault}';
+			submitUrl = 'popupUpdate';
+			console.log(deliveryVO);
+			
+			tagReceiverName.val(deliveryVO.receiverName);
+			tagReceiverAddress.val(deliveryVO.receiverAddress);
+			tagDeliveryAddressDetails.val(deliveryVO.deliveryAddressDetails);
+			tagReceiverPhone.val(deliveryVO.receiverPhone);
+			tagRequirement.val(deliveryVO.requirement);
+			if(deliveryVO.isDefault == '1'){
+				tagIsDefault.prop('checked', true);
+			}
+			for(x in expMap){
+				expMap[x].isValid = true;
+			}
+		}
+		
+		
 		
 		function searchAddress(){
 			new daum.Postcode({ // 카카오 주소검색 API 팝업창 띄우는 코드
@@ -83,7 +117,7 @@ tr {
 		} // end searchAddress
 		
 		function validCheck(input){
-			console.log("유효성 체크");
+			console.log("유효성 체크 : " + $(input).val());
 			const inputVal = $(input).val();
 			const targetId = $(input).attr('id');
 			const tester = expMap[targetId];
@@ -110,10 +144,12 @@ tr {
 			}
 			deliveryVO.deliveryAddressDetails = tagDeliveryAddressDetails.val();
 			deliveryVO.requirement = tagRequirement.val();
+			console.log('isDefault : ' + tagIsDefault.prop('checked'));
+			deliveryVO.isDefault = (tagIsDefault.prop('checked')) ? 1 : 0;
 			
 			$.ajax({
 				method : 'POST',
-				url : 'popupRegister',
+				url : submitUrl,
 				headers : {
 					'Content-Type' : 'application/json'
 				},

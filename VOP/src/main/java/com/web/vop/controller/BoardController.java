@@ -159,6 +159,10 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 		return new ResponseEntity<Integer>(1, HttpStatus.OK);
 	} // end blockPopup
 	
-	
+	@GetMapping("/consult")
+	public String consultGET() {
+		log.info("consultGET");
+		return "chat/consult";
+	}
 	
 }//end MainController

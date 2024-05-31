@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.InquiryVO;
+import com.web.vop.domain.ProductVO;
 import com.web.vop.persistence.AnswerMapper;
 import com.web.vop.persistence.InquiryMapper;
+import com.web.vop.persistence.ProductMapper;
 
 import lombok.extern.log4j.Log4j;
 
@@ -18,6 +20,9 @@ public class InquiryServiceImple implements InquiryService{
 	
 	@Autowired
 	private InquiryMapper inquiryMapper;
+	
+	@Autowired
+	private ProductMapper productMapper;
 	
 	
 	// 댓글(문의) 등록
@@ -32,15 +37,29 @@ public class InquiryServiceImple implements InquiryService{
 		log.info("productId : " + productId);
 		log.info("memberId : " + memberId);
 		
-		InquiryVO vo = inquiryMapper.selectByInquiry(productId, memberId);
+		ProductVO productVO = productMapper.selectProduct(productId);
 		
-		int insertRes = 0;
-		if(vo == null) {
-			insertRes = inquiryMapper.insertInquiry(inquiryVO);
-			log.info(insertRes + "행 문의(댓글) 등록");
-		}else {
-			log.info(memberId + "님 문의(댓글)는 이미 있습니다.");
+		log.info("productVO : " + productVO);
+		
+		int insertRes = 2;
+		
+		if(productVO != null) {
+			// 문의 등록이 있는지 없는지 확인
+			InquiryVO vo = inquiryMapper.selectByInquiry(productId, memberId);
+			
+			log.info("vo" + vo);
+
+			insertRes = 0;
+			
+			if(vo == null) {
+				insertRes = inquiryMapper.insertInquiry(inquiryVO);
+				log.info(insertRes + "행 문의(댓글) 등록");
+			}else {
+				log.info(memberId + "님 문의(댓글)는 이미 있습니다.");
+			}
 		}
+		
+		
 
 		return insertRes;
 	}

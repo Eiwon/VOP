@@ -140,6 +140,7 @@
         });
     	
     });
+    
 </script>
 
 <script>
@@ -149,6 +150,7 @@ console.log('member ID:', memberId);
 
 $(document).ready(function() {
 
+<<<<<<< HEAD
 	
 	 // 페이지 로드 시 기본 배송지 여부 확인
     checkDefaultAddress().then(function(isExistingDefault) {
@@ -200,6 +202,59 @@ $(document).ready(function() {
 	    }
 	});
 	
+=======
+	   
+    // 페이지 로드 시 기본 배송지 여부 확인
+    checkDefaultAddress().then(function(isExistingDefault) {
+        
+        if (isExistingDefault) {
+               alert("기본 배송지가 설정되어 있습니다.");
+               
+               // 기본 배송지가 있는 경우
+               // 체크박스 상태에 따라 수정 버튼 활성화/비활성화 설정
+               $('#isDefault').change(function() {
+                   if ($(this).prop('checked')) {
+                       // 체크박스가 선택되면 수정 버튼을 비활성화
+                       $('#updateButton').prop('disabled', true);
+                   } else {
+                       // 체크박스가 비선택되면 수정 버튼을 활성화
+                       $('#updateButton').prop('disabled', false);
+                   }
+               });
+               
+               // 초기 체크박스 상태에 따라 수정 버튼 활성화/비활성화 설정
+               if ($('#isDefault').prop('checked')) {
+                   $('#updateButton').prop('disabled', true);
+               } else {
+                   $('#updateButton').prop('disabled', false);
+               }
+           } else {
+               console.log("기본 배송지가 없습니다.");
+               
+               // 기본 배송지가 없는 경우 수정 버튼을 항상 활성화
+               $('#updateButton').prop('disabled', false);
+           }
+    });
+});
+   
+   // 수정 동작을 수행하는 함수 예제
+   function performUpdate() {
+       // 여기에 수정 동작을 수행하는 코드를 작성하세요.
+       console.log("수정 동작이 수행되었습니다.");
+   }
+
+   // 수정 버튼 클릭 이벤트 핸들러 설정
+   $('#updateButton').click(function() {
+       // 수정 동작 수행
+       if (!$(this).prop('disabled')) {
+           alert("수정이 가능합니다.");
+           performUpdate();
+       } else {
+           alert("기본 배송지를 체크한 경우 수정할 수 없습니다.");
+       }
+   });
+
+>>>>>>> c2d0f1c7031f80c33f153a86b0ed9df9289c53fe
 
 // 기본 배송지 있는지 조회 
 function checkDefaultAddress() {
