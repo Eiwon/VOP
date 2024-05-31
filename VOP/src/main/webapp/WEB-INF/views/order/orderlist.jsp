@@ -172,7 +172,7 @@
 	                	</div>
 					</div>
 	                
-				<a href=""><button>교환/반품 신청</button></a>
+				<!-- <a href=""><button>교환/반품 신청</button></a> -->
             </div>
         </div>
     </c:forEach>

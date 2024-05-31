@@ -117,8 +117,8 @@ $(document).ready(function(){
 
    // 댓글 입력 코드
    $('#btnAdd').click(function(event){
-       
        let productId = "${productId}"; 
+	   sendReplyAlarm(productId);
        let reviewStar = selectedStar;// 리뷰(별)
        let reviewContent = $('#reviewContent').val(); // 댓글 내용
        
@@ -147,7 +147,6 @@ $(document).ready(function(){
              if(result == 1) {
                 alert('댓글 입력 성공');
                 // 댓글 입력 완료 하면 마이페이지로 이동
-                sendReplyAlarm(productId);
                 window.location.href = '../review/list?memberId=' + memberId;
              } else {
                  alert('이미 등록하신 리뷰 입니다.');

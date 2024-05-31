@@ -22,17 +22,36 @@
 		<div class="side_bar">
 			<div> 
 				<strong>내 정보</strong>
-				<div id="my_info">
-					<a href="myInfo">내 정보 확인 / 수정</a>
-					<a href="../order/orderlist">주문 목록</a>
-					<a href="../Delivery/deliveryAddressList">배송지 관리</a>
-					<a href="seller">판매자 페이지</a>
-				</div>
+				<ul id="my_info">
+					<li><a href="myInfo">내 정보 확인 / 수정</a></li>
+					<li><a href="../order/orderlist">주문 목록</a></li>
+					<li><a href="../Delivery/deliveryAddressList">배송지 관리</a></li>
+					<li><a href="seller">판매자 페이지</a></li>
+					<sec:authorize access="hasRole('ROLE_관리자')">
+						<li><a href="admin">관리자 페이지</a></li>
+					</sec:authorize>
+				</ul>
 			</div>
 		</div>
-		<sec:authorize access="hasRole('ROLE_관리자')">
-			<a href="admin">관리자 페이지</a>
-		</sec:authorize>
+		<input type="button" value="1대1챗 테스트" onclick="consult()">
 	</div>
+	<script type="text/javascript">
+	function consult(){
+		let targetUrl = 'consult';
+		
+		const popupStat = {
+				'url' : targetUrl,
+				'name' : 'popupConsult',
+				'option' : 'width=800, height=1000, top=50, left=400'
+		};
+		
+		// 팝업 창 띄우기
+		let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
+		popup.onbeforeunload = function(){
+			// 팝업 닫힐 때 실행
+			console.log("팝업 닫힘");
+		} // end popup.onbeforeunload
+	} // end showSocketPopup
+	</script>
 </body>
 </html>

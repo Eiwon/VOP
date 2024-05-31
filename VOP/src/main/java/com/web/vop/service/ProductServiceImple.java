@@ -105,7 +105,7 @@ public class ProductServiceImple implements ProductService{
 		}
 		
 		// 상품 등록
-		productVO.setProductState(Constant.STATE_SELL);
+		productVO.setProductState(Constant.STATE_APPROVAL_WAIT);
 		productMapper.insertProduct(productVO);
 		int productId = productMapper.selectLastInsertId();
 		

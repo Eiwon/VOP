@@ -4,24 +4,19 @@ import java.util.HashMap;
 
 import java.util.Map;
 
-//import javax.annotation.PostConstruct;
+import javax.websocket.Session;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
-import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 import com.web.vop.socket.AlarmHandler;
+import com.web.vop.socket.ConsultHandler;
 
 @Configuration
 @EnableWebSocket
@@ -31,6 +26,7 @@ public class WebSocketConfig implements WebSocketConfigurer{
 	@Override 
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) { 
 		registry.addHandler(alarmHandler(), "/alarm"); // 핸들러 등록
+		registry.addHandler(consultHandler(), "/consult");
 	}
 	
 
@@ -42,7 +38,6 @@ public class WebSocketConfig implements WebSocketConfigurer{
 		container.setMaxBinaryMessageBufferSize(8192);
 		return container;
 	} // end createWebSocketContainer
-
 	
 	@Bean
 	public WebSocketHandler alarmHandler() {
@@ -50,8 +45,21 @@ public class WebSocketConfig implements WebSocketConfigurer{
 	} // end alarmHandler
 	
 	@Bean
+	public WebSocketHandler consultHandler() {
+		return new ConsultHandler();
+	} // end consultHandler
+	
+	@Bean
 	public Map<String, WebSocketSession> alarmConnMap(){
 		// alarm 웹소켓에 연결된 유저를 관리하기 위한 맵
-		return new HashMap<String, WebSocketSession>();
+		return new HashMap<>();
 	} // end alarmConnMap
+	
+	// { 방에 있는 멤버들을 <key : memberId, value : Session(연결 정보)> 쌍으로 관리하는 Map }
+	// 을 <key : roomId, value : 방에 속한 멤버의 연결정보 > 쌍으로 관리하는 roomList 
+	@Bean
+	public Map<Integer, Map<String, WebSocketSession>> consultRoomList(){
+		return new HashMap<>();
+	} // end consultRoomList
+		
 }

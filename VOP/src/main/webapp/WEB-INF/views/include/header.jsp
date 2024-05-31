@@ -41,7 +41,7 @@
         }
 	
         /*카테고리*/
-        .category {
+        .maincategory {
             position: relative;
             display: inline-block;
             border: 1px solid black; /*박스 추가*/
@@ -55,7 +55,7 @@
             margin-left: 320px; /* 왼쪽 여백 추가 */
         }
         
-        .category:hover .subcategory {
+        .maincategory:hover .subcategory {
             display: block; /* 부모 요소에 마우스를 올리면 서브 카테고리 표시 */
         }
         
@@ -218,7 +218,7 @@
     	</sec:authorize>
     </div>
 	
-	<div class="category">
+	<div class="maincategory">
         <span>카테고리</span>
         <div class="subcategory">
             <a href="">여성패션</a>
@@ -287,6 +287,7 @@
         		<a href="../order/orderlist">주문목록</a>
         		<!-- <a href="#">취소/반품</a> -->
         		<!-- <a href="#">찜리스트</a> -->
+
         	</div>	
         	<a href="../board/basket">장바구니</a>
     </div>

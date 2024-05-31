@@ -11,9 +11,7 @@
 	width: 1000px;
 }
 
-td {
-	width: 200px;
-}
+
 .request_container {
 	height: 400px;
 }
@@ -25,13 +23,15 @@ td {
 	
 }
 
-tbody {
+.requestList {
 	height: 250px;
 }
-tr {
+.requestList tr {
 	height: 50px;
 }
-
+.requestList td {
+	width: 200px;
+}
 </style>
 <title>관리자 페이지</title>
 </head>
@@ -50,7 +50,7 @@ tr {
 		<div class="request_container">
 			<h3>사업자 등록 요청</h3>
 			<table class="search_table">
-				<tbody id="seller_req_list">
+				<tbody id="seller_req_list" class="requestList">
 				</tbody>
 				<tfoot id="seller_req_list_page"></tfoot>
 			</table>
@@ -58,7 +58,7 @@ tr {
 		<div class="request_container">
 			<h3>등록된 사업자 조회</h3>
 			<table class="search_table">
-				<tbody id="seller_approved_list">
+				<tbody id="seller_approved_list" class="requestList">
 				</tbody>
 				<tfoot id="seller_approved_list_page"></tfoot>
 			</table>
@@ -66,7 +66,7 @@ tr {
 		<div class="request_container">
 			<h3>상품 등록 요청</h3>
 			<table class="search_table">
-				<tbody id="product_register_req_list">
+				<tbody id="product_register_req_list" class="requestList">
 				</tbody>
 				<tfoot id="product_register_req_list_page"></tfoot>
 			</table>
@@ -74,7 +74,7 @@ tr {
 		<div class="request_container">
 			<h3>상품 삭제 요청</h3>
 			<table class="search_table">
-				<tbody id="product_delete_req_list">
+				<tbody id="product_delete_req_list" class="requestList">
 				</tbody>
 				<tfoot id="product_delete_req_list_page"></tfoot>
 			</table>

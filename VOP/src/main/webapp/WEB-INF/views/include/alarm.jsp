@@ -106,7 +106,7 @@
 	
 	msgHandler.instanceMsg = function(msg){
 		console.log('instance 메시지 수신');
-		showSocketNotification(msg.content);
+		showSocketNotification(msg, null);
 	}; // 타입이 instanceMsg인 메시지 수신시 호출될 함수 
 	
 	msgHandler.replyAlarm = function(msg){
@@ -128,14 +128,19 @@
 	} // end alarmPermitRequest
 	
 	function showSocketNotification(msg, onclickListener){
-		let option = {
+		/* let option = {
 				body : msg.content,
 				requireInteraction : true,
 				timestamp : msg.dateCreated
 		};
-		let notification = new Notification(msg.title, option);
-		notification.addEventListener('click', onclickListener);
-		console.log(notification);
+		let notification = new Notification(msg.content, option);
+		notification.addEventListener('click', onclickListener); */
+		let temp = confirm(msg.content);
+		if(onclickListener != null || temp){
+			onclickListener();
+		}
+		console.log(temp);
+		//console.log(notification);
 	} // end showSocketNotification
 	
 	function showSocketPopup(){

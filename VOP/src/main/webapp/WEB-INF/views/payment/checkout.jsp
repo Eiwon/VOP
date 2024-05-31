@@ -165,7 +165,7 @@
 			if(deliveryVO != null){ // 기본 배송지로 등록된 배송지가 있을 경우에만 출력
 				$('#receiverName').val(deliveryVO.receiverName);
 				$('#receiverAddress').val(deliveryVO.receiverAddress);
-				$('#deliveryAddressDetails').val(deliveryVO.receiverAddressDetails);
+				$('#deliveryAddressDetails').val(deliveryVO.deliveryAddressDetails);
 				$('#receiverPhone').val(deliveryVO.receiverPhone);
 				$('#requirement').val(deliveryVO.requirement);
 			}

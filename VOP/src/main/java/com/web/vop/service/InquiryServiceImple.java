@@ -48,7 +48,7 @@ public class InquiryServiceImple implements InquiryService{
 			InquiryVO vo = inquiryMapper.selectByInquiry(productId, memberId);
 			
 			log.info("vo" + vo);
-			
+
 			insertRes = 0;
 			
 			if(vo == null) {
@@ -58,6 +58,8 @@ public class InquiryServiceImple implements InquiryService{
 				log.info(memberId + "님 문의(댓글)는 이미 있습니다.");
 			}
 		}
+		
+		
 
 		return insertRes;
 	}

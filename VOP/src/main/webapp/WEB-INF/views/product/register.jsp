@@ -15,7 +15,6 @@
 <body>
 	<div>
 		<form id="productForm" action="register" method="post" enctype="multipart/form-data">
-			<%-- <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }"> --%>
 			<div>
 				판매자
 				<input type="text" name="memberId" value='${memberDetails.getUsername() }' readonly>
@@ -82,10 +81,18 @@
 		let productPrice = $('#product_price');
 		let productRemains = $('#product_remains');
 		let productPlace = $('#product_place');
+		let priceExp = new RegExp('[0-9]{1,10}');
 		
 		$("#productForm").submit(function(event) {
             let inputThumbnail = $("#inputThumbnail"); // File input 요소 참조
             let file = inputThumbnail.prop('files')[0]; // file 객체 참조
+            let productPriceVal = productPrice.val();
+            
+            if(priceExp.test(productPriceVal)){
+            	alert('상품 가격은 10억 이하의 숫자만 입력 가능합니다.');
+            	event.preventDefault();
+            	return;
+            }
             
             if(!checkFileValid(file)){
             	event.preventDefault();

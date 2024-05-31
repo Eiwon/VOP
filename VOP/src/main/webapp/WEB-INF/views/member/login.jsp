@@ -6,7 +6,6 @@
 <meta charset="UTF-8">
 <title>로그인</title>
 </head>
-<jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	<div>
 		<form action="login" method="POST">
