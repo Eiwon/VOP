@@ -125,33 +125,24 @@ public class DeliveryRESTController {
 	}// end  checkDefaultAddress()
 	
 	
-	// 해당하는 memberid의 나머지 기본배송지 목록을 0으로 바꾸기 
- 	/*@PutMapping("/updateDefault")
+	// 배송지 목록에서 기본 배송지 목록을 체크 박스로 업데이트
+ 	@PutMapping("updateDefault/{memberId}/delivery/{deliveryId}")
 	  public ResponseEntity<Integer> updateDefault(
-			  @RequestBody String memberId) {
-		 	log.info("updateDefault() -  해당하는 memberid의 나머지 기본배송지 목록을 0으로 바꾸기");
+			  @PathVariable("deliveryId") int deliveryId,
+			  @PathVariable("memberId") String memberId) {
+		 	log.info("updateDefault()");
         	log.info("memberId : " + memberId);
+        	log.info("deliveryId : " + deliveryId);
         	
-        	int res = deliveryService.updateDefault(memberId);
-        	log.info("해당 아이디의 기본 배송지 목록이 해지되었습니다.");
+        	// 배송지의 기본배송지를 1로 수정
+        	int res = deliveryService.updateNewDefault(deliveryId, memberId);
+        	log.info("res : " + res);
         
+
+        	
         	return new ResponseEntity<Integer>(res, HttpStatus.OK);        		  
  	}// end updateDefault()
 	
-        	
-    // 등록하는 deliveryId의 기본배송지를 1로 바꾸기
- 	@PutMapping("/updateNewDefault")
- 	 public ResponseEntity<Integer> updateNewDefault(@RequestParam int deliveryId,
- 			@AuthenticationPrincipal MemberDetails memberDetails){
- 		log.info("updateNewDefault() - 등록하는 deliveryId의 기본배송지를 1로 바꾸기");
- 		String memberId = memberDetails.getUsername(); 
-    	log.info("memberId : " + memberId);
-    	
- 		int res = deliveryService.updateNewDefault(deliveryId, memberId);
- 		log.info("해당 아이디의 기본 배송지 목록이 설정되었습니다.");
- 		
- 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
- 	}//end updateDefault()
- 	*/
+   
 	
 }//end DeliveryRESTController()
