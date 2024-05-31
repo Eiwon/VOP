@@ -285,8 +285,8 @@
         	<a href="../board/mypage">마이페이지</a>
         	<div class="submenu">
         		<a href="../order/orderlist">주문목록</a>
-        		<a href="#">취소/반품</a>
-        		<a href="#">찜리스트</a>
+        		<!-- <a href="#">취소/반품</a> -->
+        		<!-- <a href="#">찜리스트</a> -->
         	</div>	
         	<a href="../board/basket">장바구니</a>
     </div>

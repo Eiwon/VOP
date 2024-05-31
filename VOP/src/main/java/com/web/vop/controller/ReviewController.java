@@ -143,22 +143,23 @@ public class ReviewController {
 		model.addAttribute("reviewList", reviewList);
 	}// end readAllReview()
 	
-	@PostMapping("/delete") // DELETE : 댓글(리뷰) 삭제 
-	   public String deleteReview(Integer productId, @AuthenticationPrincipal MemberDetails memberDetails){
-	      log.info("deleteReview()");
-	      
-	      String memberId = memberDetails.getUsername();
-			
-		  // memberId 확인 로그
-		  log.info("memberId = " + memberId);
-	      
-	      // productId와 memberId 해당하는 댓글(리뷰) 삭제
-	      int result = reviewService.deleteReview(productId, memberId);
-
-	      log.info(result + "행 댓글 삭제");
-	      
-	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
-	      return "redirect:../review/list";
-	   }// end deleteReview()
+//  동기 삭제 코드 왜 만들었는지 기억이 안나요~ 기능 되요
+//	@PostMapping("/delete") // DELETE : 댓글(리뷰) 삭제 
+//	   public String deleteReview(Integer productId, @AuthenticationPrincipal MemberDetails memberDetails){
+//	      log.info("deleteReview()");
+//	      
+//	      String memberId = memberDetails.getUsername();
+//			
+//		  // memberId 확인 로그
+//		  log.info("memberId = " + memberId);
+//	      
+//	      // productId와 memberId 해당하는 댓글(리뷰) 삭제
+//	      int result = reviewService.deleteReview(productId, memberId);
+//
+//	      log.info(result + "행 댓글 삭제");
+//	      
+//	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
+//	      return "redirect:../review/list";
+//	   }// end deleteReview()
 
 }

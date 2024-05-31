@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.WebSocketHandler;
 
+import com.web.vop.domain.AnswerVO;
 import com.web.vop.domain.MessageVO;
 
 import com.web.vop.domain.ProductVO;
@@ -47,33 +48,8 @@ public class ReviewRESTController {
 
 	        log.info("createReview()");
 	        log.info("reviewVO : " + reviewVO);
-
-	        int productId = reviewVO.getProductId();
-	        String memberId = reviewVO.getMemberId();
-
-	        log.info("productId :" + productId);
-	        log.info("memberId : " + memberId);
 	        
-	        ProductVO productVO = productService.getProductById(productId);
-	        
-	        int res = 0;
-	        
-	        if(productVO != null) {
-	        res = 2;
-	        // 해당 상품에 회원이 댓글을 작성했는지 확인하기 위해 댓글 검색
-	        ReviewVO vo = reviewService.selectByReview(productId, memberId);
-	        log.info("vo : " + vo);
-
-	        // 해당 상품에 회원이 댓글(리뷰)를 작성하지 않았으면 작성 가능, 아니면 작성 불가
-	        if (vo == null) {
-	        	
-	        	 res = reviewService.createReview(reviewVO); // imgDetails 넣어야 함
-	          
-	        } else {
-	            log.info(memberId + "님은 " + productId + "상품 번호에 이미 댓글(리뷰)를 등록 하였습니다.");
-	        }
-	        
-	       }
+	        int res = reviewService.createReview(reviewVO); // imgDetails 넣어야 함
 
 	        // result 값을 전송하여 리턴하는 방식으로 성공하면 200 OK를 전송합니다.
 	        return new ResponseEntity<>(res, HttpStatus.OK);
@@ -118,5 +94,21 @@ public class ReviewRESTController {
 	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	   }// end updateReview()
+	 
+	 @DeleteMapping("/delete")
+	 public ResponseEntity<Integer> deleteReview(
+			 @RequestBody ReviewVO reviewVO){
+		 log.info("deleteReview()");
+		 
+		 int productId = reviewVO.getProductId();
+	      
+	     String memberId = reviewVO.getMemberId();
+	     
+	     int result = reviewService.deleteReview(productId, memberId);
+	     
+	     log.info(result + "행 댓글 삭제");
+	     
+	     return new ResponseEntity<Integer>(result, HttpStatus.OK);
+	 }
 
 }

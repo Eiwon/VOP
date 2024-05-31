@@ -464,9 +464,6 @@ $(document).ready(function() {
             }
         );
     }
-
-
-
     
     //loadImg(); 위에로 이동 하였습니다.
 }); // end document
