@@ -69,12 +69,12 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
 	<h2>상품 상세 페이지</h2>
 
 	<!-- 카카오 공유 아이콘 -->
-	<div class="right-align">
+	<!-- <div class="right-align">
 	<a id="kakaotalk-sharing-btn" href="javascript:;">
   		<img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
-    	 /><!-- alt="카카오톡 공유 버튼" 나중에 추가 해야함 현재 사용시 에러남 -->
+    	 />alt="카카오톡 공유 버튼" 나중에 추가 해야함 현재 사용시 에러남
 	</a>
-	</div>
+	</div> -->
 
 	  <div>
       <p>카테고리 : ${productVO.category }</p>

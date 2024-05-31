@@ -172,7 +172,7 @@
 	                	</div>
 					</div>
 	                
-				<a href=""><button>교환/반품 신청</button></a>
+				<!-- <a href=""><button>교환/반품 신청</button></a> -->
             </div>
         </div>
     </c:forEach>
@@ -276,9 +276,9 @@
                   console.log(result);
                   if(result == 1) {
                      alert('문의 성공');
-                  }else if(result == 0){
-                	  alert('상품이 삭제되어 문의 할 수 없습니다.');
-                  }else{
+                  } else if(result == 2){
+                	  alert('삭제된 상품 입니다.');
+                  } else{
                 	  alert('이미 작성 하신 문의 입니다.');
                   }
                } // end success 

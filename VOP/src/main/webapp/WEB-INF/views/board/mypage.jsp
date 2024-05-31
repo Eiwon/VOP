@@ -27,7 +27,6 @@
 					<a href="../order/orderlist">주문 목록</a>
 					<a href="../Delivery/deliveryAddressList">배송지 관리</a>
 					<a href="seller">판매자 페이지</a>
-					<a href="admin">관리자 페이지</a>
 				</div>
 			</div>
 		</div>
