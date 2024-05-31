@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.InquiryVO;
+import com.web.vop.domain.ProductVO;
 import com.web.vop.persistence.AnswerMapper;
 import com.web.vop.persistence.InquiryMapper;
+import com.web.vop.persistence.ProductMapper;
 
 import lombok.extern.log4j.Log4j;
 
@@ -18,6 +20,9 @@ public class InquiryServiceImple implements InquiryService{
 	
 	@Autowired
 	private InquiryMapper inquiryMapper;
+	
+	@Autowired
+	private ProductMapper productMapper;
 	
 	
 	// ´ñ±Û(¹®ÀÇ) µî·Ï
@@ -32,15 +37,24 @@ public class InquiryServiceImple implements InquiryService{
 		log.info("productId : " + productId);
 		log.info("memberId : " + memberId);
 		
-		InquiryVO vo = inquiryMapper.selectByInquiry(productId, memberId);
+		ProductVO productVO = productMapper.selectProduct(productId);
 		
-		int insertRes = 0;
-		if(vo == null) {
-			insertRes = inquiryMapper.insertInquiry(inquiryVO);
-			log.info(insertRes + "Çà ¹®ÀÇ(´ñ±Û) µî·Ï");
-		}else {
-			log.info(memberId + "´Ô ¹®ÀÇ(´ñ±Û)´Â ÀÌ¹Ì ÀÖ½À´Ï´Ù.");
+		int insertRes = 2;
+		if(productVO != null) {
+			
+			InquiryVO vo = inquiryMapper.selectByInquiry(productId, memberId);
+			
+			insertRes = 0;
+			
+			if(vo == null) {
+				insertRes = inquiryMapper.insertInquiry(inquiryVO);
+				log.info(insertRes + "Çà ¹®ÀÇ(´ñ±Û) µî·Ï");
+			}else {
+				log.info(memberId + "´Ô ¹®ÀÇ(´ñ±Û)´Â ÀÌ¹Ì ÀÖ½À´Ï´Ù.");
+			}
 		}
+		
+		
 
 		return insertRes;
 	}

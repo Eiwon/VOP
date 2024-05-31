@@ -128,14 +128,19 @@
 	} // end alarmPermitRequest
 	
 	function showSocketNotification(msg, onclickListener){
-		let option = {
+		/* let option = {
 				body : msg.content,
 				requireInteraction : true,
 				timestamp : msg.dateCreated
 		};
 		let notification = new Notification(msg.content, option);
-		notification.addEventListener('click', onclickListener);
-		console.log(notification);
+		notification.addEventListener('click', onclickListener); */
+		let temp = confirm(msg.content);
+		if(onclickListener != null || temp){
+			onclickListener();
+		}
+		console.log(temp);
+		//console.log(notification);
 	} // end showSocketNotification
 	
 	function showSocketPopup(){
