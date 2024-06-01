@@ -9,6 +9,7 @@
 </head>
 <body>
 
+	<button></button>
 	<div class="chat_container">
 		<div id="readArea">
 			
