@@ -74,4 +74,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_NAME = #{memberName} AND MEMBER_PHONE = #{memberPhone}
 	</select>
 
+	<!-- 입력한 권한을 가진 모든 유저 id 검색 -->
+	<select id="selectIdByAuth" resultType="String">
+		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_AUTH = #{memberAuth}
+	</select>
+
 </mapper>

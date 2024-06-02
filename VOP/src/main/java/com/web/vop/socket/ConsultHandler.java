@@ -2,6 +2,7 @@ package com.web.vop.socket;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
@@ -17,6 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.vop.domain.MessageVO;
+import com.web.vop.service.MemberService;
 
 import lombok.extern.log4j.Log4j;
 
@@ -30,6 +33,12 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 	
 	@Autowired
 	public Map<String, WebSocketSession> alarmConnMap;
+	
+	@Autowired
+	public MemberService memberService;
+	
+	//@Autowired
+	//public AlarmHandler alarmHandler;
 	
 	public ConsultHandler() {
 		objectMapper = new ObjectMapper();
@@ -68,12 +77,28 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 		// 수락시 해당 방에 관리자가 없다면 해당 방으로 연결
 	
 		// 메시지 형식 : 타입, 발신자 id, 수신할 방 id, 내용, 수신자 id
+		log.info("메시지 수신 : " + message.getPayload());
 		
 		String senderId = session.getPrincipal().getName();
 		String roomId = session.getPrincipal().getName();
 		
+		MessageVO messageVO = convertMsg(message.getPayload());
+		String type = messageVO.getType();
 		
-	}
+		switch(type) {
+		case "consultRequest": {
+			Map<String, WebSocketSession> roomMap = createRoom(roomId);
+			roomMap.put(senderId, session);
+			callConsultant(roomId, senderId);
+			break;
+		}
+		case "acceptConsultRequest" : {
+			
+		}
+		
+		}
+		
+	} // end handleTextMessage
 	
 	private Map<String, WebSocketSession> createRoom(String roomId){
 		Map<String, WebSocketSession> roomMap = null;
@@ -88,6 +113,29 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 		}
 		return roomMap;
 	} // end createRoom
+	
+	private void callConsultant(String roomId, String senderId) {
+		// db에서 관리자 목록 검색
+		List<String> adminList = memberService.getAdminId();
+		MessageVO adminCallMsg = new MessageVO();
+		adminCallMsg.setType("consultRequest");
+		adminCallMsg.setWriterId(senderId);
+		
+		for(String adminId : adminList) { // 접속 중인 관리자들에게 메시지 송신
+			if(alarmConnMap.containsKey(adminId)) { 
+				WebSocketSession session = alarmConnMap.get(adminId);
+				adminCallMsg.setReceiverId(adminId);
+				try {
+					session.sendMessage(convertMsg(adminCallMsg));
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	} // end callConsultant
+
 	
 //	public void sendToRoom(MessageVO message) {
 //		log.info("단일 유저에게 메시지 전송");
