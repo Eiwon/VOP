@@ -2,6 +2,7 @@ package com.web.vop.socket;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.vop.domain.ChatMessageVO;
 import com.web.vop.domain.MessageVO;
 import com.web.vop.service.MemberService;
 
@@ -37,9 +39,6 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 	@Autowired
 	public MemberService memberService;
 	
-	//@Autowired
-	//public AlarmHandler alarmHandler;
-	
 	public ConsultHandler() {
 		objectMapper = new ObjectMapper();
 	} // end ConsultHandler
@@ -48,7 +47,6 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		String memberId = session.getPrincipal().getName();
 		log.info("연결 성공 : " + memberId);
-		log.info(session.getAttributes());
 		
 	} // end afterConnectionEstablished
 	
@@ -66,7 +64,7 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		// 클라이언트에서 상담 버튼 클릭시 socket open
-		// 방 생성 요청을 서버에 보내고, 방 id를 생성하여 해당 방에 유저를 매핑
+		// 방 생성 요청을 서버에 보내고, 방 id를 생성하여 해당 방에 유저를 추가
 		// 생성된 방 id를 유저에게 return
 		// ㄴ 방 id 생성 방식 : 클라이언트 계정 하나당 1개씩만 유지?(여러개 유지할 수 있게 하면 악용 가능성 ㅇ) 
 		// => 방 id = 클라이언트 id
@@ -76,27 +74,51 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 		// 수락시 해당 방에 관리자가 이미 있다면 메시지 return
 		// 수락시 해당 방에 관리자가 없다면 해당 방으로 연결
 	
-		// 메시지 형식 : 타입, 발신자 id, 수신할 방 id, 내용, 수신자 id
+		// 메시지 종류
+		//  수신							송신
+		// 1. 방 입장 요청				  입장 성공, 입장 실패, 유저 초대
+		// 2. 일반 메시지					일반 메시지							
+		
+		// 방 입장 요청 => roomId가 없다면 방 생성 후 입장 성공 메시지, 모든 관리자 초대 메시지
+		//  				ㄴ 있다면 해당 방으로 입장 가능 여부 확인
+		//						ㄴ 가능하면 입장 후 입장 성공 메시지
+		//						ㄴ 불가능하면 입장 실패 메시지
 		log.info("메시지 수신 : " + message.getPayload());
 		
 		String senderId = session.getPrincipal().getName();
-		String roomId = session.getPrincipal().getName();
-		
-		MessageVO messageVO = convertMsg(message.getPayload());
-		String type = messageVO.getType();
+		ChatMessageVO chatMessageVO = convertMsg(message.getPayload());
+		String roomId = chatMessageVO.getRoomId();
+		chatMessageVO.setSenderId(senderId);
+		String type = chatMessageVO.getType();
 		
 		switch(type) {
-		case "consultRequest": {
-			Map<String, WebSocketSession> roomMap = createRoom(roomId);
-			roomMap.put(senderId, session);
-			callConsultant(roomId, senderId);
+		case "joinRequest" : { // 입장 요청
+			if(roomId.length() == 0) { // roomId가 없다면 방 생성, 입장성공 메시지 송신
+				roomId = senderId;
+				Map<String, WebSocketSession> roomMap = createRoom(roomId);
+				roomMap.put(roomId, session);
+				sendJoinSuccess(session, roomId);
+				callConsultant(roomId); // 관리자 초대 메시지 송신
+			}else {
+				Map<String, WebSocketSession> roomMap = consultRoomList.get(roomId);
+				if(roomMap == null) {
+				
+				}else if(roomMap.size() == 1) {
+					log.info("채팅방 입장");
+					roomMap.put(senderId, session);
+					sendJoinSuccess(session, roomId);
+				}else {
+					log.info("다른 상담사가 먼저 수락");
+					sendJoinFail(session, "다른 상담사가 먼저 수락");
+				}
+			}
 			break;
 		}
-		case "acceptConsultRequest" : {
-			
+		case "chatMessage" : {
+			sendChatMessage(chatMessageVO);
+			break;
 		}
-		
-		}
+		} // end switch
 		
 	} // end handleTextMessage
 	
@@ -114,52 +136,63 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 		return roomMap;
 	} // end createRoom
 	
-	private void callConsultant(String roomId, String senderId) {
+	private void callConsultant(String roomId) throws IOException {
 		// db에서 관리자 목록 검색
 		List<String> adminList = memberService.getAdminId();
-		MessageVO adminCallMsg = new MessageVO();
+		ChatMessageVO adminCallMsg = new ChatMessageVO();
 		adminCallMsg.setType("consultRequest");
-		adminCallMsg.setWriterId(senderId);
+		adminCallMsg.setRoomId(roomId);
+		TextMessage returnMsg = convertMsg(adminCallMsg);
 		
 		for(String adminId : adminList) { // 접속 중인 관리자들에게 메시지 송신
 			if(alarmConnMap.containsKey(adminId)) { 
 				WebSocketSession session = alarmConnMap.get(adminId);
-				adminCallMsg.setReceiverId(adminId);
-				try {
-					session.sendMessage(convertMsg(adminCallMsg));
-					
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				session.sendMessage(returnMsg);
+			}
+		}
+	} // end callConsultant
+	
+	private void sendJoinSuccess(WebSocketSession session, String roomId) throws IOException {
+		log.info("sendJoinSuccess");
+		ChatMessageVO chatMessageVO = new ChatMessageVO();
+		chatMessageVO.setType("joinSuccess");
+		chatMessageVO.setRoomId(roomId);
+		
+		session.sendMessage(convertMsg(chatMessageVO));
+		
+	} // end sendJoinSuccess
+	
+	private void sendJoinFail(WebSocketSession session, String content) throws IOException {
+		log.info("sendJoinFail");
+		ChatMessageVO chatMessageVO = new ChatMessageVO();
+		chatMessageVO.setType("joinFail");
+		chatMessageVO.setContent(content);
+
+		session.sendMessage(convertMsg(chatMessageVO));
+		
+	} // end sendJoinFail
+	
+	private void sendChatMessage(ChatMessageVO chatMessageVO) throws IOException {
+		log.info("일반 채팅 수신");
+		
+		Map<String, WebSocketSession> targetRoom = consultRoomList.get(chatMessageVO.getRoomId());
+		TextMessage returnMsg = convertMsg(chatMessageVO);
+		
+		Iterator<String> keyIterator = targetRoom.keySet().iterator();
+		while(keyIterator.hasNext()) {
+			WebSocketSession session = targetRoom.get(keyIterator.next());
+			if(session.isOpen()) {
+				session.sendMessage(returnMsg);
 			}
 		}
 		
-	} // end callConsultant
-
-	
-//	public void sendToRoom(MessageVO message) {
-//		log.info("단일 유저에게 메시지 전송");
-//		String receiverId = message.getReceiverId();
-//		TextMessage jsonMsg = convertMsg(message);
-//		if(consultRoomList.containsKey(receiverId)) { // 수신 대상이 접속 중이면 바로 송신
-//			WebSocketSession client = consultRoomList.get(receiverId);
-//			if(client.isOpen()) {
-//				try {
-//					client.sendMessage(jsonMsg);
-//					return;
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		} // end 접속 중인 유저 송신
-//		
-//	} // end unicast
+	} // end sendChatMessage
 	
 	
-	private MessageVO convertMsg(String jsonMsg) {
-		MessageVO message = null;
+	private ChatMessageVO convertMsg(String jsonMsg) {
+		ChatMessageVO message = null;
 		try {
-			message = objectMapper.readValue(jsonMsg, MessageVO.class);
+			message = objectMapper.readValue(jsonMsg, ChatMessageVO.class);
 		} catch (JsonMappingException e) {
 			e.printStackTrace();
 		} catch (JsonProcessingException e) {
@@ -168,7 +201,7 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 		return message;
 	} // end convertMsg
 	
-	private TextMessage convertMsg(MessageVO message) {
+	private TextMessage convertMsg(ChatMessageVO message) {
 		TextMessage jsonMsg = null;
 		try {
 			jsonMsg = new TextMessage(objectMapper.writeValueAsString(message));

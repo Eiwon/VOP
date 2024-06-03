@@ -152,17 +152,21 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 		
 		LocalDateTime current = new LocalDateTime();
 		int remainSecondOfDay = 86400 - current.getHourOfDay() *3600 - current.getMinuteOfHour() *60 - current.getSecondOfMinute(); 
-		log.info("쿠키 만료 남은 시간 : " + remainSecondOfDay);
 		newCookie.setMaxAge(remainSecondOfDay);
+		log.info("쿠키 만료 남은 시간 : " + remainSecondOfDay + "초");
 		response.addCookie(newCookie);
 		
 		return new ResponseEntity<Integer>(1, HttpStatus.OK);
 	} // end blockPopup
 	
 	@GetMapping("/consult")
-	public String consultGET() {
+	public String consultGET(Model model, String roomId) {
 		log.info("consultGET");
+		log.info("request room Id : " + roomId);
+		
+		model.addAttribute("roomId", roomId);
+		
 		return "chat/consult";
-	}
+	} // end consultGET
 	
 }//end MainController

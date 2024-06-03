@@ -118,17 +118,17 @@
 	}; // 타입이 replyAlarm인 메시지 수신시 호출될 함수
 	
 	msgHandler.consultRequest = function(msg){
-		console.log('consultRequest 메시지 수신 : ' + msg);
-		let roomId = msg.receiverId;
+		console.log('consultRequest 메시지 수신 : roomId = ' + msg.roomId);
+		
 		let isAccept = confirm("1대1 상담 요청 수신. 수락하시겠습니까?");
 		
 		if(isAccept){
-			let targetUrl = '../board/consult?' + roomId;
+			let targetUrl = '../board/consult?roomId=' + msg.roomId;
 				
 			const popupStat = {
 					'url' : targetUrl,
-					'name' : 'popupConsult',
-					'option' : 'width=800, height=1000, top=50, left=400'
+					'name' : 'popupConsultAdmin',
+					'option' : 'width=800, height=800, top=50, left=400'
 			};
 				
 			// 팝업 창 띄우기
@@ -138,7 +138,6 @@
 				console.log("팝업 닫힘");
 			} // end popup.onbeforeunload
 		}
-		
 	} // end msgHandler.consultRequest
 	
 	
