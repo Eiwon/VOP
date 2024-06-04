@@ -1,5 +1,7 @@
 package com.web.vop.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
+import com.web.vop.service.MailAuthenticationService;
 import com.web.vop.service.MemberService;
 
 import lombok.extern.log4j.Log4j;
@@ -26,6 +29,9 @@ public class MemberRESTController {
 	
 	@Autowired
 	MemberService memberService;
+	
+	@Autowired
+	MailAuthenticationService mailAuthService;
 
 	@GetMapping("/idDupChk") // id 중복 체크
 	public ResponseEntity<Integer> checkIdDup(String memberId){
@@ -79,6 +85,16 @@ public class MemberRESTController {
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end updateAuth
+	
+	@GetMapping("/mailAuthentication")
+	public ResponseEntity<Integer> mailAuthenticationGET(String email){
+		log.info("이메일 인증 요청 : " + email);
+		int res = 0;
+		
+		mailAuthService.sendAuthEmail(email);
+		
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+	} // end mailAuthenticationGET
 	
 	
 }

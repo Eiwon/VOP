@@ -128,4 +128,18 @@ public class MemberServiceImple implements MemberService{
 		return adminList;
 	} // end getAdminId
 
+	@Override
+	public List<String> getIdByEmail(String memberEmail) {
+		log.info("getIdByNameAndEmail");
+		List<String> memberIdList = memberMapper.selectIdByNameAndEmail(memberEmail);
+		return memberIdList;
+	} // end getIdByNameAndEmail
+
+	@Override
+	public String getIdByIdAndEmail(String memberId, String memberEmail) {
+		log.info("getIdByIdAndEmail");
+		String resultId = memberMapper.selectIdByIdAndEmail(memberId, memberEmail);
+		return resultId;
+	} // end getIdByIdAndEmail
+
 }

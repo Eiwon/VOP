@@ -2,6 +2,8 @@ package com.web.vop.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.web.vop.domain.MemberVO;
 
 public interface MemberService {
@@ -41,5 +43,11 @@ public interface MemberService {
 	
 	// 권한이 관리자인 모든 유저 id 검색
 	public List<String> getAdminId();
+	
+	// 이름과 이메일로 ID 찾기
+	public List<String> getIdByEmail(String memberEmail);
+		
+	// ID와 이메일로 ID 찾기
+	public String getIdByIdAndEmail(String memberId, String memberEmail);
 	
 }

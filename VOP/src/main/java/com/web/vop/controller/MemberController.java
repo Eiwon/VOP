@@ -1,6 +1,8 @@
 package com.web.vop.controller;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +13,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
+import com.web.vop.service.MailAuthenticationService;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.UserDetailsServiceImple;
 
@@ -29,6 +33,9 @@ public class MemberController {
 	
 	@Autowired
 	UserDetailsServiceImple UserDetailsService;
+	
+	@Autowired
+	MailAuthenticationService mailAuthService;
 	
 	@GetMapping("/register")
 	public void registerGET() {
@@ -46,6 +53,27 @@ public class MemberController {
 	public void findAccount() {
 		log.info("아이디, 비밀번호 찾기 페이지 요청");
 	} // end findAccount
+	
+	@PostMapping("/findAccount")
+	public String mailAuthenticationPOST(Model model, String memberEmail, String authCode){
+		log.info("아이디 찾기 인증 코드 :" + authCode);
+		
+		String returnPath = null;
+		List<String> memberIdList = null;
+		boolean res = mailAuthService.verifyAuthCode(memberEmail, authCode);
+		
+		if(res) {
+			memberIdList = memberService.getIdByEmail(memberEmail);
+			log.info("검색된 id : " + memberIdList);
+			model.addAttribute("memberIdList", memberIdList);
+			returnPath = "member/findAccountResult";
+		}else {
+			log.info("인증코드 불일치");
+			returnPath = "redirect:findAccount";
+		}
+		
+		return returnPath;
+	} // end mailAuthenticationPOST
 	
 	@GetMapping("/findPassword")
 	public void findPassword() {

@@ -2,9 +2,11 @@ package com.web.vop.socket;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.BinaryMessage;
@@ -30,6 +32,10 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 
 	private static ObjectMapper objectMapper = null;
 	
+	// key : memberId, value : roomId
+	private static Map<String, String> consultConnMap;
+	
+	// key : roomId, value : { key : memberId, value : session }
 	@Autowired
 	public Map<String, Map<String, WebSocketSession>> consultRoomList;
 	
@@ -41,19 +47,25 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 	
 	public ConsultHandler() {
 		objectMapper = new ObjectMapper();
+		consultConnMap = new HashMap<>();
 	} // end ConsultHandler
 	
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		String memberId = session.getPrincipal().getName();
 		log.info("연결 성공 : " + memberId);
-		
 	} // end afterConnectionEstablished
 	
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		String memberId = session.getPrincipal().getName();
-		log.info("연결 종료 : " + memberId);
+		log.info("연결 종료 : memberId : " + memberId + ", status : " + status);
+		String roomId = consultConnMap.get(memberId);
+		if(roomId != null) {
+			consultRoomList.get(roomId).remove(memberId);
+		}
+		consultConnMap.remove(memberId);
+		
 	}
 	
 	@Override
@@ -96,28 +108,30 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 			if(roomId.length() == 0) { // roomId가 없다면 방 생성, 입장성공 메시지 송신
 				roomId = senderId;
 				Map<String, WebSocketSession> roomMap = createRoom(roomId);
-				roomMap.put(roomId, session);
+				roomMap.put(senderId, session);
 				sendJoinSuccess(session, roomId);
 				callConsultant(roomId); // 관리자 초대 메시지 송신
 			}else {
 				Map<String, WebSocketSession> roomMap = consultRoomList.get(roomId);
 				if(roomMap == null) {
-				
+					log.info("이미 종료된 상담입니다.");
+					sendJoinFail(session, "이미 종료된 상담입니다.");
 				}else if(roomMap.size() == 1) {
 					log.info("채팅방 입장");
 					roomMap.put(senderId, session);
 					sendJoinSuccess(session, roomId);
+					consultConnMap.put(senderId, roomId);
 				}else {
 					log.info("다른 상담사가 먼저 수락");
 					sendJoinFail(session, "다른 상담사가 먼저 수락");
 				}
 			}
 			break;
-		}
+		} // end case joinRequest
 		case "chatMessage" : {
 			sendChatMessage(chatMessageVO);
 			break;
-		}
+		} // end case chatMessage
 		} // end switch
 		
 	} // end handleTextMessage
@@ -144,8 +158,10 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 		adminCallMsg.setRoomId(roomId);
 		TextMessage returnMsg = convertMsg(adminCallMsg);
 		
-		for(String adminId : adminList) { // 접속 중인 관리자들에게 메시지 송신
-			if(alarmConnMap.containsKey(adminId)) { 
+		// 상담 중인 모든 관리자 id를 adminList에서 제거해야 함
+		
+		for(String adminId : adminList) { // 접속 중이고 상담중이 아닌 관리자들에게 메시지 송신
+			if(alarmConnMap.containsKey(adminId) && !consultConnMap.containsKey(adminId)) {
 				WebSocketSession session = alarmConnMap.get(adminId);
 				session.sendMessage(returnMsg);
 			}
@@ -173,14 +189,14 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 	} // end sendJoinFail
 	
 	private void sendChatMessage(ChatMessageVO chatMessageVO) throws IOException {
-		log.info("일반 채팅 수신");
+		log.info("일반 채팅 송신");
 		
 		Map<String, WebSocketSession> targetRoom = consultRoomList.get(chatMessageVO.getRoomId());
 		TextMessage returnMsg = convertMsg(chatMessageVO);
 		
-		Iterator<String> keyIterator = targetRoom.keySet().iterator();
-		while(keyIterator.hasNext()) {
-			WebSocketSession session = targetRoom.get(keyIterator.next());
+		Iterator<String> memberIdIter = targetRoom.keySet().iterator();
+		while(memberIdIter.hasNext()) {
+			WebSocketSession session = targetRoom.get(memberIdIter.next());
 			if(session.isOpen()) {
 				session.sendMessage(returnMsg);
 			}

@@ -4,8 +4,6 @@ import java.util.HashMap;
 
 import java.util.Map;
 
-import javax.websocket.Session;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.WebSocketHandler;

@@ -72,16 +72,5 @@ public class ServletConfig implements WebMvcConfigurer {
       return resolver;
    }
    
-
-	/*
-	 * @ExceptionHandler({ Exception.class }) public
-	 * ResponseEntity<RestClientException> handle(NoHandlerFoundException e) {
-	 * return new ResponseEntity<>(new RestClientException("Testing exception"),
-	 * HttpStatus.NOT_FOUND); }
-	 * 
-	 * @Override public void addViewControllers(ViewControllerRegistry registry) {
-	 * registry.addViewController("/404.jsp").setViewName("404"); }
-	 */
-   
    
 } // end ServletConfig
