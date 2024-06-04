@@ -58,7 +58,7 @@ public class WebSocketConfig implements WebSocketConfigurer{
 	// { 방에 있는 멤버들을 <key : memberId, value : Session(연결 정보)> 쌍으로 관리하는 Map }
 	// 을 <key : roomId, value : 방에 속한 멤버의 연결정보 > 쌍으로 관리하는 roomList 
 	@Bean
-	public Map<Integer, Map<String, WebSocketSession>> consultRoomList(){
+	public Map<String, Map<String, WebSocketSession>> consultRoomList(){
 		return new HashMap<>();
 	} // end consultRoomList
 		

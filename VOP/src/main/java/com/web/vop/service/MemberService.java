@@ -1,5 +1,7 @@
 package com.web.vop.service;
 
+import java.util.List;
+
 import com.web.vop.domain.MemberVO;
 
 public interface MemberService {
@@ -36,5 +38,8 @@ public interface MemberService {
 	
 	// 이름, 전화번호로 아이디 검색
 	public String findByNameAndPhone(String memberName, String memberPhone);
+	
+	// 권한이 관리자인 모든 유저 id 검색
+	public List<String> getAdminId();
 	
 }

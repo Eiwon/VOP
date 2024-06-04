@@ -66,6 +66,7 @@ public class AlarmHandler extends TextWebSocketHandler{
 		String memberId = session.getPrincipal().getName();
 		log.info("연결 유저 id : " + memberId);
 		alarmConnMap.put(memberId, session);
+		log.info("접속 중인 유저 : " + alarmConnMap);
 		
 		List<MessageVO> messageList = messageService.getMyMessage(memberId);
 		// 연결이 끊어진 동안 못 받은 메시지 검색
