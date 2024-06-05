@@ -38,4 +38,6 @@ public interface Constant {
 	public static final String STATE_REMOVE_WAIT = "삭제 대기중";
 	
 	public static final String DEFAULT_IMG_PATH = "nodata.jpg";
+	
+	public static final String ALERT_PATH = "access/alert";
 }

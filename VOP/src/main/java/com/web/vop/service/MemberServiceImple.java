@@ -134,12 +134,21 @@ public class MemberServiceImple implements MemberService{
 		List<String> memberIdList = memberMapper.selectIdByNameAndEmail(memberEmail);
 		return memberIdList;
 	} // end getIdByNameAndEmail
-
+	
+	@Override
+	public String getEmailById(String memberId) {
+		log.info("getEmailById");
+		String memberEmail = memberMapper.selectEmailById(memberId);
+		return memberEmail;
+	} // end getEmailById
+	
 	@Override
 	public String getIdByIdAndEmail(String memberId, String memberEmail) {
 		log.info("getIdByIdAndEmail");
 		String resultId = memberMapper.selectIdByIdAndEmail(memberId, memberEmail);
 		return resultId;
 	} // end getIdByIdAndEmail
+
+	
 
 }

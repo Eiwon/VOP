@@ -22,6 +22,11 @@
 </head>
 <body>
 	
+	<c:if test="${productList.size() == 0 }">
+		<div>
+			검색 결과가 없습니다
+		</div>
+	</c:if>
     
 	<div id="searchResult">
 		<c:forEach var="productVO" items="${productList}">

@@ -25,7 +25,7 @@ tr{
 			<span>비밀번호 확인</span>
 			<div>
 				<span>아이디</span><br>
-				<span>${memberDetails.getUsername() }</span>
+				<span>${memberVO.memberId }</span>
 			</div>
 			<div>
 				<span>비밀번호</span>
@@ -44,11 +44,11 @@ tr{
 	<script type="text/javascript">
 		let memberPw = $('#member_pw');
 		let memberOrigin = {
-				'memberId' : '${memberDetails.getUsername() }',
+				'memberId' : '${memberVO.memberId }',
 				'memberPw' : '',
-				'memberName' : '${memberDetails.memberVO.memberName}',
-				'memberPhone' : '${memberDetails.memberVO.memberPhone}',
-				'memberEmail' : '${memberDetails.memberVO.memberEmail}'
+				'memberName' : '${memberVO.memberName}',
+				'memberPhone' : '${memberVO.memberPhone}',
+				'memberEmail' : '${memberVO.memberEmail}'
 		};
 		let validList = {
 				'memberPw' : true,
@@ -59,7 +59,7 @@ tr{
 		};
 		let expMap = {
 				'memberPw' : {
-					exp : new RegExp("^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]{8,20}$"),
+					exp : new RegExp("^[a-zA-Z0-9]{8,20}$"),
 					success : "올바른 입력 형식 입니다.",
 					fail : "비밀번호는 8~20자의 알파벳, 숫자, 한글이여야 합니다."
 				},
@@ -114,13 +114,13 @@ tr{
 			$('#subtitle').text("회원 정보 변경");
 			let form = '<form action="modify" method="POST" id="formUpdate"><table><tbody>' +
 				'<tr><td>아이디</td>' +
-				'<td><input type="text" value="${memberDetails.getUsername() }" readonly></td><td></td></tr>' +
+				'<td><input type="text" value="${memberVO.memberId }" readonly></td><td></td></tr>' +
 				'<tr><td>이름</td>' +
-				'<td><input type="text" name="memberName" value="${memberDetails.memberVO.memberName }" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
+				'<td><input type="text" name="memberName" value="${memberVO.memberName }" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
 				'<tr><td>휴대폰 번호</td>' +
-				'<td><input type="text" name="memberPhone" value="${memberDetails.memberVO.memberPhone }" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
+				'<td><input type="text" name="memberPhone" value="${memberVO.memberPhone }" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
 				'<tr><td>Email</td>' +
-				'<td><input type="text" name="memberEmail" value="${memberDetails.memberVO.memberEmail }" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
+				'<td><input type="text" name="memberEmail" value="${memberVO.memberEmail }" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
 				'<tr><td>비밀번호</td>' +
 				'<td><input type="password" id="memberPw" name="memberPw" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
 				'<tr><td>비밀번호 확인</td>' +
@@ -145,16 +145,6 @@ tr{
 				
 			}); // end formUpdate submit
 		} // end printModify
-		
-		/* function test(){
-			new daum.Postcode({
-		        oncomplete: function(data) {
-		            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
-		            // 예제를 참고하여 다양한 활용법을 확인해 보세요.
-		            console.log(data);
-		        }
-		    }).open();
-		} */
 		
 		function comparePw(){
 			let pwVal = $('#memberPw').val();

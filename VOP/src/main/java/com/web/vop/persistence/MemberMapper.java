@@ -38,6 +38,9 @@ public interface MemberMapper {
 	// 이메일로 ID 찾기
 	public List<String> selectIdByNameAndEmail(String memberEmail);
 	
+	// ID로 이메일 찾기
+	public String selectEmailById(String memberId);
+	
 	// ID와 이메일로 ID 찾기
 	public String selectIdByIdAndEmail(
 			@Param("memberId") String memberId, @Param("memberEmail") String memberEmail);

@@ -12,24 +12,24 @@
 <body>
 	<h2>아이디 찾기</h2>
 	<div id="findAccount">
-		<div>
-			<c:choose>
-				<c:when test="${memberIdList.size() == 0 }">
-					<h2>가입된 아이디가 없습니다.</h2>
-				</c:when>
-				<c:otherwise>
-					<h2>해당 이메일로 가입된 아이디입니다</h2>
-					<c:forEach items="${memberIdList }" var="memberId">
-						<strong>${memberId }</strong><br>
-					</c:forEach>
-				</c:otherwise>
-			</c:choose>
-		</div>
+		<c:choose>
+			<c:when test="${memberIdList.size() == 0 }">
+				<h2>가입된 아이디가 없습니다.</h2>
+				<div>
+					<a href="findAccount">아이디 찾기</a>
+				</div>
+			</c:when>
+			<c:otherwise>
+				<h2>해당 이메일로 가입된 아이디입니다</h2>
+				<c:forEach items="${memberIdList }" var="memberId">
+					<strong>${memberId }</strong><br>
+				</c:forEach>
+				<div>
+					<a href="findPassword">비밀번호 찾기</a>
+				</div>
+			</c:otherwise>
+		</c:choose>
 	</div>
-	<div>
-		<a href="findPassword">비밀번호 찾기</a>
-	</div>
-
 
 </body>
 </html>

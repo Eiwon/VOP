@@ -60,14 +60,6 @@ public class MemberRESTController {
 		return new ResponseEntity<String>(checkedId, HttpStatus.OK);
 	} // end findByNameAndPhone
 	
-	@PostMapping("/findPassword")
-	public ResponseEntity<Integer> resetPassword(
-			@RequestParam String memberId, @RequestParam String memberPw){
-		log.info("비밀번호 변경");
-		int res = memberService.updatePw(memberId, memberPw);
-		return new ResponseEntity<Integer>(res, HttpStatus.OK);
-	} // end resetPassword
-	
 	@PostMapping("/check")
 	public ResponseEntity<Boolean> checkMember(@AuthenticationPrincipal MemberDetails memberDetails, @RequestParam String memberPw){
 		log.info("비밀번호 확인");

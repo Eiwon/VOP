@@ -41,6 +41,7 @@
 		
 		$('#btnAuthCode').click(function(){
 			console.log("본인 인증");
+			$('#btnAuthCode').attr('disabled', 'disabled');
 			let memberEmail = tagMemberEmail.val();
 			
 			if(memberEmail.length == 0){
@@ -49,13 +50,15 @@
 			}else{
 				tagMemberEmail.next().text(" ");
 			}
-			tagAuthCode.next().text('인증 번호가 발송되었습니다.');
+			
+			verifiedEmail = memberEmail;
+			
 			$.ajax({
 				method : 'GET',
 				url : 'mailAuthentication?email=' + memberEmail,
 				success : function(result){
-					console.log(result);
-					verifiedEmail = memberEmail;
+					tagAuthCode.next().text('인증 번호가 발송되었습니다.');
+					$('#btnAuthCode').attr('disabled', null);
 					tagAuthCode.val('');
 				}
 			});

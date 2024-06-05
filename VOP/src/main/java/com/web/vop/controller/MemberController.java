@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.web.vop.domain.AlertVO;
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
+import com.web.vop.persistence.Constant;
 import com.web.vop.service.MailAuthenticationService;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.UserDetailsServiceImple;
@@ -57,7 +59,7 @@ public class MemberController {
 	@PostMapping("/findAccount")
 	public String mailAuthenticationPOST(Model model, String memberEmail, String authCode){
 		log.info("아이디 찾기 인증 코드 :" + authCode);
-		
+		AlertVO alertVO = new AlertVO();
 		String returnPath = null;
 		List<String> memberIdList = null;
 		boolean res = mailAuthService.verifyAuthCode(memberEmail, authCode);
@@ -68,8 +70,10 @@ public class MemberController {
 			model.addAttribute("memberIdList", memberIdList);
 			returnPath = "member/findAccountResult";
 		}else {
-			log.info("인증코드 불일치");
-			returnPath = "redirect:findAccount";
+			alertVO.setAlertMsg("인증코드 불일치");
+			alertVO.setRedirectUri("member/findAccount");
+			model.addAttribute("alertVO", alertVO);
+			returnPath = Constant.ALERT_PATH;
 		}
 		
 		return returnPath;
@@ -80,15 +84,72 @@ public class MemberController {
 		log.info("비밀번호 찾기 페이지 요청");
 	} // end findPassword
 	
+	@PostMapping("/findPassword")
+	public String findPasswordPOST(Model model, String memberId) {
+		log.info("비밀번호 찾기 요청");
+		
+		String memberEmail = null;
+		// 입력된 아이디가 유효한지 확인
+		MemberVO memberVO = memberService.getMemberInfo(memberId);
+		if(memberVO != null) {
+			// 유효하면 해당 아이디의 email로 인증번호 전송
+			memberEmail = memberVO.getMemberEmail();
+			mailAuthService.sendAuthEmail(memberEmail);
+			
+			String secretEmail = ""; // 이메일 일부를 *로 가리기
+			secretEmail += memberEmail.charAt(0);
+			for(int i = 1; i < memberEmail.indexOf("@") - 1; i++) {
+				secretEmail += "*";
+			}
+			secretEmail += memberEmail.subSequence(memberEmail.indexOf("@") - 1, memberEmail.length());
+			
+			model.addAttribute("memberId", memberId);
+			model.addAttribute("memberEmail", secretEmail);
+		}
+		
+		return "member/findPasswordResult";
+	} // end findPassword
+	
+	@PostMapping("/changePw")
+	public String changePw(Model model, String memberId, String memberPw, String authCode) {
+		log.info("비밀번호 재설정");
+		AlertVO alertVO = new AlertVO();
+		String memberEmail = memberService.getEmailById(memberId);
+		boolean isCorrect = mailAuthService.verifyAuthCode(memberEmail, authCode);
+		
+		if(isCorrect) {
+			// 인증 코드 일치
+			memberService.updatePw(memberId, memberPw);
+			alertVO.setAlertMsg("비밀번호 변경 성공!");
+			alertVO.setRedirectUri("member/login");
+		}else {
+			// 인증 코드 불일치
+			alertVO.setAlertMsg("인증 코드가 일치하지 않습니다.");
+			alertVO.setRedirectUri("member/findPassword");
+		}
+		model.addAttribute("alertVO", alertVO);
+		
+		return Constant.ALERT_PATH;
+	} // end changePw
+	
 	@PostMapping("/register") // 회원가입 요청
-	public String registerPOST(MemberVO memberVO) {
+	public String registerPOST(Model model, MemberVO memberVO) {
 		log.info("회원 가입 요청 : " + memberVO);
+		AlertVO alertVO = new AlertVO();
 		int res = memberService.registerMember(memberVO);
 		log.info("회원 가입 결과 : " + res);
 		
-		String path = (res == 1) ? "redirect:login" : "redirect:register";
+		if(res == 1) {
+			alertVO.setAlertMsg("회원가입 성공!");
+			alertVO.setRedirectUri("member/login");
+		}else {
+			alertVO.setAlertMsg("회원가입 실패");
+			alertVO.setRedirectUri("member/register");
+		}
 		
-		return path;
+		model.addAttribute("alertVO", alertVO);
+		
+		return Constant.ALERT_PATH;
 	} // end registerPOST
 	
 	
@@ -100,10 +161,9 @@ public class MemberController {
 	} // end modifyGET
 
 	@PostMapping("/modify")
-	public String modifyPOST(MemberVO memberVO, @AuthenticationPrincipal MemberDetails memberDetails) {
+	public String modifyPOST(Model model, MemberVO memberVO, @AuthenticationPrincipal MemberDetails memberDetails) {
 		log.info("회원 정보 수정 : " + memberVO);
-		String returnPath;
-		
+		AlertVO alertVO = new AlertVO();
 		String newPw = memberVO.getMemberPw();
 		if(newPw.length() == 0) {
 			newPw = null;
@@ -111,9 +171,19 @@ public class MemberController {
 		
 		memberVO.setMemberId(memberDetails.getUsername());
 		int res = memberService.updateMember(memberVO);
-		returnPath = (res == 1) ? "redirect:../board/mypage" : "redirect:modify";
 		
-		return returnPath;
+		if(res == 1) {
+			alertVO.setAlertMsg("수정 성공");
+			alertVO.setRedirectUri("board/mypage");
+		}else {
+			alertVO.setAlertMsg("수정 실패");
+			alertVO.setRedirectUri("member/modify");
+		}
+		
+		model.addAttribute("alertVO", alertVO);
+		
+		return Constant.ALERT_PATH;
 	} // end modifyPOST
+	
 	
 }

@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.vop.domain.AlertVO;
 import com.web.vop.domain.BasketVO;
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.MemberDetails;
@@ -157,6 +158,13 @@ public class ProductController {
 		List<ProductVO> productList = new ArrayList<>();
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
+		
+		if(category == null) {
+			category = "전체";
+		}
+		if(word == null) {
+			word = "";
+		}
 		
 		if(category.equals("전체")) { // 카테고리가 전체, 검색어가 있는 경우
 			log.info("검색어 검색");

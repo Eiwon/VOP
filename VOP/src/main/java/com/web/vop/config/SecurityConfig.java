@@ -84,28 +84,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 			.deleteCookies("JSESSIONID", "rememberMe") // 로그아웃 후 쿠키 삭제
 			.logoutSuccessHandler(logoutSuccessHandler)
 			.invalidateHttpSession(true); // 세션 무효화 설정
-
+		
 		http.exceptionHandling()
 			.accessDeniedPage("/access/denied");
 
-		
 		http.csrf().disable()
 			.sessionManagement() // maximumSessions, maxSessionsPreventsLogin을 설정하기 위해 호출
 			.maximumSessions(1) // 하나의 아이디로 동시에 로그인 할 수 있는 최대치 : 1
 			.maxSessionsPreventsLogin(true); // 설정값을 초과하여 로그인시, 먼저 로그인한 아이디의 세션 만료 설정
 
-	}
+	} // end configure
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		log.info("auth check " + auth);
 		auth.userDetailsService(userDetailsServiceImple).passwordEncoder(passwordEncoder());
-	}
+	} // end configure
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
-	}
+	} // end passwordEncoder
 	
 
 }

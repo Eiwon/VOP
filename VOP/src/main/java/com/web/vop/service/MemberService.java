@@ -46,6 +46,9 @@ public interface MemberService {
 	
 	// 이름과 이메일로 ID 찾기
 	public List<String> getIdByEmail(String memberEmail);
+	
+	// ID로 이메일 찾기
+	public String getEmailById(String memberId);	
 		
 	// ID와 이메일로 ID 찾기
 	public String getIdByIdAndEmail(String memberId, String memberEmail);
