@@ -3,6 +3,8 @@ package com.web.vop.service;
 import java.util.List;
 
 import com.web.vop.domain.ReviewVO;
+import com.web.vop.util.PageMaker;
+import com.web.vop.util.Pagination;
 
 
 public interface ReviewService {
@@ -11,6 +13,9 @@ public interface ReviewService {
 		 
 	// 댓글(리뷰) 전체 검색
 	List<ReviewVO> getAllReview(int productId);
+	
+	// 댓글(리뷰) 회원ID로 전체 검색
+	List<ReviewVO> getAllReviewPaging(int productId, PageMaker pageMaker);
 	
 	// 댓글(리뷰) 회원ID로 전체 검색
 	List<ReviewVO> getAllReviewMemberId(String memberId);

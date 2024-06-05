@@ -102,7 +102,6 @@ td {
 							}
 						}); // end ajax
 					});
-					
 				} // end success
 			}); // end ajax
 

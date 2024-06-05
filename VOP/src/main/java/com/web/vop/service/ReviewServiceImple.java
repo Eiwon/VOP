@@ -11,6 +11,8 @@ import com.web.vop.domain.ProductVO;
 import com.web.vop.domain.ReviewVO;
 import com.web.vop.persistence.ProductMapper;
 import com.web.vop.persistence.ReviewMapper;
+import com.web.vop.util.PageMaker;
+import com.web.vop.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -209,6 +211,15 @@ public class ReviewServiceImple implements ReviewService {
 
 		log.info(deleteRes + "«‡ ªË¡¶");
 		return deleteRes;
+	}
+
+	@Override
+	public List<ReviewVO> getAllReviewPaging(int productId, PageMaker pageMaker) {
+		log.info("getAllReviewPaging()");
+		int totalCnt = reviewMapper.selectListByReviewCnt(productId);
+		log.info("totalCnt : " + totalCnt);
+		pageMaker.setTotalCount(totalCnt);
+		return reviewMapper.selectListByReviewPaging(productId, pageMaker.getPagination());
 	}
 
 }

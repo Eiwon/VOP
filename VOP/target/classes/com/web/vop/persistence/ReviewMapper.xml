@@ -33,12 +33,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	 	WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
    </select>
    
+   <!-- 댓글(문의) 전체 검색(해당 상품의 문의 수) 페이징 처리-->
+   <select id="selectListByReviewCnt" resultType="Integer">
+   	  SELECT COUNT(PRODUCT_ID) FROM INQUIRY 
+   	  WHERE PRODUCT_ID = #{productId}
+   </select>
+   
    <!-- 댓글(리뷰) productId로 전체 검색 -->
+   <select id="selectListByReviewPaging" resultMap="reviewResultMap">
+        SELECT * FROM (
+        	SELECT REVIEW.*, ROW_NUMBER() OVER (ORDER BY REVIEW_ID DESC) RN
+        	FROM REVIEW
+        	WHERE PRODUCT_ID = #{productId}
+   		)
+    	WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+   </select>
+   
+    <!-- 댓글(리뷰) productId로 전체 검색 -->
    <select id="selectListByReview" resultMap="reviewResultMap">
       SELECT * FROM REVIEW
       WHERE PRODUCT_ID = #{productId}
       ORDER BY REVIEW_ID
-   </select>
+   </select> 
+   
    
    <!-- 댓글(리뷰) memberId로 전체 검색 -->
    <select id="selectListByReviewMemberId" resultMap="reviewResultMap">
