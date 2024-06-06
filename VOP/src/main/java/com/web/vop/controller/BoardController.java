@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.vop.domain.MessageVO;
 import com.web.vop.service.MessageService;
+import com.web.vop.socket.AlarmHandler;
 
 import lombok.extern.log4j.Log4j;
 
@@ -55,7 +56,7 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 	
 	// 마이페이지 호출하기 -> 세션이 있을 경우 이동, 없으면 로그인 페이지로 이동
 	@GetMapping("/mypage") 
-	public void mypageGET(Model model) {
+	public void mypageGET() {
 		System.out.println("mypage.jsp 이동");
 		log.info("mypageGET()");
 	}//end mypageGET()

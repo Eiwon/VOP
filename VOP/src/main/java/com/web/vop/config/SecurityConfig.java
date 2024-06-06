@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -57,6 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 		// 이후 UserDetailsService로 넘겨줌
 
 		http.authorizeRequests()
+			.antMatchers(ANONYMOUS_ONLY).anonymous()
 			.antMatchers(PERMIT_ALL).permitAll()
 			.antMatchers(MEMBER_ONLY).authenticated()
 			.antMatchers(ADMIN_ONLY).hasAnyRole(AUTH_ADMIN)

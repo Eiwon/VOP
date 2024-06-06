@@ -1,15 +1,22 @@
 package com.web.vop.persistence;
 
+import org.springframework.http.HttpMethod;
+
 public interface Constant {
 	
 	public static final String AUTH_ADMIN = "관리자";
 	public static final String AUTH_SELLER = "판매자";
 	public static final String AUTH_NORMAL = "일반";
 	
+	// 비로그인만 접근 가능
+	public static final String[] ANONYMOUS_ONLY = {
+		"/member/login", "/member/register", "/member/findAccount**", "/member/findPassword**"
+	};
+	
 	// 모두 접근 가능
 	public static final String[] PERMIT_ALL = {
-		"/board/main", "/board/popupNotice", "/member/find**", "/member/login", "/member/register", 
-		"/product/detail", "/product/search", "/review/list"
+		"/board/main", "/board/popupNotice", "/product/detail", "/product/search", 
+		"/review/list"
 	}; 
 	// 로그인한 유저만 접근 가능
 	public static final String[] MEMBER_ONLY = {
