@@ -1,6 +1,7 @@
 package com.web.vop.config;
 
 import javax.servlet.Filter;
+import javax.servlet.ServletRegistration.Dynamic;
 
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -22,7 +23,6 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
       return new Class[] {ServletConfig.class, WebSocketConfig.class}; // ServletConfig 클래스 리턴
    }
 
-   
    // Servlet Mapping 메서드
    @Override
    protected String[] getServletMappings() {
@@ -40,6 +40,11 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
       return new Filter[] { encodingFilter };
    }
    
+   @Override
+   protected void customizeRegistration(Dynamic registration) {
+	   // 404 not found는 예외가 아님 => 발생시 예외를 던지도록 설정
+	   registration.setInitParameter("throwExceptionIfNoHandlerFound", "true");
+   } // end customizeRegistration
 
 } // end WebConfig
 
