@@ -88,7 +88,7 @@ public class SellerServiceImple implements SellerService{
 	public int registerNotice(MessageVO messageVO) {
 		log.info("공지사항 등록");
 		int res = messageMapper.insertMessage(messageVO);
-		return 0;
+		return res;
 	} // end registerNotice
 
 	

@@ -15,7 +15,7 @@
 		</div>
 		<div>
 			<div>내용</div> 
-			<textarea rows="30" cols="10" id="content" name="content"></textarea>
+			<textarea rows="30" cols="30" id="content" name="content"></textarea>
 		</div>
 		<div>
 			<input type="button" id="btnSubmit" value="등록">
@@ -27,7 +27,7 @@
 		$(document).ready(function(){
 			$('#btnSubmit').click(function(){
 				let title = $('#title').val();
-				let content = $('#content').text();
+				let content = $('#content').val();
 				
 				if(title.length == 0 || content.length == 0){
 					alert('입력되지 않은 항목이 있습니다.');
@@ -37,6 +37,9 @@
 				$.ajax({
 					method : 'POST',
 					url : 'notice',
+					headers : {
+						'Content-Type' : 'application/json'
+					},
 					data : JSON.stringify({
 						'title' : title,
 						'content' : content

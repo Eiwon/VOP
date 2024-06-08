@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.WebSocketHandler;
 
 import com.web.vop.domain.AnswerVO;
 import com.web.vop.domain.InquiryVO;
 import com.web.vop.persistence.AnswerMapper;
 import com.web.vop.service.InquiryService;
+import com.web.vop.socket.AlarmHandler;
 
 import lombok.extern.log4j.Log4j;
 
@@ -31,7 +33,7 @@ public class InquiryRESTController {
 	private InquiryService inquiryService;
 	
 	@Autowired
-	private AnswerMapper answerMapper;
+	private WebSocketHandler alarmHandler;
 	
 	@PostMapping("/register") // POST : 댓글(문의) 입력
 	public ResponseEntity<Integer> createInquiry(@RequestBody InquiryVO inquiryVO){
@@ -40,6 +42,11 @@ public class InquiryRESTController {
 		
 		// inquiryVO 입력 받아 댓글(문의) 등록
 		int result = inquiryService.createInquiry(inquiryVO);
+		
+		if(result == 1) {
+			// 댓글 알람 송신
+	        ((AlarmHandler)alarmHandler).sendReplyAlarm(inquiryVO.getProductId());
+		}
 		
 		// result값을 전송하여 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);

@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.socket.WebSocketHandler;
 
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
@@ -32,6 +33,7 @@ import com.web.vop.domain.SellerVO;
 import com.web.vop.persistence.Constant;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.SellerService;
+import com.web.vop.socket.AlarmHandler;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
@@ -47,7 +49,6 @@ public class SellerController {
 	
 	@Autowired
 	private MemberService memberService;
-	
 	
 	@GetMapping("sellerRequest")
 	public String sellerRequestGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
