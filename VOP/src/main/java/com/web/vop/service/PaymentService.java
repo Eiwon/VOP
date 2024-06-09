@@ -17,7 +17,10 @@ public interface PaymentService {
 	public int registerPayment(PaymentWrapper payment);
 	
 	// 최근에 등록된 결제 결과 검색 by memberId
-	public PaymentWrapper getRecentPayment(String memberId);
+	// public PaymentWrapper getRecentPayment(String memberId);
+	
+	// 멤버 id와 payment id로 결제 결과 검색
+	public PaymentWrapper getPayment(String memberId, int paymentId);
 	
 	// 배송조회 
 	public List<PaymentVO> getPaymentByPaymentId(int paymentId);

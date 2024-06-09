@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>    
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,19 +31,19 @@
 			<tbody>
 				<tr>
 					<td>이름</td>
-					<td id="receiver_name"></td>
+					<td id="receiver_name">${paymentWrapper.paymentVO.receiverName}</td>
 				</tr>
 				<tr>
 					<td>배송주소</td>
-					<td id="delivery_address"></td>
+					<td id="delivery_address">${paymentWrapper.paymentVO.deliveryAddress}</td>
 				</tr>
 				<tr>
 					<td>연락처</td>
-					<td id="receiver_phone"></td>
+					<td id="receiver_phone">${paymentWrapper.paymentVO.receiverPhone}</td>
 				</tr>
 				<tr>
 					<td>배송 요청사항</td>
-					<td id="requirement"></td>
+					<td id="requirement">${paymentWrapper.paymentVO.requirement}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -50,11 +51,18 @@
 		
 	<div class="box_info" id="order_info">
 		<h2>주문 정보</h2>
-		<table>
-			<tbody id="order_list">
-				
-			</tbody>
-		</table>
+		<c:set var="totalPrice" value="0"/>
+		<c:forEach var="order" items="${paymentWrapper.orderList}">
+			<c:set var="totalPrice" value="${totalPrice + order.productPrice * order.purchaseNum }"/>
+			<div class="order_box">
+				<img alt="${order.imgId}">
+				<div>
+					<div>${order.productName }</div>
+					<div>${order.purchaseNum } 개</div>
+					<div>${order.productPrice * order.purchaseNum } 원</div>
+				</div>
+			</div>
+		</c:forEach>
 	</div>
 		
 	<div class="box_info" id="payment_info">
@@ -63,23 +71,23 @@
 			<tbody>
 				<tr>
 					<td>총 상품 가격</td>
-					<td id="total_price"></td>
+					<td>${totalPrice} 원</td>
 				</tr>
 				<tr>
 					<td>멤버십 할인</td>
-					<td id="membership_discount"></td>
+					<td id="membership_discount">${paymentWrapper.paymentVO.membershipDiscount} %</td>
 				</tr>
 				<tr>
-					<td>할인 쿠폰</td>
-					<td id="coupon_discount"></td>
+					<td>쿠폰 할인</td>
+					<td id="coupon_discount">${paymentWrapper.paymentVO.couponDiscount} %</td>
 				</tr>
 				<tr>
 					<td>배송비</td>
-					<td id="delivery_price"></td>
+					<td id="delivery_price">${paymentWrapper.paymentVO.deliveryPrice} 원</td>
 				</tr>
 				<tr>
 					<td>총 결제 금액</td>
-					<td id="charge_price"></td>
+					<td id="charge_price">${paymentWrapper.paymentVO.chargePrice} 원</td>
 				</tr>
 			</tbody>
 		</table>
@@ -91,17 +99,16 @@
 	</div>
 	
 	<script type="text/javascript">
-		let orderList;
-		let paymentVO;
+		//let orderList;
+		//let paymentVO;
 		
 		$(document).ready(function(){
-			
-			showPaymentResult();
-			
+			//showPaymentResult();
+			loadImg($('#order_info'));
 		}); // end document.ready
 		
 		
-		function showPaymentResult() {
+		/* function showPaymentResult() {
 			
 			$.ajax({
 				method : 'GET',
@@ -134,10 +141,10 @@
 				} // end success
 			}); // end ajax
 			
-		} // end showPaymentResult
+		} // end showPaymentResult */
 	
 		
-		function calcTotalPrice() {
+		/* function calcTotalPrice() {
 			let totalPrice = 0;
 			
 			for(x in orderList){
@@ -145,12 +152,8 @@
 			}
 			console.log('합계 : ' + totalPrice);
 			return totalPrice;
-		} // end calcTotalPrice
+		} // end calcTotalPrice */
 		
-		function toDetails(input){
-			const index = $(input).find('.order_num').text();
-			console.log(orderList[index].productId);
-		} // end toDetails
 		
 		function loadImg(input){
 			$(input).find('img').each(function(){

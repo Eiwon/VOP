@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.web.vop.domain.CouponVO;
 import com.web.vop.domain.MemberDetails;
+import com.web.vop.domain.MyCouponVO;
 import com.web.vop.service.CouponService;
 
 import lombok.extern.log4j.Log4j;
@@ -35,14 +38,22 @@ public class CouponController {
 	
 	@GetMapping("/myList")
 	@ResponseBody
-	public ResponseEntity<List<CouponVO>> getCouponList(@AuthenticationPrincipal MemberDetails memberDetails){
+	public ResponseEntity<List<MyCouponVO>> getCouponList(@AuthenticationPrincipal UserDetails memberDetails){
 		String memberId = memberDetails.getUsername();
 		log.info("쿠폰 리스트 요청 : " + memberId);
-		
-		List<CouponVO> result = couponService.getByMemberId(memberId);
+		List<MyCouponVO> result = couponService.getMyCouponPocket(memberId);
 		log.info(result.size() + "개 쿠폰 검색");
-		return new ResponseEntity<List<CouponVO>>(result, HttpStatus.OK);
+		return new ResponseEntity<List<MyCouponVO>>(result, HttpStatus.OK);
 	} // end getCouponList
+	
+	@GetMapping("/myCoupon")
+	public void myCouponGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
+		log.info("내 쿠폰함 페이지 이동 요청");
+		String memberId = memberDetails.getUsername();
+		List<MyCouponVO> couponList = couponService.getMyCouponPocket(memberId);
+		
+		model.addAttribute("couponList", couponList);
+	} // end myCouponGET
 	
 	@GetMapping("/list")
 	public void getOriginalCoupon() {

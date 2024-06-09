@@ -18,6 +18,9 @@
 	#coupon_list{
 		list-style: none;
 	}
+	.couponRow {
+		border: 0.5px solid blue;
+	}
 </style>
 <title>결제 페이지</title>
 </head>
@@ -99,11 +102,8 @@
 					</tr>
 					<tr>
 						<td>
-							<table>
-								<tbody id="coupon_list">
-									
-								</tbody>
-							</table>
+							<div id="coupon_list">
+							</div>
 						</td>
 					</tr>
 					<tr>
@@ -130,8 +130,8 @@
 		let memberVO = paymentWrapper.memberVO;
 		let orderList = paymentWrapper.orderList;
 		let deliveryVO = paymentWrapper.deliveryVO;
-		let couponList;
-		let couponVO;
+		let myCouponList;
+		let myCouponVO;
 		let paymentVO = {
 				'paymentId' : 0,
 				'memberId' : '',
@@ -208,7 +208,7 @@
 		
 		function selectCoupon(){
 			let tagCouponList = $('#coupon_list');
-			couponVO = null;
+			myCouponVO = null;
 			paymentVO.couponDiscount = 0;
 			setPaymentInfo();
 			
@@ -217,15 +217,15 @@
 				url : '../coupon/myList',
 				success : function(result){
 					console.log(result);
-					couponList = result;
+					myCouponList = result;
 					
 					let form = '';
-					for(x in couponList){
-					form += '<tr class="couponRow"><td><input type="hidden" class="couponIdx" value="' + x + '"></td>' +
-						'<td style="width: 200px;">' + couponList[x].couponName + '</td>' +
-						'<td style="width: 200px;">' + couponList[x].discount + '% 할인</td>' +
-						'<td style="width: 200px;">' + couponList[x].couponNum + '</td>' + 
-						'<td><input type="radio" name="radioCoupon" onclick="applyCoupon(this)"></td></tr>';
+					for(x in myCouponList){
+					form += '<div class="couponRow"><div><input type="hidden" class="couponIdx" value="' + x + '"></div>' +
+						'<div style="width: 200px;">쿠폰명 ' + myCouponList[x].couponName + '<input type="radio" name="radioCoupon" onclick="applyCoupon(this)"></div>' +
+						'<div style="width: 200px;">할인률 ' + myCouponList[x].discount + '% 할인</div>' +
+						'<div style="width: 200px;">보유량 ' + myCouponList[x].couponNum + '개</div>' + 
+						'</div>';
 					}
 			
 					tagCouponList.html(form);
@@ -236,9 +236,9 @@
 		
 		function applyCoupon(input){
 			let couponIdx = $(input).parents('.couponRow').find('.couponIdx').val();
-			console.log('선택된 쿠폰 이름 : ' + couponList[couponIdx].couponName);
-			couponVO = couponList[x];
-			paymentVO.couponDiscount = couponList[couponIdx].discount;
+			console.log('선택된 쿠폰 이름 : ' + myCouponList[couponIdx].couponName);
+			myCouponVO = myCouponList[x];
+			paymentVO.couponDiscount = myCouponList[couponIdx].discount;
 			setPaymentInfo();
 		} // end applyCoupon
 		
@@ -324,11 +324,15 @@
 				data : JSON.stringify({
 					'paymentVO' : paymentVO,
 					'orderList' : orderList,
-					'couponVO' : couponVO
+					'myCouponVO' : myCouponVO
 				}),
 				success : function(result){
 					console.log('결제 내역 전송 결과 : ' + result);
-					location.href = 'paymentResult';
+					if(result == 0){
+						alert('결제 내역 전송 실패');
+					}else{
+						location.href = 'paymentResult?paymentId=' + result;					
+					}
 				}
 			}); // end ajax
 			

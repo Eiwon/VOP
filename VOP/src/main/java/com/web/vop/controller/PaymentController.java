@@ -66,8 +66,14 @@ public class PaymentController {
 	
 	
 	@GetMapping("/paymentResult")
-	public void paymentResultGET() {
+	public void paymentResultGET(Model model, int paymentId , @AuthenticationPrincipal MemberDetails memberDetails) {
 		log.info("paymentResult.jsp 이동 요청");
+		String memberId = memberDetails.getUsername();
+		// 각 주문정보와 전체 결제 내역을 한번에 보내기 위해 포장
+		PaymentWrapper paymentWrapper = paymentService.getPayment(memberId, paymentId);
+		
+		model.addAttribute("paymentWrapper", paymentWrapper);
+		
 	} // end paymentResultGET
 	
 	
@@ -87,22 +93,27 @@ public class PaymentController {
 		log.info("결제 내역 : " + paymentResult.getPaymentVO());
 		log.info("배송지 정보 : " + paymentResult.getDeliveryVO());
 		log.info("주문 목록 : " + paymentResult.getOrderList());
-		log.info("쿠폰 사용 내역 : " + paymentResult.getCouponVO());
+		log.info("쿠폰 사용 내역 : " + paymentResult.getMyCouponVO());
 		
 		int res = paymentService.registerPayment(paymentResult); // 결제 결과 등록
+		
+		if(res == 1) {
+			res = paymentResult.getPaymentVO().getPaymentId();
+		}
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end savePaymentResult
 	
-	@GetMapping("/payment")
-	@ResponseBody
-	public ResponseEntity<PaymentWrapper> getPaymentResult(@AuthenticationPrincipal MemberDetails memberDetails){
-		log.info("결제 결과 조회 요청");
-		String memberId = memberDetails.getUsername();// 각 주문정보와 전체 결제 내역을 한번에 보내기 위해 포장
-		PaymentWrapper payment = paymentService.getRecentPayment(memberId);
-		
-		return new ResponseEntity<PaymentWrapper>(payment, HttpStatus.OK);
-	} // end sendPaymentResult
+//	@GetMapping("/payment")
+//	@ResponseBody
+//	public ResponseEntity<PaymentWrapper> getPaymentResult(){
+//		log.info("결제 결과 조회 요청");
+//		String memberId = memberDetails.getUsername();
+//		// 각 주문정보와 전체 결제 내역을 한번에 보내기 위해 포장
+//		PaymentWrapper payment = paymentService.getPayment(memberId, paymentId);
+//		
+//		return new ResponseEntity<PaymentWrapper>(payment, HttpStatus.OK);
+//	} // end sendPaymentResult
 	
 	
 	@GetMapping("/popupDeliverySelect")

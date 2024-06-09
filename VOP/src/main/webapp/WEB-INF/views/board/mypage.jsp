@@ -26,11 +26,13 @@
 					<li><a href="myInfo">내 정보 확인 / 수정</a></li>
 					<li><a href="../order/orderlist">주문 목록</a></li>
 					<li><a href="../Delivery/deliveryAddressList">배송지 관리</a></li>
+					<li><a href="../coupon/myCoupon">쿠폰함</a></li>
 					<li><a href="seller">판매자 페이지</a></li>
 					<sec:authorize access="hasRole('ROLE_관리자')">
 						<li><a href="admin">관리자 페이지</a></li>
 					</sec:authorize>
 					<li><a onclick="consult()">1대1 상담</a> </li>
+					<!-- 테스트를 위해 관리자도 1대1 상담 신청할 수 있도록 설정 -->
 					<%-- <sec:authorize access="!hasRole('ROLE_관리자')">
 						<li><a onclick="consult()">1대1 상담</a> </li>
 					</sec:authorize> --%>

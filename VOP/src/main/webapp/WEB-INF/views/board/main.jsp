@@ -132,6 +132,7 @@
 				url : 'notice',
 				success : function(result){
 					let noticeList = result;
+					console.log('팝업 광고 : ' + result);
 					for(x in noticeList){
 						if(!blockList.includes(noticeList[x].messageId)){ // 차단 목록에 등록되지 않은 메시지만 출력
 							showPopup(noticeList[x].messageId);

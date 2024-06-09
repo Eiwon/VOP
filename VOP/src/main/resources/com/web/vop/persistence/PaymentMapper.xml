@@ -34,12 +34,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</insert>
 	
 	<!-- memberId로 최근에 등록된 결제 내역 검색 -->
-	<select id="selectLastPayment" resultMap="PaymentResultMap">
+	<!-- <select id="selectLastPayment" resultMap="PaymentResultMap">
 		SELECT * FROM PAYMENT
 		WHERE PAYMENT_ID = (
 		SELECT MAX(PAYMENT_ID) FROM PAYMENT WHERE MEMBER_ID = #{memberId}
 		)
+	</select> -->
+	
+	<!-- memberId와 paymentId로 결제 결과 검색 -->
+	<select id="selectByMemberIdAndPaymentId" resultMap="PaymentResultMap">
+		SELECT * FROM PAYMENT
+		WHERE MEMBER_ID = #{memberId} AND PAYMENT_ID = #{paymentId}
 	</select>
+	
 	
 	<!-- 배송조회  -->
 	 <select id="selectPaymentByPaymentId" resultMap="PaymentResultMap">

@@ -18,10 +18,10 @@ public class AccessExceptionHandler {
 		return "redirect:/access/notFound";
 	} // end NoHandlerFoundExceptionHandler
 	
-	@ExceptionHandler(Exception.class)
-	public String ExceptionHandler(Exception exception) {
-		log.error("예외 발생!! : " + exception);
-		return "redirect:/access/exception";
-	}
+//	@ExceptionHandler(Exception.class)
+//	public String ExceptionHandler(Exception exception) {
+//		log.error("예외 발생!! : " + exception);
+//		return "redirect:/access/exception";
+//	}
 	
 }

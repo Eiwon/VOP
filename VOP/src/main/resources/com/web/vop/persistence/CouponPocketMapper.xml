@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.web.vop.persistence.CouponPocketMapper">
+
+   <resultMap type="com.web.vop.domain.CouponPocketVO" id="couponPocketResultMap">
+		<id property="memberId" column="MEMBER_ID"/>
+   		<id property="couponId" column="COUPON_ID"/>
+		<result property="couponNum" column="COUPON_NUM"/>
+		<result property="expirationDate" column="EXPIRATION_DATE"/>
+   </resultMap>
+   
+   <resultMap type="com.web.vop.domain.MyCouponVO" id="myCouponResultMap">
+   		<id property="couponId" column="COUPON_ID"/>
+   		<result property="couponName" column="COUPON_NAME"/>
+   		<result property="discount" column="DISCOUNT"/>
+   		<result property="expirationDate" column="EXPIRATION_DATE"/>
+   		<result property="couponNum" column="COUPON_NUM"/>
+   </resultMap>
+   
+   
+   <!-- memberId로 쿠폰 조회 -->
+   <select id="selectByMemberId" resultMap="myCouponResultMap">
+   		SELECT MY.COUPON_ID, COUPON.COUPON_NAME, COUPON.DISCOUNT, MY.EXPIRATION_DATE, MY.COUPON_NUM 
+   		FROM (
+   		SELECT * FROM COUPON_POCKET WHERE MEMBER_ID = #{memberId}
+   		) MY LEFT JOIN COUPON 
+   		ON MY.COUPON_ID = COUPON.COUPON_ID
+   </select>
+   
+   <!-- 쿠폰 추가 -->
+   <insert id="insertCouponPocket">
+   		INSERT INTO COUPON_POCKET VALUES (
+   			#{memberId}, #{couponId}, #{couponNum}, SYSDATE +14
+   		);
+   </insert>
+   
+   <!-- 지정 수로 쿠폰 수 변경 -->
+   <update id="updateCouponNum">
+   		UPDATE COUPON_POCKET SET COUPON_NUM = #{couponNum} 
+   		WHERE COUPON_ID = #{couponId} AND MEMBER_ID = #{memberId}
+   </update>
+   
+   <!-- 지정 쿠폰 갯수 조회 -->
+   <select id="selectCouponNum" resultType="Integer">
+   		SELECT COUPON_NUM FROM COUPON_POCKET WHERE COUPON_ID = #{couponId} AND MEMBER_ID = #{memberId}
+   </select>
+   
+   <!-- 지정 쿠폰 삭제 -->
+   <delete id="deleteCouponById">
+   		DELETE COUPON_POCKET WHERE COUPON_ID = #{couponId} AND MEMBER_ID = #{memberId}
+   </delete>
+   
+   
+</mapper>

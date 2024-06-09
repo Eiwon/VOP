@@ -6,35 +6,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.web.vop.persistence.CouponMapper">
 
    <resultMap type="com.web.vop.domain.CouponVO" id="couponResultMap">
-   		<id property="couponName" column="COUPON_NAME"/>
-   		<id property="memberId" column="MEMBER_ID"/>
-		<result property="validPeriod" column="VALID_PERIOD"/>
+   		<id property="couponId" column="COUPON_ID"/>
+		<result property="couponName" column="COUPON_NAME"/>
 		<result property="discount" column="DISCOUNT"/>
-		<result property="couponNum" column="COUPON_NUM"/>   
+		<result property="dateCreated" column="DATE_CREATED"/>
    </resultMap>
    
+   <!-- 신규 쿠폰 등록 -->
+   <insert id="insertCoupon">
+   		INSERT INTO COUPON VALUES (
+   		COUPON_SEQ.NEXTVAL, #{couponName}, #{discount}, SYSDATE)
+   </insert>
    
-   <!-- memberId로 쿠폰 조회 -->
-   <select id="selectByMemberId" resultMap="couponResultMap">
-   		SELECT * FROM COUPON WHERE MEMBER_ID = #{memberId}
+   <!-- 모든 쿠폰 조회 (페이징) -->
+   <select id="selectAllCoupon">
+   		SELECT * FROM (
+   			SELECT COUPON.*, ROW_NUMBER() OVER (ORDER BY COUPON_ID DESC) RN 
+   			FROM COUPON
+   		) WHERE RN BETWEEN #{start} AND #{end}
    </select>
    
-   <!-- 지정 쿠폰 삭제 -->
-   <delete id="deleteCouponSelected">
-   		DELETE COUPON WHERE COUPON_NAME = #{couponName} AND MEMBER_ID = #{memberId}
+   <!-- 모든 쿠폰 수 조회 -->
+   <select id="selectAllCouponCnt" resultType="Integer">
+   		SELECT COUNT(COUPON_ID) FROM COUPON
+   </select>
+   
+   <!-- 쿠폰 삭제 -->
+   <delete id="deleteCouponById">
+   		DELETE COUPON WHERE COUPON_ID = #{couponId}
    </delete>
-   
-   <!-- 지정 수로 쿠폰 수 변경 -->
-   <update id="updateCouponNum">
-   		UPDATE COUPON SET COUPON_NUM = #{couponNum} 
-   		WHERE COUPON_NAME = #{couponName} AND MEMBER_ID = #{memberId}
-   </update>
-   
-   <!-- 지정 쿠폰 갯수 조회 -->
-   <select id="selectCouponNum" resultType="Integer">
-   		SELECT COUPON_NUM FROM COUPON WHERE COUPON_NAME = #{couponName} AND MEMBER_ID = #{memberId}
-   </select>
-   
-   
    
 </mapper>
