@@ -287,11 +287,36 @@
 			                amount: paymentVO.chargePrice, // 결제 가격
 			                buyer_name: memberVO.memberId,
 			                buyer_email: memberVO.memberEmail,
-			                // buyer_tel : '010-1234-5678',
-			                // buyer_addr : '서울특별시 강남구 삼성동',
-			                // buyer_postcode : '123-456'
 			            }, async function (rsp) { // callback
-			             	console.log(rsp);
+			             	/*rsp 예시
+			             	{
+			            	apply_num:""
+			            	bank_name:null
+			            	buyer_addr:""
+			            	buyer_email:"test1234@naver.com"
+			            	buyer_name:"test1234"
+			            	buyer_postcode:""
+			            	buyer_tel:""
+			            	card_name:null
+			            	card_number:""
+			            	card_quota:0
+			            	currency:"KRW"
+			            	custom_data:null
+			            	imp_uid:"imp_899047014817"
+			            	merchant_uid:"1046"
+			            	name:"사과"
+			            	paid_amount:30
+			            	paid_at: 1717991067
+			            	pay_method:"point"
+			            	pg_provider:"kakaopay"
+			            	pg_tid:"T6667687257c75a57ce9"
+			            	pg_type:"payment"
+			            	receipt_url:"https://mockup-pg-web.kakao.com/v1/confirmation/p/T6667687257c75a57ce9/f57fa5a352ed130933506fabcef19aa974d46a98c05b9da464d5a602a2e34da7"
+			            	status: "paid"
+			            	success:true
+			             	}
+			             	*/
+			            
 			            	if (rsp.success) { //결제 성공시
 			            		sendPaymentResult(rsp);
 			                }
