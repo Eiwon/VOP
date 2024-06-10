@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -54,10 +55,16 @@ public class RootConfig {
    }
    
    @Bean
-	public PersistentTokenRepository tokenRepository() {
-		JdbcTokenRepositoryImpl tokenRepositoryImple = new JdbcTokenRepositoryImpl();
-		tokenRepositoryImple.setDataSource(dataSource());
-		return tokenRepositoryImple;
-	}
+   public PersistentTokenRepository tokenRepository() {
+	   JdbcTokenRepositoryImpl tokenRepositoryImple = new JdbcTokenRepositoryImpl();
+	   tokenRepositoryImple.setDataSource(dataSource());
+	   return tokenRepositoryImple;
+   }
+   
+   // json <-> java object º¯È¯¿ë °´Ã¼
+   @Bean
+   public ObjectMapper objectMapper() {
+	   return new ObjectMapper();
+   } 
    
 } // end RootConfig

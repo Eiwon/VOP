@@ -22,4 +22,5 @@ public class PaymentVO {
 	private int couponDiscount;
 	private int deliveryPrice;
 	private int chargePrice;
+	private String chargeId;
 }
