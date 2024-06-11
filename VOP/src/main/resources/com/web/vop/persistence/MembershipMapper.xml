@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.web.vop.persistence.MembershipMapper">
+
+   <resultMap type="com.web.vop.domain.MembershipVO" id="MembershipResultMap">
+      <id property="membershipId" column="MEMBERSHIP_ID"/> 
+      <result property="memberId" column="MEMBER_ID"/>
+      <result property="joinDate" column="JOIN_DATE"/>
+      <result property="expiryDate" column="EXPIRY_DATE"/>
+      <result property="paymentDate" column="PAYMENT_DATE"/>
+   </resultMap>
+   
+   
+   
+   <!-- 멤버십 등록 -->
+   <insert id="insertMembership">
+      INSERT INTO MEMBERSHIP VALUES (
+      MEMBERSHIP_SEQ.NEXTVAL, #{memberId}, SYSDATE, SYSDATE + INTERVAL '5' DAY, SYSDATE)
+   </insert>
+
+	<!-- 멤버십 권한 수정 -->
+	<update id="updateMemberAuthOnInsert">
+        UPDATE MEMBER SET MEMBER_AUTH = '멤버십' WHERE MEMBER_ID = #{memberId}
+	</update> 
+	
+	<!-- 멤버십 만료 기간 조회 -->
+	<select id="selectExpiryDate" resultType="Date">
+		SELECT EXPIRY_DATE FROM MEMBERSHIP WHERE MEMBER_ID = #{memberId}
+	</select>
+	
+	<!-- 멤버십 삭제(해지) -->
+	<delete id="deleteMembership">
+		DELETE MEMBERSHIP WHERE MEMBER_ID = #{memberId}
+	</delete>	
+	
+	<!-- 멤버십 삭제 시 권한 업데이트 -->
+	<update id="updateMemberAuthOnDelete">
+        UPDATE MEMBER SET MEMBER_AUTH = '일반' WHERE MEMBER_ID = #{memberId}
+	</update>
+	
+	
+	
+</mapper>

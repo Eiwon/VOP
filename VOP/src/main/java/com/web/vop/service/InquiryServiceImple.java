@@ -11,6 +11,7 @@ import com.web.vop.domain.ProductVO;
 import com.web.vop.persistence.AnswerMapper;
 import com.web.vop.persistence.InquiryMapper;
 import com.web.vop.persistence.ProductMapper;
+import com.web.vop.util.PageMaker;
 
 import lombok.extern.log4j.Log4j;
 
@@ -42,7 +43,7 @@ public class InquiryServiceImple implements InquiryService{
 		log.info("productVO : " + productVO);
 		
 		int insertRes = 2;
-		
+		// 해당 상품이 있는지 없는지 확인 
 		if(productVO != null) {
 			// 문의 등록이 있는지 없는지 확인
 			InquiryVO vo = inquiryMapper.selectByInquiry(productId, memberId);
@@ -64,12 +65,31 @@ public class InquiryServiceImple implements InquiryService{
 		return insertRes;
 	}
 	
-	// 댓글(문의) 전체 검색
 	@Override
 	public List<InquiryVO> getAllInquiry(int productId) {
 		log.info("getAllInquiry()");
 		List<InquiryVO> result = inquiryMapper.selectListByInquiry(productId);
 		return result;
+	}
+	
+	// 댓글(문의) 상품 기준 전체 검색
+	@Override
+	public List<InquiryVO> getAllInquiryPaging(int productId, PageMaker pageMaker) {
+		log.info("getAllInquiryPaging()");
+		int totalCnt = inquiryMapper.selectListByInquiryCnt(productId);
+		log.info("totalCnt : " + totalCnt);
+		pageMaker.setTotalCount(totalCnt);
+		return inquiryMapper.selectListByInquiryPaging(productId, pageMaker.getPagination());
+	}	
+	
+	// 댓글(문의) 회원 기준 전체 검색
+	@Override
+	public List<InquiryVO> getAllInquiryMemberIdPaging(String memberId, PageMaker pageMaker) {
+		log.info("getAllInquiryPaging()");
+		int totalCnt = inquiryMapper.selectListByInquiryMemberIdCnt(memberId);
+		log.info("totalCnt : " + totalCnt);
+		pageMaker.setTotalCount(totalCnt);
+		return inquiryMapper.selectListByInquiryMemberIdPaging(memberId, pageMaker.getPagination());
 	}
 	
 	// 댓글(문의) 검색
@@ -114,6 +134,10 @@ public class InquiryServiceImple implements InquiryService{
 		log.info(deleteRes + "행 댓글이 삭제되었습니다.");	
 		return deleteRes;
 	}
+
+	
+
+	
 	
 	
 

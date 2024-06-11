@@ -1,6 +1,7 @@
 package com.web.vop.util;
 
 import java.util.HashMap;
+
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,8 @@ public class PaymentAPIUtil {
 		headers.set("Content-Type", "application/json");
 
 		Map<String, String> body = new HashMap<>();
-		body.put("imp_key", ApiKey.PAYMENT_API_KEY);
-		body.put("imp_secret", ApiKey.PAYMENT_SECRET_KEY);
+//		body.put("imp_key", ApiKey.PAYMENT_API_KEY);
+//		body.put("imp_secret", ApiKey.PAYMENT_SECRET_KEY);
 		String jsonBody = null;
 		try {
 			jsonBody = objectMapper.writeValueAsString(body);

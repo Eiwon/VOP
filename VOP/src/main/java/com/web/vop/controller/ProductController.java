@@ -79,8 +79,8 @@ public class ProductController {
 		// productId에 해당하는 상품 조회 
 		ProductVO productVO = productService.getProductById(productId);	
 		
-		// 이미지 코드 조회
-		ImageVO imageVO = imageService.getImageById(productVO.getImgId());
+//		// 이미지 코드 조회
+//		ImageVO imageVO = imageService.getImageById(productVO.getImgId());
 		
 		// 상세 이미지 조회
 		List<ImageVO> imageList = imageService.getByProductId(productId);
@@ -91,7 +91,7 @@ public class ProductController {
 		// 상품 조회 정보
 		model.addAttribute("productVO", productVO);
 		// 이미지 조회 정보
-		model.addAttribute("imageVO", imageVO);
+//		model.addAttribute("imageVO", imageVO);
 		// 상품 설명 이미지 조회 정보
 		model.addAttribute("imageList", imageList);
 		

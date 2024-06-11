@@ -1,11 +1,15 @@
 package com.web.vop.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,9 +22,14 @@ import org.springframework.web.socket.WebSocketHandler;
 
 import com.web.vop.domain.AnswerVO;
 import com.web.vop.domain.InquiryVO;
+import com.web.vop.domain.MemberDetails;
 import com.web.vop.persistence.AnswerMapper;
 import com.web.vop.service.InquiryService;
+import com.web.vop.util.PageMaker;
+import com.web.vop.util.Pagination;
+
 import com.web.vop.socket.AlarmHandler;
+
 
 import lombok.extern.log4j.Log4j;
 
@@ -98,4 +107,29 @@ public class InquiryRESTController {
 	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	   }// end deleteInquiry()
+	
+	@GetMapping("/myList")
+	public ResponseEntity<Map<String, Object>> myListInquiryGET(Pagination pagination,
+			@AuthenticationPrincipal MemberDetails memberDetails) {
+		log.info("myListInquiry()");
+		String memberId = memberDetails.getUsername();
+		log.info("pagination : " + pagination);
+		
+		Map<String, Object> resultMap = new HashMap<>();
+		
+		//페이지 메이커에 기본 쪽수값 저장
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setPagination(pagination);
+		log.info("쪽수 기본값 : " + pageMaker.getPagination());
+		
+		List<InquiryVO> listInquiry = inquiryService.getAllInquiryMemberIdPaging(memberId, pageMaker);
+		
+		log.info("listInquiry : " + listInquiry);
+		log.info("pageMaker : " + pageMaker);
+		
+		resultMap.put("listInquiry", listInquiry);
+		resultMap.put("pageMaker", pageMaker);
+		
+		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+	}// myListInquiryGET 
 }

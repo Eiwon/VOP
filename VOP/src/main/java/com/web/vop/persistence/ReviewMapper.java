@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.web.vop.domain.ReviewVO;
+import com.web.vop.util.Pagination;
 
 @Mapper
 public interface ReviewMapper {
@@ -14,6 +15,11 @@ public interface ReviewMapper {
 	 
 	 // ´ñ±Û(¸®ºä) ÀüÃ¼ °Ë»ö
 	 List<ReviewVO> selectListByReview(int productId);
+	 
+	 // ´ñ±Û(¸®ºä) ÀüÃ¼ °Ë»ö ÆäÀÌÂ¡ Ã³¸®
+	 List<ReviewVO>selectListByReviewPaging(@Param("productId")int productId, @Param("pagination") Pagination pagination);
+	 
+	 int selectListByReviewCnt(int productId);
 	 
 	 // ´ñ±Û(¸®ºä) È¸¿øID·Î ÀüÃ¼ °Ë»ö
 	 List<ReviewVO> selectListByReviewMemberId(String memberId);
