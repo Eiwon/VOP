@@ -27,6 +27,7 @@
 					<li><a href="../order/orderlist">주문 목록</a></li>
 					<li><a href="../Delivery/deliveryAddressList">배송지 관리</a></li>
 					<li><a href="../coupon/myCoupon">쿠폰함</a></li>
+					<li><a href="../membership/register">멤버십 등록</a></li>
 					<li><a href="seller">판매자 페이지</a></li>
 					<sec:authorize access="hasRole('ROLE_관리자')">
 						<li><a href="admin">관리자 페이지</a></li>

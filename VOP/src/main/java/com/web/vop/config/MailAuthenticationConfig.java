@@ -23,8 +23,8 @@ public class MailAuthenticationConfig {
 		// public static final String MAIL_AUTH_ID = "rtst606@gmail.com";
 		// public static final String MAIL_AUTH_PW = "mslbwxavcqmhztas";
 		
-		javaMailSender.setUsername(ApiKey.MAIL_AUTH_ID);
-		javaMailSender.setPassword(ApiKey.MAIL_AUTH_PW);
+		//javaMailSender.setUsername(ApiKey.MAIL_AUTH_ID);
+		//javaMailSender.setPassword(ApiKey.MAIL_AUTH_PW);
 		javaMailSender.setHost("smtp.gmail.com");
 		Properties property = new Properties();
 		property.put("mail.smtp.auth", true);
