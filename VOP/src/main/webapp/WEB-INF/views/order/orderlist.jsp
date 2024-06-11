@@ -121,6 +121,12 @@
 	                	<button type="submit">리뷰 관리</button>
 	                </form>
 	                
+	                 <form action="../inquiry/myList" method="get">
+	                	<input type="hidden" name="memberId" value="${memberDetails.getUsername()}">
+	                	<input type="hidden" name="memberId" value="${order.productName}">
+	                	<button type="submit">문의 리스트</button>
+	                </form>
+	                
 	                <!-- 판매자 문의 코드 -->
 	                <button class="sellerInquiry">판매자 문의</button>
 

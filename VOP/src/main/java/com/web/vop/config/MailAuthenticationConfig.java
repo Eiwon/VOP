@@ -1,6 +1,7 @@
 package com.web.vop.config;
 
 import java.util.HashMap;
+
 import java.util.Map;
 import java.util.Properties;
 
@@ -23,8 +24,13 @@ public class MailAuthenticationConfig {
 		// public static final String MAIL_AUTH_ID = "rtst606@gmail.com";
 		// public static final String MAIL_AUTH_PW = "mslbwxavcqmhztas";
 		
+<<<<<<< HEAD
 		//javaMailSender.setUsername(ApiKey.MAIL_AUTH_ID);
 		//javaMailSender.setPassword(ApiKey.MAIL_AUTH_PW);
+=======
+//		javaMailSender.setUsername(ApiKey.MAIL_AUTH_ID); 에러 발생해서 주석 처리 했습니다.
+//		javaMailSender.setPassword(ApiKey.MAIL_AUTH_PW); 에러 발생해서 주석 처리 했습니다.
+>>>>>>> 01c7cd75bb1f26d24d383c61498637fe1c9aa48f
 		javaMailSender.setHost("smtp.gmail.com");
 		Properties property = new Properties();
 		property.put("mail.smtp.auth", true);

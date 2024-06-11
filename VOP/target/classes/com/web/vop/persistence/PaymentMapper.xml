@@ -29,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="insertPayment">
 		INSERT INTO PAYMENT VALUES (
 			#{paymentId}, #{memberId}, #{deliveryAddress}, #{receiverName}, #{receiverPhone},
-			#{requirement}, #{membershipDiscount}, #{couponDiscount}, #{deliveryPrice}, #{chargePrice}
+			#{requirement}, #{membershipDiscount}, #{couponDiscount}, #{deliveryPrice}, #{chargePrice}, #{chargeId}
 		)
 	</insert>
 	

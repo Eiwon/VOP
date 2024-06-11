@@ -268,7 +268,6 @@
 			
 			paymentVO.chargePrice = calcChargePrice(); // 최종 결제 금액 계산
 			
-			console.log('request paymentId');
 			// 서버에서 결제 고유 번호 받아오기
 			$.ajax({
 				method : 'GET',
@@ -337,6 +336,7 @@
 			paymentVO.receiverName = deliveryVO.receiverName;
 			paymentVO.receiverPhone = deliveryVO.receiverPhone;
 			paymentVO.requirement = deliveryVO.requirement;
+			paymentVO.chargeId = paymentResult.imp_uid;
 			
 			console.log(paymentVO);
 			

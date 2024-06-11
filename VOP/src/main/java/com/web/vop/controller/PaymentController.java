@@ -38,6 +38,7 @@ import com.web.vop.service.MemberService;
 import com.web.vop.service.OrderService;
 import com.web.vop.service.PaymentService;
 import com.web.vop.service.ProductService;
+import com.web.vop.util.PaymentAPIUtil;
 
 import lombok.extern.log4j.Log4j;
 
@@ -48,6 +49,9 @@ public class PaymentController {
 	
 	@Autowired
 	private PaymentService paymentService;
+	
+	@Autowired
+	private PaymentAPIUtil paymentAPIUtil;
 	
 	@PostMapping("/checkout")
 	public void makePayment(
@@ -91,14 +95,48 @@ public class PaymentController {
 	public ResponseEntity<Integer> savePaymentResult(@RequestBody PaymentWrapper paymentResult){
 		log.info("---------결제 결과 저장--------");
 		log.info("결제 내역 : " + paymentResult.getPaymentVO());
-		log.info("배송지 정보 : " + paymentResult.getDeliveryVO());
 		log.info("주문 목록 : " + paymentResult.getOrderList());
 		log.info("쿠폰 사용 내역 : " + paymentResult.getMyCouponVO());
 		
-		int res = paymentService.registerPayment(paymentResult); // 결제 결과 등록
+		PaymentVO paymentVO = paymentResult.getPaymentVO();
+		String impUid = paymentVO.getChargeId();
+		int chargePrice = paymentVO.getChargePrice();
+		int res = 0;
+		// 결제 정보가 유효한지 검사
+		// 주문 목록 총액이 결제금액과 일치하는지 확인
+		int total = 0;
+		for(OrderVO order : paymentResult.getOrderList()) {
+			total += order.getProductPrice() * order.getPurchaseNum();
+		}
+		total = (total + paymentVO.getDeliveryPrice()) * 
+				(100 - paymentVO.getMembershipDiscount() - paymentVO.getCouponDiscount()) / 100;
+				
+		if(total != chargePrice) {
+			// 결제 에러
+			log.error("구매물품 총액 : 결제액 불일치");
+			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
+			return new ResponseEntity<Integer>(res, HttpStatus.OK);
+		}
+		
+		// 서버로 전달된 금액이 실제 결제 금액과 같은지 확인
+		int realChargePrice = paymentAPIUtil.getPaymentAmount(impUid);
+		if(realChargePrice != chargePrice) {
+			// 결제 에러
+			log.error("실결제액 : 서버 전송 결제액 불일치");
+			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
+			return new ResponseEntity<Integer>(res, HttpStatus.OK);
+		}
+		
+		res = paymentService.registerPayment(paymentResult); // 결제 결과 등록
 		
 		if(res == 1) {
 			res = paymentResult.getPaymentVO().getPaymentId();
+			// 결제 성공시 결제id 반환
+		}else {
+			// 결제 에러
+			log.error("DB 저장 실패");
+			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
+			return new ResponseEntity<Integer>(res, HttpStatus.OK);
 		}
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);

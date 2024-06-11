@@ -1,7 +1,8 @@
 package com.web.vop.controller;
 
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,8 @@ import com.web.vop.domain.ReviewVO;
 import com.web.vop.service.ProductService;
 import com.web.vop.service.ReviewService;
 import com.web.vop.socket.AlarmHandler;
-
+import com.web.vop.util.PageMaker;
+import com.web.vop.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -62,18 +64,26 @@ public class ReviewRESTController {
 	
 	
 	@GetMapping("/all/{productId}") // GET : 댓글(리뷰) 선택(all)
-	public ResponseEntity<List<ReviewVO>> readAllReview(
-			@PathVariable("productId") int productId){
+	public ResponseEntity<Map<String, Object>> readAllReview(
+			@PathVariable("productId") int productId,
+			Pagination pagination){
 		log.info("readAllReview()");
 		
-		// productId 확인 로그
-		log.info("productId = " + productId);
+		Map<String, Object> resultMap = new HashMap<>();
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setPagination(pagination);	
 		
 		// productId에 해당하는 댓글(리뷰) list을 전체 검색
-		List<ReviewVO> list = reviewService.getAllReview(productId);
+		List<ReviewVO> list = reviewService.getAllReviewPaging(productId, pageMaker);
+		
+		log.info("list : " + list);
+		log.info("pageMaker : " + pageMaker);
+		
+		resultMap.put("list", list);
+		resultMap.put("pageMaker", pageMaker);
 		
 		// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
-		return new ResponseEntity<List<ReviewVO>>(list, HttpStatus.OK);
+		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	}// end readAllReview()
 	
 	

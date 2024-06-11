@@ -28,8 +28,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       SELECT * FROM INQUIRY
       WHERE PRODUCT_ID = #{productId}
       ORDER BY INQUIRY_ID
+   </select> 
+   
+   <!-- 댓글(문의) 전체 검색 (페이징 처리) -->
+	<select id="selectListByInquiryPaging" resultMap="inquiryResultMap">
+    	SELECT * FROM (
+        	SELECT INQUIRY.*, ROW_NUMBER() OVER (ORDER BY INQUIRY_ID DESC) RN
+        	FROM INQUIRY
+        	WHERE PRODUCT_ID = #{productId}
+   		)
+    	WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+	</select>
+	
+	<!-- 댓글(문의) 전체 검색 (페이징 처리) MEMBER_ID -->
+	<select id="selectListByInquiryMemberIdPaging" resultMap="inquiryResultMap">
+    	SELECT * FROM (
+        	SELECT INQUIRY.*, ROW_NUMBER() OVER (ORDER BY INQUIRY_ID DESC) RN
+        	FROM INQUIRY
+        	WHERE MEMBER_ID = #{memberId}
+   		)
+    	WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+	</select>
+	
+	<!-- 댓글(문의) 전체 검색(해당 상품의 문의 수) 페이징 처리-->
+   <select id="selectListByInquiryMemberIdCnt" resultType="Integer">
+   	  SELECT COUNT(MEMBER_ID) FROM INQUIRY 
+   	  WHERE MEMBER_ID = #{memberId}
    </select>
-
+   
+   <!-- 댓글(문의) 전체 검색(해당 상품의 문의 수) 페이징 처리-->
+   <select id="selectListByInquiryCnt" resultType="Integer">
+   	  SELECT COUNT(PRODUCT_ID) FROM INQUIRY 
+   	  WHERE PRODUCT_ID = #{productId}
+   </select>
    
    <!-- 댓글(문의) productId 그리고 memberId통해 검색 -->
    <!-- 우선 사용 안함 -->
