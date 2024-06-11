@@ -19,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </insert>
    
    <!-- 모든 쿠폰 조회 (페이징) -->
-   <select id="selectAllCoupon">
+   <select id="selectAllCoupon" resultMap="couponResultMap">
    		SELECT * FROM (
    			SELECT COUPON.*, ROW_NUMBER() OVER (ORDER BY COUPON_ID DESC) RN 
    			FROM COUPON
@@ -35,5 +35,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <delete id="deleteCouponById">
    		DELETE COUPON WHERE COUPON_ID = #{couponId}
    </delete>
+   
+   <!-- id로 쿠폰 검색 -->
+   <select id="selectById" resultMap="couponResultMap">
+   		SELECT * FROM COUPON WHERE COUPON_ID = #{couponId}
+   </select>
    
 </mapper>

@@ -9,6 +9,7 @@
 <!-- 포트원 결제 -->
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <!-- 포트원 결제 -->
 <style type="text/css">
 	.box_info {
@@ -223,8 +224,7 @@
 					for(x in myCouponList){
 					form += '<div class="couponRow"><div><input type="hidden" class="couponIdx" value="' + x + '"></div>' +
 						'<div style="width: 200px;">쿠폰명 ' + myCouponList[x].couponName + '<input type="radio" name="radioCoupon" onclick="applyCoupon(this)"></div>' +
-						'<div style="width: 200px;">할인률 ' + myCouponList[x].discount + '% 할인</div>' +
-						'<div style="width: 200px;">보유량 ' + myCouponList[x].couponNum + '개</div>' + 
+						'<div style="width: 200px;">할인률 ' + myCouponList[x].discount + '% 할인</div>' + 
 						'</div>';
 					}
 			
@@ -353,10 +353,12 @@
 				}),
 				success : function(result){
 					console.log('결제 내역 전송 결과 : ' + result);
-					if(result == 0){
-						alert('결제 내역 전송 실패');
-					}else{
-						location.href = 'paymentResult?paymentId=' + result;					
+					if(result > 0){
+						location.href = 'paymentResult?paymentId=' + result;
+					}else if(result == 0){
+						alert('결제 내역 전송 실패');		
+					}else {
+						alert(orderList[(result +1)* -1].productName + ' 상품의 재고가 부족합니다.');
 					}
 				}
 			}); // end ajax

@@ -20,12 +20,18 @@ public interface CouponService {
 		  
 	// 쿠폰 삭제
 	public int deleteCouponById(int couponId);
+	
+	// id로 쿠폰 조회
+	public CouponVO getCouponById(int couponId);
 		
 	// memberId로 쿠폰 조회
 	public List<MyCouponVO> getMyCouponPocket(String memberId);
 			
+	// memberId로 사용 가능한 쿠폰 조회
+	public List<MyCouponVO> getMyUsableCouponPocket(String memberId);
+	
 	// 쿠폰 추가
-	public int addCouponPocket(CouponPocketVO couponPocketVO);
+	public int addCouponPocket(int couponId, String memberId);
 			
 	// 지정 수로 쿠폰 수 변경
 	//public int setCouponNum(CouponPocketVO couponPocketVO);
@@ -38,6 +44,7 @@ public interface CouponService {
 	
 	// 쿠폰 사용 처리
 	public int useUpCoupon(int couponId, String memberId);
+	
 	
 	// memberId로 쿠폰 조회
 	//public List<CouponVO> getByMemberId(String memberId);

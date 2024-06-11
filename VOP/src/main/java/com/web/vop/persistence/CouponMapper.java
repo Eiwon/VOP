@@ -36,4 +36,9 @@ public interface CouponMapper {
 	  
 	// 쿠폰 삭제
 	public int deleteCouponById(int couponId);
+	
+	// id로 쿠폰 검색
+	public CouponVO selectById(int couponId);
+	
+	
 }

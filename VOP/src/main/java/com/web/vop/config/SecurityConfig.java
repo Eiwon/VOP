@@ -67,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 			.tokenRepository(tokenRepository)
 			.userDetailsService(userDetailsServiceImple)
 			.authenticationSuccessHandler(loginSuccessHandler);
-			
+		
 		http.logout()
 			.logoutUrl("/member/logout") // 로그아웃 처리 URL
 			.logoutSuccessUrl("/board/main")// 로그아웃 성공 후 이동 페이지

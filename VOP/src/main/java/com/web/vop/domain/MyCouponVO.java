@@ -21,6 +21,6 @@ public class MyCouponVO {
 	private String couponName;
 	private int discount;
 	private Date expirationDate;
-	private int couponNum;
+	private int isUsed;
 	
 }

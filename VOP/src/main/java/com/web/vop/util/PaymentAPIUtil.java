@@ -19,13 +19,21 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class PaymentAPIUtil {
 
+	// REST Template 
+	
 	@Autowired
 	public RestTemplate restTemplate;
 	
 	@Autowired
 	public ObjectMapper objectMapper;
 	
-	public String getAccessToken() {
+	private String GET_TOKEN_URL = "https://api.iamport.kr/users/getToken";
+	
+	private String GET_PAYMENT_URL = "https://api.iamport.kr/payments/";
+	
+	private String CANCEL_PAYMENT_URL = "https://api.iamport.kr/payments/cancel";
+	
+	private String getAccessToken() {
 
 		String accessToken = null;
 		
@@ -44,7 +52,7 @@ public class PaymentAPIUtil {
 		
 		HttpEntity<String> entity = new HttpEntity<String>(jsonBody, headers);
 		
-		String url = "https://api.iamport.kr/users/getToken";
+		String url = GET_TOKEN_URL;
 		
 		ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
 		log.info(response);
@@ -58,27 +66,25 @@ public class PaymentAPIUtil {
 	public int getPaymentAmount(String impUid) {
 		log.info("결제 금액 조회 GET ");
 		String accessToken = getAccessToken();
-		String url = "https://api.iamport.kr/payments/" + impUid;
+		String url = GET_PAYMENT_URL + impUid;
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
 		headers.set("Authorization", accessToken);
-
-		Map<String, String> body = new HashMap<>();
-		body.put("imp_uid", impUid);
 		
 		HttpEntity<String> entity = new HttpEntity<String>(headers);
 		
 		ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
 		log.info(response);
 		int chargePrice = Integer.parseInt(((Map<String, Object>)response.getBody().get("response")).get("amount").toString());
+		
 		return chargePrice;
 	} // end getPaymentAmount
 	
 	public void cancelPayment(String impUid) {
 		log.info("결제 취소 POST");
 		String accessToken = getAccessToken();
-		String url = "https://api.iamport.kr/payments/cancel";
+		String url = CANCEL_PAYMENT_URL;
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
@@ -95,7 +101,7 @@ public class PaymentAPIUtil {
 		
 		HttpEntity<String> entity = new HttpEntity<String>(jsonBody, headers);
 		
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+		ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
 		log.info("결제 취소 :" + response);
 		
 	} // end cancelPayment

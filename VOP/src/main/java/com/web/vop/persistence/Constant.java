@@ -47,4 +47,7 @@ public interface Constant {
 	public static final String DEFAULT_IMG_PATH = "nodata.jpg";
 	
 	public static final String ALERT_PATH = "access/alert";
+	
+	public static final int IS_USED = 1;
+	public static final int IS_UNUSED = 0;
 }

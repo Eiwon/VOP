@@ -14,20 +14,22 @@ public interface CouponPocketMapper {
 	// memberId로 쿠폰 조회
 	public List<MyCouponVO> selectByMemberId(String memberId);
 	
+	// memberId로 사용 가능한 쿠폰 조회
+	public List<MyCouponVO> selectUsableByMemberId(String memberId);
+	
 	// 쿠폰 추가
-	public int insertCouponPocket(CouponPocketVO couponPocketVO);
+	public int insertCouponPocket(@Param("couponId") int couponId, @Param("memberId") String memberId);
 	
-	// 지정 수로 쿠폰 수 변경
-	public int updateCouponNum(
+	// 쿠폰 활성화 / 비활성화
+	public int updateIsUsed(
 			@Param("couponId") int couponId, @Param("memberId") String memberId,
-			@Param("couponNum") int couponNum);
-	
-	// 지정 쿠폰 갯수 조회
-	public int selectCouponNum(
-			@Param("couponId") int couponId, @Param("memberId") String memberId);
+			@Param("isUsed") int isUsed);
 	
 	// 지정 쿠폰 삭제
 	public int deleteCouponById(
 			@Param("couponId") int couponId, @Param("memberId") String memberId);
+	
+	// 보유 중인 쿠폰인지 확인
+	public int selectIdById(@Param("couponId") int couponId, @Param("memberId") String memberId);
 	
 }

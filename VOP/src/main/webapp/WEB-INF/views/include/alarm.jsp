@@ -79,8 +79,8 @@
 		}
 	} // end sendInstanceMsg
 	
-	function sendReplyAlarm(productId){
-		// 댓글 알림 보내기
+	/* function sendReplyAlarm(productId){
+		// 댓글 알림 보내기(클라이언트 측에서 보낼 일 X)
 		
 		let msg = {};
 		msg.type = 'replyAlarm';
@@ -88,7 +88,7 @@
 		
 		webSocket.send(JSON.stringify(msg));
 		
-	} // end sendReplyAlarm 
+	} // end sendReplyAlarm  */
 	
 	
 	
@@ -113,7 +113,7 @@
 		console.log('replyAlarm 메시지 수신');
 		
 		showSocketNotification(msg, function(){
-			window.open('../product/detail?productId=' + msg.callbackInfo);
+			window.open(msg.callbackInfo);
 		});
 	}; // 타입이 replyAlarm인 메시지 수신시 호출될 함수
 	
@@ -149,19 +149,11 @@
 	} // end alarmPermitRequest
 	
 	function showSocketNotification(msg, onclickListener){
-		/* let option = {
-				body : msg.content,
-				requireInteraction : true,
-				timestamp : msg.dateCreated
-		};
-		let notification = new Notification(msg.content, option);
-		notification.addEventListener('click', onclickListener); */
 		let temp = confirm(msg.content);
 		if(onclickListener != null || temp){
 			onclickListener();
 		}
 		console.log(temp);
-		//console.log(notification);
 	} // end showSocketNotification
 	
 	function showSocketPopup(){
