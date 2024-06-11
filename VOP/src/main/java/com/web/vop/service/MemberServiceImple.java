@@ -1,5 +1,7 @@
 package com.web.vop.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -118,5 +120,35 @@ public class MemberServiceImple implements MemberService{
 		String auth = memberMapper.selectAuthById(memberId);
 		return auth;
 	} // end getMemberAuth
+
+	@Override
+	public List<String> getAdminId() {
+		log.info("getAdminId()");
+		List<String> adminList = memberMapper.selectIdByAuth(Constant.AUTH_ADMIN);
+		return adminList;
+	} // end getAdminId
+
+	@Override
+	public List<String> getIdByEmail(String memberEmail) {
+		log.info("getIdByNameAndEmail");
+		List<String> memberIdList = memberMapper.selectIdByNameAndEmail(memberEmail);
+		return memberIdList;
+	} // end getIdByNameAndEmail
+	
+	@Override
+	public String getEmailById(String memberId) {
+		log.info("getEmailById");
+		String memberEmail = memberMapper.selectEmailById(memberId);
+		return memberEmail;
+	} // end getEmailById
+	
+	@Override
+	public String getIdByIdAndEmail(String memberId, String memberEmail) {
+		log.info("getIdByIdAndEmail");
+		String resultId = memberMapper.selectIdByIdAndEmail(memberId, memberEmail);
+		return resultId;
+	} // end getIdByIdAndEmail
+
+	
 
 }

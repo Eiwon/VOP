@@ -1,5 +1,6 @@
 package com.web.vop.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +46,10 @@ public class DeliveryController {
     public String deliveryGET(@RequestParam("paymentId") int paymentId, Model model) {
         log.info("deliveryGET - paymentId : " + paymentId);
         // 배송 예정일 조회
-    	Date date = orderService.getExpectDateByPaymentId(paymentId);
-    	 log.info("date : " + date);
+    	Date expectedDate = orderService.getExpectDateByPaymentId(paymentId);
+    	SimpleDateFormat format = new SimpleDateFormat("yyyy년 MM월 dd일");
+    	String date = format.format(expectedDate);
+    	log.info("date : " + date);
         model.addAttribute("date", date);
         
         // 송장번호 조회 
@@ -70,10 +73,14 @@ public class DeliveryController {
         log.info("deliveryAddressListGET() 페이지 이동 요청");
         
             // 배송지 상세 조회
-            List<DeliveryVO> deliveryList = deliveryService.getMemberId(memberDetails.getUsername());
+        	String memberId = memberDetails.getUsername();
+        	log.info("memberId : " + memberId);
+            List<DeliveryVO> deliveryList = deliveryService.getMemberId(memberId);
             log.info(deliveryList.toString());
             
             model.addAttribute("deliveryList", deliveryList);
+            // 기본 배송지 등록을 위해 memberId 보내기
+            model.addAttribute("memberId", memberId);
             
         return "/Delivery/deliveryAddressList";
     }//end deliveryAddressListGET()

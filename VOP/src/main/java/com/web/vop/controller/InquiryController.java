@@ -53,23 +53,28 @@ public class InquiryController {
 	}
 	
 	@GetMapping("/myList")
-	public void myListInquiryGET(Model model, String memberId, Pagination pagination) {
-		log.info("listInquiryGET()");
-		log.info("memberId : " + memberId);
-		
-		//페이지 메이커에 기본 쪽수값 저장
-		PageMaker pageMaker = new PageMaker();
-		pageMaker.setPagination(pagination);
-		log.info("쪽수 기본값 : " + pageMaker.getPagination());
-		
-		List<InquiryVO> listInquiry = inquiryService.getAllInquiryMemberIdPaging(memberId, pageMaker);
-		
-		log.info("listInquiry : " + listInquiry);
-		
-		model.addAttribute("pageMaker", pageMaker);
-		model.addAttribute("memberId", memberId);
-		model.addAttribute("listInquiry", listInquiry);
+	public void myListInquiryGET() {
+		log.info("myListInquiryGET()");
 	}
+	
+//	@GetMapping("/myList")
+//	public void myListInquiryGET(Model model, String memberId, Pagination pagination) {
+//		log.info("listInquiryGET()");
+//		log.info("memberId : " + memberId);
+//		
+//		//페이지 메이커에 기본 쪽수값 저장
+//		PageMaker pageMaker = new PageMaker();
+//		pageMaker.setPagination(pagination);
+//		log.info("쪽수 기본값 : " + pageMaker.getPagination());
+//		
+//		List<InquiryVO> listInquiry = inquiryService.getAllInquiryMemberIdPaging(memberId, pageMaker);
+//		
+//		log.info("listInquiry : " + listInquiry);
+//		
+//		model.addAttribute("pageMaker", pageMaker);
+//		model.addAttribute("memberId", memberId);
+//		model.addAttribute("listInquiry", listInquiry);
+//	}
 	
 //	@PostMapping("/delete") // DELETE : 댓글(리뷰) 삭제 // 나중에 데이터 받는 거에 따라 달라짐
 //	public String deleteInquiry(Integer productId, String memberId){

@@ -42,6 +42,15 @@
     .default-checkbox {
         margin-top: 10px;
     }
+    
+    .default-delivery {
+    	background-color: #e6f7ff; /* 배경색 변경 */
+    	border-color: blue; /* 테두리 색상 변경 */
+   	 	border-width: 1px; /* 테두리 두께 설정 */
+    	border-style: solid; /* 테두리 스타일 설정 */
+    	font-weight: bold; /* 글씨 강조 */
+    	/* 기본 배송지에 대한 추가적인 스타일 지정 */
+	}
 </style>
 </head>
 <body>
@@ -64,7 +73,7 @@
     </thead>
     <tbody>
         <c:forEach items="${deliveryList}" var="delivery">
-            <tr>
+            <tr class="${delivery.isDefault == 1 ? 'default-delivery' : ''}">
                 <td>${delivery.receiverName}</td>
                 <td>${delivery.receiverAddress} ${delivery.deliveryAddressDetails}</td>
                 <td>${delivery.receiverPhone}</td>

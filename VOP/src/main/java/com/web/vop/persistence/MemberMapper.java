@@ -1,5 +1,7 @@
 package com.web.vop.persistence;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -29,4 +31,17 @@ public interface MemberMapper {
 	public int deleteMember(@Param("memberId") String memberId, @Param("memberPw") String memberPw);
 	
 	public String selectByNameAndPhone(@Param("memberName") String memberName, @Param("memberPhone") String memberPhone);
+
+	// 입력한 권한을 가진 모든 유저 id 검색
+	public List<String> selectIdByAuth(String memberAuth);
+	
+	// 이메일로 ID 찾기
+	public List<String> selectIdByNameAndEmail(String memberEmail);
+	
+	// ID로 이메일 찾기
+	public String selectEmailById(String memberId);
+	
+	// ID와 이메일로 ID 찾기
+	public String selectIdByIdAndEmail(
+			@Param("memberId") String memberId, @Param("memberEmail") String memberEmail);
 }

@@ -95,7 +95,7 @@ public class DeliveryServiceImple implements DeliveryService{
 	@Override
 	public int updateNewDefault(int deliveryId, String memberId) {
 		log.info("updateNewDefault() - deliveryId: " +  deliveryId);
-		log.info("updateNewDefault() - memberId: " +memberId);
+		log.info("updateNewDefault() - memberId: " + memberId);
 		int res = deliveryMapper.updateNewDefault(deliveryId, memberId);
 		log.info(res + "행 기본배송지 등록 완료");
 		return res;

@@ -71,7 +71,6 @@ public class ReviewRESTController {
 		// productId에 해당하는 댓글(리뷰) list을 전체 검색
 		List<ReviewVO> list = reviewService.getAllReviewPaging(productId, pageMaker);
 		
-		log.info("로그");
 		log.info("list : " + list);
 		log.info("pageMaker : " + pageMaker);
 		

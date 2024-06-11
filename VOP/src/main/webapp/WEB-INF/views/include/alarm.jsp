@@ -115,9 +115,30 @@
 		showSocketNotification(msg, function(){
 			window.open('../product/detail?productId=' + msg.callbackInfo);
 		});
-		
-	}; // 타입이 alarm인 메시지 수신시 호출될 함수
+	}; // 타입이 replyAlarm인 메시지 수신시 호출될 함수
 	
+	msgHandler.consultRequest = function(msg){
+		console.log('consultRequest 메시지 수신 : roomId = ' + msg.roomId);
+		
+		let isAccept = confirm("1대1 상담 요청 수신. 수락하시겠습니까?");
+		
+		if(isAccept){
+			let targetUrl = '../board/consult?roomId=' + msg.roomId;
+				
+			const popupStat = {
+					'url' : targetUrl,
+					'name' : 'popupConsultAdmin',
+					'option' : 'width=800, height=800, top=50, left=400'
+			};
+				
+			// 팝업 창 띄우기
+			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
+			popup.onbeforeunload = function(){
+				// 팝업 닫힐 때 실행
+				console.log("팝업 닫힘");
+			} // end popup.onbeforeunload
+		}
+	} // end msgHandler.consultRequest
 	
 	
 	function alarmPermitRequest(){ // 알림창 표시 기능 허가 요청 (허가 거부시 크롬 설정->개인정보보호 및 보안->사이트설정->알림에서 재설정 가능)

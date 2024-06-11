@@ -30,10 +30,13 @@
 					<sec:authorize access="hasRole('ROLE_관리자')">
 						<li><a href="admin">관리자 페이지</a></li>
 					</sec:authorize>
+					<li><a onclick="consult()">1대1 상담</a> </li>
+					<%-- <sec:authorize access="!hasRole('ROLE_관리자')">
+						<li><a onclick="consult()">1대1 상담</a> </li>
+					</sec:authorize> --%>
 				</ul>
 			</div>
 		</div>
-		<input type="button" value="1대1챗 테스트" onclick="consult()">
 	</div>
 	<script type="text/javascript">
 	function consult(){
