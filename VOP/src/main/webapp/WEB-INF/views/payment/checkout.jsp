@@ -18,6 +18,9 @@
 	#coupon_list{
 		list-style: none;
 	}
+	.couponRow {
+		border: 0.5px solid blue;
+	}
 </style>
 <title>결제 페이지</title>
 </head>
@@ -99,11 +102,8 @@
 					</tr>
 					<tr>
 						<td>
-							<table>
-								<tbody id="coupon_list">
-									
-								</tbody>
-							</table>
+							<div id="coupon_list">
+							</div>
 						</td>
 					</tr>
 					<tr>
@@ -130,8 +130,8 @@
 		let memberVO = paymentWrapper.memberVO;
 		let orderList = paymentWrapper.orderList;
 		let deliveryVO = paymentWrapper.deliveryVO;
-		let couponList;
-		let couponVO;
+		let myCouponList;
+		let myCouponVO;
 		let paymentVO = {
 				'paymentId' : 0,
 				'memberId' : '',
@@ -208,7 +208,7 @@
 		
 		function selectCoupon(){
 			let tagCouponList = $('#coupon_list');
-			couponVO = null;
+			myCouponVO = null;
 			paymentVO.couponDiscount = 0;
 			setPaymentInfo();
 			
@@ -217,15 +217,15 @@
 				url : '../coupon/myList',
 				success : function(result){
 					console.log(result);
-					couponList = result;
+					myCouponList = result;
 					
 					let form = '';
-					for(x in couponList){
-					form += '<tr class="couponRow"><td><input type="hidden" class="couponIdx" value="' + x + '"></td>' +
-						'<td style="width: 200px;">' + couponList[x].couponName + '</td>' +
-						'<td style="width: 200px;">' + couponList[x].discount + '% 할인</td>' +
-						'<td style="width: 200px;">' + couponList[x].couponNum + '</td>' + 
-						'<td><input type="radio" name="radioCoupon" onclick="applyCoupon(this)"></td></tr>';
+					for(x in myCouponList){
+					form += '<div class="couponRow"><div><input type="hidden" class="couponIdx" value="' + x + '"></div>' +
+						'<div style="width: 200px;">쿠폰명 ' + myCouponList[x].couponName + '<input type="radio" name="radioCoupon" onclick="applyCoupon(this)"></div>' +
+						'<div style="width: 200px;">할인률 ' + myCouponList[x].discount + '% 할인</div>' +
+						'<div style="width: 200px;">보유량 ' + myCouponList[x].couponNum + '개</div>' + 
+						'</div>';
 					}
 			
 					tagCouponList.html(form);
@@ -236,9 +236,9 @@
 		
 		function applyCoupon(input){
 			let couponIdx = $(input).parents('.couponRow').find('.couponIdx').val();
-			console.log('선택된 쿠폰 이름 : ' + couponList[couponIdx].couponName);
-			couponVO = couponList[x];
-			paymentVO.couponDiscount = couponList[couponIdx].discount;
+			console.log('선택된 쿠폰 이름 : ' + myCouponList[couponIdx].couponName);
+			myCouponVO = myCouponList[x];
+			paymentVO.couponDiscount = myCouponList[couponIdx].discount;
 			setPaymentInfo();
 		} // end applyCoupon
 		
@@ -268,7 +268,6 @@
 			
 			paymentVO.chargePrice = calcChargePrice(); // 최종 결제 금액 계산
 			
-			console.log('request paymentId');
 			// 서버에서 결제 고유 번호 받아오기
 			$.ajax({
 				method : 'GET',
@@ -287,11 +286,36 @@
 			                amount: paymentVO.chargePrice, // 결제 가격
 			                buyer_name: memberVO.memberId,
 			                buyer_email: memberVO.memberEmail,
-			                // buyer_tel : '010-1234-5678',
-			                // buyer_addr : '서울특별시 강남구 삼성동',
-			                // buyer_postcode : '123-456'
 			            }, async function (rsp) { // callback
-			             	console.log(rsp);
+			             	/*rsp 예시
+			             	{
+			            	apply_num:""
+			            	bank_name:null
+			            	buyer_addr:""
+			            	buyer_email:"test1234@naver.com"
+			            	buyer_name:"test1234"
+			            	buyer_postcode:""
+			            	buyer_tel:""
+			            	card_name:null
+			            	card_number:""
+			            	card_quota:0
+			            	currency:"KRW"
+			            	custom_data:null
+			            	imp_uid:"imp_899047014817"
+			            	merchant_uid:"1046"
+			            	name:"사과"
+			            	paid_amount:30
+			            	paid_at: 1717991067
+			            	pay_method:"point"
+			            	pg_provider:"kakaopay"
+			            	pg_tid:"T6667687257c75a57ce9"
+			            	pg_type:"payment"
+			            	receipt_url:"https://mockup-pg-web.kakao.com/v1/confirmation/p/T6667687257c75a57ce9/f57fa5a352ed130933506fabcef19aa974d46a98c05b9da464d5a602a2e34da7"
+			            	status: "paid"
+			            	success:true
+			             	}
+			             	*/
+			            
 			            	if (rsp.success) { //결제 성공시
 			            		sendPaymentResult(rsp);
 			                }
@@ -312,6 +336,7 @@
 			paymentVO.receiverName = deliveryVO.receiverName;
 			paymentVO.receiverPhone = deliveryVO.receiverPhone;
 			paymentVO.requirement = deliveryVO.requirement;
+			paymentVO.chargeId = paymentResult.imp_uid;
 			
 			console.log(paymentVO);
 			
@@ -324,11 +349,15 @@
 				data : JSON.stringify({
 					'paymentVO' : paymentVO,
 					'orderList' : orderList,
-					'couponVO' : couponVO
+					'myCouponVO' : myCouponVO
 				}),
 				success : function(result){
 					console.log('결제 내역 전송 결과 : ' + result);
-					location.href = 'paymentResult';
+					if(result == 0){
+						alert('결제 내역 전송 실패');
+					}else{
+						location.href = 'paymentResult?paymentId=' + result;					
+					}
 				}
 			}); // end ajax
 			

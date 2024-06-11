@@ -118,7 +118,6 @@ $(document).ready(function(){
    // 댓글 입력 코드
    $('#btnAdd').click(function(event){
        let productId = "${productId}"; 
-	   sendReplyAlarm(productId);
        let reviewStar = selectedStar;// 리뷰(별)
        let reviewContent = $('#reviewContent').val(); // 댓글 내용
        

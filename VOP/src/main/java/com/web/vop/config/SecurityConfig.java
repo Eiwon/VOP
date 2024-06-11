@@ -1,11 +1,5 @@
 package com.web.vop.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.Bean;
@@ -14,24 +8,19 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.web.socket.WebSocketSession;
 
-import com.web.vop.handler.LoginSuccessHandler;
 import com.web.vop.persistence.Constant;
 import com.web.vop.service.UserDetailsServiceImple;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 @Log4j
@@ -57,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 		// 이후 UserDetailsService로 넘겨줌
 
 		http.authorizeRequests()
+			.antMatchers(ANONYMOUS_ONLY).anonymous()
 			.antMatchers(PERMIT_ALL).permitAll()
 			.antMatchers(MEMBER_ONLY).authenticated()
 			.antMatchers(ADMIN_ONLY).hasAnyRole(AUTH_ADMIN)

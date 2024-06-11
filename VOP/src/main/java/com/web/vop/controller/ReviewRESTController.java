@@ -41,21 +41,26 @@ public class ReviewRESTController {
 	@Autowired
 	private ReviewService reviewService;
 	
+	// 댓글 알림을 보내기 위한 알람핸들러
 	@Autowired
-	private ProductService productService;
-
+	public WebSocketHandler alarmHandler;
 	
-	    @PostMapping("/register") // POST : 댓글(리뷰) 입력
-	    public ResponseEntity<Integer> createReviewPOST(@RequestBody ReviewVO reviewVO) {
+	@PostMapping("/register") // POST : 댓글(리뷰) 입력
+	public ResponseEntity<Integer> createReviewPOST(@RequestBody ReviewVO reviewVO) {
 
-	        log.info("createReview()");
-	        log.info("reviewVO : " + reviewVO);
-	        
-	        int res = reviewService.createReview(reviewVO); // imgDetails 넣어야 함
+		log.info("createReview()");
+		log.info("reviewVO : " + reviewVO);
 
-	        // result 값을 전송하여 리턴하는 방식으로 성공하면 200 OK를 전송합니다.
-	        return new ResponseEntity<>(res, HttpStatus.OK);
-	    }
+		int res = reviewService.createReview(reviewVO); // imgDetails 넣어야 함
+
+		if(res == 1) {
+			// 댓글 알람 송신
+	        ((AlarmHandler)alarmHandler).sendReplyAlarm(reviewVO.getProductId());
+		}
+		
+		// result 값을 전송하여 리턴하는 방식으로 성공하면 200 OK를 전송합니다.
+		return new ResponseEntity<>(res, HttpStatus.OK);
+	}
 	
 	
 	@GetMapping("/all/{productId}") // GET : 댓글(리뷰) 선택(all)

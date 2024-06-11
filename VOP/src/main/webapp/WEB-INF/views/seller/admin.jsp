@@ -42,7 +42,7 @@
 		<h2>관리자 페이지</h2>
 	</div>
 	<div>
-		<input type="button" value="공지사항 등록" onclick="sendNotice()">
+		<input type="button" value="공지사항 등록" onclick="popupRegisterNotice()">
 		<input type="button" value="전체 유저에게 알림 띄우기" onclick="sendInstanceMsg()">
 		<input type="button" value="전체 유저에게 ALERT 띄우기" onclick="sendAlert()">
 	</div>
@@ -87,6 +87,7 @@
 	4. 상품 삭제
 	5. 페이징
 	 -->
+	 
 	
 	
 	<script type="text/javascript">
@@ -304,6 +305,22 @@
 				listMap[key].show(listMap[key].pageMaker.pagination.pageNum); // 팝업에 해당하는 목록만 새로고침
 			} // end popup.onbeforeunload
 		} // end popupSellerRegister
+		
+		function popupRegisterNotice(){
+			const popupStat = {
+					'url' : 'popupRegisterNotice',
+					'name' : 'popupRegisterNotice',
+					'option' : 'width=500, height=600, top=50, left=400'
+			};
+			
+			// 팝업 창 띄우기
+			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
+			popup.onbeforeunload = function(){
+				// 팝업 닫힐 때 실행
+				console.log("팝업 닫힘");
+			} // end popup.onbeforeunload
+		}
+		
 		
 		function loadImg(input){
 			$(input).find('img').each(function(){

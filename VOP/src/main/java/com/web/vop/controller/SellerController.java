@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,13 +24,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.socket.WebSocketHandler;
 
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
+import com.web.vop.domain.MessageVO;
 import com.web.vop.domain.SellerVO;
 import com.web.vop.persistence.Constant;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.SellerService;
+import com.web.vop.socket.AlarmHandler;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
@@ -45,7 +49,6 @@ public class SellerController {
 	
 	@Autowired
 	private MemberService memberService;
-	
 	
 	@GetMapping("sellerRequest")
 	public String sellerRequestGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
@@ -196,7 +199,21 @@ public class SellerController {
 		model.addAttribute("memberVO", memberVO);
 	} // end popupSellerReqGET
 	
+	@GetMapping("/popupRegisterNotice")
+	public void popupRegisterNoticeGET() {
+		log.info("공지사항 등록 팝업 요청");
+	} // end popupRegisterNotice
 	
-	
+	@PostMapping("/notice")
+	@ResponseBody
+	public ResponseEntity<Integer> registerNotice(
+			@RequestBody MessageVO messageVO, @AuthenticationPrincipal UserDetails memberDetails){
+		log.info("공지사항 등록 요청 : " + messageVO);
+		messageVO.setType("notice");
+		messageVO.setWriterId(memberDetails.getUsername());
+		int res = sellerService.registerNotice(messageVO);
+		
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+	} // end registerNotice
 	
 }

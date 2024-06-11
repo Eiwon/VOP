@@ -21,11 +21,13 @@ import org.springframework.web.socket.WebSocketHandler;
 
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.MemberDetails;
+import com.web.vop.domain.MessageVO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.domain.ReviewVO;
 import com.web.vop.service.ImageService;
 import com.web.vop.service.ProductService;
 import com.web.vop.service.ReviewService;
+import com.web.vop.socket.AlarmHandler;
 
 import lombok.extern.log4j.Log4j;
 
@@ -42,6 +44,10 @@ public class ReviewController {
 	
 	@Autowired
 	private ProductService productService;
+	
+	// 댓글 알림을 보내기 위한 알람핸들러
+	@Autowired
+	public WebSocketHandler alarmHandler;
 	
 	// 댓글(리뷰) 등록 GET 이동
 	@GetMapping("/register")
@@ -62,8 +68,8 @@ public class ReviewController {
 
 	        log.info("imageVO : " + imageVO);
 
-	        log.info("imgRealName : " + imgRealName);
-	        log.info("imgExtension : " + imgExtension);
+	        // 댓글 알람 송신
+	        ((AlarmHandler)alarmHandler).sendReplyAlarm(productId);
 
 	        model.addAttribute("imgRealName", imgRealName);
 	        model.addAttribute("productId", productId);

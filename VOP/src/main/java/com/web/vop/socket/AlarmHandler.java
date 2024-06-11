@@ -53,9 +53,6 @@ public class AlarmHandler extends TextWebSocketHandler{
     	}else if(msgType.equals("instanceMsg")){ // 접속 중인 전체 유저에게 송신
     		returnMsg = messageVO;
     		broadcast(returnMsg);
-    	}else if(msgType.equals("replyAlarm")) { // 댓글 알림 (클릭시 이벤트 발생)
-    		returnMsg = replyAlarmHandler(messageVO, memberId);
-    		unicast(returnMsg);
     	}
 		
 	} // end handleTextMessage
@@ -156,18 +153,16 @@ public class AlarmHandler extends TextWebSocketHandler{
 		
 		return returnMsg;
 	} // end noticeHandler
-	
 
-	public MessageVO replyAlarmHandler(MessageVO messageVO, String memberId) {
-		MessageVO returnMsg = messageVO;
-		String receiverId = messageService.getSellerIdOf(Integer.parseInt(messageVO.getCallbackInfo()));
-		returnMsg.setReceiverId(receiverId);
-		returnMsg.setWriterId(memberId);
+	public void sendReplyAlarm(int productId) {
+		MessageVO returnMsg = new MessageVO();
+		String receiverId = messageService.getSellerIdOf(productId);
 		returnMsg.setContent("등록한 상품에 댓글이 등록되었습니다. 이동하려면 클릭하세요.");
-		return returnMsg;
-	} // end replyAlarmHandler
-
-	
+		returnMsg.setType("replyAlarm");
+		returnMsg.setReceiverId(receiverId);
+		returnMsg.setCallbackInfo(String.valueOf(productId));
+		unicast(returnMsg);
+	} // end sendReplyAlarm
 	
 	
 	
