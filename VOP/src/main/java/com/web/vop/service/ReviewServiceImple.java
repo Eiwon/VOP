@@ -131,6 +131,7 @@ public class ReviewServiceImple implements ReviewService {
 		reviewVO.setReviewId(reviewId);
 		reviewVO.setReviewContent(reviewContent);
 		reviewVO.setReviewStar(reviewStar);
+		log.info("reviewContent: " + reviewContent);
 		int updateRes = reviewMapper.updateReview(reviewVO);
 
 		// productId에 해당하는 상품 조회 // 업그레이드 된 상태
@@ -213,6 +214,7 @@ public class ReviewServiceImple implements ReviewService {
 		return deleteRes;
 	}
 
+	// 페이징 처리 리스트 검색
 	@Override
 	public List<ReviewVO> getAllReviewPaging(int productId, PageMaker pageMaker) {
 		log.info("getAllReviewPaging()");
@@ -221,5 +223,4 @@ public class ReviewServiceImple implements ReviewService {
 		pageMaker.setTotalCount(totalCnt);
 		return reviewMapper.selectListByReviewPaging(productId, pageMaker.getPagination());
 	}
-
 }

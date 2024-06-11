@@ -59,6 +59,23 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
 	display: flex;
 	justify-content: flex-end;
 }
+
+/* 페이징 처리 숫자 스타일 */
+.page_list {
+	display: flex;
+	flex-direction: row;
+	list-style: none;
+}
+
+tbody {
+	height: 250px;
+}
+tr {
+	height: 50px;
+}
+td {
+	width: 200px;
+}
 </style>
 
 </head>
@@ -192,7 +209,7 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
 
 	<script type="text/javascript">
      
-     let productMap = {};
+     let ReviewMap = {};ReviewMap
      
  	 const memberId = '${memberDetails.getUsername()}';
  	 let productId = ${productVO.productId};
@@ -281,7 +298,7 @@ $(document).ready(function() {
     /* getAllInquiry(); 
     getAllAnswer(); */
     getAllComments();
-    productMap.show(1);
+    ReviewMap.show(1);
     
  	/* // 페이지 버튼 클릭 시 해당 페이지의 리뷰를 표시합니다.
     $(document).on('click', '.page_list li', function() {
@@ -419,94 +436,102 @@ $(document).ready(function() {
     //loadImg(); 위에로 이동 하였습니다.
 }); // end document
 
-productMap.show = function(page) {
-    let url = '../review/all/' + productId;
-    console.log(url);
-
-    $.getJSON(url, function(data) {
-        // data : 서버에서 전송받은 list 데이터가 저장되어 있음
-        // getJSON()에서 json 데이터는 javascript object로 자동 parsing됨
-        console.log(data);
-
-        let list = ''; // 댓글 데이터를 HTML에 표현할 문자열 변수
-
-        // productMap 초기화
-        productMap.list = data.list || [];
-        productMap.pageMaker = data.pageMaker || null;
-
-        // $(컬렉션).each() : 컬렉션 데이터를 반복문으로 꺼내는 함수
-        $.each(productMap.list, function(index, review) {
-            // review : 컬렉션의 각 인덱스 데이터를 의미
-
-            // 전송된 reviewDateCreated는 문자열 형태이므로 날짜 형태로 변환이 필요
-            let reviewDateCreated = new Date(review.reviewDateCreated);
-            
-            // 날짜와 시간을 문자열로 변환하여 가져오기
-            let dateString = reviewDateCreated.toLocaleDateString();
-            let timeString = reviewDateCreated.toLocaleTimeString();
-
-            // 별점 숫자를 가져와서 별 모양으로 변환
-            let starsHTML = ''; // 별 모양 HTML을 저장할 변수
-            let reviewStar = parseInt(review.reviewStar); // 문자열을 정수로 변환
-            
-            for (let i = 1; i <= 5; i++) {
-                if (i <= reviewStar) {
-                    starsHTML += '&#9733;'; // 별 모양 HTML 코드 추가
-                } else {
-                    starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
-                }
-            }
-
-            // 댓글 이미지 및 좋아요 추가 해야함
-            list += '<div>' +
-                '<pre>' +
-                '<input type="hidden" id="review" value="' + review.reviewId + '">' + // readonly 추가해서 id을 바꾸지 못하게 해야함
-                review.memberId +
-                '&nbsp;&nbsp;' + // 공백
-                '<span class="reviewStars">' + starsHTML + '</span>' + // 별점 표시 
-                '&nbsp;&nbsp;' +
-                dateString + ' ' + timeString + // 작성 시간 (날짜와 시간)
-                '&nbsp;&nbsp;' +
-                '<input type="text" id="reviewContent" value="' + review.reviewContent + '" readonly>' + // 내용
-                '&nbsp;&nbsp;' +
-                '</pre>' +
-                '</div>';
-        }); // end each()
-
-        // 페이지 생성 후 등록
-        $('#product_list_page').html(makePageForm(productMap));
-        
-        $('#review').html(list); // 저장된 데이터를 replies div 표현
-    }); // end getJSON()
-} // end getAllReview()
-
-
+ReviewMap.show = function(page) {
+	
+	console.log('page : ' + page);
+    let url = '../review/all/' + productId + '/' + page;
     
- 	// 페이지 버튼 생성 후, productMap의 리스트 출력 함수 등록
-    function makePageForm(productMap) { 
-		const pageMaker = productMap.pageMaker;
+    $.ajax({
+        method: 'GET',
+        url: url,
+        dataType: 'json',
+        success: function(data) {
+            // data: 서버에서 전송받은 list 데이터가 저장되어 있음
+            // JSON 데이터는 JavaScript 객체로 자동 파싱됨
+            console.log(data);
+
+            let list = ''; // 댓글 데이터를 HTML에 표현할 문자열 변수
+
+            // ReviewMap 초기화
+            ReviewMap.list = data.list || [];
+            ReviewMap.pageMaker = data.pageMaker || null;
+
+            // $(컬렉션).each() : 컬렉션 데이터를 반복문으로 꺼내는 함수
+            $.each(ReviewMap.list, function(index, review) {
+                // review : 컬렉션의 각 인덱스 데이터를 의미
+
+                // 전송된 reviewDateCreated는 문자열 형태이므로 날짜 형태로 변환이 필요
+                let reviewDateCreated = new Date(review.reviewDateCreated);
+                
+                // 날짜와 시간을 문자열로 변환하여 가져오기
+                let dateString = reviewDateCreated.toLocaleDateString();
+                let timeString = reviewDateCreated.toLocaleTimeString();
+
+                // 별점 숫자를 가져와서 별 모양으로 변환
+                let starsHTML = ''; // 별 모양 HTML을 저장할 변수
+                let reviewStar = parseInt(review.reviewStar); // 문자열을 정수로 변환
+                
+                for (let i = 1; i <= 5; i++) {
+                    if (i <= reviewStar) {
+                        starsHTML += '&#9733;'; // 별 모양 HTML 코드 추가
+                    } else {
+                        starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
+                    }
+                }
+
+                // 댓글 이미지 및 좋아요 추가 해야함
+                list += '<div>' +
+                    '<pre>' +
+                    '<input type="hidden" id="review" value="' + review.reviewId + '">' + // readonly 추가해서 id를 바꾸지 못하게 해야함
+                    review.memberId +
+                    '&nbsp;&nbsp;' + // 공백
+                    '<span class="reviewStars">' + starsHTML + '</span>' + // 별점 표시 
+                    '&nbsp;&nbsp;' +
+                    dateString + ' ' + timeString + // 작성 시간 (날짜와 시간)
+                    '&nbsp;&nbsp;' +
+                    '<input type="text" id="reviewContent" value="' + review.reviewContent + '" readonly>' + // 내용
+                    '&nbsp;&nbsp;' +
+                    '</pre>' +
+                    '</div>';
+            }); // end each()
+         // 페이지 생성 후 등록
+            $('#product_list_page').html(makePageForm(ReviewMap));
+            
+            $('#review').html(list); // 저장된 데이터를 replies div 표현
+        }
+    });// end getJSON()
+
+} // end getAllReview()
+    
+ 	// 페이지 버튼 생성 후, ReviewMap의 리스트 출력 함수 등록
+    function makePageForm(ReviewMap) { 
+		const pageMaker = ReviewMap.pageMaker;
 		const startNum = pageMaker.startNum;
 		const endNum = pageMaker.endNum;
 		
 		console.log('pageMaker : ' + pageMaker);
 		
+		// 스타일 적용 코드 및 리스트 코드
 		let pageForm = $('<ul class="page_list"></ul>');
 		let numForm;
+		// 클릭 했을 때 이전 페이지로
 		if (pageMaker.prev) {
 			numForm = $('<li>이전&nbsp&nbsp</li>').click(function() {
-				productMap.show(startNum - 1);
+				ReviewMap.show(startNum - 1);
 			});
 			pageForm.append(numForm);
 		}
+		// 현재 리스트 출력
 		for (let x = startNum; x <= endNum; x++) {
 			numForm = $('<li>' + x + '&nbsp&nbsp</li>').click(function() {
-				productMap.show(x);
+				ReviewMap.show(x);
 			});
 			pageForm.append(numForm);
 		}
+		// 클릭 했을 때 다음 페이지로
 		if (pageMaker.next) {
 			numForm = $('<li>다음</li>').click(function() {
-				productMap.show(endNum + 1);
+				ReviewMap.show(endNum + 1);
 			});
 			pageForm.append(numForm);
 		}
