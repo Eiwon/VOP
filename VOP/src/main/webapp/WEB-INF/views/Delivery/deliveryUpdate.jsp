@@ -150,7 +150,7 @@ console.log('member ID:', memberId);
 
 $(document).ready(function() {
 
-<<<<<<< HEAD
+
 	
 	 // 페이지 로드 시 기본 배송지 여부 확인
     checkDefaultAddress().then(function(isExistingDefault) {
@@ -202,7 +202,7 @@ $(document).ready(function() {
 	    }
 	});
 	
-=======
+
 	   
     // 페이지 로드 시 기본 배송지 여부 확인
     checkDefaultAddress().then(function(isExistingDefault) {
@@ -254,7 +254,7 @@ $(document).ready(function() {
        }
    });
 
->>>>>>> c2d0f1c7031f80c33f153a86b0ed9df9289c53fe
+
 
 // 기본 배송지 있는지 조회 
 function checkDefaultAddress() {
