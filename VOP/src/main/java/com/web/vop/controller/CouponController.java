@@ -84,12 +84,22 @@ public class CouponController {
 	} // end getCouponGET
 	
 	@PostMapping("/getCoupon")
-	public String getCouponInPocket(int couponId, @AuthenticationPrincipal UserDetails memberDetails){
+	public String getCouponInPocket(Model model, int couponId, @AuthenticationPrincipal UserDetails memberDetails){
 		log.info("쿠폰 발급받기");
 		String memberId = memberDetails.getUsername();
 		int res = couponService.addCouponPocket(couponId, memberId);
 		
-		return "";
+		AlertVO alertVO = new AlertVO();
+		if(res == 1) {
+			alertVO.setAlertMsg("쿠폰이 발급되었습니다.");
+		}else if(res == 2) {
+			alertVO.setAlertMsg("이미 수령한 쿠폰입니다.");
+		}else {
+			alertVO.setAlertMsg("발급 실패! 다시 시도해주세요.");
+		}
+		alertVO.setRedirectUri("close");
+		model.addAttribute("alertVO", alertVO);
+		return Constant.ALERT_PATH;
 	} // end getCouponInPocket
 	
 	@GetMapping("/main")
