@@ -157,14 +157,13 @@ public class AlarmHandler extends TextWebSocketHandler{
 	public void sendReplyAlarm(int productId) {
 		MessageVO returnMsg = new MessageVO();
 		String receiverId = messageService.getSellerIdOf(productId);
+		String redirectUri = "../product/detail?productId=" + productId;
 		returnMsg.setContent("등록한 상품에 댓글이 등록되었습니다. 이동하려면 클릭하세요.");
 		returnMsg.setType("replyAlarm");
 		returnMsg.setReceiverId(receiverId);
-		returnMsg.setCallbackInfo(String.valueOf(productId));
+		returnMsg.setCallbackInfo(redirectUri);
 		unicast(returnMsg);
 	} // end sendReplyAlarm
-	
-	
 	
 	private MessageVO convertMsg(String jsonMsg) {
 		MessageVO message = null;

@@ -14,7 +14,11 @@
 		let redirectUri = '${alertVO.redirectUri}';
 		
 		alert(alertMsg);
-		location.href = '../' + redirectUri;
+		if(redirectUri == 'close'){
+			window.close();
+		}else{
+			location.href = '../' + redirectUri;		
+		}
 	</script>
 
 </body>

@@ -17,6 +17,6 @@ public class CouponPocketVO {
 	
 	private String memberId;
 	private int couponId;
-	private int couponNum;
+	private int isUsed;
 	private Date expirationDate;
 }

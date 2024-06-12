@@ -26,7 +26,7 @@ public interface InquiryMapper {
 	// 댓글(문의) memberId로 페이징 수 검색 용도
 	 int selectListByInquiryMemberIdCnt(String memberId);
 	 
-	 // 댓글(문의) 전체 검색
+	 // productId로 댓글(문의) 전체 검색
 	 List<InquiryVO> selectListByInquiryPaging(@Param("productId")int productId, @Param("pagination") Pagination pagination);
 	 
 	 // 댓글(문의) productId로 페이징 수 검색 용도

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -63,15 +64,20 @@ public class ReviewRESTController {
 	}
 	
 	
-	@GetMapping("/all/{productId}") // GET : 댓글(리뷰) 선택(all)
+	@GetMapping("/all/{productId}/{page}") // GET : 댓글(리뷰) 선택(all)
 	public ResponseEntity<Map<String, Object>> readAllReview(
+			@ModelAttribute Pagination pagination,
 			@PathVariable("productId") int productId,
-			Pagination pagination){
+			@PathVariable("page") int page
+			){
 		log.info("readAllReview()");
 		
+		pagination.setPageNum(page);
+		log.info("pagination : " + pagination);
 		Map<String, Object> resultMap = new HashMap<>();
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);	
+		log.info("쪽수 기본값 : " + pageMaker.getPagination());
 		
 		// productId에 해당하는 댓글(리뷰) list을 전체 검색
 		List<ReviewVO> list = reviewService.getAllReviewPaging(productId, pageMaker);

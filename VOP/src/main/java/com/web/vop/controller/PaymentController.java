@@ -127,7 +127,12 @@ public class PaymentController {
 			return new ResponseEntity<Integer>(res, HttpStatus.OK);
 		}
 		
-		res = paymentService.registerPayment(paymentResult); // 결제 결과 등록
+		try {
+			res = paymentService.registerPayment(paymentResult); // 결제 결과 등록
+		}catch(Exception e) {
+			log.error("DB 저장 실패");
+			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
+		}
 		
 		if(res == 1) {
 			res = paymentResult.getPaymentVO().getPaymentId();
@@ -136,7 +141,6 @@ public class PaymentController {
 			// 결제 에러
 			log.error("DB 저장 실패");
 			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
-			return new ResponseEntity<Integer>(res, HttpStatus.OK);
 		}
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);

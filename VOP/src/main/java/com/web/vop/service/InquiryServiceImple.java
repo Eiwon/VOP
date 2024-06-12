@@ -43,7 +43,7 @@ public class InquiryServiceImple implements InquiryService{
 		log.info("productVO : " + productVO);
 		
 		int insertRes = 2;
-		
+		// 해당 상품이 있는지 없는지 확인 
 		if(productVO != null) {
 			// 문의 등록이 있는지 없는지 확인
 			InquiryVO vo = inquiryMapper.selectByInquiry(productId, memberId);

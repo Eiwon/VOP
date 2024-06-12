@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.web.vop.domain.CouponPocketVO;
 import com.web.vop.domain.CouponVO;
 import com.web.vop.domain.MyCouponVO;
+import com.web.vop.persistence.Constant;
 import com.web.vop.persistence.CouponMapper;
 import com.web.vop.persistence.CouponPocketMapper;
 import com.web.vop.util.PageMaker;
@@ -26,7 +27,7 @@ public class CouponServiceImple implements CouponService{
 	CouponPocketMapper couponPocketMapper;
 
 	@Override
-	public int registerCoupon(CouponVO couponVO) {
+	public int registerCoupon(CouponVO couponVO) {	
 		log.info("registerCoupon");
 		int res = couponMapper.insertCoupon(couponVO);
 		return res;
@@ -41,7 +42,7 @@ public class CouponServiceImple implements CouponService{
 		
 		return list;
 	} // getAllCoupon
-
+	
 	@Override
 	public int deleteCouponById(int couponId) {
 		log.info("deleteCouponById");
@@ -50,6 +51,13 @@ public class CouponServiceImple implements CouponService{
 	} // end deleteCouponById
 
 	@Override
+	public CouponVO getCouponById(int couponId) {
+		log.info("getCouponById");
+		CouponVO result = couponMapper.selectById(couponId);
+		return result;
+	} // end getCouponById
+	
+	@Override
 	public List<MyCouponVO> getMyCouponPocket(String memberId) {
 		log.info("getMyCouponPocket");
 		List<MyCouponVO> list = couponPocketMapper.selectByMemberId(memberId);
@@ -57,25 +65,23 @@ public class CouponServiceImple implements CouponService{
 	} // end getMyCouponPocket
 
 	@Override
-	public int addCouponPocket(CouponPocketVO couponPocketVO) {
+	public List<MyCouponVO> getMyUsableCouponPocket(String memberId) {
+		log.info("getMyUsableCouponPocket");
+		List<MyCouponVO> list = couponPocketMapper.selectUsableByMemberId(memberId);
+		return list;
+	} // end getMyUsableCouponPocket
+	
+	@Override
+	public int addCouponPocket(int couponId, String memberId) {
 		log.info("addCouponPocket");
-		int res = couponPocketMapper.insertCouponPocket(couponPocketVO);
-		return res;
+		Integer hadCouponId = couponPocketMapper.selectIdById(couponId, memberId);
+		if(hadCouponId != null) {
+			return 2; // 중복 쿠폰
+		}else {
+			return couponPocketMapper.insertCouponPocket(couponId, memberId);
+		}
 	} // end addCouponPocket
 
-//	@Override
-//	public int setCouponNum(CouponPocketVO couponPocketVO) {
-//		log.info("setCouponNum");
-//		int res = couponPocketMapper.updateCouponNum(couponPocketVO);
-//		return res;
-//	} // end setCouponNum
-
-//	@Override
-//	public int getCouponNum(int couponId, String memberId) {
-//		log.info("getCouponNum");
-//		int couponNum = couponPocketMapper.selectCouponNum(couponId, memberId);
-//		return couponNum;
-//	} // end getCouponNum
 
 	@Override
 	public int deleteCouponPocket(int couponId, String memberId) {
@@ -86,56 +92,27 @@ public class CouponServiceImple implements CouponService{
 	
 	@Override
 	public int useUpCoupon(int couponId, String memberId) {
-		int couponNum = couponPocketMapper.selectCouponNum(
-				couponId, memberId); // 현재 쿠폰 수 조회
-		int res = 0;
-		
-		if(couponNum - 1 > 0) { // 사용 후, 쿠폰이 남아있다면 갯수 변경
-			res = couponPocketMapper.updateCouponNum(couponId, memberId, couponNum -1);
-		}else { // 더 이상 남은 쿠폰이 없으면 삭제
-			res = couponPocketMapper.deleteCouponById(couponId, memberId);
-		}
-		
+		log.info("useUpCoupon");
+		int res = couponPocketMapper.updateIsUsed(couponId, memberId, Constant.IS_USED);
 		return res;
 	} // end useUpCoupon
-	
-//	@Override
-//	public List<CouponVO> getByMemberId(String memberId) {
-//		log.info("getByMemberId()");
-//		return couponMapper.selectByMemberId(memberId);
-//	} // end getByMemberId
-//
-//	@Override
-//	public int removeCoupon(CouponVO couponVO) {
-//		log.info("removeCoupon()");
-//		return couponMapper.deleteCouponSelected(couponVO);
-//	} // end removeCoupon
-//
-//	@Override
-//	public int setCouponNum(CouponVO couponVO) {
-//		log.info("setCouponNum()");
-//		return couponMapper.updateCouponNum(couponVO);
-//	} // end setCouponNum
-//
-//	@Override
-//	public int getCouponNum(CouponVO couponVO) {
-//		log.info("getCouponNum()");
-//		return couponMapper.selectCouponNum(couponVO);
-//	} // end getCouponNum
 
-//	@Override
-//	public int useUpCoupon(CouponVO couponVO) {
-//		int couponNum = couponMapper.selectCouponNum(couponVO); // 현재 쿠폰 수 조회
-//		int res = 0;
-//		if(couponNum - 1 > 0) { // 사용 후, 쿠폰이 남아있다면 갯수 변경
-//			couponVO.setCouponNum(couponNum -1);
-//			res = couponMapper.updateCouponNum(couponVO);
-//		}else { // 더 이상 남은 쿠폰이 없으면 삭제
-//			res = couponMapper.deleteCouponSelected(couponVO);
-//		}
-//		
-//		return res;
-//	} // end useUpCoupon
+	@Override
+	public List<CouponVO> getNotHadCoupon(String memberId) {
+		log.info("getNotHadCoupon");
+		List<CouponVO> list = couponMapper.selectNotHadCoupon(memberId);
+		return list;
+	} // end getNotHadCoupon
+
+	@Override
+	public int setPublishing(int couponId, int publishing) {
+		log.info("setPublishing");
+		int res = couponMapper.updatePublishingById(couponId, publishing);
+		return res;
+	} // end setPublishing
+
+
+
 
 	
 }

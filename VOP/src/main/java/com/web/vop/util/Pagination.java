@@ -23,7 +23,7 @@ public class Pagination {
 		this.pageNum = page;
 		this.pageSize = pageSize;
 	}
-
+	
 	// 선택된 페이지의 시작 글 일련번호(rn) - #{start}
 	public int getStart() {
 		return (this.pageNum - 1) * this.pageSize + 1;

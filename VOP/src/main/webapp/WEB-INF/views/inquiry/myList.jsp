@@ -12,18 +12,36 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<style type="text/css">
+
+.page_list {
+	display: flex;
+	flex-direction: row;
+	list-style: none;
+}
+
+tbody {
+	height: 250px;
+}
+tr {
+	height: 50px;
+}
+td {
+	width: 200px;
+}
+</style>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <title>회원 문의 리스트</title>
 </head>
 <body>
 	<div>
-		<strong>${memberDetails.getUsername() } 님이 등록한 상품</strong>
+		<strong>${memberDetails.getUsername() }님 문의 목록</strong>
 	</div>
 	<table>
 		<thead>
 			<tr>
-				<th>상품명</th>
+				<th>상품 번호</th>
 				<th>문의 내용</th>
 				<th>작성 일자</th>
 			</tr>
@@ -41,7 +59,7 @@
 		
 		
 		inquiryMap.show = function(page) {
-	
+			console.log('page : ' + page);
 			let form = '';
 			let memberId = '${memberDetails.getUsername() }';
 			
@@ -54,12 +72,12 @@
 					inquiryMap.pageMaker = result.pageMaker; // 가져온 데이터를 저장
 					
 					const list = inquiryMap.list;
-					console.log('list : ' + list);
+
 					for (x in list) {
 						form += '<tr>' +
 								'<td class="productId">' + list[x].productId + '</td>' + 
 								'<td class="inquiryContent">' + list[x].inquiryContent + '</td>' + 
-								'<td class="inquiryDateCreated">' + list[x].inquiryDateCreated + '</td>' + 
+								'<td class="inquiryDateCreated">' + toDate(list[x].inquiryDateCreated) + '</td>' + 
 					    		'</tr>';
 					}
 					// 페이지 생성 후 등록
@@ -71,6 +89,7 @@
 
 		} // end showProductList
 
+		
 		function makePageForm(inquiryMap) { // 페이지 버튼 생성 후, productMap의 리스트 출력 함수 등록
 			const pageMaker = inquiryMap.pageMaker;
 			const startNum = pageMaker.startNum;
@@ -98,6 +117,14 @@
 			}
 			return pageForm;
 		} // end makePageForm
+		
+		// 시간 변경해주는 코드
+		function toDate(timestamp){
+			let date = new Date(timestamp);
+			let formatted = (date.getYear() + 1900) + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + 
+					date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+			return formatted;
+		} // end toDate
 		</script>
 	
 </body>

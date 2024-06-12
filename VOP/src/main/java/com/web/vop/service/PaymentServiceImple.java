@@ -1,11 +1,15 @@
 package com.web.vop.service;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.support.DefaultTransactionStatus;
 
 import com.web.vop.domain.CouponVO;
 import com.web.vop.domain.DeliveryVO;
@@ -16,6 +20,7 @@ import com.web.vop.domain.PaymentVO;
 import com.web.vop.domain.PaymentWrapper;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.persistence.BasketMapper;
+import com.web.vop.persistence.Constant;
 import com.web.vop.persistence.CouponMapper;
 import com.web.vop.persistence.CouponPocketMapper;
 import com.web.vop.persistence.DeliveryMapper;
@@ -96,30 +101,35 @@ public class PaymentServiceImple implements PaymentService {
 	public int registerPayment(PaymentWrapper payment) {
 		log.info("registerPayment()");
 		int res = 0;
-		paymentMapper.insertPayment(payment.getPaymentVO()); // 결제 결과 등록
 		PaymentVO paymentVO = payment.getPaymentVO();
 		MyCouponVO myCouponVO = payment.getMyCouponVO();
 		int paymentId = paymentVO.getPaymentId();
+		List<OrderVO> orderList = payment.getOrderList();
+		
+		// 주문 수량 유효성 검사
+		for(int i = 0; i < orderList.size(); i++) {
+			if(orderList.get(i).getPurchaseNum() > productMapper.selectRemainsById(orderList.get(i).getProductId())) {
+				return i * -1 - 1;
+			}
+		}
 		
 		// 주문 목록 등록
 		for(OrderVO order : payment.getOrderList()) {
 			order.setPaymentId(paymentId); // 결제 id 추가
+			productMapper.updateRemains(order.getProductId(), order.getPurchaseNum());				
 			orderMapper.insertOrder(order);
 			// 결제된 상품을 장바구니에서 제거
-			res = basketMapper.deleteFromBasket(order.getProductId(), paymentVO.getMemberId());
+			basketMapper.deleteFromBasket(order.getProductId(), paymentVO.getMemberId());
 		}
 		
 		// 쿠폰 사용 처리
 		if(myCouponVO != null) {
 			int couponId = myCouponVO.getCouponId();
 			String memberId = paymentVO.getMemberId();
-			int couponNum = couponPocketMapper.selectCouponNum(couponId, memberId); // 현재 쿠폰 수 조회
-			if(couponNum - 1 > 0) { // 사용 후, 쿠폰이 남아있다면 갯수 변경
-				res = couponPocketMapper.updateCouponNum(couponId, memberId, couponNum -1);
-			}else { // 더 이상 남은 쿠폰이 없으면 삭제
-				res = couponPocketMapper.deleteCouponById(couponId, memberId);
-			}
+			couponPocketMapper.updateIsUsed(couponId, memberId, Constant.IS_USED);
 		}
+		
+		res = paymentMapper.insertPayment(paymentVO); // 결제 결과 등록
 		
 		return res;
 	} // end registerPayment

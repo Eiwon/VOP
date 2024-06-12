@@ -36,4 +36,13 @@ public interface CouponMapper {
 	  
 	// 쿠폰 삭제
 	public int deleteCouponById(int couponId);
+	
+	// id로 쿠폰 검색
+	public CouponVO selectById(int couponId);
+	
+	// 배포 중이지만 보유 or 사용하지 않은 쿠폰 검색
+	public List<CouponVO> selectNotHadCoupon(String memberId);
+	
+	// 배포 여부 변경
+	public int updatePublishingById(@Param("couponId") int couponId, @Param("publishing") int publishing);
 }

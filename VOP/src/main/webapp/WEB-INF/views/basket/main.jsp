@@ -145,10 +145,9 @@
 				return;
 			}
 			
-			form += '<input type="hidden" name="memberId" value="' + memberId + '">';
 			tagOrderList.html(form);
 			
-			// memberId, productId[], productNum[] input 태그 생성 후 submit
+			// productId[], productNum[] input 태그 생성 후 submit
 			formExpense.submit();
 			
 		} // end submit

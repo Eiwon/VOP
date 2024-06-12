@@ -98,4 +98,10 @@ public interface ProductMapper {
 	// productId로 판매자 memberId 검색
 	String selectMemberIdById(int productId);
 	
+	// 상품 재고 증감
+	int updateRemains(@Param("productId") int productId, @Param("increaseNum") int increaseNum);
+	
+	// 상품 재고 검색
+	int selectRemainsById(int productId);
+	
 }

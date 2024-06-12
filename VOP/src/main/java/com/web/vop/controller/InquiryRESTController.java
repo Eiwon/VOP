@@ -112,12 +112,11 @@ public class InquiryRESTController {
 	public ResponseEntity<Map<String, Object>> myListInquiryGET(Pagination pagination,
 			@AuthenticationPrincipal MemberDetails memberDetails) {
 		log.info("myListInquiry()");
-		log.info("로그()");
 		String memberId = memberDetails.getUsername();
-		log.info("memberId : " + memberId);
-		
+		log.info("pagination : " + pagination);
 		
 		Map<String, Object> resultMap = new HashMap<>();
+		
 		//페이지 메이커에 기본 쪽수값 저장
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
@@ -126,6 +125,7 @@ public class InquiryRESTController {
 		List<InquiryVO> listInquiry = inquiryService.getAllInquiryMemberIdPaging(memberId, pageMaker);
 		
 		log.info("listInquiry : " + listInquiry);
+		log.info("pageMaker : " + pageMaker);
 		
 		resultMap.put("listInquiry", listInquiry);
 		resultMap.put("pageMaker", pageMaker);

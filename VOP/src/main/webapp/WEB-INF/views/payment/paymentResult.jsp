@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <style type="text/css">
 	.box_info {
 		border: 1px solid black;
