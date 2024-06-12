@@ -45,6 +45,11 @@ public interface CouponService {
 	// 쿠폰 사용 처리
 	public int useUpCoupon(int couponId, String memberId);
 	
+	// 배포 중이지만 보유 or 사용하지 않은 쿠폰 검색
+	public List<CouponVO> getNotHadCoupon(String memberId);
+	
+	// 배포 여부 변경
+	public int setPublishing(int couponId, int publishing);
 	
 	// memberId로 쿠폰 조회
 	//public List<CouponVO> getByMemberId(String memberId);

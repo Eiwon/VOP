@@ -15,7 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <!-- 신규 쿠폰 등록 -->
    <insert id="insertCoupon">
    		INSERT INTO COUPON VALUES (
-   		COUPON_SEQ.NEXTVAL, #{couponName}, #{discount}, SYSDATE)
+   		COUPON_SEQ.NEXTVAL, #{couponName}, #{discount}, SYSDATE, 0)
    </insert>
    
    <!-- 모든 쿠폰 조회 (페이징) -->
@@ -40,5 +40,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <select id="selectById" resultMap="couponResultMap">
    		SELECT * FROM COUPON WHERE COUPON_ID = #{couponId}
    </select>
+   
+   <!-- 배포 중이지만 보유하지 않은 쿠폰 검색 -->
+   <select id="selectNotHadCoupon" resultType="couponResultMap">
+   		SELECT COUPON.* FROM COUPON JOIN 
+		(SELECT COUPON_ID FROM COUPON_POCKET WHERE MEMBER_ID = #{memberId}) CP
+		ON COUPON.COUPON_ID != CP.COUPON_ID WHERE PUBLISHING = 1
+   </select>
+   
+   <!-- 배포 여부 변경 -->
+   <update id="updatePublishingById">
+   		UPDATE COUPON SET PUBLISHING = #{publishing} WHERE COUPON_ID = #{couponId}
+   </update>
    
 </mapper>

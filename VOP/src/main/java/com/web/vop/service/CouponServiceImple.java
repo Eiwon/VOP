@@ -27,7 +27,7 @@ public class CouponServiceImple implements CouponService{
 	CouponPocketMapper couponPocketMapper;
 
 	@Override
-	public int registerCoupon(CouponVO couponVO) {
+	public int registerCoupon(CouponVO couponVO) {	
 		log.info("registerCoupon");
 		int res = couponMapper.insertCoupon(couponVO);
 		return res;
@@ -74,8 +74,8 @@ public class CouponServiceImple implements CouponService{
 	@Override
 	public int addCouponPocket(int couponId, String memberId) {
 		log.info("addCouponPocket");
-		int hadCouponId = couponPocketMapper.selectIdById(couponId, memberId);
-		if(hadCouponId == 0) {
+		Integer hadCouponId = couponPocketMapper.selectIdById(couponId, memberId);
+		if(hadCouponId != null) {
 			return 2; // Áßº¹ ÄíÆù
 		}else {
 			return couponPocketMapper.insertCouponPocket(couponId, memberId);
@@ -96,6 +96,20 @@ public class CouponServiceImple implements CouponService{
 		int res = couponPocketMapper.updateIsUsed(couponId, memberId, Constant.IS_USED);
 		return res;
 	} // end useUpCoupon
+
+	@Override
+	public List<CouponVO> getNotHadCoupon(String memberId) {
+		log.info("getNotHadCoupon");
+		List<CouponVO> list = couponMapper.selectNotHadCoupon(memberId);
+		return list;
+	} // end getNotHadCoupon
+
+	@Override
+	public int setPublishing(int couponId, int publishing) {
+		log.info("setPublishing");
+		int res = couponMapper.updatePublishingById(couponId, publishing);
+		return res;
+	} // end setPublishing
 
 
 

@@ -53,13 +53,16 @@
 				<div class="couponName">쿠폰명</div>
 				<div class="discount">할인률</div>
 				<div class="dateCreated">등록일</div>
+				<div class="publishing">배포 상태</div>
 			</div>
 			<div class="couponList"></div>
 			<div class="couponPage"></div>
 		</div>
 		<div>
 			<input type="button" value="쿠폰 등록" onclick="registerCoupon()">
-			<input type="button" value="선택 삭제" onclick="deleteCoupon()">
+			<input type="button" value="삭제" onclick="deleteCoupon()">
+			<input type="button" value="배포" onclick="publishCoupon(1)">
+			<input type="button" value="배포 취소" onclick="publishCoupon(0)">
 		</div>
 	</div>
 	<script type="text/javascript">
@@ -95,15 +98,18 @@
 		function makeListForm(list) {
 			let listForm = '';
 			let isSelected;
+			let isPublishing;
 			for(x in list){
 				isSelected = selectedList.includes(list[x].couponId) ? "selected" : "unselected";
+				isPublishing = list[x].publishing == '0' ? '미배포' : '배포중';
 				listForm += 
 					'<div class="couponItem tableList ' + isSelected + '" onclick="select(this)">' +
 						'<span class="couponId">' + list[x].couponId + '</span>' + 
 						'<span class="couponName">' + list[x].couponName + '</span>' +
 						'<span class="discount">' + list[x].discount + '%</span>' +
 						'<span class="dateCreated">' + toDate(list[x].dateCreated) + '</span>' +
-					'</div>'
+						'<span class="publishing">' + isPublishing + '%</span>' +
+					'</div>';
 			}
 			return listForm;
 		} // end makeListForm
@@ -194,6 +200,27 @@
 			}
 			
 		} // end deleteCoupon
+		
+		function publishCoupon(publishing){
+			if(selectedList.length == 0){
+				alert('변경할 쿠폰을 선택해주세요');
+				return;
+			}
+			
+			$.ajax({
+				method : 'PUT',
+				url : 'publish/' + publishing,
+				success : function(result){
+					if(result == 1){
+						alert('변경 성공');
+						loadCouponList(pageMaker.pagination.pageNum);
+					}else {
+						alert('변경 실패');
+					}
+				}
+			});
+			
+		} // end publishCoupon
 		
 		function toDate(timestamp){
 			let date = new Date(timestamp);

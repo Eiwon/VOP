@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -138,6 +139,7 @@ public class CouponController {
 	} // end registerPOST
 	
 	@DeleteMapping("/delete")
+	@ResponseBody
 	public ResponseEntity<Integer> deleteOriginalCoupon(@RequestBody List<Integer> couponIds){
 		log.info("쿠폰 삭제");
 		int res = 0;
@@ -147,5 +149,24 @@ public class CouponController {
 		log.info(res + "개 쿠폰 삭제 성공");
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end deleteOriginalCoupon
+	
+	@GetMapping("/unhad")
+	@ResponseBody
+	public ResponseEntity<List<CouponVO>> getUnhadList(@AuthenticationPrincipal UserDetails memberDetails){
+		log.info("미보유 쿠폰 검색");
+		String memberId = memberDetails.getUsername();
+		List<CouponVO> couponList = couponService.getNotHadCoupon(memberId);
+		log.info("검색 결과 : " + couponList);
+		return new ResponseEntity<List<CouponVO>>(couponList, HttpStatus.OK);
+	} // end getUnhadList
+	
+	@PutMapping("/publish/{publishing}")
+	@ResponseBody
+	public ResponseEntity<Integer> setPublishing(@RequestBody List<Integer> couponIdList, @PathVariable int publishing){
+		log.info("setPublishing");
+		int res = 0;
+		
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+	} // end setPublishing
 	
 }

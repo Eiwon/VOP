@@ -43,7 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <insert id="insertCouponPocket">
    		INSERT INTO COUPON_POCKET VALUES (
    			#{memberId}, #{couponId}, 0, SYSDATE +14
-   		);
+   		)
    </insert>
    
    <!-- 쿠폰 활성화 / 비활성화 -->
@@ -62,5 +62,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		SELECT COUPON_ID FROM COUPON_POCKET 
    		WHERE COUPON_ID = #{couponId} AND MEMBER_ID = #{memberId}
    </select>
+ 
    
 </mapper>

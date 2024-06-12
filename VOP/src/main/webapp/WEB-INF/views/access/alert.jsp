@@ -16,8 +16,9 @@
 		alert(alertMsg);
 		if(redirectUri == 'close'){
 			window.close();
+		}else{
+			location.href = '../' + redirectUri;		
 		}
-		location.href = '../' + redirectUri;
 	</script>
 
 </body>

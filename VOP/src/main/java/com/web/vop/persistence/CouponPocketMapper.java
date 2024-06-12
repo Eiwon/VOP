@@ -30,6 +30,5 @@ public interface CouponPocketMapper {
 			@Param("couponId") int couponId, @Param("memberId") String memberId);
 	
 	// 보유 중인 쿠폰인지 확인
-	public int selectIdById(@Param("couponId") int couponId, @Param("memberId") String memberId);
-	
+	public Integer selectIdById(@Param("couponId") int couponId, @Param("memberId") String memberId);
 }

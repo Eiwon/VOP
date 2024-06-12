@@ -38,6 +38,7 @@
 				</c:forEach>
 			</c:otherwise>
 		</c:choose>
+		<a href="getCoupon?couponId=1">쿠폰받기</a>
 	</div>
 	
 
