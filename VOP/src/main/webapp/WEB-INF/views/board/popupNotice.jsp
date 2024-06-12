@@ -32,7 +32,7 @@
 				// 서버에 쿠키 생성 요청
 				$.ajax({
 					method : 'GET',
-					url : 'blockPopup?messageId=' + messageId,
+					url : '../popupAds/blockPopup?messageId=' + messageId,
 					success : function(result){
 						window.close();
 					} // end success

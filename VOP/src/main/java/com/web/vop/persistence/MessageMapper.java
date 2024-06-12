@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.web.vop.domain.MessageVO;
+import com.web.vop.util.Pagination;
 
 @Mapper
 public interface MessageMapper {
@@ -29,4 +30,13 @@ public interface MessageMapper {
 	
 	// messageId·Î °Ë»ö
 	public MessageVO selectById(int messageId);
+	
+	// ¸ðµç ÆË¾÷ ±¤°í °Ë»ö 
+	public List<MessageVO> selectAllPopupPaging(Pagination pagination);
+	
+	// ¸ðµç ÆË¾÷ ±¤°í °Ë»ö ¼ö
+	public int selectAllPopupCnt();
+	
+	// ¸ðµç ÆË¾÷ ±¤°í id °Ë»ö 
+	public List<Integer> selectAllPopupId(); 
 }

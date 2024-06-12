@@ -45,4 +45,9 @@ public interface CouponMapper {
 	
 	// 배포 여부 변경
 	public int updatePublishingById(@Param("couponId") int couponId, @Param("publishing") int publishing);
+
+	// 배포 중인 모든 쿠폰 검색
+	public List<CouponVO> selectPublishingCoupon();
+
+
 }

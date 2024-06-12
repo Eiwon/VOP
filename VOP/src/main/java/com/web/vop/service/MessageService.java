@@ -3,6 +3,7 @@ package com.web.vop.service;
 import java.util.List;
 
 import com.web.vop.domain.MessageVO;
+import com.web.vop.util.PageMaker;
 
 public interface MessageService {
 
@@ -28,5 +29,11 @@ public interface MessageService {
 	public MessageVO getById(int messageId);
 	
 	// productId로 판매자 memberId 검색
-	String getSellerIdOf(int productId);
+	public String getSellerIdOf(int productId);
+	
+	// 모든 팝업광고 검색(페이징)
+	public List<MessageVO> getAllPopup(PageMaker pageMaker); 
+	
+	// 모든 팝업 광고 id 검색 
+	public List<Integer> getAllPopupId(); 
 }

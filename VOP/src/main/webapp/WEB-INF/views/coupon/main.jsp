@@ -108,7 +108,7 @@
 						'<span class="couponName">' + list[x].couponName + '</span>' +
 						'<span class="discount">' + list[x].discount + '%</span>' +
 						'<span class="dateCreated">' + toDate(list[x].dateCreated) + '</span>' +
-						'<span class="publishing">' + isPublishing + '%</span>' +
+						'<span class="publishing">' + isPublishing + '</span>' +
 					'</div>';
 			}
 			return listForm;
@@ -210,15 +210,19 @@
 			$.ajax({
 				method : 'PUT',
 				url : 'publish/' + publishing,
+				headers : {
+					'Content-type' : 'application/json'
+				},
+				data : JSON.stringify(selectedList),
 				success : function(result){
-					if(result == 1){
+					if(result > 0){
 						alert('변경 성공');
 						loadCouponList(pageMaker.pagination.pageNum);
 					}else {
 						alert('변경 실패');
 					}
-				}
-			});
+				} // end success
+			}); // end ajax
 			
 		} // end publishCoupon
 		
