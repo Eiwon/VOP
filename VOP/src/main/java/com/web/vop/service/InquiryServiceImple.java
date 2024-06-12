@@ -59,7 +59,10 @@ public class InquiryServiceImple implements InquiryService{
 				log.info(memberId + "님 문의(댓글)는 이미 있습니다.");
 			}
 		}
-		
+		// productId, memberId 조합 하나당 1개의 문의만 등록 가능하면 
+		// (productId, memberId)가 PK일테니
+		// select 없이 바로 insert해서 기본키 중복 예외 (ConstraintViolationException?)을 발생시키고
+		// try catch로 예외처리하면 될듯?
 		
 
 		return insertRes;

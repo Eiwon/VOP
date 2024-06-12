@@ -30,10 +30,10 @@ import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.MessageVO;
 import com.web.vop.domain.SellerVO;
-import com.web.vop.persistence.Constant;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.SellerService;
 import com.web.vop.socket.AlarmHandler;
+import com.web.vop.util.Constant;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 

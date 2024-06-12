@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.DeliveryVO;
 import com.web.vop.persistence.DeliveryMapper;
+import com.web.vop.util.Constant;
 
 import lombok.extern.log4j.Log4j;
 
@@ -24,7 +25,7 @@ public class DeliveryServiceImple implements DeliveryService{
 	public int registerDelivery(DeliveryVO deliveryVo) {
 		log.info("registerDelivery()");
 		
-		if(deliveryVo.getIsDefault() == 1) { // 등록할 배송지가 기본 배송지이면, 기존 기본 배송지를 0으로 변경
+		if(deliveryVo.getIsDefault() == Constant.DELIVERY_DEFAULT) { // 등록할 배송지가 기본 배송지이면, 기존 기본 배송지를 0으로 변경
 			deliveryMapper.updateDefault(deliveryVo.getMemberId());
 		}
 		int res = deliveryMapper.insertDelivery(deliveryVo);

@@ -7,8 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.web.vop.domain.MemberVO;
-import com.web.vop.persistence.Constant;
 import com.web.vop.persistence.MemberMapper;
+import com.web.vop.util.Constant;
 
 import lombok.extern.log4j.Log4j;
 

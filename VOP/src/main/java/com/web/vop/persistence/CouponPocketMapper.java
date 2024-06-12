@@ -1,5 +1,6 @@
 package com.web.vop.persistence;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -18,7 +19,8 @@ public interface CouponPocketMapper {
 	public List<MyCouponVO> selectUsableByMemberId(String memberId);
 	
 	// 쿠폰 추가
-	public int insertCouponPocket(@Param("couponId") int couponId, @Param("memberId") String memberId);
+	public int insertCouponPocket(
+			@Param("couponId") int couponId, @Param("memberId") String memberId) throws SQLIntegrityConstraintViolationException;
 	
 	// 쿠폰 활성화 / 비활성화
 	public int updateIsUsed(

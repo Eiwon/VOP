@@ -14,8 +14,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
-import com.web.vop.persistence.Constant;
 import com.web.vop.service.UserDetailsServiceImple;
+import com.web.vop.util.Constant;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;

@@ -25,8 +25,8 @@ import com.web.vop.domain.CouponVO;
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MyCouponVO;
 import com.web.vop.domain.PagingListDTO;
-import com.web.vop.persistence.Constant;
 import com.web.vop.service.CouponService;
+import com.web.vop.util.Constant;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
