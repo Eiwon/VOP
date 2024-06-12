@@ -149,42 +149,6 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 		model.addAttribute("messageVO", message);
 	} // end popupNoticeGET
 	
-	@GetMapping("/blockPopup")
-	@ResponseBody
-	public ResponseEntity<Integer> blockPopup(int messageId, HttpServletResponse response, @CookieValue(name = "blockPopup", required = false) String cookie) {
-		log.info("팝업 차단 쿠키 생성");
-		Cookie newCookie = new Cookie("blockPopup", null);
-		List<Integer> blockList = null;
-		
-		if(cookie == null) { // blockPopup 쿠키가 없으면 생성
-			blockList = new ArrayList<>();
-		}else { // 쿠키가 있으면 차단 목록 불러옴
-			try { 
-				blockList = new ObjectMapper().readValue(URLDecoder.decode(cookie, "UTF-8"), ArrayList.class);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		blockList.add(messageId);
-		String encoded = null;
-		try {
-			// 세션에는 String만 저장 가능하기 때문에 차단 목록을 JSON으로 변환
-			// 쿠키에는 , 를 저장할 수 없어서 URL 규칙으로 인코딩
-			encoded = URLEncoder.encode(new ObjectMapper().writeValueAsString(blockList), "UTF-8");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		newCookie.setValue((encoded == null) ? cookie : encoded);  
-		
-		LocalDateTime current = new LocalDateTime();
-		int remainSecondOfDay = 86400 - current.getHourOfDay() *3600 - current.getMinuteOfHour() *60 - current.getSecondOfMinute(); 
-		newCookie.setMaxAge(remainSecondOfDay);
-		log.info("쿠키 만료 남은 시간 : " + remainSecondOfDay + "초");
-		response.addCookie(newCookie);
-		
-		return new ResponseEntity<Integer>(1, HttpStatus.OK);
-	} // end blockPopup
 	
 	@GetMapping("/consult")
 	public String consultGET(Model model, String roomId) {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.CouponPocketVO;
 import com.web.vop.domain.CouponVO;
@@ -104,12 +105,23 @@ public class CouponServiceImple implements CouponService{
 		return list;
 	} // end getNotHadCoupon
 
+	@Transactional(value = "transactionManager")
 	@Override
-	public int setPublishing(int couponId, int publishing) {
+	public int setPublishing(List<Integer> couponIdList, int publishing) {
 		log.info("setPublishing");
-		int res = couponMapper.updatePublishingById(couponId, publishing);
+		int res = 0;
+		for(int couponId : couponIdList) {
+			res += couponMapper.updatePublishingById(couponId, publishing);
+		}
 		return res;
 	} // end setPublishing
+
+	@Override
+	public List<CouponVO> getPublishingCoupon() {
+		log.info("getPublishingCoupon");
+		List<CouponVO> list = couponMapper.selectPublishingCoupon();
+		return list;
+	} // end getPublishingCoupon
 
 
 

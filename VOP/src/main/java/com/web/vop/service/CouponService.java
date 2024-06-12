@@ -49,7 +49,10 @@ public interface CouponService {
 	public List<CouponVO> getNotHadCoupon(String memberId);
 	
 	// 배포 여부 변경
-	public int setPublishing(int couponId, int publishing);
+	public int setPublishing(List<Integer> couponIdList, int publishing);
+	
+	// 배포 중인 모든 쿠폰 검색
+	public List<CouponVO> getPublishingCoupon();
 	
 	// memberId로 쿠폰 조회
 	//public List<CouponVO> getByMemberId(String memberId);

@@ -164,9 +164,21 @@ public class CouponController {
 	@ResponseBody
 	public ResponseEntity<Integer> setPublishing(@RequestBody List<Integer> couponIdList, @PathVariable int publishing){
 		log.info("setPublishing");
-		int res = 0;
+		
+		int res = couponService.setPublishing(couponIdList, publishing);
+		log.info(res + "행 변경 성공");
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end setPublishing
+	
+	@GetMapping("/publish")
+	@ResponseBody
+	public ResponseEntity<List<CouponVO>> getPublishingCoupon(){
+		log.info("배포 중인 모든 쿠폰 요청");
+		List<CouponVO> list = couponService.getPublishingCoupon();
+		log.info(list.size() + "건 검색");
+		
+		return new ResponseEntity<List<CouponVO>>(list, HttpStatus.OK);
+	} // end getPublishingCoupon
 	
 }

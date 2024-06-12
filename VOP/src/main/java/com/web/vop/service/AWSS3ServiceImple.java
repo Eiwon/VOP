@@ -59,7 +59,7 @@ public class AWSS3ServiceImple implements AWSS3Service {
 		BufferedImage icon = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR); // icon 저장할 공간 생성
 		icon.createGraphics().drawImage(bi, 0, 0, width, height, null); // icon 그리기
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ImageIO.write(icon, "jpg", baos); // 그린 icon 저장
+		ImageIO.write(icon, imageVO.getImgExtension(), baos); // 그린 icon 저장
 		
 		baos.flush();
 		MultipartFile changedFile = new MockMultipartFile(imageVO.getImgChangeName(), baos.toByteArray());
