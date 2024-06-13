@@ -179,7 +179,6 @@
 			setPaymentInfo();
 			
 			
-			
 		} // end setInfo
 		
 		function makeOrderInfo(){
