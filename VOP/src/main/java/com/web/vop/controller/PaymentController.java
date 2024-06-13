@@ -8,8 +8,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,6 +55,7 @@ public class PaymentController {
 	@Autowired
 	private PaymentAPIUtil paymentAPIUtil;
 	
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/checkout")
 	public void makePayment(
 			Model model, int[] productIds, int[] productNums, @AuthenticationPrincipal MemberDetails memberDetails) {
@@ -80,7 +83,7 @@ public class PaymentController {
 		
 	} // end paymentResultGET
 	
-	
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/getId")
 	@ResponseBody
 	public ResponseEntity<Integer> getNewPaymentId(){
@@ -89,7 +92,7 @@ public class PaymentController {
 		return new ResponseEntity<Integer>(paymentId, HttpStatus.OK);
 	} // end getNewPaymentId
 	
-	
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/apply")
 	@ResponseBody
 	public ResponseEntity<Integer> savePaymentResult(@RequestBody PaymentWrapper paymentResult){
@@ -129,18 +132,14 @@ public class PaymentController {
 		
 		try {
 			res = paymentService.registerPayment(paymentResult); // 결제 결과 등록
-		}catch(Exception e) {
-			log.error("DB 저장 실패");
+			if(res == 1) {
+				res = paymentResult.getPaymentVO().getPaymentId();
+				// 결제 성공시 결제id 반환
+			}
+		}catch(DataIntegrityViolationException e) {
+			log.error("DB 저장 실패 : 재고 부족");
 			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
-		}
-		
-		if(res == 1) {
-			res = paymentResult.getPaymentVO().getPaymentId();
-			// 결제 성공시 결제id 반환
-		}else {
-			// 결제 에러
-			log.error("DB 저장 실패");
-			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
+			res = -1;
 		}
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);

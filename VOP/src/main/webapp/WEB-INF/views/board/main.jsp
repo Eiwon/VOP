@@ -12,12 +12,16 @@
     </style>
 </head>
 <body>
-<div id="recommend_container">
+<div>
 	<div>
-		<h2>최근 등록된 상품</h2>
+		<h1>최근 등록된 상품</h1>
 		<ul class="flex_list" id="recent_list">
 	
 		</ul>
+	</div>
+	<div>
+		<h1>추천 상품</h1>
+		<div id="recommend_container"></div>
 	</div>
 </div>
 	<script type="text/javascript">
@@ -25,10 +29,6 @@
 		let listRecent = $('#recent_list');
 		let containerRecommend = $('#recommend_container');
 		
-		const constCategory = ["여성패션", "남성패션", "남녀 공용 의류", "유아동 패션", "뷰티", "출산/유아동", 
-			"식품", "주방용품", "생활용품", "홈인테리어", "가전디지털", "스포츠/레저", "자동차 용품", "도서/음반/DVD", 
-			"완구/취미", "문구/오피스", "반려동물용품", "헬스/건강식품"];
-        
 		$(document).ready(function(){
 			printRecentList();
 			printRecommendByCategory();
@@ -42,25 +42,19 @@
 				url : '../product/recent',
 				success : function(result){ // result = 최근 등록된 5개 ProductVO
 					console.log(result);
-					let productList = result;
-					for(x in productList){ 
-						let boxProduct = $('<li class="product_box" onclick="toDetails(this)"></li>');
-						let selected = productList[x];
-						$.ajax({
-							method : 'GET',
-							url : '../image/' + selected.imgId,
-							success : function(result){
-								let tagImg = $('<img>');
-								tagImg.attr('src', result);
-								boxProduct.append(tagImg);
-								boxProduct.append($('<br><strong class="product_name">' + selected.productName + '</strong><br>'));
-								boxProduct.append($('<strong class="product_price">' + selected.productPrice + '</strong><br>'));
-								boxProduct.append($('<span class="review_num">' + selected.reviewNum + '</span>'));
-								boxProduct.append($('<input hidden="hidden" class="product_id" value="' + selected.productId + '"/>'));
-							}
-						}); // end ajax
-						listRecent.append(boxProduct);
+					let form = '';
+					let productVO;
+					for(x in result){ 
+						productVO = result[x].productVO;
+						form += '<li class="product_box" onclick="toDetails(this)">' + 
+							'<img src="' + result[x].imgUrl + '">' + 
+							'<br><strong class="product_name">' + productVO.productName + '</strong><br>' +
+							'<strong class="product_price">' + productVO.productPrice + '</strong><br>' + 
+							'<span class="review_num">' + productVO.reviewNum + '</span>' + 
+							'<input hidden="hidden" class="product_id" value="' + productVO.productId + '"/>' + 
+							'</li>';
 					}
+					listRecent.html(form);
 				} // end success
 			}); // end ajax
 		
@@ -70,36 +64,24 @@
 			$.ajax({
 				method : 'GET',
 				url : '../product/bestReview',
-				success : function(result){ // result : key=카테고리명, value=해당 카테고리의 최고리뷰 상품 List<ProductVO>
-					let productList = result;
+				success : function(result){ // result : key=카테고리명, value=해당 카테고리의 최고리뷰 상품 List<ProductPreviewDTO>
 					console.log(result);
-					for(x in constCategory){ 
-						const selectedCategory = constCategory[x];
-						let listByCategory = $('<div><h2>' + selectedCategory + '</h2></div>'); 
-						let list = $('<ul class="flex_list"></ul>');
-						for(i in productList[selectedCategory]){
-							const selected = productList[selectedCategory][i];
-							let boxProduct = $('<li class="product_box" onclick="toDetails(this)"></li>');
-							$.ajax({
-								method : 'GET',
-								url : '../image/' + selected.imgId,
-								success : function(result){
-									let tagImg = $('<img>');
-									tagImg.attr('src', result);
-									boxProduct.append(tagImg);
-									boxProduct.append($('<br><strong class="product_name">' + selected.productName + '</strong><br>'));
-									boxProduct.append($('<strong class="product_price">' + selected.productPrice + '</strong><br>'));
-									boxProduct.append($('<span class="review_num">' + selected.reviewNum + '</span>'));
-									boxProduct.append($('<input hidden="hidden" class="product_id" value="' + selected.productId + '"/>'));
-								}
-							}); // end ajax
-							
-							list.append(boxProduct);
-						} 
-						listByCategory.append(list);
-						containerRecommend.append(listByCategory);
+					for (x in result){
+						let form = '<div><h2>' + x + '</h2>' + 
+								   '<ul class="flex_list">';
+						for(i in result[x]){
+							let productVO = result[x][i].productVO;
+							form += '<li class="product_box" onclick="toDetails(this)">' + 
+									'<img src="' + result[x][i].imgUrl + '">' + 
+									'<br><strong class="product_name">' + productVO.productName + '</strong><br>' + 
+									'<span class="product_price">' + productVO.productPrice + '원</span><br>' +
+									'<span class="review_num">' + productVO.reviewNum + '</span>' + 
+									'<input hidden="hidden" class="product_id" value="' + productVO.productId + '"/>' +
+									'</li>';
+						}
+						form += '</ul></div>';
+						containerRecommend.append(form);
 					}
-					
 				} // end success
 			}); // end ajax
 		} // end printRecentList
@@ -153,10 +135,6 @@
 				alert('팝업을 허용해주세요.  크롬 설정->개인정보보호 및 보안->사이트설정->팝업 및 리디렉션에서 설정 가능합니다.');
 				return;
 			}
-			popup.onbeforeunload = function(){
-				// 팝업 닫힐 때 실행
-				console.log("팝업 닫힘");
-			} // end popup.onbeforeunload
 		} // end showPopup
 		
 		

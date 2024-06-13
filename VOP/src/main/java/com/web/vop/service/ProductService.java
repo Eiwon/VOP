@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductDetailsDTO;
+import com.web.vop.domain.ProductPreviewDTO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
@@ -40,13 +41,13 @@ public interface ProductService {
 	int registerProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details) throws IOException;
 	
 	// 카테고리로 상품 검색
-	List<ProductVO> searchByCategory(String category, PageMaker pageMaker);
+	List<ProductPreviewDTO> searchByCategory(String category, PageMaker pageMaker);
 	
 	// 이름으로 상품 검색
-	List<ProductVO> searchByName(String productName, PageMaker pageMaker);
+	List<ProductPreviewDTO> searchByName(String productName, PageMaker pageMaker);
 	
 	// 카테고리 안에서 이름으로 검색
-	List<ProductVO> searchByNameInCategory(String category, String productName,
+	List<ProductPreviewDTO> searchByNameInCategory(String category, String productName,
 			PageMaker pageMaker);
 	
 	// memberId로 상품 조회
@@ -61,11 +62,11 @@ public interface ProductService {
 	// productId로 상품 삭제
 	int deleteProduct(int productId);
 	
-	// 카테고리를 지정하여, 리뷰 수가 가장 많은 5개의 상품 검색
-	List<ProductVO> getTopProductInCategory(String category);
+	// 카테고리별 리뷰 수가 가장 많은 5개의 상품 검색
+	List<ProductPreviewDTO> getTopProductByCategory();
 	
 	// 최근 등록된 상품 5개 조회
-	List<ProductVO> getRecent5();
+	List<ProductPreviewDTO> getRecent5();
 	
 	// 상태가 ?? 대기중인 상품 조회
 	List<ProductVO> searchByState(String productState, PageMaker pageMaker);

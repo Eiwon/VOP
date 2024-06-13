@@ -17,4 +17,5 @@ public class PaymentWrapper {
 	private DeliveryVO deliveryVO; 
 	private List<OrderVO> orderList;
 	private MyCouponVO myCouponVO;
+	private MembershipVO membershipVO;
 }

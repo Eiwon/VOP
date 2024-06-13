@@ -4,6 +4,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,8 +80,8 @@ public class CouponServiceImple implements CouponService{
 		int res = 0;
 		try {
 			res = couponPocketMapper.insertCouponPocket(couponId, memberId);
-		} catch (SQLIntegrityConstraintViolationException e) {
-			e.printStackTrace();
+		} catch (DataIntegrityViolationException e) {
+			log.info("이미 수령한 쿠폰");
 			res = 2;
 		}
 		return res;

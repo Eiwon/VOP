@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.web.vop.domain.CouponPocketVO;
 import com.web.vop.domain.MyCouponVO;
@@ -20,7 +21,7 @@ public interface CouponPocketMapper {
 	
 	// 쿠폰 추가
 	public int insertCouponPocket(
-			@Param("couponId") int couponId, @Param("memberId") String memberId) throws SQLIntegrityConstraintViolationException;
+			@Param("couponId") int couponId, @Param("memberId") String memberId) throws DataIntegrityViolationException;
 	
 	// 쿠폰 활성화 / 비활성화
 	public int updateIsUsed(

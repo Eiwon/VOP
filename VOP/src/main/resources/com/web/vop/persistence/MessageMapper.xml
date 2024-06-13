@@ -25,15 +25,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- receiver id로 수신 가능한 모든 메시지 검색 -->
    <select id="selectByReceiverId" resultMap="messageResultMap">
-   		SELECT * FROM MESSAGE WHERE RECEIVER_ID = #{receiverId} OR TYPE = 'notice'
+   		SELECT * FROM MESSAGE WHERE RECEIVER_ID = #{receiverId}
    </select>   
    
-   <!-- 지정 메시지 삭제(client) -->
-   <delete id="deleteByIdExceptNotice">
-   		DELETE MESSAGE WHERE MESSAGE_ID = #{messageId} AND TYPE != 'notice'
-   </delete>
-   
-   <!-- 지정 메시지 삭제(admin) -->
+   <!-- 지정 메시지 삭제 -->
    <delete id="deleteById">
    		DELETE MESSAGE WHERE MESSAGE_ID = #{messageId}
    </delete>
@@ -68,7 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </select>
    
    <!-- 모든 팝업 광고 id 검색 -->
-   <select id="selectAllPopupId" resultMap="Integer">
+   <select id="selectAllPopupId" resultType="Integer">
    		SELECT MESSAGE_ID FROM MESSAGE WHERE TYPE NOT LIKE '%Alarm' ORDER BY MESSAGE_ID DESC
    </select>
    

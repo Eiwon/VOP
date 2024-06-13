@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.DeliveryVO;
 import com.web.vop.domain.MemberVO;
+import com.web.vop.domain.MembershipVO;
 import com.web.vop.domain.MyCouponVO;
 import com.web.vop.domain.OrderVO;
 import com.web.vop.domain.PaymentVO;
@@ -19,6 +21,7 @@ import com.web.vop.persistence.CouponMapper;
 import com.web.vop.persistence.CouponPocketMapper;
 import com.web.vop.persistence.DeliveryMapper;
 import com.web.vop.persistence.MemberMapper;
+import com.web.vop.persistence.MembershipMapper;
 import com.web.vop.persistence.OrderMapper;
 import com.web.vop.persistence.PaymentMapper;
 import com.web.vop.persistence.ProductMapper;
@@ -54,6 +57,9 @@ public class PaymentServiceImple implements PaymentService {
 	@Autowired
 	CouponPocketMapper couponPocketMapper;
 	
+	@Autowired
+	MembershipMapper membershipMapper;
+	
 	@Override
 	public int getNewPaymentId() {
 		log.info("getNewPaymentId()");
@@ -86,6 +92,9 @@ public class PaymentServiceImple implements PaymentService {
 		} // end for
 		payment.setOrderList(orderList);
 		
+		// 멤버십 정보 등록
+		MembershipVO membershipVO = membershipMapper.selectByMemberId(memberId);
+		payment.setMembershipVO(membershipVO);
 		
 		return payment;
 	} // end makePaymentForm
@@ -93,25 +102,19 @@ public class PaymentServiceImple implements PaymentService {
 	
 	@Transactional(value = "transactionManager")
 	@Override
-	public int registerPayment(PaymentWrapper payment) {
+	public int registerPayment(PaymentWrapper payment) throws DataIntegrityViolationException{
 		log.info("registerPayment()");
-		int res = 0;
+		
 		PaymentVO paymentVO = payment.getPaymentVO();
 		MyCouponVO myCouponVO = payment.getMyCouponVO();
 		int paymentId = paymentVO.getPaymentId();
-		List<OrderVO> orderList = payment.getOrderList();
 		
-		// 주문 수량 유효성 검사
-		for(int i = 0; i < orderList.size(); i++) {
-			if(orderList.get(i).getPurchaseNum() > productMapper.selectRemainsById(orderList.get(i).getProductId())) {
-				return i * -1 - 1;
-			}
-		}
+		paymentMapper.insertPayment(paymentVO); // 결제 결과 등록
 		
 		// 주문 목록 등록
 		for(OrderVO order : payment.getOrderList()) {
 			order.setPaymentId(paymentId); // 결제 id 추가
-			productMapper.updateRemains(order.getProductId(), order.getPurchaseNum());				
+			productMapper.updateRemains(order.getProductId(), order.getPurchaseNum() * -1);				
 			orderMapper.insertOrder(order);
 			// 결제된 상품을 장바구니에서 제거
 			basketMapper.deleteFromBasket(order.getProductId(), paymentVO.getMemberId());
@@ -124,20 +127,9 @@ public class PaymentServiceImple implements PaymentService {
 			couponPocketMapper.updateIsUsed(couponId, memberId, Constant.IS_USED);
 		}
 		
-		res = paymentMapper.insertPayment(paymentVO); // 결제 결과 등록
-		
-		return res;
+		return paymentId;
 	} // end registerPayment
 
-//	@Override
-//	public PaymentWrapper getRecentPayment(String memberId) {
-//		log.info("getRecentPayment()");
-//		PaymentWrapper payment = new PaymentWrapper();
-//		payment.setPaymentVO(paymentMapper.selectLastPayment(memberId)); 
-//		payment.setOrderList(orderMapper.selectOrderByPaymentId(payment.getPaymentVO().getPaymentId()));
-//		
-//		return payment; 
-//	} // end getRecentPayment
 
 	@Override
 	public PaymentWrapper getPayment(String memberId, int paymentId) {

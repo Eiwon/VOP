@@ -42,10 +42,7 @@
 		<h2>관리자 페이지</h2>
 	</div>
 	<div>
-		<!-- <input type="button" value="공지사항 등록" onclick="popupRegisterNotice()"> -->
 		<a href="../popupAds/main">팝업 광고 관리</a>
-		<input type="button" value="전체 유저에게 알림 띄우기" onclick="sendInstanceMsg()">
-		<input type="button" value="전체 유저에게 ALERT 띄우기" onclick="sendAlert()">
 		<a href="../coupon/main">쿠폰 관리</a>
 	</div>
 	<div>
