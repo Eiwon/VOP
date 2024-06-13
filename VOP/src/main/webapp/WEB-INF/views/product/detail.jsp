@@ -34,7 +34,7 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
 
 <title>상품 상세 조회</title>
 <style>
-/* 리뷰 별 폼 스타일 */
+/* 리뷰 별 폼 스타일 (여기 코드로 인해 별이 박스 형태로 안나온다.)*/ 
 #myform fieldset {
 	display: inline-block;
 	direction: ltr; /* 텍스트 방향을 오른쪽에서 왼쪽으로 설정 */
@@ -46,6 +46,7 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
 	font-size: 1em;
 	color: transparent;
 	text-shadow: 0 0 0 #f0f0f0;
+	margin-right: 10px; /* 별 사이의 간격 설정 */
 }
 
 .reviewStars {
@@ -108,14 +109,21 @@ td {
 		<p>상품 이름 : ${productVO.productName }</p>
 	</div>
 
-	<!-- 리뷰 별점 표시 -->
-	<div id="myform">
+	<!-- 리뷰 별점 표시 전 코드-->
+	<!-- <div id="myform">
 		<fieldset>
-			<!-- 리뷰 평균 별점 표시 -->
-			<label for="star5">&#9733;</label> <label for="star4">&#9733;</label>
-			<label for="star3">&#9733;</label> <label for="star2">&#9733;</label>
-			<label for="star1">&#9733;</label>
+			리뷰 평균 별점 표시
+			<label for="star">&#9733;</label> <label for="star">&#9733;</label>
+			<label for="star">&#9733;</label> <label for="star">&#9733;</label>
+			<label for="star">&#9733;</label>
 		</fieldset>
+	</div> -->
+	
+	<!-- 리뷰 별점 표시 코드-->
+	<div id="myform">
+    	<fieldset id="starsFieldset">
+        <!-- 별이 여기에 동적으로 추가될 것입니다. -->
+    	</fieldset>
 	</div>
 
 	<div>
@@ -213,7 +221,7 @@ td {
      
  	 const memberId = '${memberDetails.getUsername()}';
  	 let productId = ${productVO.productId};
-     
+ 	 let reviewAvg = parseInt("${productVO.reviewAvg}"); // 서버 사이드 값 사용
      
   	 // 썸네일 이미지 ID 변수 정의 (이 ID가 맞는지 확인해야 합니다)
      const thumbnailImgId = '${productVO.imgId}';
@@ -281,7 +289,8 @@ td {
 function displayStars() {
     let value = parseInt("${productVO.reviewAvg}"); // 리뷰 별점을 정수 형으로 변환
     let stars = document.querySelectorAll('#myform label'); // 별 표시 기능 가져오기
-    console.log("value: " + value);
+   
+    // 반복문을 통해서 별를 출력하고 조건 문으로 평균 리뷰값의 크기를 비교한다.
     for (let i = 0; i < stars.length; i++) {
         if (i < value) {
             stars[i].style.color = '#f0d000'; // 선택된 별보다 작은 값의 별은 노란색으로 표시
@@ -291,19 +300,31 @@ function displayStars() {
     }
 }// end displayStars()
 
+//별을 생성하여 추가하는 함수
+function createStars(reviewAvg) {
+    const starContainer = document.getElementById('starsFieldset'); // 별을 추가할 컨테이너
+    const starCount = 5; // 생성할 별의 개수
+
+    // 별을 생성하여 컨테이너에 추가하는 반복문
+    for (let i = 0; i < starCount; i++) {
+        const starLabel = document.createElement('label'); // 별을 나타낼 라벨 요소 생성
+        starLabel.setAttribute('for', 'star'); // for 속성 설정
+        starLabel.innerHTML = '&#9733;'; // HTML 엔티티를 사용하여 별 모양 설정
+        if (i < reviewAvg) {
+            starLabel.style.color = '#f0d000'; // 선택된 별보다 작은 값의 별은 노란색으로 표시
+        } else {
+            starLabel.style.color = 'transparent'; // 선택된 별보다 큰 값의 별은 투명하게 표시
+        }
+        starContainer.appendChild(starLabel); // 컨테이너에 별 추가
+    }
+}
+
 $(document).ready(function() { 
 	loadImg(); // 이미지 불려오는 메소드
-	displayStars(); // 별 표시 함수
-    /* getAllReview(); */ // 댓글(리뷰) 전체 검색 메소드
-    /* getAllInquiry(); 
-    getAllAnswer(); */
+	//displayStars(); // 별 표시 함수
     getAllComments();
     ReviewMap.show(1);
-    
- 	/* // 페이지 버튼 클릭 시 해당 페이지의 리뷰를 표시합니다.
-    $(document).on('click', '.page_list li', function() {
-        let pageNum = $(this).text();
-    }); */
+    createStars(reviewAvg);
  
     // 장바구니
     $('#btnBasket').click(function(){
@@ -428,7 +449,7 @@ $(document).ready(function() {
                         // comments 엘리먼트에 전체 댓글과 대댓글 추가
                         $('#comments').html(allComments);
                     }
-                );
+                );// end  $.getJSON
             }
         );
     }

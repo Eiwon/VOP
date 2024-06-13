@@ -16,6 +16,7 @@
 <jsp:include page="../include/header.jsp"></jsp:include>
 <title>리뷰 전체 검색</title>
 <style>
+
 /* 박스 스타일 */
 .product-box {
 	padding: 20px;
@@ -62,6 +63,8 @@
 	color: transparent;
 	text-shadow: 0 0 0 #f0f0f0;
 }
+
+
 </style>
 </head>
 <body>
@@ -100,6 +103,7 @@
 					<c:if test="${ReviewVO.productId == ProductVO.productId}">
 						<p>리뷰 : ${ReviewVO.reviewStar}</p>
 						<!-- 리뷰 별점 표시 -->
+						
 						<div class="stars" data-reviewavg="${ReviewVO.reviewStar}">
 							<fieldset>
 								<label for="star5">&#9733;</label> <label for="star4">&#9733;</label>

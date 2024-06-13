@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.web.vop.persistence.LikesDislikesMapper">
+	<resultMap type="com.web.vop.domain.LikesDislikesVO"
+      id="likesDislikesResultMap">
+      
+      <id property="likesDislikesId" column="LIKES_DISLIKES_ID" /> 
+      <result property="memberId" column="MEMBER_ID" />
+      <result property="reviewId" column="REVIEW_ID" />
+      <result property="LikeDislikeType" column="LIKES_DISLIKES_TYPE" />
+      <result property="likesDislikesDateCreated" column="LIKES_DISLIKES_DATE_CREATED" />
+      </resultMap>
+      
+      <!-- 좋아요 or 싫어요 입력 -->
+      <insert id="insertLikesDislikes">
+      	INSERT INTO likesDislikes (LIKES_DISLIKES_ID, MEMBER_ID, 
+      	REVIEW_ID, LIKES_DISLIKES_TYPE, LIKES_DISLIKES_DATE_CREATED)
+		VALUES (LIKES_DISLIKES_SEQ.NEXTVAL, #{memberId}, #{reviewId},
+		#{LikeDislikeType}, SYSDATE)
+		)
+      </insert>
+      
+      <!-- 좋아요 or 싫어요 입력 -->
+      <insert id="updateLikesDislikes">
+      	UPDATE REVIEW
+      	SET LIKES_DISLIKES_TYPE = #{LikeDislikeType}
+      	WHERE LIKES_DISLIKES_ID = #{likesDislikesId}
+		)
+      </insert>
+      
+</mapper>

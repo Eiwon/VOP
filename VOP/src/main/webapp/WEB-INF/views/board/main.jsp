@@ -9,6 +9,25 @@
 <jsp:include page="../include/header.jsp"></jsp:include>
 <title>VOP</title>
 	<style>
+	#myform fieldset {
+	display: inline-block;
+	direction: ltr; /* 텍스트 방향을 오른쪽에서 왼쪽으로 설정 */
+	border: 0;
+}
+
+/* 별표시 스타일 */
+#myform label {
+	font-size: 1em;
+	color: transparent;
+	text-shadow: 0 0 0 #f0f0f0;
+	margin-right: 10px; /* 별 사이의 간격 설정 */
+}
+
+.reviewStars {
+	color: #f0d000; /* 별 색상 */
+}
+
+/* end 리뷰 별 폼 스타일 */
     </style>
 </head>
 <body>
@@ -50,12 +69,24 @@
 							method : 'GET',
 							url : '../image/' + selected.imgId,
 							success : function(result){
+								// 별점 숫자를 가져와서 별 모양으로 변환
+				                let starsHTML = ''; // 별 모양 HTML을 저장할 변수
+				                let reviewStar = parseInt(selected.reviewAvg); // 문자열을 정수로 변환
+				                
+				                for (let i = 1; i <= 5; i++) {
+				                    if (i <= reviewStar) {
+				                        starsHTML += '&#9733;'; // 별 모양 HTML 코드 추가
+				                    } else {
+				                        starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
+				                    }
+				                }
 								let tagImg = $('<img>');
 								tagImg.attr('src', result);
 								boxProduct.append(tagImg);
 								boxProduct.append($('<br><strong class="product_name">' + selected.productName + '</strong><br>'));
 								boxProduct.append($('<strong class="product_price">' + selected.productPrice + '</strong><br>'));
-								boxProduct.append($('<span class="review_num">' + selected.reviewNum + '</span>'));
+								boxProduct.append($('<span class="reviewStars">' + starsHTML + '</span>'));
+								boxProduct.append($('<span class="review_num">(' + selected.reviewNum + ')</span>'));
 								boxProduct.append($('<input hidden="hidden" class="product_id" value="' + selected.productId + '"/>'));
 							}
 						}); // end ajax
@@ -84,12 +115,24 @@
 								method : 'GET',
 								url : '../image/' + selected.imgId,
 								success : function(result){
+									// 별점 숫자를 가져와서 별 모양으로 변환
+					                let starsHTML = ''; // 별 모양 HTML을 저장할 변수
+					                let reviewStar = parseInt(selected.reviewAvg); // 문자열을 정수로 변환
+					                
+					                for (let i = 1; i <= 5; i++) {
+					                    if (i <= reviewStar) {
+					                        starsHTML += '&#9733;'; // 별 모양 HTML 코드 추가
+					                    } else {
+					                        starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
+					                    }
+					                }
 									let tagImg = $('<img>');
 									tagImg.attr('src', result);
 									boxProduct.append(tagImg);
 									boxProduct.append($('<br><strong class="product_name">' + selected.productName + '</strong><br>'));
 									boxProduct.append($('<strong class="product_price">' + selected.productPrice + '</strong><br>'));
-									boxProduct.append($('<span class="review_num">' + selected.reviewNum + '</span>'));
+									boxProduct.append($('<span class="reviewStars">' + starsHTML + '</span>'));
+									boxProduct.append($('<span class="review_num">(' + selected.reviewNum + ')</span>'));
 									boxProduct.append($('<input hidden="hidden" class="product_id" value="' + selected.productId + '"/>'));
 								}
 							}); // end ajax
