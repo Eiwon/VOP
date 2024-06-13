@@ -1,9 +1,11 @@
 package com.web.vop.persistence;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.web.vop.domain.CouponPocketVO;
 import com.web.vop.domain.MyCouponVO;
@@ -18,7 +20,8 @@ public interface CouponPocketMapper {
 	public List<MyCouponVO> selectUsableByMemberId(String memberId);
 	
 	// 쿠폰 추가
-	public int insertCouponPocket(@Param("couponId") int couponId, @Param("memberId") String memberId);
+	public int insertCouponPocket(
+			@Param("couponId") int couponId, @Param("memberId") String memberId) throws DataIntegrityViolationException;
 	
 	// 쿠폰 활성화 / 비활성화
 	public int updateIsUsed(
@@ -30,6 +33,5 @@ public interface CouponPocketMapper {
 			@Param("couponId") int couponId, @Param("memberId") String memberId);
 	
 	// 보유 중인 쿠폰인지 확인
-	public int selectIdById(@Param("couponId") int couponId, @Param("memberId") String memberId);
-	
+	public Integer selectIdById(@Param("couponId") int couponId, @Param("memberId") String memberId);
 }

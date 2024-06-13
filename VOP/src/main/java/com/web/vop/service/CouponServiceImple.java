@@ -1,16 +1,19 @@
 package com.web.vop.service;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.CouponPocketVO;
 import com.web.vop.domain.CouponVO;
 import com.web.vop.domain.MyCouponVO;
-import com.web.vop.persistence.Constant;
 import com.web.vop.persistence.CouponMapper;
 import com.web.vop.persistence.CouponPocketMapper;
+import com.web.vop.util.Constant;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
@@ -27,7 +30,7 @@ public class CouponServiceImple implements CouponService{
 	CouponPocketMapper couponPocketMapper;
 
 	@Override
-	public int registerCoupon(CouponVO couponVO) {
+	public int registerCoupon(CouponVO couponVO) {	
 		log.info("registerCoupon");
 		int res = couponMapper.insertCoupon(couponVO);
 		return res;
@@ -74,12 +77,14 @@ public class CouponServiceImple implements CouponService{
 	@Override
 	public int addCouponPocket(int couponId, String memberId) {
 		log.info("addCouponPocket");
-		int hadCouponId = couponPocketMapper.selectIdById(couponId, memberId);
-		if(hadCouponId == 0) {
-			return 2; // 중복 쿠폰
-		}else {
-			return couponPocketMapper.insertCouponPocket(couponId, memberId);
+		int res = 0;
+		try {
+			res = couponPocketMapper.insertCouponPocket(couponId, memberId);
+		} catch (DataIntegrityViolationException e) {
+			log.info("이미 수령한 쿠폰");
+			res = 2;
 		}
+		return res;
 	} // end addCouponPocket
 
 
@@ -96,6 +101,31 @@ public class CouponServiceImple implements CouponService{
 		int res = couponPocketMapper.updateIsUsed(couponId, memberId, Constant.IS_USED);
 		return res;
 	} // end useUpCoupon
+
+	@Override
+	public List<CouponVO> getNotHadCoupon(String memberId) {
+		log.info("getNotHadCoupon");
+		List<CouponVO> list = couponMapper.selectNotHadCoupon(memberId);
+		return list;
+	} // end getNotHadCoupon
+
+	@Transactional(value = "transactionManager")
+	@Override
+	public int setPublishing(List<Integer> couponIdList, int publishing) {
+		log.info("setPublishing");
+		int res = 0;
+		for(int couponId : couponIdList) {
+			res += couponMapper.updatePublishingById(couponId, publishing);
+		}
+		return res;
+	} // end setPublishing
+
+	@Override
+	public List<CouponVO> getPublishingCoupon() {
+		log.info("getPublishingCoupon");
+		List<CouponVO> list = couponMapper.selectPublishingCoupon();
+		return list;
+	} // end getPublishingCoupon
 
 
 

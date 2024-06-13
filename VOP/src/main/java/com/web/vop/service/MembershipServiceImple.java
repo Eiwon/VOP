@@ -5,6 +5,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.web.vop.domain.MembershipVO;
 import com.web.vop.persistence.MembershipMapper;
 
 import lombok.extern.log4j.Log4j;
@@ -37,9 +38,17 @@ public class MembershipServiceImple implements MembershipService{
 		log.info("멤버십 권한 업데이트(멤버십)가 성공했습니다. " + memberId);
 	}//end updateMemberAuth()
 
+	
+	@Override
+	public MembershipVO selectByMemberId(String memberId) { // 멤버십 전체 조회 
+		log.info("selectByMemberId : " + memberId);
+		MembershipVO result = membershipMapper.selectByMemberId(memberId);
+		log.info("멤버십 전체 조회 : " + result.toString());
+		return result;
+	}
 
 	@Override
-	public Date getExpiryDate(String memberId) { // 멤버십 조회
+	public Date getExpiryDate(String memberId) { // 멤버십 만료일 조회
 		log.info("getExpiryDate(). " + memberId);
 		Date date = membershipMapper.selectExpiryDate(memberId);
 		log.info("멤버십 만료 기간 : " + date);
@@ -65,6 +74,9 @@ public class MembershipServiceImple implements MembershipService{
 		membershipMapper.updateMemberAuthOnDelete(memberId);
 		log.info("멤버십 권한 업데이트(일반유저)가 성공했습니다. " + memberId);
 	}
+
+
+	
 
 
 	

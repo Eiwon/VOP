@@ -29,9 +29,10 @@
 	</c:if>
     
 	<div id="searchResult">
-		<c:forEach var="productVO" items="${productList}">
+		<c:forEach var="productPreviewDTO" items="${productList}">
 			<div class="product_container" onclick="toDetails(this)">
-					<img alt="${productVO.imgId }">
+					<c:set var="productVO" value="${productPreviewDTO.productVO }"></c:set>
+					<img src="${productPreviewDTO.imgUrl }">
 					<div class="productId" hidden="hidden">${productVO.productId }</div>
 					<div>${productVO.productName }</div>
 					<div>${productVO.productPrice }</div>
@@ -55,31 +56,11 @@
 	</div>
 	
 	<script type="text/javascript">
-	
-		$(document).ready(function(){
-			
-			loadImg();
-		}); // end document.ready
-		
 		
 		function toDetails(input){
 			let productId = $(input).find('.productId').text();
 			location.href = 'detail?productId=' + productId;
 		} // end toDetails
-		
-		function loadImg(){
-			$(document).find('img').each(function(){
-				let target = $(this);
-				let imgId = target.attr("alt");
-				$.ajax({
-					method : 'GET',
-					url : '../image/' + imgId,
-					success : function(result){
-						target.attr('src', result);
-					}
-				}); // end ajax
-			});
-		} // end loadImg
 		
 	</script>
 </body>

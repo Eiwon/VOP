@@ -16,4 +16,5 @@ public class CouponVO {
 	private String couponName;
 	private int discount;
 	private Date dateCreated;
+	private int publishing;
 }

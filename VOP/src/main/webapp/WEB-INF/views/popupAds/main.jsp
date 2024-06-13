@@ -21,16 +21,19 @@
 	display: flex;
 	flex-direction: row;
 }
-.couponId {
+.messageId {
 	width: 100px;
 }
-.couponName {
-	width: 200px;
+.type {
+	width: 100px;
 }
-.discount {
-	width : 100px;
+.title {
+	width : 200px;
 }
-.dateCreated {
+.content {
+	width : 200px;
+}
+.dateCreated{
 	width : 200px;
 }
 .selected {
@@ -40,82 +43,79 @@
 	background-color: white;
 }
 </style>
-<title>쿠폰 관리</title>
+<title>팝업 광고 관리</title>
 </head>
 <body>
 	<div class="formContainer">
 		<div>
-			<h2>등록된 쿠폰 목록</h2>
+			<h2>등록된 팝업 광고 목록</h2>
 		</div>
 		<div>
-			<div class="couponHeader tableList">
-				<div class="couponId">쿠폰 코드</div>
-				<div class="couponName">쿠폰명</div>
-				<div class="discount">할인률</div>
+			<div class="popupAdsHeader tableList">
+				<div class="messageId">팝업 코드</div>
+				<div class="type">분류</div>
+				<div class="title">제목</div>
+				<div class="content">내용</div>
 				<div class="dateCreated">등록일</div>
-				<div class="publishing">배포 상태</div>
 			</div>
-			<div class="couponList"></div>
-			<div class="couponPage"></div>
+			<div class="popupAdsList"></div>
+			<div class="popupAdsPage"></div>
 		</div>
 		<div>
-			<input type="button" value="쿠폰 등록" onclick="registerCoupon()">
-			<input type="button" value="삭제" onclick="deleteCoupon()">
-			<input type="button" value="배포" onclick="publishCoupon(1)">
-			<input type="button" value="배포 취소" onclick="publishCoupon(0)">
+			<input type="button" value="등록" onclick="registerPopupAds()">
+			<input type="button" value="삭제" onclick="deletePopupAds()">
 		</div>
 	</div>
+
 	<script type="text/javascript">
-		let couponList;	
+		let popupAdsList;
 		let pageMaker;
 		let selectedList = [];
 		
 		$(document).ready(function(){
-			loadCouponList();
+			loadPopupAdsList();
 		}); // end document.ready
-		
-		
-		function loadCouponList(page) {
-			if(page == undefined){
+	
+	
+		function loadPopupAdsList(page) {
+			if (page == undefined) {
 				page = 1;
 			}
-			
+
 			$.ajax({
 				method : 'GET',
 				url : 'list?pageNum=' + page,
 				success : function(result) {
 					console.log(result);
-					couponList = result.list;
+					popupAdsList = result.list;
 					pageMaker = result.pageMaker;
-					
-					$('.couponList').html(makeListForm(couponList));
-					$('.couponPage').html(makePageForm(pageMaker));
+
+					$('.popupAdsList').html(makeListForm(popupAdsList));
+					$('.popupAdsPage').html(makePageForm(pageMaker, loadPopupAdsList));
 				}
 			});
 		} // end loadCouponList
-	
-
+		
 		function makeListForm(list) {
 			let listForm = '';
-			let isSelected;
-			let isPublishing;
+			let isSelected
+			//let isSelected;
 			for(x in list){
 				isSelected = selectedList.includes(list[x].couponId) ? "selected" : "unselected";
-				isPublishing = list[x].publishing == '0' ? '미배포' : '배포중';
 				listForm += 
-					'<div class="couponItem tableList ' + isSelected + '" onclick="select(this)">' +
-						'<span class="couponId">' + list[x].couponId + '</span>' + 
-						'<span class="couponName">' + list[x].couponName + '</span>' +
-						'<span class="discount">' + list[x].discount + '%</span>' +
+					'<div class="popupAdsItem tableList ' + isSelected + '" onclick="select(this)">' +
+						'<span class="messageId">' + list[x].messageId + '</span>' + 
+						'<span class="type">' + list[x].type + '</span>' +
+						'<span class="title">' + list[x].title + '</span>' +
+						'<span class="content">' + list[x].content + '</span>' +
 						'<span class="dateCreated">' + toDate(list[x].dateCreated) + '</span>' +
-						'<span class="publishing">' + isPublishing + '</span>' +
 					'</div>';
 			}
 			return listForm;
 		} // end makeListForm
 		
 		
-		function makePageForm(pageMaker){
+		function makePageForm(pageMaker, listener){
 			const startNum = pageMaker.startNum;
 			const endNum = pageMaker.endNum;
 			
@@ -123,28 +123,33 @@
 			let numForm;
 			if(pageMaker.prev){
 				numForm = $('<li>이전&nbsp&nbsp</li>').click(function() {
-					loadCouponList(startNum -1);
+					listener(startNum -1);
 				});
 				pageForm.append(numForm);
 			}
 			for(let x = startNum; x <= endNum; x++){
 				numForm = $('<li>' + x + '&nbsp&nbsp</li>').click(function(){
-					loadCouponList(x);
+					listener(x);
 				});
 				pageForm.append(numForm);
 			}
 			if(pageMaker.next){
 				numForm = $('<li>다음</li>').click(function(){
-					loadCouponList(endNum +1);
+					listener(endNum +1);
 				});
 				pageForm.append(numForm);
 			}
 			return pageForm;
 		} // end makePageForm
 		
-
+		function toDate(timestamp){
+			let date = new Date(timestamp);
+			let formatted = (date.getYear() + 1900) + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+			return formatted;
+		} // end toDate
+		
 		function select(input) {
-			let selectedId = parseInt($(input).find('.couponId').text());
+			let selectedId = parseInt($(input).find('.messageId').text());
 			
 			if(selectedList.includes(selectedId)){
 				selectedList.splice(selectedList.indexOf(selectedId));
@@ -158,11 +163,11 @@
 			
 		} // end select
 		
-		function registerCoupon() {
+		function registerPopupAds(){
 			
 			const popupStat = {
 					'url' : 'register',
-					'name' : 'popupCouponRegister',
+					'name' : 'popupRegister',
 					'option' : 'width=1000, height=600, top=50, left=400'
 			};
 			
@@ -171,17 +176,18 @@
 			popup.onbeforeunload = function(){
 				// 팝업 닫힐 때 실행
 				console.log("팝업 닫힘");
-				loadCouponList(pageMaker.pagination.pageNum);
+				loadPopupAdsList(pageMaker.pagination.pageNum);
 			} // end popup.onbeforeunload
 			
-		} // end registerCoupon
+		} // end registerPopupAds
 		
-		function deleteCoupon() {
+		
+		function deletePopupAds() {
 			if(selectedList.length == 0){
-				alert('삭제할 쿠폰을 선택해주세요');
+				alert('삭제할 팝업 광고를 선택해주세요');
 				return;
 			}
-			let deleteCheck = confirm(selectedList.length + '개 쿠폰이 삭제됩니다. 정말 삭제하시겠습니까?');
+			let deleteCheck = confirm(selectedList.length + '개 항목이 삭제됩니다. 정말 삭제하시겠습니까?');
 			
 			if(deleteCheck){
 				$.ajax({
@@ -193,44 +199,12 @@
 					data : JSON.stringify(selectedList),
 					success : function(result){
 						selectedList = [];
-						alert(result + '개 쿠폰이 삭제되었습니다.');
-						loadCouponList(pageMaker.pagination.pageNum);
+						alert(result + '개 항목이 삭제되었습니다.');
+						loadPopupAdsList(pageMaker.pagination.pageNum);
 					} // end success
 				}); // end ajax
 			}
-			
-		} // end deleteCoupon
-		
-		function publishCoupon(publishing){
-			if(selectedList.length == 0){
-				alert('변경할 쿠폰을 선택해주세요');
-				return;
-			}
-			
-			$.ajax({
-				method : 'PUT',
-				url : 'publish/' + publishing,
-				headers : {
-					'Content-type' : 'application/json'
-				},
-				data : JSON.stringify(selectedList),
-				success : function(result){
-					if(result > 0){
-						alert('변경 성공');
-						loadCouponList(pageMaker.pagination.pageNum);
-					}else {
-						alert('변경 실패');
-					}
-				} // end success
-			}); // end ajax
-			
-		} // end publishCoupon
-		
-		function toDate(timestamp){
-			let date = new Date(timestamp);
-			let formatted = (date.getYear() + 1900) + '/' + (date.getMonth() + 1) + '/' + date.getDate();
-			return formatted;
-		} // end toDate
+		} // end deletePopupAds
 		
 		
 	</script>

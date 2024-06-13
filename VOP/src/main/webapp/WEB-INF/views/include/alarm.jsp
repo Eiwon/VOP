@@ -113,7 +113,7 @@
 		console.log('replyAlarm 메시지 수신');
 		
 		showSocketNotification(msg, function(){
-			window.open(msg.callbackInfo);
+			window.open('../product/detail?productId=' + msg.callbackInfo);
 		});
 	}; // 타입이 replyAlarm인 메시지 수신시 호출될 함수
 	

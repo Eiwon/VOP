@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.web.vop.domain.AlertVO;
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
-import com.web.vop.persistence.Constant;
 import com.web.vop.service.MailAuthenticationService;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.UserDetailsServiceImple;
+import com.web.vop.util.Constant;
 
 import lombok.extern.log4j.Log4j;
 
@@ -151,7 +152,6 @@ public class MemberController {
 		
 		return Constant.ALERT_PATH;
 	} // end registerPOST
-	
 	
 	@GetMapping("/modify")
 	public void modifyGET(Model model, @AuthenticationPrincipal MemberDetails memberDetails) {

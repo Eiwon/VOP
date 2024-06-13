@@ -28,6 +28,11 @@ public class MailAuthenticationConfig {
 		//javaMailSender.setUsername(ApiKey.MAIL_AUTH_ID);
 		//javaMailSender.setPassword(ApiKey.MAIL_AUTH_PW);
 
+
+//		javaMailSender.setUsername(ApiKey.MAIL_AUTH_ID); 에러 발생해서 주석 처리 했습니다.
+//		javaMailSender.setPassword(ApiKey.MAIL_AUTH_PW); 에러 발생해서 주석 처리 했습니다.
+
+
 		javaMailSender.setHost("smtp.gmail.com");
 		Properties property = new Properties();
 		property.put("mail.smtp.auth", true);

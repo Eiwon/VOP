@@ -11,10 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductDetailsDTO;
+import com.web.vop.domain.ProductPreviewDTO;
 import com.web.vop.domain.ProductVO;
-import com.web.vop.persistence.Constant;
 import com.web.vop.persistence.ImageMapper;
 import com.web.vop.persistence.ProductMapper;
+import com.web.vop.util.Constant;
 import com.web.vop.util.FileUploadUtil;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
@@ -117,7 +118,7 @@ public class ProductServiceImple implements ProductService{
 	} // end registerProduct
 	
 	@Override
-	public List<ProductVO> searchByCategory(String category, PageMaker pageMaker) {
+	public List<ProductPreviewDTO> searchByCategory(String category, PageMaker pageMaker) {
 		log.info("searchByCategory()");
 		int totalCnt = productMapper.selectByCategoryCnt(category, Constant.STATE_SELL);
 		pageMaker.setTotalCount(totalCnt);
@@ -125,7 +126,7 @@ public class ProductServiceImple implements ProductService{
 	} // end selectByCategory
 	
 	@Override
-	public List<ProductVO> searchByName(String productName, PageMaker pageMaker) {
+	public List<ProductPreviewDTO> searchByName(String productName, PageMaker pageMaker) {
 		log.info("searchByName()");
 		String includeName = '%' + productName + '%';
 		int totalCnt = productMapper.selectByNameCnt(includeName, Constant.STATE_SELL);
@@ -134,7 +135,7 @@ public class ProductServiceImple implements ProductService{
 	} // end selectByName
 	
 	@Override
-	public List<ProductVO> searchByNameInCategory(String category, String productName, PageMaker pageMaker) {
+	public List<ProductPreviewDTO> searchByNameInCategory(String category, String productName, PageMaker pageMaker) {
 		log.info("searchByNameInCategory()");
 		String includeName = '%' + productName + '%';
 		int totalCnt = productMapper.selectByNameInCategoryCnt(category, includeName, Constant.STATE_SELL);
@@ -184,13 +185,13 @@ public class ProductServiceImple implements ProductService{
 	} // end deleteProduct
 
 	@Override
-	public List<ProductVO> getTopProductInCategory(String category) {
-		log.info("getTopProductInCategory()");
-		return productMapper.selectTopProductInCategory(category);
-	} // end getTopProductInCategory
-
+	public List<ProductPreviewDTO> getTopProductByCategory() {
+		log.info("getTopProductByCategory()");
+		return productMapper.selectTopProductByCategory();
+	} // end getTopProductByCategory
+	
 	@Override
-	public List<ProductVO> getRecent5() {
+	public List<ProductPreviewDTO> getRecent5() {
 		log.info("getRecent5()");
 		return productMapper.selectRecent5();
 	} // end getRecent5
@@ -276,7 +277,6 @@ public class ProductServiceImple implements ProductService{
 		log.info("상품의 세부 이미지 검색");
 		return imageMapper.selectByProductId(productId);
 	} // end getProductDetails
-
 
 	
 }

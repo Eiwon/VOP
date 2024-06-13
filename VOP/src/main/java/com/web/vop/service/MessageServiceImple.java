@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.web.vop.domain.MessageVO;
 import com.web.vop.persistence.MessageMapper;
 import com.web.vop.persistence.ProductMapper;
+import com.web.vop.util.PageMaker;
 
 import lombok.extern.log4j.Log4j;
 
@@ -35,15 +36,13 @@ public class MessageServiceImple implements MessageService{
 	} // end getMyMessage
 
 	@Override
-	public int removeExceptNotice(int messageId) {
-		log.info("removeExceptNotice");
-		return messageMapper.deleteByIdExceptNotice(messageId);
-	} // end removceExceptNotice
-
-	@Override
-	public int removeById(int messageId) {
+	public int removeById(List<Integer> messageIds) {
 		log.info("removeById");
-		return messageMapper.deleteById(messageId);
+		int res = 0;
+		for(int messageId : messageIds) {
+			res += messageMapper.deleteById(messageId);
+		}
+		return res;
 	} // end removeById
 
 	@Override
@@ -69,4 +68,19 @@ public class MessageServiceImple implements MessageService{
 		log.info("상품 판매자 id 검색");
 		return productMapper.selectMemberIdById(productId);
 	} // end getSellerIdOf
+
+	@Override
+	public List<MessageVO> getAllPopup(PageMaker pageMaker) {
+		log.info("모든 팝업광고 검색 (페이징)");
+		pageMaker.setTotalCount(messageMapper.selectAllPopupCnt());
+		List<MessageVO> list = messageMapper.selectAllPopupPaging(pageMaker.getPagination());
+		return list;
+	} // end getAllPopup
+
+	@Override
+	public List<Integer> getAllPopupId() {
+		log.info("모든 팝업광고 검색");
+		List<Integer> list = messageMapper.selectAllPopupId();
+		return list;
+	} // end getAllPopup
 }

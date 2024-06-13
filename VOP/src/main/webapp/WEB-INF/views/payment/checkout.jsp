@@ -25,7 +25,6 @@
 </style>
 <title>결제 페이지</title>
 </head>
-<jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	<div>
 		<h2>주문 / 결제</h2>
@@ -131,6 +130,7 @@
 		let memberVO = paymentWrapper.memberVO;
 		let orderList = paymentWrapper.orderList;
 		let deliveryVO = paymentWrapper.deliveryVO;
+		let membershipVO = paymentWrapper.membershipVO;
 		let myCouponList;
 		let myCouponVO;
 		let paymentVO = {
@@ -171,39 +171,32 @@
 				$('#requirement').val(deliveryVO.requirement);
 			}
 			
-			tagOrderList.html(makeOrderInfo());
-			
-			//if(memberVO.auth == 'membership') 일단 모든 유저에 멤버십 적용
-			paymentVO.membershipDiscount = 20;
-			
-			setPaymentInfo();
-			
-			
-			
-		} // end setInfo
-		
-		function makeOrderInfo(){
-			// 출력할 주문 정보 생성
 			let form = '';
 			for (x in orderList){
 				form += '<tr><td style="width: 200px;">' + orderList[x].productName + 
 				'</td><td style="width: 200px;">' + orderList[x].purchaseNum + 
 				'</td><td style="width: 200px;">' + orderList[x].productPrice * orderList[x].purchaseNum + 
-				'원</td><td style="width: 200px;">예상 배송일</td></tr>';
+				'원</td></tr>';
 			}
-			return form;
-		} // end makeOrderInfo
+			tagOrderList.html(form);
+			
+			// 멤버십 정보가 있으면 20% 할인 적용
+			if(membershipVO != null){
+				paymentVO.membershipDiscount = 20;			
+			}
+			
+			setPaymentInfo();
+			
+		} // end setInfo
+		
 		
 		function setPaymentInfo(){
 			// 결제 정보 출력
-			let totalPrice = calcTotalPrice();
-			let chargePrice = calcChargePrice();
-			
-			$('#total_price').text(totalPrice);
+			$('#total_price').text(calcTotalPrice());
 			$('#membership_discount').text(paymentVO.membershipDiscount + '%');
 			$('#coupon_discount').text(paymentVO.couponDiscount + '%');
 			$('#delivery_price').text(paymentVO.deliveryPrice);
-			$('#charge_price').text(chargePrice);
+			$('#charge_price').text(calcChargePrice());
 			
 		} // end setPaymentInfo
 		
@@ -357,8 +350,8 @@
 						location.href = 'paymentResult?paymentId=' + result;
 					}else if(result == 0){
 						alert('결제 내역 전송 실패');		
-					}else {
-						alert(orderList[(result +1)* -1].productName + ' 상품의 재고가 부족합니다.');
+					}else if(result == -1){
+						alert('매진된 상품입니다.');
 					}
 				}
 			}); // end ajax
@@ -375,18 +368,6 @@
 			
 			// 팝업 창 띄우기
 			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
-
-			popup.onbeforeunload = function(){
-				// 팝업 닫힐 때 실행
-				/* console.log("팝업 닫힘");
-				deliveryVO.receiverName = $('#receiverName').val();
-				deliveryVO.receiverAddress = $('#receiverAddress').val();
-				deliveryVO.receiverAddressDetails = $('#deliveryAddressDetails').val();
-				deliveryVO.receiverPhone = $('#receiverPhone').val();
-				deliveryVO.requirement = $('#requirement').val();
-				
-				console.log(deliveryVO); */
-			} // end popup.onbeforeunload
 
 		} // end showDeliveryPopup
 		function saveDelivery(delivery){
