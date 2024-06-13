@@ -20,5 +20,5 @@ public class MembershipVO {
 	private Date joinDate;
 	private Date expiryDate;
 	private Date paymentDate;
-	
+	private int membershipFee;
 }

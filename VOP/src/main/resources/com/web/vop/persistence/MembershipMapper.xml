@@ -10,6 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="joinDate" column="JOIN_DATE"/>
       <result property="expiryDate" column="EXPIRY_DATE"/>
       <result property="paymentDate" column="PAYMENT_DATE"/>
+      <result property="membershipFee" column="MEMBERSHIP_FEE"/>
    </resultMap>
    
    
@@ -17,7 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <!-- 멤버십 등록 -->
    <insert id="insertMembership">
       INSERT INTO MEMBERSHIP VALUES (
-      MEMBERSHIP_SEQ.NEXTVAL, #{memberId}, SYSDATE, SYSDATE + INTERVAL '5' DAY, SYSDATE)
+      MEMBERSHIP_SEQ.NEXTVAL, #{memberId}, SYSDATE, SYSDATE + INTERVAL '5' DAY, SYSDATE, #{membershipFee})
    </insert>
 
 	<!-- 멤버십 권한 수정 -->
