@@ -1,17 +1,12 @@
 package com.web.vop.service;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.transaction.support.DefaultTransactionStatus;
 
-import com.web.vop.domain.CouponVO;
 import com.web.vop.domain.DeliveryVO;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.MyCouponVO;
@@ -20,7 +15,6 @@ import com.web.vop.domain.PaymentVO;
 import com.web.vop.domain.PaymentWrapper;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.persistence.BasketMapper;
-import com.web.vop.persistence.Constant;
 import com.web.vop.persistence.CouponMapper;
 import com.web.vop.persistence.CouponPocketMapper;
 import com.web.vop.persistence.DeliveryMapper;
@@ -28,6 +22,7 @@ import com.web.vop.persistence.MemberMapper;
 import com.web.vop.persistence.OrderMapper;
 import com.web.vop.persistence.PaymentMapper;
 import com.web.vop.persistence.ProductMapper;
+import com.web.vop.util.Constant;
 
 import lombok.extern.log4j.Log4j;
 

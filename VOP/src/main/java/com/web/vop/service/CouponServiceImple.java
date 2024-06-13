@@ -1,5 +1,6 @@
 package com.web.vop.service;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.web.vop.domain.CouponPocketVO;
 import com.web.vop.domain.CouponVO;
 import com.web.vop.domain.MyCouponVO;
-import com.web.vop.persistence.Constant;
 import com.web.vop.persistence.CouponMapper;
 import com.web.vop.persistence.CouponPocketMapper;
+import com.web.vop.util.Constant;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
@@ -75,12 +76,14 @@ public class CouponServiceImple implements CouponService{
 	@Override
 	public int addCouponPocket(int couponId, String memberId) {
 		log.info("addCouponPocket");
-		Integer hadCouponId = couponPocketMapper.selectIdById(couponId, memberId);
-		if(hadCouponId != null) {
-			return 2; // Áßº¹ ÄíÆù
-		}else {
-			return couponPocketMapper.insertCouponPocket(couponId, memberId);
+		int res = 0;
+		try {
+			res = couponPocketMapper.insertCouponPocket(couponId, memberId);
+		} catch (SQLIntegrityConstraintViolationException e) {
+			e.printStackTrace();
+			res = 2;
 		}
+		return res;
 	} // end addCouponPocket
 
 

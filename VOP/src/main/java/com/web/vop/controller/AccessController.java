@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.web.vop.domain.AlertVO;
-import com.web.vop.persistence.Constant;
+import com.web.vop.util.Constant;
 
 import lombok.extern.log4j.Log4j;
 

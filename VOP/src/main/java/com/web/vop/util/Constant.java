@@ -1,4 +1,4 @@
-package com.web.vop.persistence;
+package com.web.vop.util;
 
 import org.springframework.http.HttpMethod;
 
@@ -50,4 +50,8 @@ public interface Constant {
 	
 	public static final int IS_USED = 1;
 	public static final int IS_UNUSED = 0;
+	
+	public static final int DELIVERY_DEFAULT = 1;
+	public static final int DELIVERY_NOT_DEFAULT = 0;
+	
 }

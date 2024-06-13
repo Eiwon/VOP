@@ -28,8 +28,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.vop.domain.AlertVO;
 import com.web.vop.domain.MessageVO;
 import com.web.vop.domain.PagingListDTO;
-import com.web.vop.persistence.Constant;
 import com.web.vop.service.MessageService;
+import com.web.vop.util.Constant;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
