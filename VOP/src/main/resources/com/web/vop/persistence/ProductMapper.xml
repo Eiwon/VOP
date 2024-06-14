@@ -158,11 +158,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<!-- memberId로 상품 조회 -->
-	<select id="selectByMemberId" resultMap="productResultMap">
+	<select id="selectByMemberId" resultMap="productPreviewResultMap">
+		SELECT PD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
 		SELECT * FROM (
 		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
 		FROM PRODUCT WHERE MEMBER_ID = #{memberId}
 		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+		) PD INNER JOIN IMAGE ON PD.IMG_ID = IMAGE.IMG_ID
 	</select>
 	
 	<!-- memberId로 상품 갯수 조회 -->

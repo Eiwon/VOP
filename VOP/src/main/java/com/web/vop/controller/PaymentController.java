@@ -145,18 +145,6 @@ public class PaymentController {
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end savePaymentResult
 	
-//	@GetMapping("/payment")
-//	@ResponseBody
-//	public ResponseEntity<PaymentWrapper> getPaymentResult(){
-//		log.info("결제 결과 조회 요청");
-//		String memberId = memberDetails.getUsername();
-//		// 각 주문정보와 전체 결제 내역을 한번에 보내기 위해 포장
-//		PaymentWrapper payment = paymentService.getPayment(memberId, paymentId);
-//		
-//		return new ResponseEntity<PaymentWrapper>(payment, HttpStatus.OK);
-//	} // end sendPaymentResult
-	
-	
 	@GetMapping("/popupDeliverySelect")
 	public String popupDeliverySelect() {
 		log.info("배송지 선택 팝업 호출");

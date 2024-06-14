@@ -28,7 +28,14 @@
 					<li><a href="../Delivery/deliveryAddressList">배송지 관리</a></li>
 					<li><a href="../coupon/myCoupon">쿠폰함</a></li>
 					<li><a href="../membership/register">멤버십 등록</a></li>
-					<li><a href="seller">판매자 페이지</a></li>
+					<li>
+					<sec:authorize access="hasAnyRole({'ROLE_관리자', 'ROLE_판매자'})">
+						<a href="../seller/main">판매자 페이지</a>
+					</sec:authorize>
+					<sec:authorize access="!hasAnyRole({'ROLE_관리자', 'ROLE_판매자'})">
+						<a href="../seller/sellerRequest">판매자 페이지</a>
+					</sec:authorize>
+					</li>
 					<sec:authorize access="hasRole('ROLE_관리자')">
 						<li><a href="admin">관리자 페이지</a></li>
 					</sec:authorize>

@@ -12,7 +12,7 @@
 </head>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <body>
-	<sec:authorize access="hasRole('ROLE_일반')">
+	<c:if test="${sellerRequest != null }">
 		<div>
 			<h3>${memberDetails.getUsername() }회원님의 판매자 등록 신청 내역입니다.</h3>
 			<table>
@@ -36,6 +36,11 @@
 				</tbody>
 			</table>
 		</div>
+	</c:if>
+	<sec:authorize access="!hasAnyRole('ROLE_판매자', 'ROLE_관리자')">
+		<c:if test="${sellerRequest == null }">
+			<a onload="location.href='sellerRequest'"></a>
+		</c:if>
 	</sec:authorize>
 	<sec:authorize access="hasAnyRole('ROLE_판매자', 'ROLE_관리자')">
 		<div id="seller_link">

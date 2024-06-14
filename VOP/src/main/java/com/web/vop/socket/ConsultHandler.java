@@ -30,7 +30,8 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class ConsultHandler extends AbstractWebSocketHandler{
 
-	private static ObjectMapper objectMapper = null;
+	@Autowired
+	private ObjectMapper objectMapper;
 	
 	// key : memberId, value : roomId
 	private static Map<String, String> consultConnMap;

@@ -64,7 +64,7 @@ public interface ProductMapper {
 			@Param("productState") String productState);
 	
 	// memberId로 상품 조회
-	List<ProductVO> selectByMemberId(@Param("memberId") String memberId, @Param("pagination") Pagination pagination);
+	List<ProductPreviewDTO> selectByMemberId(@Param("memberId") String memberId, @Param("pagination") Pagination pagination);
 	
 	// memberId로 상품 갯수 조회
 	int selectByMemberIdCnt(String memberId);
