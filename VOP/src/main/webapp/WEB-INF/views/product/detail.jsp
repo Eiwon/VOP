@@ -14,7 +14,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-
+<!-- 모바일 관련 코드라서 없어도 동작 가능 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- jquery 라이브러리 import -->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 
@@ -33,6 +34,7 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
 <jsp:include page="../include/header.jsp"></jsp:include>
 
 <title>상품 상세 조회</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
 /* 리뷰 별 폼 스타일 (여기 코드로 인해 별이 박스 형태로 안나온다.)*/ 
 #myform fieldset {
@@ -77,6 +79,27 @@ tr {
 td {
 	width: 200px;
 }
+
+/* 좋아요 or 싫어요 css 코드 */
+        .button-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .button {
+            font-size: 24px;
+            color: grey;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .button.liked {
+            color: blue;
+        }
+
+        .button.disliked {
+            color: red;
+        }
 </style>
 
 </head>
@@ -94,31 +117,12 @@ td {
 
 	<div>
 		<p>카테고리 : ${productVO.category }</p>
-	</div>
-
-	<!-- 썸네일 상품 이미지 -->
-	<div>
+		<!-- 썸네일 상품 이미지 -->
 		<img class="productImg" alt="${productVO.imgId}">
-	</div>
-
-	<div>
 		<p>상품 번호 : ${productVO.productId }</p>
-	</div>
-
-	<div>
 		<p>상품 이름 : ${productVO.productName }</p>
 	</div>
 
-	<!-- 리뷰 별점 표시 전 코드-->
-	<!-- <div id="myform">
-		<fieldset>
-			리뷰 평균 별점 표시
-			<label for="star">&#9733;</label> <label for="star">&#9733;</label>
-			<label for="star">&#9733;</label> <label for="star">&#9733;</label>
-			<label for="star">&#9733;</label>
-		</fieldset>
-	</div> -->
-	
 	<!-- 리뷰 별점 표시 코드-->
 	<div id="myform">
     	<fieldset id="starsFieldset">
@@ -128,29 +132,26 @@ td {
 
 	<div>
 		<p>리뷰 평균 : ${productVO.reviewAvg}</p>
-	</div>
-
-	<div>
 		<p>댓글 총 갯수 : ${productVO.reviewNum}</p>
 	</div>
-
+	
 	<div>
 		<p>
 			상품 가격 : <span id="totalPrice">${productVO.productPrice}</span>
 		</p>
 	</div>
-
 	<!-- 현재 선택된 상품 수량 -->
 	<input type="number" id="quantity" value="1" min="1" max="99"
 		maxlength="2">
 
 	<!-- 상품 배송 정보 제작 해야함 -->
-
 	<div>
 		<p>판매자 : ${productVO.memberId}</p>
 	</div>
 
-
+	
+	
+	
 	<!-- 장바구니 버튼 -->
 	<!-- 세션 아이디가 없는 경우 -->
 	<c:if test="${empty memberDetails.getUsername() }">
@@ -165,7 +166,7 @@ td {
 
 	<!-- 장바구니 링크 -->
 	<a href="../basket/main">장바구니 바로가기</a>
-
+	
 	<!-- 바로구매 버튼 -->
 	<!-- 로그인된 세션 아이디 전달 -->
 	<form id="checkoutForm" action="../payment/checkout" method="POST">
@@ -200,17 +201,17 @@ td {
 
 	<!-- 댓글 화면 코드 및 가운데 정렬 -->
 
-	<h3>댓글</h3>
+	<h3>리뷰</h3>
 	<div id="review"></div>
-	
+	<!-- 리뷰 페징처리 내용 -->
 	<div id="product_list_page"></div>
 	
-	<h3>문의(대댓글)</h3>
+	<h3>문의</h3>
 	<div id="comments"></div>
 
 	<div>
 		<h3>배송/교환/반품 안내</h3>
-		<p></p>
+		<p>내용 작성 예정</p>
 	</div>
 
 	<!-- 좋아요 표시 제작 예정? -->
@@ -261,7 +262,6 @@ td {
     	  });
      }/* end 카카오 공유 관련 api 코드 */
      
-     
      /* 상품 수량 관련 코드 */
   	 // 수량 입력 필드 가져오기
      let quantityInput = document.getElementById("quantity");
@@ -284,21 +284,6 @@ td {
      });
      /* end 상품 수량 관련 코드 */
       
-     
-// 별표시를 업데이트하는 함수
-function displayStars() {
-    let value = parseInt("${productVO.reviewAvg}"); // 리뷰 별점을 정수 형으로 변환
-    let stars = document.querySelectorAll('#myform label'); // 별 표시 기능 가져오기
-   
-    // 반복문을 통해서 별를 출력하고 조건 문으로 평균 리뷰값의 크기를 비교한다.
-    for (let i = 0; i < stars.length; i++) {
-        if (i < value) {
-            stars[i].style.color = '#f0d000'; // 선택된 별보다 작은 값의 별은 노란색으로 표시
-        } else {
-            stars[i].style.color = 'transparent'; // 선택된 별보다 큰 값의 별은 투명하게 표시
-        }
-    }
-}// end displayStars()
 
 //별을 생성하여 추가하는 함수
 function createStars(reviewAvg) {
@@ -321,14 +306,12 @@ function createStars(reviewAvg) {
 
 $(document).ready(function() { 
 	loadImg(); // 이미지 불려오는 메소드
-	//displayStars(); // 별 표시 함수
-    getAllComments();
-    ReviewMap.show(1);
-    createStars(reviewAvg);
+    getAllComments(); // 문의 
+    ReviewMap.show(1); // 리뷰
+    createStars(reviewAvg); // 상품 별표시
  
     // 장바구니
     $('#btnBasket').click(function(){
-    	
         let productNum = $('#quantity').val(); // 수량 
         // javascript 객체 생성
         let obj = {
@@ -355,9 +338,6 @@ $(document).ready(function() {
         });
      }); // end btnAdd.click()
      
-    // 댓글(리뷰) 전체 검색 // 이미지 및 좋아요 아직 추가 안함
-   // 댓글(리뷰) 전체 검색
-
     
     // 문의(대댓글) 리스트
     function getAllComments() {
@@ -457,72 +437,141 @@ $(document).ready(function() {
     //loadImg(); 위에로 이동 하였습니다.
 }); // end document
 
+//ReviewMap 객체에 show 함수를 정의합니다.
 ReviewMap.show = function(page) {
-	
-	console.log('page : ' + page);
+    console.log('page : ' + page);
     let url = '../review/all/' + productId + '/' + page;
     
+    // AJAX 요청을 보내 리뷰 데이터를 가져옵니다.
     $.ajax({
         method: 'GET',
         url: url,
         dataType: 'json',
         success: function(data) {
-            // data: 서버에서 전송받은 list 데이터가 저장되어 있음
-            // JSON 데이터는 JavaScript 객체로 자동 파싱됨
             console.log(data);
 
-            let list = ''; // 댓글 데이터를 HTML에 표현할 문자열 변수
+            let list = ''; // 댓글 데이터를 HTML로 표현할 문자열 변수
 
             // ReviewMap 초기화
             ReviewMap.list = data.list || [];
             ReviewMap.pageMaker = data.pageMaker || null;
 
-            // $(컬렉션).each() : 컬렉션 데이터를 반복문으로 꺼내는 함수
+            // ReviewMap의 리스트 데이터를 반복문으로 처리합니다.
             $.each(ReviewMap.list, function(index, review) {
-                // review : 컬렉션의 각 인덱스 데이터를 의미
-
-                // 전송된 reviewDateCreated는 문자열 형태이므로 날짜 형태로 변환이 필요
                 let reviewDateCreated = new Date(review.reviewDateCreated);
-                
-                // 날짜와 시간을 문자열로 변환하여 가져오기
                 let dateString = reviewDateCreated.toLocaleDateString();
                 let timeString = reviewDateCreated.toLocaleTimeString();
 
-                // 별점 숫자를 가져와서 별 모양으로 변환
-                let starsHTML = ''; // 별 모양 HTML을 저장할 변수
-                let reviewStar = parseInt(review.reviewStar); // 문자열을 정수로 변환
+                let starsHTML = '';
+                let reviewStar = parseInt(review.reviewStar);
                 
                 for (let i = 1; i <= 5; i++) {
                     if (i <= reviewStar) {
-                        starsHTML += '&#9733;'; // 별 모양 HTML 코드 추가
+                        starsHTML += '&#9733;';
                     } else {
-                        starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
+                        starsHTML += '&#9734;';
                     }
                 }
 
-                // 댓글 이미지 및 좋아요 추가 해야함
                 list += '<div>' +
                     '<pre>' +
-                    '<input type="hidden" id="review" value="' + review.reviewId + '">' + // readonly 추가해서 id를 바꾸지 못하게 해야함
+                    '<input type="hidden" id="review" value="' + review.reviewId + '">' +
                     review.memberId +
-                    '&nbsp;&nbsp;' + // 공백
-                    '<span class="reviewStars">' + starsHTML + '</span>' + // 별점 표시 
                     '&nbsp;&nbsp;' +
-                    dateString + ' ' + timeString + // 작성 시간 (날짜와 시간)
+                    '<span class="reviewStars">' + starsHTML + '</span>' +
                     '&nbsp;&nbsp;' +
-                    '<input type="text" id="reviewContent" value="' + review.reviewContent + '" readonly>' + // 내용
+                    dateString + ' ' + timeString +
                     '&nbsp;&nbsp;' +
+                    '<input type="text" id="reviewContent" value="' + review.reviewContent + '" readonly>' +
+                    '&nbsp;&nbsp;' +
+                    '<div class="button likeButton" data-value="0"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></div>' +
+                    '<div class="button dislikeButton" data-value="0"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></div>' +
                     '</pre>' +
                     '</div>';
-            }); // end each()
-         // 페이지 생성 후 등록
+            });
+
+            // 페이지를 생성한 후 등록합니다.
             $('#product_list_page').html(makePageForm(ReviewMap));
             
-            $('#review').html(list); // 저장된 데이터를 replies div 표현
+            // 저장된 데이터를 review div에 표현합니다.
+            $('#review').html(list);
         }
-    });// end getJSON()
+    });
+}
 
-} // end getAllReview()
+//이벤트 위임을 사용하여 동적 요소에 이벤트 리스너 등록
+$(document).on('click', '.likeButton', function() {
+    // 현재 클릭된 likeButton의 같은 행에 있는 dislikeButton을 찾습니다.
+    const dislikeButton = $(this).closest('tr').find('.dislikeButton');
+
+    // likeButton에 'liked' 클래스를 토글합니다.
+    $(this).toggleClass('liked');
+    // dislikeButton에서 'disliked' 클래스를 제거합니다.
+    dislikeButton.removeClass('disliked');
+    
+    // likeButton 내의 <i> 요소를 찾습니다.
+    const likeIcon = $(this).find('i');
+    // dislikeButton 내의 <i> 요소를 찾습니다.
+    const dislikeIcon = dislikeButton.find('i');
+
+    // 'liked' 클래스가 있는지 확인합니다.
+    if ($(this).hasClass('liked')) {
+        // 'liked' 클래스가 있으면 likeIcon의 클래스를 변경합니다.
+        likeIcon.removeClass('fa-thumbs-o-up').addClass('fa-thumbs-up');
+        // likeButton의 data-value를 1로 설정합니다.
+        $(this).attr('data-value', '1');
+        // dislikeIcon의 클래스를 원래대로 돌립니다.
+        dislikeIcon.removeClass('fa-thumbs-down').addClass('fa-thumbs-o-down');
+        // dislikeButton의 data-value를 0으로 설정합니다.
+        dislikeButton.attr('data-value', '0');
+    } else {
+        // 'liked' 클래스가 없으면 likeIcon의 클래스를 원래대로 돌립니다.
+        likeIcon.removeClass('fa-thumbs-up').addClass('fa-thumbs-o-up');
+        // likeButton의 data-value를 0으로 설정합니다.
+        $(this).attr('data-value', '1');
+    }
+
+    // 현재 likeButton의 data-value 값을 콘솔에 출력합니다.
+    const likeValue = $(this).attr('data-value');
+    console.log('Like value:', likeValue);
+});
+
+$(document).on('click', '.dislikeButton', function() {
+    // 현재 클릭된 dislikeButton의 같은 행에 있는 likeButton을 찾습니다.
+    const likeButton = $(this).closest('tr').find('.likeButton');
+
+    // dislikeButton에 'disliked' 클래스를 토글합니다.
+    $(this).toggleClass('disliked');
+    // likeButton에서 'liked' 클래스를 제거합니다.
+    likeButton.removeClass('liked');
+    
+    // dislikeButton 내의 <i> 요소를 찾습니다.
+    const dislikeIcon = $(this).find('i');
+    // likeButton 내의 <i> 요소를 찾습니다.
+    const likeIcon = likeButton.find('i');
+
+    // 'disliked' 클래스가 있는지 확인합니다.
+    if ($(this).hasClass('disliked')) {
+        // 'disliked' 클래스가 있으면 dislikeIcon의 클래스를 변경합니다.
+        dislikeIcon.removeClass('fa-thumbs-o-down').addClass('fa-thumbs-down');
+        // dislikeButton의 data-value를 0으로 설정합니다.
+        $(this).attr('data-value', '0');
+        // likeIcon의 클래스를 원래대로 돌립니다.
+        likeIcon.removeClass('fa-thumbs-up').addClass('fa-thumbs-o-up');
+        // likeButton의 data-value를 0으로 설정합니다.
+        likeButton.attr('data-value', '0');
+    } else {
+        // 'disliked' 클래스가 없으면 dislikeIcon의 클래스를 원래대로 돌립니다.
+        dislikeIcon.removeClass('fa-thumbs-down').addClass('fa-thumbs-o-down');
+        // dislikeButton의 data-value를 0으로 설정합니다.
+        $(this).attr('data-value', '0');
+    }
+
+    // 현재 dislikeButton의 data-value 값을 콘솔에 출력합니다.
+    const dislikeValue = $(this).attr('data-value');
+    console.log('Dislike value:', dislikeValue);
+});
+
     
  	// 페이지 버튼 생성 후, ReviewMap의 리스트 출력 함수 등록
     function makePageForm(ReviewMap) { 

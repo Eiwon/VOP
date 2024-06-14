@@ -77,28 +77,18 @@ public class ProductController {
 	public void productDetailGET(Model model, Integer productId) {
 		log.info("productDetailGET()");
 		
-		log.info("productId : " + productId);
 		// productId에 해당하는 상품 조회 
 		ProductVO productVO = productService.getProductById(productId);	
-		
-//		// 이미지 코드 조회
-//		ImageVO imageVO = imageService.getImageById(productVO.getImgId());
 		
 		// 상세 이미지 조회
 		List<ImageVO> imageList = imageService.getByProductId(productId);
 		for(ImageVO image  : imageList) {
 			log.info(image);
 		}
-		
 		// 상품 조회 정보
 		model.addAttribute("productVO", productVO);
-		// 이미지 조회 정보
-//		model.addAttribute("imageVO", imageVO);
 		// 상품 설명 이미지 조회 정보
 		model.addAttribute("imageList", imageList);
-		
-		// 해당 경로
-		log.info("/product/detail get");
 	} // end productDetail()
 	
 	@GetMapping("/register")

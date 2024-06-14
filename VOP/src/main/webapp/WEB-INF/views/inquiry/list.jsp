@@ -110,7 +110,7 @@
 					let productId = ${productId};
 
 					const memberId = '${memberDetails.getUsername()}';
-
+					
 					// 답글 작성 클릭 했을 때 화면띄어주는 역할
 					$('.btnAdd').click(function() {
 						let inquiryId = $(this).data('inquiryid');

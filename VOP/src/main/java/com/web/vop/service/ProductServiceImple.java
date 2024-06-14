@@ -37,7 +37,6 @@ public class ProductServiceImple implements ProductService{
 	public ProductVO getProductById(int productId) {
 		log.info("getProductById()");
 		ProductVO result = productMapper.selectProduct(productId);
-//		log.info("상품 상세 정보 : " + result.toString());
 		return result;
 	} // end getProductById()
 	
