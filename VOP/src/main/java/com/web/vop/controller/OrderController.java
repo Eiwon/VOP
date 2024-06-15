@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.OrderVO;
+import com.web.vop.domain.OrderViewDTO;
+import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.OrderService;
 
 import lombok.extern.log4j.Log4j;
@@ -23,21 +25,31 @@ public class OrderController {
 	@Autowired
 	OrderService orderService;
 	
+	@Autowired
+	AWSS3Service awsS3Service;
+	
 	@GetMapping("/orderlist") 
 	public String orderlistGET(Model model,@AuthenticationPrincipal MemberDetails memberDetails) { // 주문목록 페이지 불러오기
 		log.info("orderlistGET()");
 		
-		// 사용자가 로그인한 경우에만 주문 목록을 표시하도록 합니다.
-	    if (memberDetails != null && memberDetails.getUsername() != null) {
-	        List<OrderVO> orderList = orderService.getOrderListByMemberId(memberDetails.getUsername());
+		// 사용자가 로그인한 경우에만 주문 목록을 표시하도록 합니다. 
+	    // if (memberDetails != null && memberDetails.getUsername() != null) {
+		// 시큐리티에 설정해서 막아야합니다
+	        List<OrderViewDTO> orderList = orderService.getOrderListByMemberId(memberDetails.getUsername());
+	        
+	        for(OrderViewDTO orderViewDTO : orderList) {
+	        	orderViewDTO.setImgUrl(
+	        			awsS3Service.toImageUrl(orderViewDTO.getImgPath(), orderViewDTO.getImgChangeName())
+	        			);
+	        }
 	        log.info(orderList);
 	        model.addAttribute("orderList", orderList);
-	        model.addAttribute("memberDetails", memberDetails);
+	        //model.addAttribute("memberDetails", memberDetails);
 	        return "order/orderlist"; // 주문 목록 페이지로 이동
-	    } else {
+	    //} else {
 	        // 로그인하지 않은 경우에는 로그인 페이지로 리다이렉트
-	        return "redirect:/member/login";
-	    }
+	        //return "redirect:/member/login";
+	    //}
 
 	  
 	}//end orderlistGET

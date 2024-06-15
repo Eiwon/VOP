@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.web.vop.domain.OrderVO;
+import com.web.vop.domain.OrderViewDTO;
 
 
 @Mapper
@@ -23,6 +24,6 @@ public interface OrderMapper {
 	public List<OrderVO> selectOrderByPaymentId(int paymentId);
 	
 	// 주문 목록 조회 
-	public List<OrderVO> selectOrderListByMemberId(String memberId);
+	public List<OrderViewDTO> selectOrderListByMemberId(String memberId);
 
 }

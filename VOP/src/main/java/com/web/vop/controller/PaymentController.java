@@ -30,6 +30,7 @@ import com.web.vop.domain.DeliveryVO;
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.OrderVO;
+import com.web.vop.domain.OrderViewDTO;
 import com.web.vop.domain.PaymentVO;
 import com.web.vop.domain.PaymentWrapper;
 import com.web.vop.domain.ProductVO;
@@ -108,8 +109,8 @@ public class PaymentController {
 		// 결제 정보가 유효한지 검사
 		// 주문 목록 총액이 결제금액과 일치하는지 확인
 		int total = 0;
-		for(OrderVO order : paymentResult.getOrderList()) {
-			total += order.getProductPrice() * order.getPurchaseNum();
+		for(OrderViewDTO orderDTO : paymentResult.getOrderList()) {
+			total += orderDTO.getOrderVO().getProductPrice() * orderDTO.getOrderVO().getPurchaseNum();
 		}
 		total = (total + paymentVO.getDeliveryPrice()) * 
 				(100 - paymentVO.getMembershipDiscount() - paymentVO.getCouponDiscount()) / 100;
@@ -132,10 +133,6 @@ public class PaymentController {
 		
 		try {
 			res = paymentService.registerPayment(paymentResult); // 결제 결과 등록
-			if(res == 1) {
-				res = paymentResult.getPaymentVO().getPaymentId();
-				// 결제 성공시 결제id 반환
-			}
 		}catch(DataIntegrityViolationException e) {
 			log.error("DB 저장 실패 : 재고 부족");
 			paymentAPIUtil.cancelPayment(impUid); // 결제 취소

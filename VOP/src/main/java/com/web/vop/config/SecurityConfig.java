@@ -64,7 +64,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 			.antMatchers(NORMAL_OVER).authenticated()
 			.antMatchers(ADMIN_ONLY).hasAuthority(ROLE_ADMIN)
 			.antMatchers(SELLER_OVER).hasRole(AUTH_SELLER)
-			.antMatchers(NOT_SELLER_OVER).h
 			.expressionHandler(expressionHandler())
 			;
 		// hasRole("권한") : 특정 권한이 있는지 체크 (권한 계층 적용)

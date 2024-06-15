@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.web.vop.domain.DeliveryVO;
 import com.web.vop.domain.OrderVO;
+import com.web.vop.domain.OrderViewDTO;
 import com.web.vop.persistence.OrderMapper;
 
 import lombok.extern.log4j.Log4j;
@@ -58,9 +59,9 @@ public class OrderServiceImple implements OrderService {
 	
 	@Override 
 	// 주문 목록 조회 + 이미지 경로 조회 By imgId
-	public List<OrderVO> getOrderListByMemberId(String memberId) { 
+	public List<OrderViewDTO> getOrderListByMemberId(String memberId) { 
 		log.info("getOrderListByMemberId() - memberId : " + memberId);
-		List<OrderVO> orderList = orderMapper.selectOrderListByMemberId(memberId);
+		List<OrderViewDTO> orderList = orderMapper.selectOrderListByMemberId(memberId);
 		
 		if(orderList == null) {
 			log.info("주문 내역이 없습니다.");

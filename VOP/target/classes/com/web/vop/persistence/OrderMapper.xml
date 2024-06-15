@@ -6,7 +6,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
    <resultMap type="com.web.vop.domain.OrderVO"
       id="OrderResultMap">
-      
       <id property="orderId" column="ORDER_ID" /> 
       <result property="paymentId" column="PAYMENT_ID" />
       <result property="productId" column="PRODUCT_ID"/>
@@ -16,9 +15,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="expectDeliveryDate" column="EXPECT_DELIVERY_DATE"/>
       <result property="imgId" column="IMG_ID"/>
       <result property="memberId" column="MEMBER_ID"/>
-
    </resultMap>
-   
+   <resultMap type="com.web.vop.domain.OrderViewDTO" id="OrderViewDTOResultMap">
+   		<result property="imgPath" column="IMG_PATH"/>
+   		<result property="imgChangeName" column="IMG_CHANGE_NAME"/>
+   		<association property="orderVO" javaType="com.web.vop.domain.OrderVO" resultMap="OrderResultMap"/>
+   </resultMap>
    
 	<!-- 배송지 상세 조회 (배송 예정일) -->
 	<select id="selectByExpectDeliveryDate" resultType="java.util.Date">
@@ -46,8 +48,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	
 	<!-- 주문 목록 조회 -->
-	<select id="selectOrderListByMemberId" resultMap="OrderResultMap">
+	<select id="selectOrderListByMemberId" resultMap="OrderViewDTOResultMap">
+		SELECT OD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
 		SELECT * FROM "ORDER" WHERE MEMBER_ID = #{memberId}
+		) OD JOIN IMAGE ON OD.PRODUCT_ID = IMAGE.PRODUCT_ID
 	</select>
 	
 	

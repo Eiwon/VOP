@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.web.vop.domain.OrderViewDTO;
 import com.web.vop.domain.ProductDetailsDTO;
 import com.web.vop.domain.ProductPreviewDTO;
 import com.web.vop.domain.ProductVO;
@@ -104,4 +105,9 @@ public interface ProductMapper {
 	
 	// 상품 재고 검색
 	int selectRemainsById(int productId);
+	
+	// 상품 상세 정보를 검색하여 OrderViewDTO로 반환 
+	List<OrderViewDTO> selectToOrderById(int[] productIds);
+	
+	
 }

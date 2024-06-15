@@ -347,7 +347,7 @@
 				success : function(result){
 					console.log('결제 내역 전송 결과 : ' + result);
 					if(result > 0){
-						location.href = 'paymentResult?paymentId=' + result;
+						location.href = 'paymentResult?paymentId=' + paymentVO.paymentId;
 					}else if(result == 0){
 						alert('결제 내역 전송 실패');		
 					}else if(result == -1){
