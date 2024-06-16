@@ -17,6 +17,9 @@ public interface ImageMapper {
 	// 이미지 등록
 	int insertImg(ImageVO imageVO);
 	
+	// 상품 상세정보 이미지 등록
+	int insertProductDetailsImg(ImageVO imageVO);
+	
 	// 최근에 등록한 이미지 id 검색   
 	int selectRecentImgId();
 	

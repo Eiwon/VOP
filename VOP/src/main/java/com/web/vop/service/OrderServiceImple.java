@@ -52,7 +52,7 @@ public class OrderServiceImple implements OrderService {
 	
 	
 	@Override
-	public List<OrderVO> getOrderByPaymentId(int paymentId) {
+	public List<OrderViewDTO> getOrderByPaymentId(int paymentId) {
 		log.info("getOrderByPaymentId()");
 		return orderMapper.selectOrderByPaymentId(paymentId);
 	} // end getOrderByPaymentId

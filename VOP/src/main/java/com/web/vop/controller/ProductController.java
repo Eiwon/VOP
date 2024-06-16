@@ -153,7 +153,7 @@ public class ProductController {
 			e.printStackTrace();
 		}
 	    
-	    return "redirect:../seller/sellerRequest";
+	    return "redirect:../seller/main";
 	} // end registerPOST
 
 	@GetMapping("search")

@@ -9,6 +9,8 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<!-- 카카오 주소검색 API 사용하기 위한 script -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <title>상품 등록</title>
 </head>
 <jsp:include page="../include/header.jsp"></jsp:include>
@@ -17,14 +19,14 @@
 		<form id="productForm" action="register" method="post" enctype="multipart/form-data">
 			<div>
 				판매자
-				<input type="text" name="memberId" value='${memberDetails.getUsername() }' readonly>
+				<input type="text" value='${memberDetails.getUsername() }' readonly>
 			</div>
 			<div>
-				<input type="text" id="product_name" name="productName" placeholder="상품명" >
+				<input type="text" id="productName" name="productName" placeholder="상품명" >
 				<div></div>
 			</div>
 			<div>
-				<input type="text" id="product_price" name="productPrice" placeholder="가격" >
+				<input type="text" id="productPrice" name="productPrice" placeholder="가격" >
 				<div></div>
 			</div>
 			<div>
@@ -51,11 +53,14 @@
 				</select> 
 			</div>
 			<div>
-				<input type="number" id="product_remains" name="productRemains" placeholder="수량">
+				<input type="number" id="productRemains" name="productRemains" placeholder="수량">
 				<div></div>
 			</div>
 			<div>
-				<input type="text" id="product_place" name="productPlace" placeholder="배송 지점">
+				<div>
+					<input type="text" id="productPlace" name="productPlace" placeholder="배송 지점" readonly="readonly">
+					<input type="button" onclick="searchAddress()" value="주소 검색">
+				</div>
 				<div></div>
 			</div>
 			<div>
@@ -77,22 +82,37 @@
 	
 	
 	<script type="text/javascript">
-		let productName = $('#product_name');
-		let productPrice = $('#product_price');
-		let productRemains = $('#product_remains');
-		let productPlace = $('#product_place');
-		let priceExp = new RegExp('[0-9]{1,10}');
+		let validCheckMap = {};
+		const allowedExtension = new RegExp("jpg|jpeg|png|bmp|tif|tiff|webp|svg");
+		
+		
+		validCheckMap.productName = {
+			exp : new RegExp('^[가-힣a-zA-Z0-9 !@#$%^&*()-+,.<>?]{2,30}$'),
+			failMsg : '상품명은 한글, 알파벳, 숫자, 일부 특수문자만 사용 가능합니다',
+		};
+		validCheckMap.productPrice = {
+			exp : new RegExp('^[0-9]{1,10}$'),
+			failMsg : '정상적인 판매가를 입력해주세요'
+		};
+		validCheckMap.productRemains = {
+			exp : new RegExp('^[0-9]{1,10}$'),
+			failMsg : '올바른 숫자를 입력해주세요'
+		};
+		validCheckMap.productPlace = {
+			exp : new RegExp('^[가-힣a-zA-Z0-9 !@#$%^&*()-+,.<>?]{10,65}$'),
+			failMsg : '형식에 맞지 않는 주소입니다'
+		};
+		
 		
 		$("#productForm").submit(function(event) {
+			
+			if(!checkTextValid()){
+				event.preventDefault();
+            	return;
+			}
+	        
             let inputThumbnail = $("#inputThumbnail"); // File input 요소 참조
             let file = inputThumbnail.prop('files')[0]; // file 객체 참조
-            let productPriceVal = productPrice.val();
-            
-            if(priceExp.test(productPriceVal)){
-            	alert('상품 가격은 10억 이하의 숫자만 입력 가능합니다.');
-            	event.preventDefault();
-            	return;
-            }
             
             if(!checkFileValid(file)){
             	event.preventDefault();
@@ -109,7 +129,6 @@
                 	return;
             	}
             }
-            
          }); //end imgForm.submit
 		
          function showThumbPreview(){
@@ -142,16 +161,31 @@
         	 previewDetails.html(str);
          } // end showDetailsPreview()
          
+         function checkTextValid() {
+ 			let val;
+ 			for(x in validCheckMap){
+ 				val = $('#' + x).val();
+ 				if(val.length == 0){
+ 					alert('모든 항목을 입력해주세요');
+ 					return false;
+ 				}
+ 				if(!validCheckMap[x].exp.test(val)){
+ 					alert(validCheckMap[x].failMsg);
+ 					return false;
+ 				}
+ 			}
+ 			return true;
+ 		 } // end checkTextValid
+         
          function checkFileValid(file){
-
-        	 const blockedExtension = new RegExp("exe|sh|php|jsp|aspx|zip|alz");
+ 			 
              if (!file) { // file이 없는 경우
                 alert("파일을 선택하세요.");
                 return false;
              }
              
-             if (blockedExtensions.test(file.name)) { // 차단된 확장자인 경우
-                alert("이 확장자의 파일은 첨부할 수 없습니다.");
+             if (!allowedExtensions.test(file.name)) { // 차단된 확장자인 경우
+                alert("이미지 파일만 첨부해주세요\n(jpg, jpeg, png, bmp, tif, tiff, webp, svg)");
                 return false;
              }
 
@@ -161,6 +195,17 @@
                 return false;
              }
          }
+         
+         function searchAddress(){
+ 			new daum.Postcode({ // 카카오 주소검색 API 팝업창 띄우는 코드
+ 		        oncomplete: function(data) {
+ 		            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+ 		            console.log(data);
+ 		            $('#productPlace').val(data.roadAddress);
+ 		        }
+ 		    }).open();
+ 		} // end searchAddress
+         
          
 	</script>
 	

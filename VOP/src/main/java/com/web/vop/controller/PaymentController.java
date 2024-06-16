@@ -34,6 +34,7 @@ import com.web.vop.domain.OrderViewDTO;
 import com.web.vop.domain.PaymentVO;
 import com.web.vop.domain.PaymentWrapper;
 import com.web.vop.domain.ProductVO;
+import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.BasketService;
 import com.web.vop.service.CouponService;
 import com.web.vop.service.DeliveryService;
@@ -56,6 +57,9 @@ public class PaymentController {
 	@Autowired
 	private PaymentAPIUtil paymentAPIUtil;
 	
+	@Autowired
+	private AWSS3Service awsS3Service;
+	
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/checkout")
 	public void makePayment(
@@ -64,6 +68,10 @@ public class PaymentController {
 		log.info("결제할 상품 갯수 : " + productIds.length);
 		
 		PaymentWrapper payment = paymentService.makePaymentForm(productIds, productNums, memberDetails.getUsername());
+		
+		for(OrderViewDTO order : payment.getOrderList()) {
+			order.setImgUrl(awsS3Service.toImageUrl(order.getImgPath(), order.getImgChangeName()));
+		}
 		
 		try { // 자바스크립트에서 쓰기 위해 json 형식 문자열로 변환
 			model.addAttribute("paymentWrapper", new ObjectMapper().writeValueAsString(payment));
@@ -79,6 +87,10 @@ public class PaymentController {
 		String memberId = memberDetails.getUsername();
 		// 각 주문정보와 전체 결제 내역을 한번에 보내기 위해 포장
 		PaymentWrapper paymentWrapper = paymentService.getPayment(memberId, paymentId);
+		
+		for(OrderViewDTO order : paymentWrapper.getOrderList()) {
+			order.setImgUrl(awsS3Service.toImageUrl(order.getImgPath(), order.getImgChangeName()));
+		}
 		
 		model.addAttribute("paymentWrapper", paymentWrapper);
 		

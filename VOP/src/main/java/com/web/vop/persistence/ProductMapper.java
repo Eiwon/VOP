@@ -38,6 +38,9 @@ public interface ProductMapper {
 	// 상품 등록
 	int insertProduct(ProductVO productVO);
 	
+	// 썸네일이 있는 상품 등록
+	int insertProductWithThumbnail(ProductVO productVO);
+	
 	// 방금 등록한 상품 id 검색
 	int selectLastInsertId();
 	

@@ -28,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		ORDER BY PRODUCT_ID DESC
    		) BK JOIN PRODUCT
    		ON BK.PRODUCT_ID = PRODUCT.PRODUCT_ID
-   		) PD LEFT JOIN IMAGE ON PD.PRODUCT_ID = IMAGE.PRODUCT_ID
+   		) PD LEFT JOIN IMAGE ON PD.IMG_ID = IMAGE.IMG_ID
    </select>
    
    <!-- 내 장바구니 물품 종류 수 조회-->

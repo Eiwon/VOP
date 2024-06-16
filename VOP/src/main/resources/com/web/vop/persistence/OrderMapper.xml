@@ -42,8 +42,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	
 	<!-- paymentId로 주문 검색 -->
-	<select id="selectOrderByPaymentId" resultMap="OrderResultMap">
+	<select id="selectOrderByPaymentId" resultMap="OrderViewDTOResultMap">
+		SELECT OD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
 		SELECT * FROM "ORDER" WHERE PAYMENT_ID = #{paymentId}
+		) OD JOIN IMAGE ON OD.IMG_ID = IMAGE.IMG_ID
 	</select>
 	
 	

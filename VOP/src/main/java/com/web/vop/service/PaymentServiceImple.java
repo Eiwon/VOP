@@ -4,7 +4,9 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -86,8 +88,15 @@ public class PaymentServiceImple implements PaymentService {
 		
 		
 		// 상품 정보 검색 => 주문 정보 형태로 변환
+		Map<Integer, Integer> amountMap = new HashMap<>();
+		for(int i = 0; i < productIds.length; i++) {
+			amountMap.put(productIds[i], productNums[i]);
+		}
 		List<OrderViewDTO> orderList = productMapper.selectToOrderById(productIds);
-		
+		log.info(orderList);
+		for(OrderViewDTO order : orderList) {
+			order.getOrderVO().setPurchaseNum(amountMap.get(order.getOrderVO().getProductId()));
+		}
 //		for(int i = 0; i < productIds.length; i++) {
 //			ProductVO productVO = productMapper.selectProduct(productIds[i]);
 //			orderList.add(new OrderVO(
@@ -146,7 +155,7 @@ public class PaymentServiceImple implements PaymentService {
 			return null;
 		}
 		paymentWrapper.setPaymentVO(paymentVO); 
-		//paymentWrapper.setOrderList(orderMapper.selectOrderByPaymentId(paymentId));
+		paymentWrapper.setOrderList(orderMapper.selectOrderByPaymentId(paymentId));
 		return paymentWrapper;
 	} // end getPayment
 	

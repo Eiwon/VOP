@@ -103,7 +103,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		INSERT INTO PRODUCT VALUES (
    		PRODUCT_SEQ.NEXTVAL, #{memberId}, #{productName}, #{productPrice},
    		0, #{productRemains}, #{productPlace}, #{productState}, #{category}, 
-   		#{imgId}, SYSDATE, 0 
+   		0, SYSDATE, 0 
+   		)
+	</insert>
+
+	<!-- 썸네일이 있는 상품 등록 -->
+	<insert id="insertProductWithThumbnail">
+   		INSERT INTO PRODUCT VALUES (
+   		PRODUCT_SEQ.NEXTVAL, #{memberId}, #{productName}, #{productPrice},
+   		0, #{productRemains}, #{productPlace}, #{productState}, #{category}, 
+   		IMAGE_SEQ.CURRVAL, SYSDATE, 0 
    		)
 	</insert>
 	
@@ -266,7 +275,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<foreach collection="array" index="index" item="productIds" open="(" separator="," close=")">
 			#{productIds}
 		</foreach>
-		) PD JOIN IMAGE ON PD.PRODUCT_ID = IMAGE.PRODUCT_ID
+		) PD JOIN IMAGE ON PD.IMG_ID = IMAGE.IMG_ID
 	</select>
 	
 </mapper>

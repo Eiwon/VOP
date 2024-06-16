@@ -24,7 +24,7 @@ public interface OrderService {
 	int registerOrder(OrderVO orderVO);
 	
 	// paymentId로 주문 검색
-	public List<OrderVO> getOrderByPaymentId(int paymentId);
+	public List<OrderViewDTO> getOrderByPaymentId(int paymentId);
 	
 	// 주문 목록 조회 
 	List<OrderViewDTO> getOrderListByMemberId(String memberId);

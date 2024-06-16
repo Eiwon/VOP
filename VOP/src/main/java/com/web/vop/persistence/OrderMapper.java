@@ -21,7 +21,7 @@ public interface OrderMapper {
 	public int insertOrder(OrderVO orderVO);
 	
 	// paymentId로 주문 검색
-	public List<OrderVO> selectOrderByPaymentId(int paymentId);
+	public List<OrderViewDTO> selectOrderByPaymentId(int paymentId);
 	
 	// 주문 목록 조회 
 	public List<OrderViewDTO> selectOrderListByMemberId(String memberId);

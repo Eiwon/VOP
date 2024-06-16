@@ -77,10 +77,8 @@
 		
 		<div class="box_info" id="order_info">
 			<h2>주문 정보</h2>
-			<table>
-				<tbody id="order_list">
-				</tbody>
-			</table>
+			<div id="order_list">
+			</div>
 		</div>
 		
 		<div class="box_info" id="payment_info">
@@ -153,7 +151,8 @@
 			console.log(paymentWrapper);
 			setInfo();
 			$('#btn_payment').click(function(){
-				payment();
+				location.href = 'paymentResult?paymentId=1048';
+				//payment();
 			}); // end btnPayment.click
 			
 		}); // end document.ready
@@ -173,10 +172,14 @@
 			
 			let form = '';
 			for (x in orderList){
-				form += '<tr><td style="width: 200px;">' + orderList[x].productName + 
-				'</td><td style="width: 200px;">' + orderList[x].purchaseNum + 
-				'</td><td style="width: 200px;">' + orderList[x].productPrice * orderList[x].purchaseNum + 
-				'원</td></tr>';
+				form += '<div>' + 
+				'<img src="' + orderList[x].imgUrl + '">' + 
+				'<div>' + 
+				'<div style="width: 200px;">' + orderList[x].orderVO.productName + '</div>' + 
+				'<div style="width: 200px;">' + orderList[x].orderVO.purchaseNum + '</div>' +
+				'<div style="width: 200px;">' + orderList[x].orderVO.productPrice * orderList[x].orderVO.purchaseNum + '원</div>' +
+				'</div>' +
+				'</div>';
 			}
 			tagOrderList.html(form);
 			
@@ -239,7 +242,7 @@
 			let totalPrice = 0;
 			
 			for(x in orderList){
-				totalPrice += orderList[x].productPrice * orderList[x].purchaseNum;
+				totalPrice += orderList[x].orderVO.productPrice * orderList[x].orderVO.purchaseNum;
 			}
 			console.log('합계 : ' + totalPrice);
 			return Math.ceil(totalPrice);
@@ -275,7 +278,7 @@
 							pg: 'kakaopay.TC0ONETIME', // PG사 코드(포트원 홈페이지에서 찾아서 넣어야함)
 			                pay_method: 'card', // 결제 방식
 			                merchant_uid: paymentId, // 결제 고유 번호
-			                name: orderList[0].productName, // 제품명
+			                name: orderList[0].orderVO.productName, // 제품명
 			                amount: paymentVO.chargePrice, // 결제 가격
 			                buyer_name: memberVO.memberId,
 			                buyer_email: memberVO.memberEmail,
