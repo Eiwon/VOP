@@ -53,14 +53,15 @@
 	<div class="box_info" id="order_info">
 		<h2>주문 정보</h2>
 		<c:set var="totalPrice" value="0"/>
-		<c:forEach var="order" items="${paymentWrapper.orderList}">
-			<c:set var="totalPrice" value="${totalPrice + order.productPrice * order.purchaseNum }"/>
+		<c:forEach var="orderViewDTO" items="${paymentWrapper.orderList}">
+			<c:set var="orderVO" value="${orderViewDTO.orderVO }"></c:set>
+			<c:set var="totalPrice" value="${totalPrice + orderVO.productPrice * orderVO.purchaseNum }"/>
 			<div class="order_box">
-				<img alt="${order.imgId}">
+				<img src="${orderViewDTO.imgUrl}">
 				<div>
-					<div>${order.productName }</div>
-					<div>${order.purchaseNum } 개</div>
-					<div>${order.productPrice * order.purchaseNum } 원</div>
+					<div>${orderVO.productName }</div>
+					<div>${orderVO.purchaseNum } 개</div>
+					<div>${orderVO.productPrice * orderVO.purchaseNum } 원</div>
 				</div>
 			</div>
 		</c:forEach>
@@ -100,80 +101,10 @@
 	</div>
 	
 	<script type="text/javascript">
-		//let orderList;
-		//let paymentVO;
-		
-		$(document).ready(function(){
-			//showPaymentResult();
-			loadImg($('#order_info'));
-		}); // end document.ready
-		
-		
-		/* function showPaymentResult() {
-			
-			$.ajax({
-				method : 'GET',
-				url : 'payment',
-				success : function(result){
-					console.log('결제 결과 : ' + result);
-					paymentVO = result.paymentVO;
-					orderList = result.orderList;
-					
-					$('#receiver_name').text(paymentVO.receiverName);
-					$('#receiver_phone').text(paymentVO.receiverPhone);
-					$('#delivery_address').text(paymentVO.deliveryAddress);
-					$('#requirement').text(paymentVO.requirement);
-					$('#total_price').text(calcTotalPrice() + '원');
-					$('#membership_discount').text(paymentVO.membershipDiscount + '%');
-					$('#coupon_discount').text(paymentVO.couponDiscount + '%');
-					$('#delivery_price').text(paymentVO.deliveryPrice + '원');
-					$('#charge_price').text(paymentVO.chargePrice + '원');
-					
-					let orderListForm = '';
-					for(x in orderList){
-						orderListForm += '<tr class="order_box" onclick="toDetails(this)">' +
-							'<td hidden="hidden" class="order_num">' + x + '</td>' +
-							'<td><img alt="' + orderList[x].imgId + '"></td>' +
-							'<td>' + orderList[x].productName + '<br>' + orderList[x].purchaseNum + '<br>' +
-							orderList[x].productPrice * orderList[x].purchaseNum + '</td></tr>';
-					}
-					$('#order_list').html(orderListForm);
-					loadImg($('#order_list'));
-				} // end success
-			}); // end ajax
-			
-		} // end showPaymentResult */
-	
-		
-		/* function calcTotalPrice() {
-			let totalPrice = 0;
-			
-			for(x in orderList){
-				totalPrice += orderList[x].productPrice * orderList[x].purchaseNum;
-			}
-			console.log('합계 : ' + totalPrice);
-			return totalPrice;
-		} // end calcTotalPrice */
-		
-		
-		function loadImg(input){
-			$(input).find('img').each(function(){
-				let target = $(this);
-				let imgId = target.attr("alt");
-				$.ajax({
-					method : 'GET',
-					url : '../image/' + imgId,
-					success : function(result){
-						target.attr('src', result);
-					}
-				}); // end ajax
-			});
-		} // end loadImg
 		
 		function toHome(){
 			location.href = "../board/main";
 		} // end toHome
-		
 		
 	</script>
 </body>

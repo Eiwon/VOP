@@ -1,7 +1,12 @@
 package com.web.vop.service;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,6 +18,7 @@ import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.MembershipVO;
 import com.web.vop.domain.MyCouponVO;
 import com.web.vop.domain.OrderVO;
+import com.web.vop.domain.OrderViewDTO;
 import com.web.vop.domain.PaymentVO;
 import com.web.vop.domain.PaymentWrapper;
 import com.web.vop.domain.ProductVO;
@@ -81,15 +87,23 @@ public class PaymentServiceImple implements PaymentService {
 		payment.setDeliveryVO(deliveryVO);
 		
 		
-		List<OrderVO> orderList = new ArrayList<>();
 		// 상품 정보 검색 => 주문 정보 형태로 변환
+		Map<Integer, Integer> amountMap = new HashMap<>();
 		for(int i = 0; i < productIds.length; i++) {
-			ProductVO productVO = productMapper.selectProduct(productIds[i]);
-			orderList.add(new OrderVO(
-							0, 0, productVO.getProductId(), productVO.getProductName(), productVO.getProductPrice(), 
-							productNums[i], null, productVO.getImgId(), memberId)
-							);
-		} // end for
+			amountMap.put(productIds[i], productNums[i]);
+		}
+		List<OrderViewDTO> orderList = productMapper.selectToOrderById(productIds);
+		log.info(orderList);
+		for(OrderViewDTO order : orderList) {
+			order.getOrderVO().setPurchaseNum(amountMap.get(order.getOrderVO().getProductId()));
+		}
+//		for(int i = 0; i < productIds.length; i++) {
+//			ProductVO productVO = productMapper.selectProduct(productIds[i]);
+//			orderList.add(new OrderVO(
+//							0, 0, productVO.getProductId(), productVO.getProductName(), productVO.getProductPrice(), 
+//							productNums[i], null, productVO.getImgId(), memberId)
+//							);
+//		} // end for
 		payment.setOrderList(orderList);
 		
 		// 멤버십 정보 등록
@@ -112,7 +126,8 @@ public class PaymentServiceImple implements PaymentService {
 		paymentMapper.insertPayment(paymentVO); // 결제 결과 등록
 		
 		// 주문 목록 등록
-		for(OrderVO order : payment.getOrderList()) {
+		for(OrderViewDTO orderDTO : payment.getOrderList()) {
+			OrderVO order = orderDTO.getOrderVO();
 			order.setPaymentId(paymentId); // 결제 id 추가
 			productMapper.updateRemains(order.getProductId(), order.getPurchaseNum() * -1);				
 			orderMapper.insertOrder(order);

@@ -91,10 +91,13 @@
                 url: '../inquiryRest/myList?pageNum=' + page,
                 success: function(result) {
                     inquiryMap.list = result.listInquiry;
+                    console.log("inquiryMap.list : " + inquiryMap.list);
                     inquiryMap.pageMaker = result.pageMaker;
+                    console.log("inquiryMap.pageMaker : " + inquiryMap.pageMaker);
 
                     const list = inquiryMap.list;
-
+                    console.log("list : " + list);
+                    
                     for (let x in list) {
                         form += '<tr>' +
                                 '<td class="productId">' + list[x].productId + '</td>' + 

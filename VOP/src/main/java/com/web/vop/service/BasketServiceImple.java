@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.BasketDTO;
 import com.web.vop.domain.BasketVO;
@@ -55,11 +56,27 @@ public class BasketServiceImple implements BasketService {
 		return basketMapper.deleteAll(memberId);
 	} // end clear
 	
-	// 장바구니 데이터만 조회
+	// 장바구니 데이터만 조회// 일단 사용 안함
 	@Override
 	public BasketVO getMyBasketList(int productId, String memberId) {
 		log.info("getMyBasketList()");
 		return basketMapper.selectByMemberIdList(productId, memberId);
+	}
+	
+	// 장바구니 등록 or 수정
+	@Override
+	public int createBasket(BasketVO basketVO) {
+		// 장바구니 수정
+		int res = basketMapper.updateProductNum(basketVO);
+		
+		// 장바구니 수정이 안되었을때 등록
+		if(res == 0) {
+			res = basketMapper.insertToBasket(basketVO);
+			log.info(res + "행 등록");
+		} else {
+			log.info(res + "행 수정");
+		}
+		return res;
 	}
 
 }

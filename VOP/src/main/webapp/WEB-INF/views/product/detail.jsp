@@ -306,9 +306,9 @@ function createStars(reviewAvg) {
 
 $(document).ready(function() { 
 	loadImg(); // 이미지 불려오는 메소드
-    getAllComments(); // 문의 
     ReviewMap.show(1); // 리뷰
-    createStars(reviewAvg); // 상품 별표시
+    createStars(reviewAvg); // 상품 평균 리뷰값 별 표시
+    getAllComments(); // 문의 
  
     // 장바구니
     $('#btnBasket').click(function(){
@@ -339,107 +339,123 @@ $(document).ready(function() {
      }); // end btnAdd.click()
      
     
-    // 문의(대댓글) 리스트
+
+ // 문의(대댓글) 
     function getAllComments() {
-        let inquiryUrl = '../inquiryRest/list/' + productId;
-        let answerUrl = '../answer/list/' + productId;
+        let inquiryUrl = '../inquiryRest/list/' + productId; // 문의 데이터 API 엔드포인트
+        let answerUrl = '../answer/list/' + productId;      // 답변 데이터 API 엔드포인트
         
-        // 변수 선언
-        let allComments = '';
-        let inquiryNUM = [];
-        let answerNUM = [];
+        let inquiryNUM = [];   // 문의 데이터 배열
+        let answerNUM = [];    // 답변 데이터 배열
+        
+        // inquiry 데이터 가져오기
+        $.ajax({
+            method: 'GET',
+            url: inquiryUrl,
+            success: function(data) {
+                inquiryNUM = data;  // 성공적으로 데이터를 가져오면 inquiryNUM에 저장
+                processComments();  // 데이터를 가져왔으므로 처리 함수 호출
+            },
+        });
 
-        // 댓글 데이터 가져오기
-        $.getJSON(
-            inquiryUrl,
-            function(inquiryData) {
-                // 댓글 데이터 반복
-                $(inquiryData).each(function() {
-                    // 날짜 형식 변환
-                    let inquiryDateCreated = new Date(this.inquiryDateCreated);
-                    let dateString = inquiryDateCreated.toLocaleDateString();
-                    let timeString = inquiryDateCreated.toLocaleTimeString();
+        // answer 데이터 가져오기
+        $.ajax({
+            method: 'GET',
+            url: answerUrl,
+            success: function(data) {
+                answerNUM = data;   // 성공적으로 데이터를 가져오면 answerNUM에 저장
+                processComments();  // 데이터를 가져왔으므로 처리 함수 호출
+            },
+        });
 
-                    // 댓글 HTML 생성
-                    let inquiryList = '<div>' +
-                        '<pre>' +
-                        '문의 내용 <input type="hidden" class="inquiryId" value="' + this.inquiryId + '">' +
-                        this.memberId +
-                        '&nbsp;&nbsp;' +
-                        dateString + ' ' + timeString +
-                        '&nbsp;&nbsp;' +
-                        '<input type="text" class="inquiryContent" value="' + this.inquiryContent + '" readonly>' +
-                        '</pre>' +
-                        '</div>';
-
-                    // 전체 댓글에 추가
-                    inquiryNUM.push({
-                        inquiryId: this.inquiryId,
-                        html: inquiryList,
-                        answers: [] // 해당 댓글에 대한 대댓글 리스트
-                    });
-                });
-
-                // 대댓글 데이터 가져오기
-                $.getJSON(
-                    answerUrl,
-                    function(answerData) {
-                        // 대댓글 데이터 반복
-                        $(answerData).each(function() {
-                            // 날짜 형식 변환
-                            let answerDateCreated = new Date(this.answerDateCreated);
-                            let dateString = answerDateCreated.toLocaleDateString();
-                            let timeString = answerDateCreated.toLocaleTimeString();
-
-                            // 대댓글 HTML 생성
-                            let answerList = '<div>' +
-                                '<pre>' +
-                                ' ㄴ답변 내용 <input type="hidden" class="answerId" value="' + this.answerId + '">' +
-                                this.memberId +
-                                '&nbsp;&nbsp;' +
-                                dateString + ' ' + timeString +
-                                '&nbsp;&nbsp;' +
-                                '<input type="text" class="answerContent" value="' + this.answerContent + '" readonly>' +
-                                '</pre>' +
-                                '</div>';
-
-                            // 해당 댓글에 대한 inquiryId 가져오기
-                            let answerInquiryId = this.inquiryId;
-
-                            // 해당 inquiryId를 가진 댓글 찾기
-                            let inquiry = inquiryNUM.find(function(inquiry) {
-                                return inquiry.inquiryId === answerInquiryId;
-                            });
-
-                            if (inquiry) {
-                                // 해당 댓글에 대댓글 추가
-                                inquiry.answers.push(answerList);
-                            }
-                        });
-
-                        // HTML에 전체 댓글과 대댓글 추가
-                        inquiryNUM.forEach(function(inquiry) {
-                            let commentHtml = inquiry.html;
-                            inquiry.answers.forEach(function(answer) {
-                                commentHtml += answer;
-                            });
-                            allComments += commentHtml;
-                        });
-
-                        // comments 엘리먼트에 전체 댓글과 대댓글 추가
-                        $('#comments').html(allComments);
-                    }
-                );// end  $.getJSON
+        // 문의와 답변 데이터를 처리하는 함수
+        function processComments() {// 여기 비동기 동작 어떻게 처리 하는지 잘모르겠음
+            // inquiryNUM과 answerNUM이 모두 데이터를 가져온 경우에만 처리
+            if (inquiryNUM.length > 0 && answerNUM.length > 0) {
+                // 데이터를 비교하여 일치하는 요소들을 찾음
+                let matchingItems = printMatchingItems(inquiryNUM, answerNUM);// 그럼 여기서 함수가 실행 된 다음 변수에 저장?
+                renderComments(matchingItems);  // 일치하는 요소들을 렌더링 함수로 전달하여 출력
             }
-        );
+        }
+
+        // 문의와 답변 데이터를 비교하여 일치하는 요소들을 반환하는 함수
+        function printMatchingItems(inquiryNUM, answerNUM) {
+            let result = [];
+
+            // 모든 문의와 답변 데이터를 비교하여 일치하는 경우를 찾음
+            for (let i = 0; i < inquiryNUM.length; i++) {
+                let matchingAnswers = []; // 현재 문의에 대한 일치하는 답변들을 저장할 배열
+
+                for (let j = 0; j < answerNUM.length; j++) {
+                    if (inquiryNUM[i].inquiryId === answerNUM[j].inquiryId) {
+                        // 일치하는 경우 matchingAnswers 배열에 객체로 저장
+                        matchingAnswers.push({
+                            answerId: answerNUM[j].answerId,
+                            memberId: answerNUM[j].memberId,
+                            answerContent: answerNUM[j].answerContent,
+                            answerDateCreated: answerNUM[j].answerDateCreated
+                        });
+                    }
+                }
+
+                // 문의와 해당하는 모든 답변들을 result 배열에 객체로 저장
+                result.push({
+                    inquiryId: inquiryNUM[i].inquiryId,
+                    memberId: inquiryNUM[i].memberId,
+                    inquiryContent: inquiryNUM[i].inquiryContent,
+                    inquiryDateCreated: inquiryNUM[i].inquiryDateCreated,
+                    answers: matchingAnswers  // 일치하는 답변들 배열을 answers 필드로 저장
+                });
+            }
+
+            return result;  // 일치하는 요소들을 담은 배열 반환
+        }
+
+        // 일치하는 요소들을 HTML 테이블 형식으로 렌더링하여 출력하는 함수
+        function renderComments(comments) {// comments변수 값은 따로 선언 하는것이 아니라 그 어떤값이 들어 가도 상관이없다.
+        	// comments의 변수 값은 printMatchingItems함수를 통해 조건문에 맞게 정렬된 배열 형태의 값이다.
+        	console.log("comments : " + comments);// 문의 내용 리스트만 저장 되어 있는 것 같다.
+            let form = '';  // 출력할 HTML 문자열을 저장할 변수
+
+            // 모든 일치하는 요소들을 테이블의 각 행으로 변환하여 form에 추가
+            for (let i = 0; i < comments.length; i++) {
+                // 문의 내용 행 추가
+                form += '<tr>' +
+                		'<td colspan="4">질문 내용</td>' +  
+                		'</tr>' +
+                		'<tr>' +
+                        '<td class="inquiryId">' + comments[i].inquiryId + '</td>' +
+                        '<td class="memberId">' + comments[i].memberId + '</td>' +
+                        '<td class="inquiryContent">' + comments[i].inquiryContent + '</td>' + 
+                        '<td class="inquiryDateCreated">' + toDate(comments[i].inquiryDateCreated) + '</td>' +
+                        '</tr>';
+
+                // 모든 일치하는 답변들에 대해 행 추가
+                for (let j = 0; j < comments[i].answers.length; j++) {
+                    form += '<tr>' +
+                            '<td colspan="3">ㄴ답변 내용</td>' +  // 답변 내용 표시
+                            '</tr>' +
+                            '<tr>' +
+                            '<td class="answerId">' + comments[i].answers[j].answerId + '</td>' +
+                            '<td class="answerMemberId">' + comments[i].answers[j].memberId + '</td>' +
+                            '<td class="answerContent">' + comments[i].answers[j].answerContent + '</td>' + 
+                            '<td class="answerDateCreated">' + toDate(comments[i].answers[j].answerDateCreated) + '</td>' +
+                            '</tr>';
+                }
+            }
+
+            // 결과를 id가 'comments'인 요소에 HTML로 출력
+            $('#comments').html(form);
+        }
     }
-    
-    //loadImg(); 위에로 이동 하였습니다.
+
+
+
 }); // end document
 
 //ReviewMap 객체에 show 함수를 정의합니다.
 ReviewMap.show = function(page) {
-    console.log('page : ' + page);
+    
     let url = '../review/all/' + productId + '/' + page;
     
     // AJAX 요청을 보내 리뷰 데이터를 가져옵니다.
@@ -449,64 +465,61 @@ ReviewMap.show = function(page) {
         dataType: 'json',
         success: function(data) {
             console.log(data);
-
-            let list = ''; // 댓글 데이터를 HTML로 표현할 문자열 변수
-
+            let form = '';
+            
             // ReviewMap 초기화
-            ReviewMap.list = data.list || [];
-            ReviewMap.pageMaker = data.pageMaker || null;
-
-            // ReviewMap의 리스트 데이터를 반복문으로 처리합니다.
-            $.each(ReviewMap.list, function(index, review) {
-                let reviewDateCreated = new Date(review.reviewDateCreated);
-                let dateString = reviewDateCreated.toLocaleDateString();
-                let timeString = reviewDateCreated.toLocaleTimeString();
-
-                let starsHTML = '';
-                let reviewStar = parseInt(review.reviewStar);
-                
-                for (let i = 1; i <= 5; i++) {
-                    if (i <= reviewStar) {
-                        starsHTML += '&#9733;';
+            ReviewMap.list = data.list;
+            ReviewMap.pageMaker = data.pageMaker;
+            
+            const list = ReviewMap.list;
+           
+            for (let x in list) {
+            	let reviewStar = list[x].reviewStar;
+            	
+            	let starsHTML = ''; // 별 모양 HTML을 저장할 변수
+                star = parseInt(reviewStar); // 문자열을 정수로 변환
+				for (let i = 1; i <= 5; i++) {
+                    if (i <= star) {
+                        starsHTML += '&#9733;'; // 별 모양 HTML 코드 추가
                     } else {
-                        starsHTML += '&#9734;';
+                        starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
                     }
-                }
+                } 
+                form += '<tr>' +
+                        '<td class="reviewId">' + list[x].reviewId + '</td>' +
+                        '<td class="memberId">' + list[x].memberId + '</td>' +
+                        '<td class="reviewStars">' + starsHTML + '</td>' + 
+                        '<td class="reviewContent">' + list[x].reviewContent + '</td>' + 
+                        '<td class="reviewDateCreated">' + toDate(list[x].reviewDateCreated) + '</td>' +
+                        '<td class="button-container">' +
+                        '<div class="button likeButton" data-value="0"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></div>' +
+                        '<div class="button dislikeButton" data-value="0"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></div>' +
+                        '</td>' +
+                        '</tr>';
+            }
 
-                list += '<div>' +
-                    '<pre>' +
-                    '<input type="hidden" id="review" value="' + review.reviewId + '">' +
-                    review.memberId +
-                    '&nbsp;&nbsp;' +
-                    '<span class="reviewStars">' + starsHTML + '</span>' +
-                    '&nbsp;&nbsp;' +
-                    dateString + ' ' + timeString +
-                    '&nbsp;&nbsp;' +
-                    '<input type="text" id="reviewContent" value="' + review.reviewContent + '" readonly>' +
-                    '&nbsp;&nbsp;' +
-                    '<div class="button likeButton" data-value="0"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></div>' +
-                    '<div class="button dislikeButton" data-value="0"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></div>' +
-                    '</pre>' +
-                    '</div>';
-            });
-
+      
             // 페이지를 생성한 후 등록합니다.
             $('#product_list_page').html(makePageForm(ReviewMap));
             
             // 저장된 데이터를 review div에 표현합니다.
-            $('#review').html(list);
+            $('#review').html(form);
         }
     });
 }
 
-//이벤트 위임을 사용하여 동적 요소에 이벤트 리스너 등록
+//좋아요 코드
 $(document).on('click', '.likeButton', function() {
     // 현재 클릭된 likeButton의 같은 행에 있는 dislikeButton을 찾습니다.
+    // 찾는 이유는 싫어요가 클릭 되어있는 상태인지 확인 하기 위해서
     const dislikeButton = $(this).closest('tr').find('.dislikeButton');
+    
 
     // likeButton에 'liked' 클래스를 토글합니다.
     $(this).toggleClass('liked');
+    
     // dislikeButton에서 'disliked' 클래스를 제거합니다.
+    // 여기서 dislikeButton 클릭이 되어있든 아니든 제거 하는것 같다.
     dislikeButton.removeClass('disliked');
     
     // likeButton 내의 <i> 요소를 찾습니다.
@@ -536,6 +549,7 @@ $(document).on('click', '.likeButton', function() {
     console.log('Like value:', likeValue);
 });
 
+//싫어요 코드
 $(document).on('click', '.dislikeButton', function() {
     // 현재 클릭된 dislikeButton의 같은 행에 있는 likeButton을 찾습니다.
     const likeButton = $(this).closest('tr').find('.likeButton');
@@ -578,8 +592,6 @@ $(document).on('click', '.dislikeButton', function() {
 		const pageMaker = ReviewMap.pageMaker;
 		const startNum = pageMaker.startNum;
 		const endNum = pageMaker.endNum;
-		
-		console.log('pageMaker : ' + pageMaker);
 		
 		// 스타일 적용 코드 및 리스트 코드
 		let pageForm = $('<ul class="page_list"></ul>');
@@ -626,6 +638,14 @@ $(document).on('click', '.dislikeButton', function() {
 			}); // end ajax
 		});//end document
 	} // end loadImg
+	
+	// 시간 변환 함수
+	function toDate(timestamp) {
+        let date = new Date(timestamp);
+        let formatted = (date.getFullYear()) + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' +
+                        date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+        return formatted;
+    } // end toDate
      </script>
 
 </body>

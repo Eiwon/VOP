@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.web.vop.domain.DeliveryVO;
 import com.web.vop.domain.OrderVO;
+import com.web.vop.domain.OrderViewDTO;
 
 
 @Service
@@ -23,8 +24,8 @@ public interface OrderService {
 	int registerOrder(OrderVO orderVO);
 	
 	// paymentId로 주문 검색
-	public List<OrderVO> getOrderByPaymentId(int paymentId);
+	public List<OrderViewDTO> getOrderByPaymentId(int paymentId);
 	
 	// 주문 목록 조회 
-	List<OrderVO> getOrderListByMemberId(String memberId);
+	List<OrderViewDTO> getOrderListByMemberId(String memberId);
 }

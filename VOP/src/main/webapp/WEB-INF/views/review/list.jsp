@@ -178,7 +178,7 @@
 		           data : JSON.stringify(obj), // JSON으로 변환
 		           success : function(result) { // 전송 성공 시 서버에서 result 값 전송
 		              if(result == 1) {
-		                 alert('댓글 삭제 성공!');
+		                alert('댓글 삭제 성공!');
 		              } else {
 		            	alert('댓글 삭제 실패!');
 		              }

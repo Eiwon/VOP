@@ -13,7 +13,7 @@ public interface LikesDislikesService {
 	List<LikesDislikesVO> getAllReviewMemberId(int reviewId, String memberId);
 		
 	// 좋아요 or 싫어요 수정
-	int updateLikesDislikes(int likesDislikesId, int likeDislikeType);
+	int updateLikesDislikes(LikesDislikesVO likesDislikesVO);
 			 
 	// 좋아요 or 싫어요 삭제
 	int deleteLikesDislikes(int reviewId, String memberId);

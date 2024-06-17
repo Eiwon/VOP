@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.web.vop.domain.ImageVO;
+import com.web.vop.domain.OrderViewDTO;
 import com.web.vop.domain.ProductDetailsDTO;
 import com.web.vop.domain.ProductPreviewDTO;
 import com.web.vop.domain.ProductVO;
@@ -88,6 +89,5 @@ public interface ProductService {
 	
 	// 상품의 세부 이미지 검색
 	List<ImageVO> getProductDetails(int productId);
-	
 	
 }

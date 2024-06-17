@@ -20,30 +20,31 @@ public class LikesDislikesServiceImple implements LikesDislikesService{
 	
 	@Override
 	public int createLikesDislikes(LikesDislikesVO likesDislikesVO) {
-		
+		log.info("createLikesDislikes()");
 		int insertRes = likesDislikesMapper.insertLikesDislikes(likesDislikesVO);
-		int updateRes = likesDislikesMapper.updateLikesDislikes(likesDislikesVO);
-		int deleteRes = likesDislikesMapper.deleteLikesDislikes(likesDislikesVO.getReviewId(), likesDislikesVO.getMemberId());
+		log.info(insertRes + "행 등록");
 				
 		return insertRes;
 	}
 	
 	@Override
 	public List<LikesDislikesVO> getAllReviewMemberId(int reviewId, String memberId) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public int updateLikesDislikes(int likeDislikeId, int likeDislikeType) {
-		return 0;
+	public int updateLikesDislikes(LikesDislikesVO likesDislikesVO) {
+		log.info("updateLikesDislikes()");
+		int updateRes = likesDislikesMapper.updateLikesDislikes(likesDislikesVO);
+		log.info(updateRes + "행 수정");
+		return updateRes;
 	}
 
 	@Override
 	public int deleteLikesDislikes(int reviewId, String memberId) {
-		return 0;
+		log.info("deleteLikesDislikes()");
+		int deleteRes = likesDislikesMapper.deleteLikesDislikes(reviewId, memberId);
+		log.info(deleteRes + "행 삭제");
+		return deleteRes;
 	}
-
-	
-	
 }

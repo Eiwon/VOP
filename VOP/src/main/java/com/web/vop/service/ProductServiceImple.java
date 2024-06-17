@@ -95,23 +95,18 @@ public class ProductServiceImple implements ProductService{
 	public int registerProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details) throws IOException { // 등록 성공시, 등록한 상품 id 반환
 		log.info("registerProduct : " + productVO);
 		int res = 0;
-		
+		productVO.setProductState(Constant.STATE_APPROVAL_WAIT);
+
 		// DB에 상품 정보 등록
-		if(thumbnail != null) { 
-			// 썸네일 등록
+		if(thumbnail == null) { 
+			productMapper.insertProduct(productVO);						
+		}else {
 			imageMapper.insertImg(thumbnail);
-			int imgId = imageMapper.selectRecentImgId();
-			productVO.setImgId(imgId);
+			productMapper.insertProductWithThumbnail(productVO);
 		}
 		
-		// 상품 등록
-		productVO.setProductState(Constant.STATE_APPROVAL_WAIT);
-		productMapper.insertProduct(productVO);
-		int productId = productMapper.selectLastInsertId();
-		
 		for(ImageVO detail : details) {
-			detail.setProductId(productId);
-			res = imageMapper.insertImg(detail);
+			res = imageMapper.insertProductDetailsImg(detail);
 		}
 		return res;
 	} // end registerProduct

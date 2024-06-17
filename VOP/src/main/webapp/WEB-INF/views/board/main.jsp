@@ -127,7 +127,6 @@
 			}); // end ajax
 		} // end printRecentList
 		
-		
 		// 상품 클릭 했을때 이동하는 코드
 		function toDetails(input){
 			const selectedId = $(input).find('.product_id').val();
