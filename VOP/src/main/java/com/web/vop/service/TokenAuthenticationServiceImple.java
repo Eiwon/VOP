@@ -31,6 +31,7 @@ public class TokenAuthenticationServiceImple implements TokenAuthenticationServi
 	public String createToken(UserDetails memberDetails) {
 		return Jwts.builder()
 				.setSubject(memberDetails.getUsername())
+				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + (30*60*1000)))
 				.signWith(SignatureAlgorithm.HS512, signingKey)
 				.compact();

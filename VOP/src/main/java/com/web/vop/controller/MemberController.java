@@ -2,6 +2,7 @@ package com.web.vop.controller;
 
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,12 +19,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.web.vop.domain.AlertVO;
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.service.MailAuthenticationService;
 import com.web.vop.service.MemberService;
+import com.web.vop.service.TokenAuthenticationService;
 import com.web.vop.service.UserDetailsServiceImple;
 import com.web.vop.util.Constant;
 
@@ -34,13 +38,16 @@ import lombok.extern.log4j.Log4j;
 public class MemberController {
 
 	@Autowired
-	MemberService memberService;
+	public MemberService memberService;
 	
 	@Autowired
-	UserDetailsServiceImple UserDetailsService;
+	public UserDetailsServiceImple UserDetailsService;
 	
 	@Autowired
-	MailAuthenticationService mailAuthService;
+	public MailAuthenticationService mailAuthService;
+	
+	@Autowired
+	public TokenAuthenticationService tokenAuthenticationService;
 	
 	@GetMapping("/register")
 	public void registerGET() {
@@ -52,6 +59,28 @@ public class MemberController {
 		log.info("login 페이지 이동 요청");
 	} // end loginGET
 	
+	@PostMapping("/login")
+	public String loginPOST(Model model, MemberVO memberVO) {
+		UserDetails memberDetails = memberService.authentication(memberVO.getMemberId(), memberVO.getMemberPw());
+		String token = null;
+		log.info(memberDetails);
+		if(memberDetails != null) {
+			token = tokenAuthenticationService.createToken(memberDetails);
+			model.addAttribute("token", token);
+			return "member/loginSuccess";
+		}else {
+			AlertVO alertVO = new AlertVO();
+			alertVO.setAlertMsg("유효하지 않은 아이디 또는 비밀번호입니다");
+			alertVO.setRedirectUri("member/login");
+			model.addAttribute("alertVO", alertVO);
+			return Constant.ALERT_PATH;
+		}
+	}
+	
+	@GetMapping("/loginSuccess")
+	public void loginSuccessGET() {
+		log.info("login success get");
+	}
 	
 	@GetMapping("/loginFail")
 	public String loginFailGET(Model model) {

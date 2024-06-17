@@ -71,37 +71,37 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 		// hasAnyRole("권한1", "권한2", ...) : 목록 중 하나의 권한이라도 있는지 체크
 		// hasAuthority("ROLE_권한") : 특정 권한이 있는지 체크(권한 계층 미적용)
 		
-		http.formLogin()
-			.loginPage("/member/login")
-			.usernameParameter("memberId")
-			.passwordParameter("memberPw")
-			.loginProcessingUrl("/member/login")
-			.successHandler(loginSuccessHandler)
-			.failureHandler(loginFailHandler);
-
-		http.rememberMe() // 자동 로그인
-			.key("key") 
-			.rememberMeParameter("rememberMe")
-			.rememberMeCookieName("rememberMe") 
-			.tokenValiditySeconds(60*60*24)
-			.tokenRepository(tokenRepository)
-			.userDetailsService(userDetailsServiceImple)
-			.authenticationSuccessHandler(loginSuccessHandler);
-		
-		http.logout()
-			.logoutUrl("/member/logout") // 로그아웃 처리 URL
-			.logoutSuccessUrl("/board/main")// 로그아웃 성공 후 이동 페이지
-			.deleteCookies("JSESSIONID", "rememberMe") // 로그아웃 후 쿠키 삭제
-			.logoutSuccessHandler(logoutSuccessHandler)
-			.invalidateHttpSession(true); // 세션 무효화 설정
+//		http.formLogin()
+//			.loginPage("/member/login")
+//			.usernameParameter("memberId")
+//			.passwordParameter("memberPw")
+//			.loginProcessingUrl("/member/login")
+//			.successHandler(loginSuccessHandler)
+//			.failureHandler(loginFailHandler);
+//
+//		http.rememberMe() // 자동 로그인
+//			.key("key") 
+//			.rememberMeParameter("rememberMe")
+//			.rememberMeCookieName("rememberMe") 
+//			.tokenValiditySeconds(60*60*24)
+//			.tokenRepository(tokenRepository)
+//			.userDetailsService(userDetailsServiceImple)
+//			.authenticationSuccessHandler(loginSuccessHandler);
+//		
+//		http.logout()
+//			.logoutUrl("/member/logout") // 로그아웃 처리 URL
+//			.logoutSuccessUrl("/board/main")// 로그아웃 성공 후 이동 페이지
+//			.deleteCookies("JSESSIONID", "rememberMe") // 로그아웃 후 쿠키 삭제
+//			.logoutSuccessHandler(logoutSuccessHandler)
+//			.invalidateHttpSession(true); // 세션 무효화 설정
 		
 		http.exceptionHandling()
 			.accessDeniedPage("/access/denied");
 
-		http.csrf().disable();
-			//.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		//http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-		//http.headers().cacheControl();
+		http.csrf().disable()
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.headers().cacheControl();
 		
 	} // end configure
 
