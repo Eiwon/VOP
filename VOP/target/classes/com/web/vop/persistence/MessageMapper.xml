@@ -68,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </select>
    
    <!-- 모든 팝업 광고 id 검색 -->
-   <select id="selectAllPopupId" resultMap="Integer">
+   <select id="selectAllPopupId" resultType="Integer">
    		SELECT MESSAGE_ID FROM MESSAGE WHERE TYPE NOT LIKE '%Alarm' ORDER BY MESSAGE_ID DESC
    </select>
    

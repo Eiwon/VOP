@@ -34,13 +34,16 @@
 </style>
 <title>멤버십 등록</title>
 </head>
-<jsp:include page="../include/header.jsp"></jsp:include>
+
 <body>
 
 <script type="text/javascript">
 	 let paymentWrapper = JSON.parse('${paymentWrapper}');	
 	 let memberVO = paymentWrapper.memberVO;
+	 let membershipVO = paymentWrapper.membershipVO;
 	 
+	 console.log(paymentWrapper);
+	 console.log(memberVO);
 	 
 	 $(document).ready(function() {
 		console.log(paymentWrapper);
@@ -56,13 +59,15 @@
 	
 	
      function calcTotalPrice() {
-    	 return Math.ceil(1000); // 1000원을 반환, Math.ceil()은 소수점 올림
+    	 let total = Math.ceil(1000);
+    	 console.log('total : ',total);
+    	 return total; // 1000원을 반환, Math.ceil()은 소수점 올림
 		} // end calcTotalPrice
      
 	function payment(){ // 결제 실행
 			let IMP = window.IMP;
 			IMP.init('imp04667313'); // 가맹점 식별코드 설정(포트원 홈페이지에서 확인)
-			let membershipId;
+			let paymentId;
 			
 			let membershipFee = calcTotalPrice(); // 최종 결제 금액 계산
 			
@@ -75,15 +80,17 @@
 						console.log('고유 번호 받아오기 실패');
 					}else{
 						console.log('결제 고유 번호 : ' + result);
-						membershipId = result;
+						paymentId = result;
 						IMP.request_pay({
 							pg: 'kakaopay.TC0ONETIME', // PG사 코드(포트원 홈페이지에서 찾아서 넣어야함)
 			                pay_method: 'card', // 결제 방식
-			                merchant_uid: membershipId, // 결제 고유 번호
+			                merchant_uid: paymentId, // 결제 고유 번호
 			                amount: membershipFee, // 결제 가격
 			                buyer_name: memberVO.memberId,
 			                buyer_email: memberVO.memberEmail,
 			            }, async function (rsp) { // callback
+			            	
+			            	
 			             	/*rsp 예시
 			             	{
 			            	apply_num:""
@@ -114,39 +121,70 @@
 			             	*/
 			            
 			            	if (rsp.success) { //결제 성공시
+			            		// membershipVO 객체의 필드들 설정
+			            		membershipVO.membershipId = rsp.merchant_uid;
+			            		membershipVO.memberId = rsp.buyer_name;
+			                    membershipVO.chargeId = rsp.imp_uid;
+			            	
+			            		// membershipVO 객체의 내용 확인
+			                	console.log('membershipVO : ', membershipVO);
+			            		
 			            		sendPaymentResult(rsp);
 			                }
 			            }); // end IMP.request_pay 
 					}
-				} // end success 
+				}, // end success 
+				error: function(xhr, status, error) {
+		            console.error('서버 요청 중 오류 발생:', error);
+		        }
 			}); // end ajax	
 			
 	} // end payment
 	
 	
-	function sendPaymentResult(paymentResult){
+	function sendPaymentResult(membershipResult){
 		console.log('결제 완료');
 		
-		console.log('membershipPOST : ' + memberId);
-        const formData = memberId; // memberId를 직접 전송
-       
+		membershipVO.membershipId = membershipResult.merchant_uid;
+		membershipVO.memberId = membershipResult.buyer_name;
+		membershipVO.chargeId = membershipResult.imp_uid;
+	
+		
+		console.log(membershipVO);
 		
 		$.ajax({
 			method : 'POST',
 			url :  'membershipRegister',
 			contentType: 'text/plain',
-			data: formData, // memberId를 직접 전송
+			headers : {
+				'Content-Type' : 'application/json'
+			},
+			data : JSON.stringify({
+				'membershipVO' : membershipVO,
+			}),
 			success : function(result){
 				console.log('결제 내역 전송 결과 : ' + result);
 				if(result > 0){
-					location.href = 'paymentResult?paymentId=' + result;
-				}else if(result == 0){
-					alert('결제 내역 전송 실패');		
+					console.log("결제 내역 전송 성공");
 				}else {
-					alert(orderList[(result +1)* -1].productName + ' 상품의 재고가 부족합니다.');
+					alert('결제 내역 전송 실패');		
 				}
 			}
 		}); // end ajax
+		
+	    
+        // 회원 권한 업데이트
+           $.ajax({
+               type: 'PUT',
+               url: 'updateAuth/' + memberId,
+               success: function() {
+                   console.log('멤버십 권한 업데이트 성공');
+                   window.location.href = "../membership/success";
+               },
+               error: function() {
+                   console.log('멤버십 권한 업데이트 실패');
+               }
+           });
 		
 	} // end sendPaymentResult
 		

@@ -7,13 +7,20 @@ import org.apache.ibatis.annotations.Param;
 
 import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.MembershipVO;
+import com.web.vop.domain.PaymentWrapper;
 
 @Mapper
 public interface MembershipMapper {
 
 
+	// MemberhshipId 생성
+	int selectNextMembershipId();
+	
+	// 결제 등록
+	//int insertMembershipPayment(MembershipVO membershipVO);
+	
 	// 멤버십 등록 
-	int insertMembership(@Param("memberId") String memberId);
+	int insertMembership(MembershipVO membershipVO);
 		
 	// 멤버십 권한 업데이트 
 	void updateMemberAuthOnInsert(@Param("memberId") String memberId);
