@@ -3,6 +3,8 @@ package com.web.vop.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,15 +44,23 @@ public class MemberController {
 	
 	@GetMapping("/register")
 	public void registerGET() {
-		System.out.println("회원가입 페이지 이동");
 		log.info("회원 가입 페이지 요청");
 	} // end registerGET
 	
 	@GetMapping("/login")
 	public void loginGET() {
-		System.out.println("login 페이지 이동");
 		log.info("login 페이지 이동 요청");
 	} // end loginGET
+	
+	@GetMapping("/loginFail")
+	public String loginFailGET(Model model) {
+		log.info("login 실패");
+		AlertVO alertVO = new AlertVO();
+		alertVO.setAlertMsg("잘못된 아이디 또는 비밀번호 입니다.");
+		alertVO.setRedirectUri("member/login");
+		model.addAttribute("alertVO", alertVO);
+		return Constant.ALERT_PATH;
+	} // end loginFailGET
 	
 	@GetMapping("/findAccount")
 	public void findAccount() {

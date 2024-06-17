@@ -143,7 +143,7 @@ public class ProductServiceImple implements ProductService{
 	} // end selectByNameInCategory
 	
 	@Override
-	public List<ProductVO> searchByMemberId(String memberId, PageMaker pageMaker) {
+	public List<ProductPreviewDTO> searchByMemberId(String memberId, PageMaker pageMaker) {
 		log.info("selectByMemberId()");
 		int totalCnt = productMapper.selectByMemberIdCnt(memberId);
 		pageMaker.setTotalCount(totalCnt);

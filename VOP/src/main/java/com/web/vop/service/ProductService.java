@@ -51,7 +51,7 @@ public interface ProductService {
 			PageMaker pageMaker);
 	
 	// memberId로 상품 조회
-	List<ProductVO> searchByMemberId(String memberId, PageMaker pageMaker);
+	List<ProductPreviewDTO> searchByMemberId(String memberId, PageMaker pageMaker);
 	
 	// productId로 상품 상태 변경
 	int setProductState(String productState, int productId);

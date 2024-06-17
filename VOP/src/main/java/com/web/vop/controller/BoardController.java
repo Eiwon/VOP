@@ -2,47 +2,11 @@ package com.web.vop.controller;
 
 
 
-import java.util.List;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.joda.time.LocalDateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import com.amazonaws.services.cognitoidp.model.HttpHeader;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.web.vop.config.ApiKey;
-import com.web.vop.domain.MessageVO;
-import com.web.vop.persistence.ProductMapper;
-import com.web.vop.service.MessageService;
-import com.web.vop.socket.AlarmHandler;
-import com.web.vop.util.PaymentAPIUtil;
 
 import lombok.extern.log4j.Log4j;
 
@@ -76,12 +40,6 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 	public String myInfoGET() {
 		log.info("member/modify로 redirect");
 		return "redirect:../member/modify";
-	} // end myInfoGet
-	
-	@GetMapping("/seller")
-	public String sellerGET() {
-		log.info("seller/sellerRequest로 redirect");
-		return "redirect:../seller/sellerRequest";
 	} // end myInfoGet
 	
 	@GetMapping("/admin")

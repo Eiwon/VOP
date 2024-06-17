@@ -23,17 +23,14 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class AlarmHandler extends TextWebSocketHandler{
 
-	private static ObjectMapper objectMapper = null;
+	@Autowired
+	private ObjectMapper objectMapper;
 	
 	@Autowired
 	MessageService messageService;
 	
 	@Autowired
 	Map<String, WebSocketSession> alarmConnMap;
-	
-	public AlarmHandler() {
-		objectMapper = new ObjectMapper();
-	}
 	
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -150,6 +147,26 @@ public class AlarmHandler extends TextWebSocketHandler{
 		return returnMsg;
 	} // end noticeHandler
 
+	public void sendAlert(String msg, String receiverId) {
+		MessageVO messageVO = new MessageVO();
+		messageVO.setReceiverId(receiverId);
+		messageVO.setContent(msg);
+		messageVO.setType("alert");
+		
+		TextMessage jsonMsg = convertMsg(messageVO);
+		if(alarmConnMap.containsKey(receiverId)) { // 수신 대상이 접속 중이면 바로 송신
+			WebSocketSession client = alarmConnMap.get(receiverId);
+			if(client.isOpen()) {
+				try {
+					client.sendMessage(jsonMsg);
+					return;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		} // end 접속 중인 유저 송신
+	} // end sendAlert
+	
 	public void sendReplyAlarm(int productId) {
 		MessageVO returnMsg = new MessageVO();
 		String receiverId = messageService.getSellerIdOf(productId);

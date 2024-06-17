@@ -14,27 +14,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <resultMap type="com.web.vop.domain.BasketDTO" 
    	  id="basketJoinResultMap">
-   	  <result property="productId" column="PRODUCT_ID" /> 
-      <result property="memberId" column="MEMBER_ID" />
-      <result property="productName" column="PRODUCT_NAME"/>
-      <result property="productPrice" column="PRODUCT_PRICE"/>
-      <result property="reviewNum" column="REVIEW_NUM"/>
-      <result property="productRemains" column="PRODUCT_REMAINS"/>
-      <result property="productPlace" column="PRODUCT_PLACE"/>
-      <result property="productState" column="PRODUCT_STATE"/>
-      <result property="category" column="CATEGORY"/>
-      <result property="imgId" column="IMG_ID"/>
-      <result property="productDateCreated" column="PRODUCT_DATE_CREATED"/>
       <result property="productNum" column="PRODUCT_NUM"/>
+      <association property="productPreviewDTO" 
+      	javaType="com.web.vop.domain.ProductPreviewDTO" resultMap="com.web.vop.persistence.ProductMapper.productPreviewResultMap">
+   	  </association>
    </resultMap>
    
    <!-- 내 장바구니 물품 목록 조회 -->
    <select id="selectByMemberId" resultMap="basketJoinResultMap">
+   		SELECT PD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
    		SELECT PRODUCT.*, BK.PRODUCT_NUM FROM (
    		SELECT * FROM BASKET WHERE MEMBER_ID = #{memberId} 
    		ORDER BY PRODUCT_ID DESC
    		) BK JOIN PRODUCT
    		ON BK.PRODUCT_ID = PRODUCT.PRODUCT_ID
+   		) PD LEFT JOIN IMAGE ON PD.PRODUCT_ID = IMAGE.PRODUCT_ID
    </select>
    
    <!-- 내 장바구니 물품 종류 수 조회-->

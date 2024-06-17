@@ -4,6 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.expression.SecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,10 +15,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
+import com.web.vop.handler.LoginSuccessHandler;
 import com.web.vop.service.UserDetailsServiceImple;
 import com.web.vop.util.Constant;
 
@@ -30,9 +38,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 
 	@Autowired
 	UserDetailsServiceImple userDetailsServiceImple;
-
+	
 	@Autowired
 	SimpleUrlAuthenticationSuccessHandler loginSuccessHandler;
+	
+	@Autowired
+	SimpleUrlAuthenticationFailureHandler loginFailHandler;
 	
 	@Autowired
 	SimpleUrlLogoutSuccessHandler logoutSuccessHandler;
@@ -46,20 +57,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 		log.info("--------------------security filter load------------------");
 		// form으로 작성한 요청이 들어오면 가로채서 tag의 name 속성 값으로 id, pw 저장
 		// 이후 UserDetailsService로 넘겨줌
-
+		
 		http.authorizeRequests()
 			.antMatchers(ANONYMOUS_ONLY).anonymous()
 			.antMatchers(PERMIT_ALL).permitAll()
-			.antMatchers(MEMBER_ONLY).authenticated()
-			.antMatchers(ADMIN_ONLY).hasAnyRole(AUTH_ADMIN)
-			.antMatchers(SELLER_OVER).hasAnyRole(AUTH_SELLER, AUTH_ADMIN);
-
+			.antMatchers(NORMAL_OVER).authenticated()
+			.antMatchers(ADMIN_ONLY).hasAuthority(ROLE_ADMIN)
+			.antMatchers(SELLER_OVER).hasRole(AUTH_SELLER)
+		
+			.expressionHandler(expressionHandler())
+			;
+		// hasRole("권한") : 특정 권한이 있는지 체크 (권한 계층 적용)
+		// hasAnyRole("권한1", "권한2", ...) : 목록 중 하나의 권한이라도 있는지 체크
+		// hasAuthority("ROLE_권한") : 특정 권한이 있는지 체크(권한 계층 미적용)
+		
 		http.formLogin()
 			.loginPage("/member/login")
 			.usernameParameter("memberId")
 			.passwordParameter("memberPw")
 			.loginProcessingUrl("/member/login")
-			.defaultSuccessUrl("/board/main", false);
+			.successHandler(loginSuccessHandler)
+			.failureHandler(loginFailHandler);
+			//.defaultSuccessUrl("/board/main", false);
 
 		http.rememberMe() // 자동 로그인
 			.key("key") 
@@ -84,7 +103,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 			.sessionManagement() // maximumSessions, maxSessionsPreventsLogin을 설정하기 위해 호출
 			.maximumSessions(1) // 하나의 아이디로 동시에 로그인 할 수 있는 최대치 : 1
 			.maxSessionsPreventsLogin(true); // 설정값을 초과하여 로그인시, 먼저 로그인한 아이디의 세션 만료 설정
-
+	
 	} // end configure
 
 	@Override
@@ -98,5 +117,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 		return new BCryptPasswordEncoder();
 	} // end passwordEncoder
 	
+	@Bean
+	public SimpleUrlAuthenticationSuccessHandler loginSuccessHandler() {
+		SimpleUrlAuthenticationSuccessHandler loginSuccessHandler = new LoginSuccessHandler();
+		loginSuccessHandler.setUseReferer(true);
+		loginSuccessHandler.setDefaultTargetUrl("/board/main");
+		return loginSuccessHandler;
+	} // end loginSuccessHandler
 
+	@Bean
+	public SimpleUrlAuthenticationFailureHandler loginFailHandler() {
+		SimpleUrlAuthenticationFailureHandler loginFailHandler = new SimpleUrlAuthenticationFailureHandler();
+		loginFailHandler.setDefaultFailureUrl("/member/loginFail");
+		return loginFailHandler;
+	} // end loginFailHandler
+	
+	// 권한에 계층 구조 설정 (상위 권한이 하위의 모든 권한을 포함)
+	@Bean
+	public SecurityExpressionHandler<FilterInvocation> expressionHandler() {
+		DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
+		RoleHierarchyImpl roleHierarchyImple = new RoleHierarchyImpl();
+		roleHierarchyImple.setHierarchy(ROLE_HIERARCHY);
+		expressionHandler.setRoleHierarchy(roleHierarchyImple);
+		return expressionHandler;
+	} // end roleVoter
+	
 }

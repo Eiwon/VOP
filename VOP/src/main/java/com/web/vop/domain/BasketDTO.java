@@ -9,7 +9,8 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class BasketDTO extends ProductVO{
+public class BasketDTO {
+	private ProductPreviewDTO productPreviewDTO;
 	private int productNum;
 }
 
