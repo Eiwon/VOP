@@ -12,10 +12,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.RestController;
 
+import com.amazonaws.services.apigateway.model.Model;
 import com.web.vop.domain.MembershipVO;
+import com.web.vop.domain.PaymentVO;
+import com.web.vop.domain.PaymentWrapper;
 import com.web.vop.service.MembershipService;
+import com.web.vop.service.PaymentService;
+import com.web.vop.util.PaymentAPIUtil;
 
 import lombok.extern.log4j.Log4j;
 
@@ -27,24 +33,67 @@ public class MembershipRESTController {
 	@Autowired
 	MembershipService membershipService;
 	
+	@Autowired
+	PaymentService paymentService;
+	
+	@Autowired
+	private PaymentAPIUtil paymentAPIUtil;
+	
+	
+	//결제 조회
+	@GetMapping("/getId")
+	public ResponseEntity<Integer> getNextMembershipId(){
+		log.info("새로운 paymentId 발급 요청");
+		int paymentId = paymentService.getNewPaymentId();
+		log.info("paymentId : " + paymentId);
+		return new ResponseEntity<Integer>(paymentId, HttpStatus.OK);
+	}//end getNextMembershipId()
+	
+	
 	//멤버십 등록하기
 	@PostMapping("/membershipRegister")
-	public ResponseEntity<Integer> membershipPOST(@RequestBody String memberId){
-		log.info("membershipPOST " + memberId);
+	public ResponseEntity<Integer> membershipPOST(@RequestBody PaymentWrapper membershipResult){
+		log.info("membershipPOST");
+		log.info("--------- 결제 결과 저장 --------");
+		log.info("결제 내역 : " + membershipResult.toString());
+		
+		MembershipVO membershipVO = membershipResult.getMembershipVO();
+		
+		String memberId = membershipVO.getMemberId(); // 사용자 아이디
+		log.info("사용자 아이디 :" + memberId);
+		String impUid = membershipVO.getChargeId(); // 환불 아이디
+		log.info("환불 아이디 :" + impUid);
+		int chargePrice = membershipVO.getMembershipFee(); // 결제금액 
+		log.info("결제 금액 :" + chargePrice);
+		int res = 0;
+		
+		if (membershipResult == null || membershipResult.getMembershipVO() == null) {
+	        // 예외 처리 또는 오류 응답을 반환할 수 있습니다
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+	    }
+		
+		if(chargePrice == res) {
+			// 결제 에러
+			log.error("결제 금액 == 0");
+			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
+			return new ResponseEntity<Integer>(res, HttpStatus.OK);
+		}
+		
 		// 멤버십 등록 
-		int res = membershipService.registerMembership(memberId);
-		log.info("멤버십 등록 결과 : " + res);
+		int result = membershipService.registerMembership(membershipResult);
+		log.info("멤버십 등록 결과 : " + result);
 		
 		// 멤버십 정보 전체 조회
 		MembershipVO vo = membershipService.selectByMemberId(memberId);
 		log.info("멤버십 전체 조회 = " + vo);
 		
 		if (res == 1) {
-			return new ResponseEntity<>(res, HttpStatus.OK);
+			return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
-            return ResponseEntity.status(500).body(res);
+            return ResponseEntity.status(500).body(result);
         }
 	}//end membershipPOST()
+	
 	
 	// 멤버십 권한(멤버십) 수정
 	@PutMapping("/updateAuth/{memberId}")
@@ -93,7 +142,6 @@ public class MembershipRESTController {
 		}else {
 			return ResponseEntity.status(500).body(res);
 		}
-		
 	}//end membershipDELETE()
 	
 	

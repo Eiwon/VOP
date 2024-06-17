@@ -191,7 +191,7 @@ public class ProductServiceImple implements ProductService{
 	} // end getRecent5
 
 	@Override
-	public List<ProductVO> searchByState(String productState, PageMaker pageMaker) {
+	public List<ProductPreviewDTO> searchByState(String productState, PageMaker pageMaker) {
 		log.info("searchByState()");
 		int totalCnt = productMapper.selectStateIsCnt(productState);
 		pageMaker.setTotalCount(totalCnt);
@@ -203,10 +203,10 @@ public class ProductServiceImple implements ProductService{
 		log.info("getDetails()");
 		ProductDetailsDTO details = productMapper.selectDetails(productId);
 		log.info(details);
-		List<Integer> imgIds = imageMapper.selectImgIdByProductId(productId);
+		List<ImageVO> imgIds = imageMapper.selectByProductId(productId);
 		if(imgIds != null) {
 			log.info(imgIds);
-			details.setImgIdDetails(imgIds);			
+			details.setDetails(imgIds);			
 		}
 		return details;
 	} // end getDetails

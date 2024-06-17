@@ -52,6 +52,7 @@ public class MemberController {
 		log.info("login 페이지 이동 요청");
 	} // end loginGET
 	
+	
 	@GetMapping("/loginFail")
 	public String loginFailGET(Model model) {
 		log.info("login 실패");

@@ -79,14 +79,6 @@
 			</table>
 		</div>
 	</div>
-	<!-- 
-	1. 권한 요청 승인/거부
-	2. 등록된 사업자 검색, 권한 삭제
-	3. 상품 등록 승인/거부
-	4. 상품 삭제
-	5. 페이징
-	 -->
-	 
 	
 	
 	<script type="text/javascript">
@@ -102,12 +94,16 @@
 		
 		$(document).ready(function(){
 			for(key in listMap){
-				listMap[key].show(1);
+				listMap[key].show();
 			}
 		}); // end document.ready
 		
 		listMap.sellerReq.show = function (page){
 			let form = '';
+			if(page == undefined){
+				page = 1;
+			}
+			
 			$.ajax({
 				method : 'GET',
 				url : 'wait?pageNum=' + page,
@@ -136,7 +132,9 @@
 		
 		listMap.sellerApproved.show = function (page){
 			let form = '';
-			
+			if(page == undefined){
+				page = 1;
+			}
 			$.ajax({
 				method : 'GET',
 				url : 'approved?pageNum=' + page,
@@ -165,7 +163,9 @@
 		
 		listMap.productRegisterReq.show = function (page){
 			let form = '';
-			
+			if(page == undefined){
+				page = 1;
+			}
 			$.ajax({
 				method : 'GET',
 				url : '../product/registerRequest?pageNum=' + page,
@@ -176,20 +176,20 @@
 					const list = listMap.productRegisterReq.list;
 					
 					for(x in list){
+						let productVO = list[x].productVO;
 						form += '<tr onclick="popupDetails(this)">' + 
 						'<td class="targetIndex" hidden="hidden">' + x + '</td>' +
-						'<td><img alt="' + list[x].imgId + '"></td>' +
-						'<td class="category">' + list[x].category +'</td>' +
-						'<td class="productName">' + list[x].productName + '</td>' + 
-						'<td class="productPrice">' + list[x].productPrice +'</td>' +
-						'<td class="memberId">' + list[x].memberId + '</td>' + 
-						'<td class="productDateCreated">' + toDate(list[x].productDateCreated) + '</td>' +
+						'<td><img src="' + list[x].imgUrl + '"></td>' +
+						'<td class="category">' + productVO.category +'</td>' +
+						'<td class="productName">' + productVO.productName + '</td>' + 
+						'<td class="productPrice">' + productVO.productPrice +'</td>' +
+						'<td class="memberId">' + productVO.memberId + '</td>' + 
+						'<td class="productDateCreated">' + toDate(productVO.productDateCreated) + '</td>' +
 						'</tr>';
 					}
 					$('#product_register_req_list_page').html(makePageForm(listMap.productRegisterReq));
 					
 					tagProdutRegisterReqList.html(form);
-					loadImg(tagProdutRegisterReqList);
 				} // end success
 			}); // end ajax
 			
@@ -197,7 +197,9 @@
 		
 		listMap.productDeleteReq.show = function (page){
 			let form = '';
-			
+			if(page == undefined){
+				page = 1;
+			}
 			$.ajax({
 				method : 'GET',
 				url : '../product/deleteRequest?pageNum=' + page,
@@ -208,20 +210,20 @@
 					const list = listMap.productDeleteReq.list;
 					
 					for(x in list){
+						let productVO = list[x].productVO;
 						form += '<tr onclick="popupDetails(this)">' + 
 						'<td class="targetIndex" hidden="hidden">' + x + '</td>' +
-						'<td><img alt="' + list[x].imgId + '"></td>' +
-						'<td class="category">' + list[x].category +'</td>' +
-						'<td class="productName">' + list[x].productName + '</td>' + 
-						'<td class="productPrice">' + list[x].productPrice +'</td>' +
-						'<td class="memberId">' + list[x].memberId + '</td>' + 
-						'<td class="productDateCreated">' + toDate(list[x].productDateCreated) + '</td>' +
+						'<td><img src="' + list[x].imgUrl + '"></td>' +
+						'<td class="category">' + productVO.category +'</td>' +
+						'<td class="productName">' + productVO.productName + '</td>' + 
+						'<td class="productPrice">' + productVO.productPrice +'</td>' +
+						'<td class="memberId">' + productVO.memberId + '</td>' + 
+						'<td class="productDateCreated">' + toDate(productVO.productDateCreated) + '</td>' +
 						'</tr>';
 					}
 					$('#product_delete_req_list_page').html(makePageForm(listMap.productDeleteReq));
 					
 					tagProductDeleteReqList.html(form);
-					loadImg(tagProductDeleteReqList);
 				} // end success
 			}); // end ajax
 			
@@ -280,11 +282,11 @@
 				key = 'sellerApproved';
 				break;
 			case 'product_register_req_list' : // 상품 등록 요청 목록에 속해있는 경우
-				targetUrl = '../product/popupDetails?productId=' + listMap.productRegisterReq.list[targetIndex].productId;
+				targetUrl = '../product/popupDetails?productId=' + listMap.productRegisterReq.list[targetIndex].productVO.productId;
 				key = 'productRegisterReq';
 				break;
 			case 'product_delete_req_list' : // 상품 삭제 요청 목록에 속해있는 경우
-				targetUrl = '../product/popupDetails?productId=' + listMap.productDeleteReq.list[targetIndex].productId;
+				targetUrl = '../product/popupDetails?productId=' + listMap.productDeleteReq.list[targetIndex].productVO.productId;
 				key = 'productDeleteReq';
 				break;
 			default : return;
@@ -302,38 +304,11 @@
 				// 팝업 닫힐 때 실행
 				console.log("팝업 닫힘");
 				listMap[key].show(listMap[key].pageMaker.pagination.pageNum); // 팝업에 해당하는 목록만 새로고침
+				if(type == 'seller_req_list'){
+					listMap['sellerApproved'].show(listMap['sellerApproved'].pageMaker.pagination.pageNum);
+				}
 			} // end popup.onbeforeunload
 		} // end popupSellerRegister
-		
-		/* function popupRegisterNotice(){
-			const popupStat = {
-					'url' : 'popupRegisterNotice',
-					'name' : 'popupRegisterNotice',
-					'option' : 'width=500, height=600, top=50, left=400'
-			};
-			
-			// 팝업 창 띄우기
-			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
-			popup.onbeforeunload = function(){
-				// 팝업 닫힐 때 실행
-				console.log("팝업 닫힘");
-			} // end popup.onbeforeunload
-		}
-		 */
-		
-		function loadImg(input){
-			$(input).find('img').each(function(){
-				let target = $(this);
-				let imgId = target.attr("alt");
-				$.ajax({
-					method : 'GET',
-					url : '../image/' + imgId,
-					success : function(result){
-						target.attr('src', result);
-					}
-				}); // end ajax
-			});
-		} // end loadImg
 		
 	</script>
 	

@@ -31,14 +31,14 @@ public class AccessController {
 		return Constant.ALERT_PATH;
 	} // end NoHandlerFoundException
 	
-//	@GetMapping("/exception")
-//	public String allException(Model model, Exception exception) {
-//		log.info("allException");
-//		AlertVO alertVO = new AlertVO();
-//		alertVO.setAlertMsg(exception.toString() + " 예외 발생!!!!!!!");
-//		alertVO.setRedirectUri("board/main");
-//		model.addAttribute("alertVO", alertVO);
-//		return Constant.ALERT_PATH;
-//	} // end allException
+	@GetMapping("/exception")
+	public String allException(Model model, Exception exception) {
+		log.info("allException");
+		AlertVO alertVO = new AlertVO();
+		alertVO.setAlertMsg(exception.toString() + " 예외 발생!!!!!!!");
+		alertVO.setRedirectUri("board/main");
+		model.addAttribute("alertVO", alertVO);
+		return Constant.ALERT_PATH;
+	} // end allException
 	
 }

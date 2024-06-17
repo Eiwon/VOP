@@ -5,12 +5,18 @@ import java.util.Date;
 import org.apache.ibatis.annotations.Param;
 
 import com.web.vop.domain.MembershipVO;
+import com.web.vop.domain.PaymentWrapper;
 
 public interface MembershipService {
 
-		
+	// MemberhshipId 생성
+	int getNextMembershipId();	
+	
+	// 결제 정보 생성 
+	PaymentWrapper makeMembershipForm(String memberId);
+	
 	// 멤버십 등록 
-	int registerMembership(String memberId);
+	int registerMembership(PaymentWrapper payment);
 		
 	// 멤버십 권한 업데이트 
 	void updateMemberAuth(String memberId);
@@ -26,4 +32,5 @@ public interface MembershipService {
 	
 	// 멤버십 삭제 시 권한 업데이트
 	void updateMemberAuthOnDelete(String memberId);
+	
 }

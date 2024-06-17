@@ -10,14 +10,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="joinDate" column="JOIN_DATE"/>
       <result property="expiryDate" column="EXPIRY_DATE"/>
       <result property="paymentDate" column="PAYMENT_DATE"/>
+      <result property="membershipFee" column="MEMBERSHIP_FEE"/>
+      <result property="chargeId" column="CHARGE_ID"/>
    </resultMap>
    
    
+   <!-- membershipId 생성 -->
+	<select id="selectNextMembershipId" resultType="Integer">
+		SELECT MEMBERSHIP_SEQ.NEXTVAL FROM DUAL
+	</select>
+   
+   <!-- 멤버십 결제 등록 -->
+   <!--  <insert id="insertMembershipPayment">
+		INSERT INTO MEMBERSHIP (MEMBERSHIP_ID, MEMBER_ID, JOIN_DATE, EXPIRY_DATE, PAYMENT_DATE, MEMBERSHIP_FEE, CHARGE_ID) 
+		VALUES (#{membershipId}, #{memberId}, SYSDATE, SYSDATE + INTERVAL '5' DAY, SYSDATE, #{membershipFee}, #{chargeId})
+	</insert>-->
    
    <!-- 멤버십 등록 -->
    <insert id="insertMembership">
-      INSERT INTO MEMBERSHIP VALUES (
-      MEMBERSHIP_SEQ.NEXTVAL, #{memberId}, SYSDATE, SYSDATE + INTERVAL '5' DAY, SYSDATE)
+      INSERT INTO MEMBERSHIP (MEMBERSHIP_ID, MEMBER_ID, JOIN_DATE, EXPIRY_DATE, PAYMENT_DATE, MEMBERSHIP_FEE) 
+      VALUES (#{membershipId}, #{memberId}, SYSDATE, SYSDATE + INTERVAL '5' DAY, SYSDATE, #{membershipFee})
    </insert>
 
 	<!-- 멤버십 권한 수정 -->

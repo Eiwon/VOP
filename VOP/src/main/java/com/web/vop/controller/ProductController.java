@@ -329,7 +329,15 @@ public class ProductController {
 
 		ProductDetailsDTO productDetails = productService.getDetails(productId);
 		log.info("상세 정보 검색 결과 : " + productDetails);
-
+		
+		productDetails.setThumbnailUrl(
+				awsS3Service.toImageUrl(productDetails.getThumbnail().getImgPath(), productDetails.getThumbnail().getImgChangeName())
+				);
+		List<ImageVO> list = productDetails.getDetails();
+		productDetails.setDetailsUrl(new ArrayList<>());
+		for(ImageVO image : list) {
+			productDetails.getDetailsUrl().add(awsS3Service.toImageUrl(image.getImgPath(), image.getImgChangeName()));
+		}
 		model.addAttribute("productDetails", productDetails);
 	} // end popupProductDetailsGET
 
@@ -341,11 +349,21 @@ public class ProductController {
 		ProductDetailsDTO productDetails = productService.getDetails(productId);
 		log.info("상세 정보 검색 결과 : " + productDetails);
 
-		try { // 자바스크립트에서 사용하기 위해 JSON으로 변환 후 전송
-			model.addAttribute("productDetails", new ObjectMapper().writeValueAsString(productDetails));
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+		productDetails.setThumbnailUrl(
+				awsS3Service.toImageUrl(productDetails.getThumbnail().getImgPath(), productDetails.getThumbnail().getImgChangeName())
+				);
+		List<ImageVO> list = productDetails.getDetails();
+		productDetails.setDetailsUrl(new ArrayList<>());
+		for(ImageVO image : list) {
+			productDetails.getDetailsUrl().add(awsS3Service.toImageUrl(image.getImgPath(), image.getImgChangeName()));
 		}
+		
+//		try { // 자바스크립트에서 사용하기 위해 JSON으로 변환 후 전송
+//			model.addAttribute("productDetails", new ObjectMapper().writeValueAsString(productDetails));
+//		} catch (JsonProcessingException e) {
+//			e.printStackTrace();
+//		}
+		model.addAttribute("productDetailsDTO", productDetails);
 	} // end popupProductUpdateGET
 	
 	// 상품 상태 변경
@@ -389,10 +407,9 @@ public class ProductController {
 		
 		int res = 0;
 		if (productState.equals(Constant.STATE_SELL)) {
-			res = productService.setProductState(Constant.STATE_REMOVE_WAIT, productId);
+			res = productService.setProductState(Constant.STATE_REMOVE_WAIT, productId) +200;
 		} else if (!productState.equals(Constant.STATE_REMOVE_WAIT)) {
-			productService.deleteProduct(productId);
-			//res = delete(productId);
+			res = productService.deleteProduct(productId) +100;
 		}
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
@@ -402,39 +419,41 @@ public class ProductController {
 	// 상품 등록 요청 조회
 	@GetMapping("/registerRequest")
 	@ResponseBody
-	public ResponseEntity<PagingListDTO<ProductVO>> getRegisterRequest(Pagination pagination) {
+	public ResponseEntity<PagingListDTO<ProductPreviewDTO>> getRegisterRequest(Pagination pagination) {
 		log.info("모든 상품 등록 요청 조회");
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
-		List<ProductVO> list = productService.searchByState(Constant.STATE_APPROVAL_WAIT, pageMaker);
+		List<ProductPreviewDTO> list = productService.searchByState(Constant.STATE_APPROVAL_WAIT, pageMaker);
 		log.info(list);
 
+		awsS3Service.toImageUrl(list);
 		pageMaker.update();
 
-		PagingListDTO<ProductVO> pagingList = new PagingListDTO<>();
+		PagingListDTO<ProductPreviewDTO> pagingList = new PagingListDTO<>();
 		pagingList.setList(list);
 		pagingList.setPageMaker(pageMaker);
 
-		return new ResponseEntity<PagingListDTO<ProductVO>>(pagingList, HttpStatus.OK);
+		return new ResponseEntity<PagingListDTO<ProductPreviewDTO>>(pagingList, HttpStatus.OK);
 	} // end getWaitProduct
 
 	// 상품 삭제 요청 조회
 	@GetMapping("/deleteRequest")
 	@ResponseBody
-	public ResponseEntity<PagingListDTO<ProductVO>> getdeleteRequest(Pagination pagination) {
+	public ResponseEntity<PagingListDTO<ProductPreviewDTO>> getdeleteRequest(Pagination pagination) {
 		log.info("상품 삭제 요청 조회");
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
-		List<ProductVO> list = productService.searchByState(Constant.STATE_REMOVE_WAIT, pageMaker);
+		List<ProductPreviewDTO> list = productService.searchByState(Constant.STATE_REMOVE_WAIT, pageMaker);
 		log.info(list);
 
+		awsS3Service.toImageUrl(list);
 		pageMaker.update();
 		
-		PagingListDTO<ProductVO> pagingList = new PagingListDTO<>();
+		PagingListDTO<ProductPreviewDTO> pagingList = new PagingListDTO<>();
 		pagingList.setList(list);
 		pagingList.setPageMaker(pageMaker);
 
-		return new ResponseEntity<PagingListDTO<ProductVO>>(pagingList, HttpStatus.OK);
+		return new ResponseEntity<PagingListDTO<ProductPreviewDTO>>(pagingList, HttpStatus.OK);
 	} // end getWaitProduct
 	
 } 
