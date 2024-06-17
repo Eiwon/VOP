@@ -190,6 +190,10 @@
 			
 			setPaymentInfo();
 			
+<<<<<<< HEAD
+			
+=======
+>>>>>>> ef0c7002d5dac7e68e9f6991cfb1945946ccedbb
 		} // end setInfo
 		
 		

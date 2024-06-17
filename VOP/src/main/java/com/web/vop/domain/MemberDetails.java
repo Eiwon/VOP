@@ -46,10 +46,8 @@ public class MemberDetails implements Serializable, UserDetails{
 		
 		return (memberVO == null) ? null : memberVO.getMemberId();
 	}
-
-	public String getAuth() {
-		return memberVO.getMemberAuth();
-	}
+	
+	// getAuth() ªË¡¶
 	
 	@Override
 	public boolean isAccountNonExpired() {

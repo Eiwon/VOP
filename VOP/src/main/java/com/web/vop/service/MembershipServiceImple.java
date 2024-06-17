@@ -4,9 +4,15 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.MembershipVO;
+import com.web.vop.domain.PaymentVO;
+import com.web.vop.domain.PaymentWrapper;
+import com.web.vop.persistence.MemberMapper;
 import com.web.vop.persistence.MembershipMapper;
+import com.web.vop.persistence.PaymentMapper;
 
 import lombok.extern.log4j.Log4j;
 
@@ -17,18 +23,71 @@ public class MembershipServiceImple implements MembershipService{
 	@Autowired
 	MembershipMapper membershipMapper;
 
+	@Autowired
+	MemberMapper memberMapper;
+	
+	@Autowired
+	PaymentMapper paymentMapper;
 	
 	@Override
-	public int registerMembership(String memberId) { //멤버십 등록
-		log.info("registerMembership : " + memberId);
-		int res = membershipMapper.insertMembership(memberId);
+	public int getNextMembershipId() { // membershipId 생성
+		log.info("getNextMembershipId()");
+		return  paymentMapper.selectNextPaymentId();
+	}
+
+	
+	@Override
+	public PaymentWrapper makeMembershipForm(String memberId) {
+		PaymentWrapper payment = new PaymentWrapper();
+		MembershipVO vo = new MembershipVO();
+		log.info(vo);
+		
+		int membershipId = 0; // int 타입 변수 초기화
+		
+		// 새 membershipId 생성
+		membershipId = membershipMapper.selectNextMembershipId();
+		log.info("membershipId : " + membershipId);
+		
+		vo.setMembershipId(membershipId);
+		vo.setMemberId(memberId);
+		log.info("입력된 membershipVO - " + vo);
+		
+		// 유저 정보 등록
+		MemberVO memberVO = memberMapper.selectByMemberId(memberId);
+		log.info("검색된 유저 정보 : " + memberVO);
+		payment.setMemberVO(memberVO);
+		
+		return payment;
+	}//end makeMembershipForm()
+	
+	
+	@Transactional(value = "transactionManager")
+	@Override
+	public int registerMembership(PaymentWrapper payment) {
+		int res = 0;
+		PaymentVO paymentVO = payment.getPaymentVO();
+		int paymentId = paymentVO.getPaymentId();
+		MembershipVO membershipVO = payment.getMembershipVO();
+		
+		res = membershipMapper.insertMembership(membershipVO);
+		
+		return res;
+	}//end registerMembership()
+	
+	
+	
+	/*
+	@Override
+	public int registerMembership(MembershipVO membershipVO) {
+		log.info("registerMembership() :" + membershipVO);
+		int res = membershipMapper.insertMembership(membershipVO);
 		if(res == 1) {
-			log.info("멤버십 등록 성공");
+			log.info("멤버십 등록 성공!");
 		}else {
-			log.info("멤버십 등록 실패");
+			log.info("멤버십 등록 실패!");
 		}
 		return res;
-	}//end registerMembership() 
+	}*/
 
 	
 	@Override
@@ -47,6 +106,7 @@ public class MembershipServiceImple implements MembershipService{
 		return result;
 	}
 
+	
 	@Override
 	public Date getExpiryDate(String memberId) { // 멤버십 만료일 조회
 		log.info("getExpiryDate(). " + memberId);
@@ -54,6 +114,7 @@ public class MembershipServiceImple implements MembershipService{
 		log.info("멤버십 만료 기간 : " + date);
 		return date;
 	}
+	
 	
 	@Override
 	public int deleteMembership(String memberId) { // 멤버십 삭제
@@ -76,12 +137,6 @@ public class MembershipServiceImple implements MembershipService{
 	}
 
 
-	
-
-
-	
-
-	
 	
 	
 }//end MembershipServiceImple()

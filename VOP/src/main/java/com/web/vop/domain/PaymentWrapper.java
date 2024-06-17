@@ -18,4 +18,5 @@ public class PaymentWrapper {
 	private List<OrderViewDTO> orderList;
 	private MyCouponVO myCouponVO;
 	private MembershipVO membershipVO;
+
 }
