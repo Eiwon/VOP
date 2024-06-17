@@ -109,7 +109,7 @@
 			let optionForm = '';
 			
 			for(x in list){
-				optionForm += '<option value="../coupon/getCoupon?couponId=' + list[x].couponId + '">' + 
+				optionForm += '<option value="' + list[x].couponId + '">' + 
 						'쿠폰 코드 : ' + list[x].couponId + 
 						' / 쿠폰명 : ' + list[x].couponName + 
 						' / 할인률 : ' + list[x].discount + '</option>';

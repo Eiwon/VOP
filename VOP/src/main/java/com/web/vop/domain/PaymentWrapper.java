@@ -15,8 +15,11 @@ public class PaymentWrapper {
 	private PaymentVO paymentVO;
 	private MemberVO memberVO;
 	private DeliveryVO deliveryVO; 
-	private List<OrderVO> orderList;
+	private List<OrderViewDTO> orderList;
 	private MyCouponVO myCouponVO;
 	private MembershipVO membershipVO;
+<<<<<<< HEAD
 	
+=======
+>>>>>>> ef0c7002d5dac7e68e9f6991cfb1945946ccedbb
 }

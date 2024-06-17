@@ -36,15 +36,13 @@ public class MessageServiceImple implements MessageService{
 	} // end getMyMessage
 
 	@Override
-	public int removeExceptNotice(int messageId) {
-		log.info("removeExceptNotice");
-		return messageMapper.deleteByIdExceptNotice(messageId);
-	} // end removceExceptNotice
-
-	@Override
-	public int removeById(int messageId) {
+	public int removeById(List<Integer> messageIds) {
 		log.info("removeById");
-		return messageMapper.deleteById(messageId);
+		int res = 0;
+		for(int messageId : messageIds) {
+			res += messageMapper.deleteById(messageId);
+		}
+		return res;
 	} // end removeById
 
 	@Override

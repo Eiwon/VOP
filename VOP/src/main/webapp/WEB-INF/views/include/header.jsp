@@ -271,9 +271,9 @@
           </select> 
           
         <!-- 검색 입력창 -->
-        <input type="text" id="searchInput" class="search-input" placeholder="검색어를 입력하세요">
+        <input type="text"class="search-input" placeholder="검색어를 입력하세요">
         <!-- 검색 버튼 -->
-        <button id="searchButton" class="search-button">검색</button>
+        <button class="search-button">검색</button>
 		
 		<!-- 페이지 맨 위로 가기 버튼 -->
 		<button id="btnTop" style="position: fixed; bottom: 20px; right: 20px; width: 80px; height: 40px; font-size: 16px;">TOP</button>
@@ -307,10 +307,25 @@
             $('html, body').animate({scrollTop: 0}, 'slow'); // 스크롤을 맨 위로 부드럽게 이동
         });
         
-        $('.search-button').click(function(){ // 검색 리스너 등록
-		    location.href = "../product/search?category=" + $('#boxCategory').val() + "&word=" + $('#searchInput').val();
-		}); // end btnSearch.click
+        $('.search-button').click(function(){
+        	search();
+        }); // end btnSearch.click
+		
+		$('.search-input').keydown(function(event){
+			if(event.keyCode == 13){ // enter 키 코드가 13
+				search();
+			}
+		}); // end search.keydown
         
+		function search(){
+			let category = $('#boxCategory').val();
+			let word = $('.search-input').val();
+			if(category == '전체' && word.length == 0){
+				return;
+			}
+			location.href = "../product/search?category=" + category + "&word=" + word;
+		} // end search
+		
 		$('.subcategory').children().each(function(){
 			let link = "../product/search?category=" + $(this).text() + "&word=";
 			$(this).attr('href', link);

@@ -8,8 +8,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,9 +30,11 @@ import com.web.vop.domain.DeliveryVO;
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.OrderVO;
+import com.web.vop.domain.OrderViewDTO;
 import com.web.vop.domain.PaymentVO;
 import com.web.vop.domain.PaymentWrapper;
 import com.web.vop.domain.ProductVO;
+import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.BasketService;
 import com.web.vop.service.CouponService;
 import com.web.vop.service.DeliveryService;
@@ -53,6 +57,10 @@ public class PaymentController {
 	@Autowired
 	private PaymentAPIUtil paymentAPIUtil;
 	
+	@Autowired
+	private AWSS3Service awsS3Service;
+	
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/checkout")
 	public void makePayment(
 			Model model, int[] productIds, int[] productNums, @AuthenticationPrincipal MemberDetails memberDetails) {
@@ -60,6 +68,10 @@ public class PaymentController {
 		log.info("결제할 상품 갯수 : " + productIds.length);
 		
 		PaymentWrapper payment = paymentService.makePaymentForm(productIds, productNums, memberDetails.getUsername());
+		
+		for(OrderViewDTO order : payment.getOrderList()) {
+			order.setImgUrl(awsS3Service.toImageUrl(order.getImgPath(), order.getImgChangeName()));
+		}
 		
 		try { // 자바스크립트에서 쓰기 위해 json 형식 문자열로 변환
 			model.addAttribute("paymentWrapper", new ObjectMapper().writeValueAsString(payment));
@@ -76,11 +88,15 @@ public class PaymentController {
 		// 각 주문정보와 전체 결제 내역을 한번에 보내기 위해 포장
 		PaymentWrapper paymentWrapper = paymentService.getPayment(memberId, paymentId);
 		
+		for(OrderViewDTO order : paymentWrapper.getOrderList()) {
+			order.setImgUrl(awsS3Service.toImageUrl(order.getImgPath(), order.getImgChangeName()));
+		}
+		
 		model.addAttribute("paymentWrapper", paymentWrapper);
 		
 	} // end paymentResultGET
 	
-	
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/getId")
 	@ResponseBody
 	public ResponseEntity<Integer> getNewPaymentId(){
@@ -89,7 +105,7 @@ public class PaymentController {
 		return new ResponseEntity<Integer>(paymentId, HttpStatus.OK);
 	} // end getNewPaymentId
 	
-	
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/apply")
 	@ResponseBody
 	public ResponseEntity<Integer> savePaymentResult(@RequestBody PaymentWrapper paymentResult){
@@ -105,8 +121,8 @@ public class PaymentController {
 		// 결제 정보가 유효한지 검사
 		// 주문 목록 총액이 결제금액과 일치하는지 확인
 		int total = 0;
-		for(OrderVO order : paymentResult.getOrderList()) {
-			total += order.getProductPrice() * order.getPurchaseNum();
+		for(OrderViewDTO orderDTO : paymentResult.getOrderList()) {
+			total += orderDTO.getOrderVO().getProductPrice() * orderDTO.getOrderVO().getPurchaseNum();
 		}
 		total = (total + paymentVO.getDeliveryPrice()) * 
 				(100 - paymentVO.getMembershipDiscount() - paymentVO.getCouponDiscount()) / 100;
@@ -129,34 +145,14 @@ public class PaymentController {
 		
 		try {
 			res = paymentService.registerPayment(paymentResult); // 결제 결과 등록
-		}catch(Exception e) {
-			log.error("DB 저장 실패");
+		}catch(DataIntegrityViolationException e) {
+			log.error("DB 저장 실패 : 재고 부족");
 			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
-		}
-		
-		if(res == 1) {
-			res = paymentResult.getPaymentVO().getPaymentId();
-			// 결제 성공시 결제id 반환
-		}else {
-			// 결제 에러
-			log.error("DB 저장 실패");
-			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
+			res = -1;
 		}
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end savePaymentResult
-	
-//	@GetMapping("/payment")
-//	@ResponseBody
-//	public ResponseEntity<PaymentWrapper> getPaymentResult(){
-//		log.info("결제 결과 조회 요청");
-//		String memberId = memberDetails.getUsername();
-//		// 각 주문정보와 전체 결제 내역을 한번에 보내기 위해 포장
-//		PaymentWrapper payment = paymentService.getPayment(memberId, paymentId);
-//		
-//		return new ResponseEntity<PaymentWrapper>(payment, HttpStatus.OK);
-//	} // end sendPaymentResult
-	
 	
 	@GetMapping("/popupDeliverySelect")
 	public String popupDeliverySelect() {

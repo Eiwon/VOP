@@ -23,17 +23,14 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class AlarmHandler extends TextWebSocketHandler{
 
-	private static ObjectMapper objectMapper = null;
+	@Autowired
+	private ObjectMapper objectMapper;
 	
 	@Autowired
 	MessageService messageService;
 	
 	@Autowired
 	Map<String, WebSocketSession> alarmConnMap;
-	
-	public AlarmHandler() {
-		objectMapper = new ObjectMapper();
-	}
 	
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -47,9 +44,6 @@ public class AlarmHandler extends TextWebSocketHandler{
     	
     	if(msgType.equals("alert")) {
     		broadcast(messageVO);
-    	}else if(msgType.equals("notice")) { // 공지사항 등록 요청
-    		returnMsg = noticeHandler(messageVO, memberId);
-    		unicast(returnMsg);
     	}else if(msgType.equals("instanceMsg")){ // 접속 중인 전체 유저에게 송신
     		returnMsg = messageVO;
     		broadcast(returnMsg);
@@ -129,9 +123,8 @@ public class AlarmHandler extends TextWebSocketHandler{
 		
 		// 접속 중이 아니면 db에 메시지 저장
 		log.info("저장할 메시지 정보 : " + message);
-		if(!message.getType().equals("notice")) {
-			messageService.registerMessage(message);
-		}
+		messageService.registerMessage(message);
+		
 	} // end unicast
 	
 	
@@ -154,14 +147,34 @@ public class AlarmHandler extends TextWebSocketHandler{
 		return returnMsg;
 	} // end noticeHandler
 
+	public void sendAlert(String msg, String receiverId) {
+		MessageVO messageVO = new MessageVO();
+		messageVO.setReceiverId(receiverId);
+		messageVO.setContent(msg);
+		messageVO.setType("alert");
+		
+		TextMessage jsonMsg = convertMsg(messageVO);
+		if(alarmConnMap.containsKey(receiverId)) { // 수신 대상이 접속 중이면 바로 송신
+			WebSocketSession client = alarmConnMap.get(receiverId);
+			if(client.isOpen()) {
+				try {
+					client.sendMessage(jsonMsg);
+					return;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		} // end 접속 중인 유저 송신
+	} // end sendAlert
+	
 	public void sendReplyAlarm(int productId) {
 		MessageVO returnMsg = new MessageVO();
 		String receiverId = messageService.getSellerIdOf(productId);
-		String redirectUri = "../product/detail?productId=" + productId;
+		String redirectId = String.valueOf(productId);
 		returnMsg.setContent("등록한 상품에 댓글이 등록되었습니다. 이동하려면 클릭하세요.");
 		returnMsg.setType("replyAlarm");
 		returnMsg.setReceiverId(receiverId);
-		returnMsg.setCallbackInfo(redirectUri);
+		returnMsg.setCallbackInfo(redirectId);
 		unicast(returnMsg);
 	} // end sendReplyAlarm
 	

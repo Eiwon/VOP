@@ -95,8 +95,8 @@ public class PopupAdsController {
 	@DeleteMapping("/delete")
 	public ResponseEntity<Integer> popupAdsDelete(@RequestBody List<Integer> selectedList){
 		log.info("팝업광고 삭제");
-		int res = 0;
-		
+		int res = messageService.removeById(selectedList);
+		log.info(res + "행 삭제 성공");
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end popupAdsDelete
 	
@@ -175,7 +175,6 @@ public class PopupAdsController {
 		}
 		// 모든 팝업광고 id 불러오기
 		List<Integer> popupAdsList = messageService.getAllPopupId();
-		log.info(popupAdsList);
 		
 		if(blockList == null) {
 			return new ResponseEntity<List<Integer>>(popupAdsList, HttpStatus.OK);
@@ -198,24 +197,22 @@ public class PopupAdsController {
 		
 		Iterator<Integer> blockIter = blockList.iterator();
 		List<Integer> resultList = new ArrayList<>();
-		int blockId = 0, compare = 0;
-		for(int i = 0; i < popupAdsList.size();) {
-			if(blockIter.hasNext()) { // 확인할 block id가 있다면 꺼내서 비교
-				blockId = blockIter.next();
-				compare = popupAdsList.get(i) - blockId;
-				if(compare > 0) { // 가장 큰 block id보다 크기 때문에 blockList에 존재하지 않는 값 == 차단되지 않은 id
-					resultList.add(popupAdsList.get(i++));
-				}else if(compare == 0) { // 차단된 id 발견시 해당 id는 result에 추가하지 않고 다음 popupAds 확인 
-					i++;
-				} // 가장 큰 popupAds id보다 큰 block id는 스킵
-			}else { // 모든 block id를 다 확인했다면, 남은 popupAds를 전부 result에 추가
-				while(i < popupAdsList.size()) {
-					resultList.add(popupAdsList.get(i++));
-				}
-				break;
+		int blockId = 0, idx = 0;
+		log.info("blockList : " + blockList);
+		log.info("popupAdsList : " + popupAdsList);
+		while(blockIter.hasNext() && idx < popupAdsList.size()) {
+			blockId = blockIter.next();
+			while(popupAdsList.get(idx) > blockId) { // 가장 큰 차단id보다 크다면(=blockList에 존재하지 않는 id) 전부 resultList에 추가
+				resultList.add(popupAdsList.get(idx++));
+			}
+			if(popupAdsList.get(idx) == blockId) { // 차단된 id이면 다음 차단id와 다음 popupAdsId 비교
+				idx++;
 			}
 		}
-	
+		for(int i = idx; i < popupAdsList.size(); i++) {
+			resultList.add(popupAdsList.get(i));
+		}
+		log.info("resultList : " + resultList);
 		return new ResponseEntity<List<Integer>>(resultList, HttpStatus.OK);
 	} // end blockPopup
 	

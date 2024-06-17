@@ -29,6 +29,7 @@ import org.springframework.web.socket.WebSocketHandler;
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.MessageVO;
+import com.web.vop.domain.PagingListDTO;
 import com.web.vop.domain.SellerVO;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.SellerService;
@@ -51,27 +52,17 @@ public class SellerController {
 	private MemberService memberService;
 	
 	@GetMapping("sellerRequest")
-	public String sellerRequestGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
+	public void sellerRequestGET() {
 		log.info("판매자 권한 신청 페이지로 이동");
-		SellerVO sellerRequest = null;
-		String memberId = memberDetails.getUsername();
-		
-		List<String> memberAuth = new ArrayList<>();
-		Iterator<? extends GrantedAuthority> iterator = memberDetails.getAuthorities().iterator();
-		
-		while(iterator.hasNext()) {
-			memberAuth.add(iterator.next().getAuthority());
-		}
-		
-		if(memberAuth.contains("ROLE_일반")) {
-			sellerRequest = sellerService.getMyRequest(memberId);
-			if(sellerRequest == null) {
-				return "seller/sellerRequest";
-			}
-			model.addAttribute("sellerRequest", sellerRequest);
-		}
-		return "seller/main";
 	} // end sellerRequestGET
+	
+	@GetMapping("/main")
+	public void sellerMainGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
+		log.info("판매자 메인 페이지 이동");
+		SellerVO sellerRequest = sellerService.getMyRequest(memberDetails.getUsername());
+		model.addAttribute("sellerRequest", sellerRequest);
+		
+	} // end sellerMainGET
 	
 	@PostMapping("sellerRequest")
 	public String sellerRequestPOST(SellerVO sellerVO, @AuthenticationPrincipal UserDetails memberDetails) {
@@ -155,7 +146,7 @@ public class SellerController {
 	// 판매자 권한 요청 조회
 	@GetMapping("/wait")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> getWaitRequest(Pagination pagination) {
+	public ResponseEntity<PagingListDTO<SellerVO>> getWaitRequest(Pagination pagination) {
 		log.info("모든 승인 대기중인 권한요청 조회");
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
@@ -163,17 +154,18 @@ public class SellerController {
 		log.info(list);
 		
 		pageMaker.update();
-		Map<String, Object> resultMap = new HashMap<>(); // 반환할 타입이 2개이므로 pageMaker와 list를 담을 맵 생성
-		resultMap.put("pageMaker", pageMaker);
-		resultMap.put("list", list);
+		
+		PagingListDTO<SellerVO> pagingList = new PagingListDTO<>();
+		pagingList.setList(list);
+		pagingList.setPageMaker(pageMaker);
 
-		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+		return new ResponseEntity<PagingListDTO<SellerVO>>(pagingList, HttpStatus.OK);
 	} // end getWaitRequest
 
 	// 등록된 판매자 조회
 	@GetMapping("/approved")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> getApprovedRequest(Pagination pagination) {
+	public ResponseEntity<PagingListDTO<SellerVO>> getApprovedRequest(Pagination pagination) {
 		log.info("모든 승인된 요청 조회");
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
@@ -181,11 +173,12 @@ public class SellerController {
 		log.info(list);
 		
 		pageMaker.update();
-		Map<String, Object> resultMap = new HashMap<>();
-		resultMap.put("pageMaker", pageMaker);
-		resultMap.put("list", list);
+		
+		PagingListDTO<SellerVO> pagingList = new PagingListDTO<>();
+		pagingList.setList(list);
+		pagingList.setPageMaker(pageMaker);
 
-		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+		return new ResponseEntity<PagingListDTO<SellerVO>>(pagingList, HttpStatus.OK);
 	} // end getAllRequest
 	
 	

@@ -5,7 +5,9 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.web.vop.domain.OrderViewDTO;
 import com.web.vop.domain.ProductDetailsDTO;
+import com.web.vop.domain.ProductPreviewDTO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.util.Pagination;
 
@@ -36,25 +38,28 @@ public interface ProductMapper {
 	// 상품 등록
 	int insertProduct(ProductVO productVO);
 	
+	// 썸네일이 있는 상품 등록
+	int insertProductWithThumbnail(ProductVO productVO);
+	
 	// 방금 등록한 상품 id 검색
 	int selectLastInsertId();
 	
 	// 카테고리로 검색
-	List<ProductVO> selectByCategory(
+	List<ProductPreviewDTO> selectByCategory(
 			@Param("category") String category, @Param("pagination") Pagination pagination, @Param("productState") String productState);
 	
 	// 카테고리로 검색 결과 수량
 	int selectByCategoryCnt(@Param("category") String category, @Param("productState") String productState);
 	
 	// 이름에 검색어가 포함된 상품 검색
-	List<ProductVO> selectByName(
+	List<ProductPreviewDTO> selectByName(
 			@Param("productName") String productName, @Param("pagination") Pagination pagination, @Param("productState") String productState);
 	
 	// 이름에 검색어가 포함된 상품 검색 결과 수량
 	int selectByNameCnt(@Param("productName") String productName, @Param("productState") String productState);
 	
 	// 카테고리 내에서, 이름에 검색어가 포함된 상품 검색
-	List<ProductVO> selectByNameInCategory(
+	List<ProductPreviewDTO> selectByNameInCategory(
 			@Param("category") String category, @Param("productName") String productName,
 			@Param("pagination") Pagination pagination, @Param("productState") String productState);
 	
@@ -63,7 +68,7 @@ public interface ProductMapper {
 			@Param("productState") String productState);
 	
 	// memberId로 상품 조회
-	List<ProductVO> selectByMemberId(@Param("memberId") String memberId, @Param("pagination") Pagination pagination);
+	List<ProductPreviewDTO> selectByMemberId(@Param("memberId") String memberId, @Param("pagination") Pagination pagination);
 	
 	// memberId로 상품 갯수 조회
 	int selectByMemberIdCnt(String memberId);
@@ -77,11 +82,11 @@ public interface ProductMapper {
 	// productId로 상품 삭제
 	int deleteProduct(int productId);
 	
-	// 카테고리를 지정하여, 리뷰 수가 가장 많은 5개의 상품 검색
-	List<ProductVO> selectTopProductInCategory(String category);
+	// 카테고리별 리뷰 수가 가장 많은 5개의 상품 검색
+	List<ProductPreviewDTO> selectTopProductByCategory();
 	
 	// 최근 등록된 상품 5개 조회
-	List<ProductVO> selectRecent5();
+	List<ProductPreviewDTO> selectRecent5();
 	
 	// 상태가 ??인 상품 조회
 	List<ProductVO> selectStateIs(@Param("productState") String productState, @Param("pagination") Pagination pagination);
@@ -103,5 +108,9 @@ public interface ProductMapper {
 	
 	// 상품 재고 검색
 	int selectRemainsById(int productId);
+	
+	// 상품 상세 정보를 검색하여 OrderViewDTO로 반환 
+	List<OrderViewDTO> selectToOrderById(int[] productIds);
+	
 	
 }

@@ -38,34 +38,34 @@ public class OrderRESTController {
 	@Autowired
     AWSS3Service awsS3Service;
 	
-	// 주문 목록 요청
-	@GetMapping("/myOrder")
-	public ResponseEntity<List<OrderVO>> getOrderList(@AuthenticationPrincipal MemberDetails memberDetails){
-		log.info("getOrderList()"); 
-		String memberId = memberDetails.getUsername();
-		log.info("memberId :" + memberId); 
-		List<OrderVO> orderList = orderService.getOrderListByMemberId(memberId);
-		log.info("orderlist : " + orderList);
-		
-		if(orderList != null && !orderList.isEmpty()) {
-			return new ResponseEntity<List<OrderVO>>(orderList, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<List<OrderVO>>(Collections.emptyList(), HttpStatus.OK);		
-		}
-		
-	}//end getOrderList()
+//	// 주문 목록 요청
+//	@GetMapping("/myOrder")
+//	public ResponseEntity<List<OrderVO>> getOrderList(@AuthenticationPrincipal MemberDetails memberDetails){
+//		log.info("getOrderList()"); 
+//		String memberId = memberDetails.getUsername();
+//		log.info("memberId :" + memberId); 
+//		List<OrderVO> orderList = orderService.getOrderListByMemberId(memberId);
+//		log.info("orderlist : " + orderList);
+//		
+//		if(orderList != null && !orderList.isEmpty()) {
+//			return new ResponseEntity<List<OrderVO>>(orderList, HttpStatus.OK);
+//		} else {
+//			return new ResponseEntity<List<OrderVO>>(Collections.emptyList(), HttpStatus.OK);		
+//		}
+//		
+//	}//end getOrderList()
 	
 	
 	
-	// 주문목록 이미지 파일
-	@GetMapping("/showImg/{imgId}")
-	@ResponseBody
-	public ResponseEntity<String> showOrderImg(@PathVariable("imgId") int imgId) {
-		 log.info("showOrderImg() : " + imgId);
-		 String imgUrl = awsS3Service.getImageUrl(imgId);
-
-	return new ResponseEntity<String>(imgUrl, HttpStatus.OK);
-		}
+//	// 주문목록 이미지 파일
+//	@GetMapping("/showImg/{imgId}")
+//	@ResponseBody
+//	public ResponseEntity<String> showOrderImg(@PathVariable("imgId") int imgId) {
+//		 log.info("showOrderImg() : " + imgId);
+//		 String imgUrl = awsS3Service.getImageUrl(imgId);
+//
+//	return new ResponseEntity<String>(imgUrl, HttpStatus.OK);
+//		}
 		
 	
 	

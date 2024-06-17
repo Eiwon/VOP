@@ -25,7 +25,6 @@
 </style>
 <title>결제 페이지</title>
 </head>
-<jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	<div>
 		<h2>주문 / 결제</h2>
@@ -78,10 +77,8 @@
 		
 		<div class="box_info" id="order_info">
 			<h2>주문 정보</h2>
-			<table>
-				<tbody id="order_list">
-				</tbody>
-			</table>
+			<div id="order_list">
+			</div>
 		</div>
 		
 		<div class="box_info" id="payment_info">
@@ -131,6 +128,7 @@
 		let memberVO = paymentWrapper.memberVO;
 		let orderList = paymentWrapper.orderList;
 		let deliveryVO = paymentWrapper.deliveryVO;
+		let membershipVO = paymentWrapper.membershipVO;
 		let myCouponList;
 		let myCouponVO;
 		let paymentVO = {
@@ -153,7 +151,8 @@
 			console.log(paymentWrapper);
 			setInfo();
 			$('#btn_payment').click(function(){
-				payment();
+				location.href = 'paymentResult?paymentId=1048';
+				//payment();
 			}); // end btnPayment.click
 			
 		}); // end document.ready
@@ -171,38 +170,40 @@
 				$('#requirement').val(deliveryVO.requirement);
 			}
 			
-			tagOrderList.html(makeOrderInfo());
+			let form = '';
+			for (x in orderList){
+				form += '<div>' + 
+				'<img src="' + orderList[x].imgUrl + '">' + 
+				'<div>' + 
+				'<div style="width: 200px;">' + orderList[x].orderVO.productName + '</div>' + 
+				'<div style="width: 200px;">' + orderList[x].orderVO.purchaseNum + '</div>' +
+				'<div style="width: 200px;">' + orderList[x].orderVO.productPrice * orderList[x].orderVO.purchaseNum + '원</div>' +
+				'</div>' +
+				'</div>';
+			}
+			tagOrderList.html(form);
 			
-			//if(memberVO.auth == 'membership') 일단 모든 유저에 멤버십 적용
-			paymentVO.membershipDiscount = 20;
+			// 멤버십 정보가 있으면 20% 할인 적용
+			if(membershipVO != null){
+				paymentVO.membershipDiscount = 20;			
+			}
 			
 			setPaymentInfo();
 			
+<<<<<<< HEAD
 			
+=======
+>>>>>>> ef0c7002d5dac7e68e9f6991cfb1945946ccedbb
 		} // end setInfo
 		
-		function makeOrderInfo(){
-			// 출력할 주문 정보 생성
-			let form = '';
-			for (x in orderList){
-				form += '<tr><td style="width: 200px;">' + orderList[x].productName + 
-				'</td><td style="width: 200px;">' + orderList[x].purchaseNum + 
-				'</td><td style="width: 200px;">' + orderList[x].productPrice * orderList[x].purchaseNum + 
-				'원</td><td style="width: 200px;">예상 배송일</td></tr>';
-			}
-			return form;
-		} // end makeOrderInfo
 		
 		function setPaymentInfo(){
 			// 결제 정보 출력
-			let totalPrice = calcTotalPrice();
-			let chargePrice = calcChargePrice();
-			
-			$('#total_price').text(totalPrice);
+			$('#total_price').text(calcTotalPrice());
 			$('#membership_discount').text(paymentVO.membershipDiscount + '%');
 			$('#coupon_discount').text(paymentVO.couponDiscount + '%');
 			$('#delivery_price').text(paymentVO.deliveryPrice);
-			$('#charge_price').text(chargePrice);
+			$('#charge_price').text(calcChargePrice());
 			
 		} // end setPaymentInfo
 		
@@ -245,7 +246,7 @@
 			let totalPrice = 0;
 			
 			for(x in orderList){
-				totalPrice += orderList[x].productPrice * orderList[x].purchaseNum;
+				totalPrice += orderList[x].orderVO.productPrice * orderList[x].orderVO.purchaseNum;
 			}
 			console.log('합계 : ' + totalPrice);
 			return Math.ceil(totalPrice);
@@ -281,7 +282,7 @@
 							pg: 'kakaopay.TC0ONETIME', // PG사 코드(포트원 홈페이지에서 찾아서 넣어야함)
 			                pay_method: 'card', // 결제 방식
 			                merchant_uid: paymentId, // 결제 고유 번호
-			                name: orderList[0].productName, // 제품명
+			                name: orderList[0].orderVO.productName, // 제품명
 			                amount: paymentVO.chargePrice, // 결제 가격
 			                buyer_name: memberVO.memberId,
 			                buyer_email: memberVO.memberEmail,
@@ -353,11 +354,11 @@
 				success : function(result){
 					console.log('결제 내역 전송 결과 : ' + result);
 					if(result > 0){
-						location.href = 'paymentResult?paymentId=' + result;
+						location.href = 'paymentResult?paymentId=' + paymentVO.paymentId;
 					}else if(result == 0){
 						alert('결제 내역 전송 실패');		
-					}else {
-						alert(orderList[(result +1)* -1].productName + ' 상품의 재고가 부족합니다.');
+					}else if(result == -1){
+						alert('매진된 상품입니다.');
 					}
 				}
 			}); // end ajax
@@ -374,18 +375,6 @@
 			
 			// 팝업 창 띄우기
 			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
-
-			popup.onbeforeunload = function(){
-				// 팝업 닫힐 때 실행
-				/* console.log("팝업 닫힘");
-				deliveryVO.receiverName = $('#receiverName').val();
-				deliveryVO.receiverAddress = $('#receiverAddress').val();
-				deliveryVO.receiverAddressDetails = $('#deliveryAddressDetails').val();
-				deliveryVO.receiverPhone = $('#receiverPhone').val();
-				deliveryVO.requirement = $('#requirement').val();
-				
-				console.log(deliveryVO); */
-			} // end popup.onbeforeunload
 
 		} // end showDeliveryPopup
 		function saveDelivery(delivery){

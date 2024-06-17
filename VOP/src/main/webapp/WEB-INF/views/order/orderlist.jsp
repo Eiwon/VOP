@@ -91,27 +91,28 @@
 	<h1>${memberDetails.getUsername() }</h1>
 
 	<div id="order-container">
-    <c:forEach items="${orderList}" var="order">
+    <c:forEach items="${orderList}" var="orderViewDTO">
+    	<c:set value="${orderViewDTO.orderVO }" var="orderVO"></c:set>
         <div class="order-box">
             <div class="order-details">
-                <p>예상 배송일 : ${order.expectDeliveryDate.toLocaleString()}</p>
+                <p>예상 배송일 : ${orderVO.expectDeliveryDate.toLocaleString()}</p>
                 	<!-- 이미지 목록 표시 -->
-					<div>
-                        <img alt="${order.imgId}" src="" />
-					</div>	
+				<div>
+                    <img src="${orderViewDTO.imgUrl }" />
+				</div>	
                 <div>
-                    <p>상품명 : ${order.productName}</p>
-                    <p>상품 가격 : ${order.productPrice} 원</p>
-                    <p>상품 수량 : ${order.purchaseNum} 개</p>
+                    <p>상품명 : ${orderVO.productName}</p>
+                    <p>상품 가격 : ${orderVO.productPrice} 원</p>
+                    <p>상품 수량 : ${orderVO.purchaseNum} 개</p>
                 </div>
             </div>
             <div class="order-buttons">
-                <a href="../Delivery/delivery?paymentId=${order.paymentId}"><button>배송 조회</button></a>
+                <a href="../Delivery/delivery?paymentId=${orderVO.paymentId}"><button>배송 조회</button></a>
                 
                 	<!-- 리뷰 쓰기 코드 -->
 	                <form action="../review/register" method="get">
-	                	<input type="hidden" name="productId" value="${order.productId}">
-	                	<input type="hidden" name="imgId" value="${order.imgId}">
+	                	<input type="hidden" name="productId" value="${orderVO.productId}">
+	                	<input type="hidden" name="imgId" value="${orderVO.imgId}">
 	                	<button type="submit">리뷰 쓰기</button>
 	                </form>
 
@@ -123,7 +124,7 @@
 	                
 	                 <form action="../inquiry/myList" method="get">
 	                	<input type="hidden" name="memberId" value="${memberDetails.getUsername()}">
-	                	<input type="hidden" name="memberId" value="${order.productName}">
+	                	<input type="hidden" name="memberId" value="${orderVO.productName}">
 	                	<button type="submit">문의 리스트</button>
 	                </form>
 	                
@@ -137,7 +138,7 @@
         				<h2>판매자 문의</h2>
         					<form class="createInquiry">
             					<input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
-            					<input type="hidden" id="productId" name="productId" value="${order.productId}">
+            					<input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
             					<label for="message">내용:</label><br>
             					<textarea class="content" name="content"></textarea><br>
             					<button type="submit">판매자에게 1:1문의하기</button>
@@ -155,7 +156,7 @@
         				<h2>판매자 수정</h2>
         					<form class="updateInquiry">
             					<input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
-            					<input type="hidden" id="productId" name="productId" value="${order.productId}">
+            					<input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
             					<label for="message">내용:</label><br>
             					<textarea class="content" name="content"></textarea><br>
             					<button type="submit">수정하기</button>
@@ -172,7 +173,7 @@
         				<span class="close">&times;</span>
 	                	<form class="deleteInquiry">
 	                		<input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
-            				<input type="hidden" id="productId" name="productId" value="${order.productId}">
+            				<input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
             				<button type="submit">삭제하시 겠습니까?</button>
 	                	</form>
 	                	</div>
@@ -368,28 +369,7 @@
     	loadImg();
     }); // end document.ready()
 
-    // 이미지 관련 코드
-
-    function loadImg(){
-    	console.log($(document).find('img'));
-        $(document).find('img').each(function(){
-        	
-            let target = $(this);
-            let imgId = target.attr("alt");
-            console.log("Requesting image with imgId:", imgId); // 콘솔 로그 추가
-            $.ajax({
-                method : 'GET',
-                url : '../image/' + imgId,
-                success : function(result){
-                    console.log("Image successfully loaded for imgId:", imgId); // 콘솔 로그 추가
-                    target.attr('src', result);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.error("Error loading image for imgId:", imgId, textStatus, errorThrown); // 에러 로그 추가
-                }
-            }); // end ajax
-        });
-    } // end loadImg
+    
     
     </script>
 	

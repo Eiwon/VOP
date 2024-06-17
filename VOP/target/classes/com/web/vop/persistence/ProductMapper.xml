@@ -37,8 +37,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="memberEmail" column="MEMBER_EMAIL"/>
 		<result property="memberPhone" column="MEMBER_PHONE"/>
 		<result property="businessName" column="BUSINESS_NAME"/>
-		
    </resultMap>
+   
+   <resultMap type="com.web.vop.domain.ProductPreviewDTO" 
+ 	  	id="productPreviewResultMap">
+   		<result property="imgPath" column="IMG_PATH"/>
+   		<result property="imgChangeName" column="IMG_CHANGE_NAME"/>
+   		<association property="productVO" javaType="com.web.vop.domain.ProductVO" resultMap="productResultMap"/>
+   </resultMap>
+   
+   <!-- <resultMap type="com.web.vop.domain.OrderViewDTO" id="OrderViewDTOResultMap">
+   		<result property="imgPath" column="IMG_PATH"/>
+   		<result property="imgChangeName" column="IMG_CHANGE_NAME"/>
+   		<association property="orderVO" javaType="com.web.vop.domain.OrderVO" resultMap="OrderResultMap"/>
+   </resultMap> -->
    
    <!-- productId통해 상품 조회 -->
    <select id="selectProduct" resultMap="productResultMap">
@@ -91,7 +103,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		INSERT INTO PRODUCT VALUES (
    		PRODUCT_SEQ.NEXTVAL, #{memberId}, #{productName}, #{productPrice},
    		0, #{productRemains}, #{productPlace}, #{productState}, #{category}, 
-   		#{imgId}, SYSDATE, 0 
+   		0, SYSDATE, 0 
+   		)
+	</insert>
+
+	<!-- 썸네일이 있는 상품 등록 -->
+	<insert id="insertProductWithThumbnail">
+   		INSERT INTO PRODUCT VALUES (
+   		PRODUCT_SEQ.NEXTVAL, #{memberId}, #{productName}, #{productPrice},
+   		0, #{productRemains}, #{productPlace}, #{productState}, #{category}, 
+   		IMAGE_SEQ.CURRVAL, SYSDATE, 0 
    		)
 	</insert>
 	
@@ -101,12 +122,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
    
 	<!-- 상품 카테고리로 검색 (페이징) -->
-	<select id="selectByCategory" resultMap="productResultMap">
+	<select id="selectByCategory" resultMap="productPreviewResultMap">
+		SELECT PD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
    		SELECT * FROM (
    		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
    		FROM PRODUCT
  		WHERE CATEGORY = #{category} AND PRODUCT_STATE = #{productState}
    		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+   		) PD LEFT JOIN IMAGE ON PD.IMG_ID = IMAGE.IMG_ID
 	</select>
 
 	<!-- 카테고리로 검색 결과 수량 -->
@@ -116,12 +139,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<!-- 상품 이름으로 검색 (페이징) -->
-	<select id="selectByName" resultMap="productResultMap">
+	<select id="selectByName" resultMap="productPreviewResultMap">
+		SELECT PD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
    		SELECT * FROM (
    		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
    		FROM PRODUCT
    		WHERE PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = #{productState}
    		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+   		) PD LEFT JOIN IMAGE ON PD.IMG_ID = IMAGE.IMG_ID
    	</select>	
 
 	<!-- 이름으로 검색 결과 수량 -->
@@ -131,12 +156,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<!-- 카테고리를 선택하여 이름으로 검색 (페이징) -->
-	<select id="selectByNameInCategory" resultMap="productResultMap">
+	<select id="selectByNameInCategory" resultMap="productPreviewResultMap">
+		SELECT PD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
 		SELECT * FROM (
    		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
    		FROM PRODUCT
  		WHERE CATEGORY = #{category} AND PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = #{productState}
    		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+   		) PD LEFT JOIN IMAGE ON PD.IMG_ID = IMAGE.IMG_ID
 	</select>
 	
 	<!-- 카테고리를 선택하여 이름으로 검색 결과 수량 -->
@@ -146,11 +173,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<!-- memberId로 상품 조회 -->
-	<select id="selectByMemberId" resultMap="productResultMap">
+	<select id="selectByMemberId" resultMap="productPreviewResultMap">
+		SELECT PD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
 		SELECT * FROM (
 		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
 		FROM PRODUCT WHERE MEMBER_ID = #{memberId}
 		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+		) PD INNER JOIN IMAGE ON PD.IMG_ID = IMAGE.IMG_ID
 	</select>
 	
 	<!-- memberId로 상품 갯수 조회 -->
@@ -173,19 +202,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		DELETE PRODUCT WHERE PRODUCT_ID = #{productId}
 	</delete>
 	
-	<!-- 카테고리를 지정하여, 리뷰 수가 가장 많은 5개의 상품 검색 -->
-	<select id="selectTopProductInCategory" resultMap="productResultMap">
-		SELECT * FROM (
-		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY REVIEW_NUM DESC) RN FROM PRODUCT
-		WHERE CATEGORY = #{category}
-		) WHERE RN BETWEEN 1 AND 5
+	<!-- 카테고리별 최다 리뷰 5개 상품 검색 -->
+	<select id="selectTopProductByCategory" resultMap="productPreviewResultMap">
+		SELECT TOP.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM(
+			SELECT * FROM (
+				SELECT PRODUCT.*, ROW_NUMBER() OVER (PARTITION BY CATEGORY ORDER BY REVIEW_NUM DESC) RN 
+				FROM PRODUCT
+			) WHERE RN BETWEEN 1 AND 5 ORDER BY CATEGORY
+		) TOP LEFT JOIN IMAGE ON TOP.IMG_ID = IMAGE.IMG_ID
 	</select>
 	
 	<!-- 최근 등록된 상품 5개 조회 -->
-	<select id="selectRecent5" resultMap="productResultMap">
-		SELECT * FROM (
-		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN FROM PRODUCT
-		) WHERE RN BETWEEN 1 AND 5
+	<select id="selectRecent5" resultMap="productPreviewResultMap">
+		SELECT PD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
+			SELECT * FROM (
+				SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN FROM PRODUCT
+				WHERE PRODUCT_STATE = '판매중'
+			) WHERE RN BETWEEN 1 AND 5
+		) PD LEFT JOIN IMAGE ON PD.IMG_ID = IMAGE.IMG_ID
 	</select>
 
 	<!-- 상태가 ??인 모든 상품 검색(페이징) -->
@@ -232,6 +266,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 상품 재고 검색 -->
 	<select id="selectRemainsById" resultType="Integer">
 		SELECT PRODUCT_REMAINS FROM PRODUCT WHERE PRODUCT_ID = #{productId}
+	</select>
+	
+	<!-- 상품 상세 정보를 검색하여 OrderViewDTO로 반환 -->
+	<select id="selectToOrderById" resultMap="com.web.vop.persistence.OrderMapper.OrderViewDTOResultMap">
+		SELECT PD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
+		SELECT PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE, IMG_ID FROM PRODUCT WHERE PRODUCT_ID IN 
+		<foreach collection="array" index="index" item="productIds" open="(" separator="," close=")">
+			#{productIds}
+		</foreach>
+		) PD JOIN IMAGE ON PD.IMG_ID = IMAGE.IMG_ID
 	</select>
 	
 </mapper>

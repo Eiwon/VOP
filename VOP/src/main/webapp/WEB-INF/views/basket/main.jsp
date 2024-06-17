@@ -66,20 +66,19 @@
 					const basketList = result;
 					initBasketMap(basketList);
 					let str = "";
-					let imgPath = "";
-					for(x in basketList){
-						
+					for(x in basketMap){
+						const productVO = basketMap[x];
 						str += '<tr class="basket_item">' +
 							'<td><input type="checkbox" class="chk_product"></td>' +
-							'<td><img alt="' + basketList[x].imgId + '"></td>' +
-							'<td class="product_id" hidden="hidden">' + basketList[x].productId + '</td>' +
-							'<td class="product_name">' + basketList[x].productName + '</td>' +
-							'<td class="product_price">' + basketList[x].productPrice + '</td>' +
-							'<td class="product_remains">' + basketList[x].productRemains + '</td>' +
-							'<td class="total_price">' + (basketList[x].productPrice * basketList[x].productNum) + '</td>' +
+							'<td><img src="' + productVO.imgUrl + '"></td>' +
+							'<td class="product_id" hidden="hidden">' + productVO.productId + '</td>' +
+							'<td class="product_name">' + productVO.productName + '</td>' +
+							'<td class="product_price">' + productVO.productPrice + '</td>' +
+							'<td class="product_remains">' + productVO.productRemains + '</td>' +
+							'<td class="total_price">' + (productVO.productPrice * productVO.productNum) + '</td>' +
 							'<td>' +
 								'<button class="btnMinus">-</button>' +
-								'<input class="product_num" type="number" value=' + basketList[x].productNum + '>' +
+								'<input class="product_num" type="number" value=' + productVO.productNum + '>' +
 								'<button class="btnPlus">+</button>' +
 							'</td>' +
 							'<td><a class="btnDelete">삭제</a></td>' +
@@ -87,7 +86,6 @@
 							'</tr>';
 					} // end for
 					tagBasketList.html(str);
-					loadImg(tagBasketList);
 					calcTotalExpense();
 					
 					$('.basket_item').each(function(){
@@ -268,7 +266,6 @@
 	            }, 
 				data : JSON.stringify(obj),
 				success : function(result){
-					console.log(result);
 					basketMap[productId].productNum = productNum;
 					basketItem.find('.product_num').val(basketMap[productId].productNum);
 					basketItem.find('.total_price').text(basketMap[productId].productNum * basketMap[productId].productPrice);
@@ -297,9 +294,12 @@
 		// 데이터 관리 맵 초기화 (key : productId, value : basketDTO)
 		function initBasketMap(basketList){
 			console.log("map init");
-			basketMap = [];
+			basketMap = {};
 			for(x in basketList){
-				basketMap[basketList[x].productId] = basketList[x];
+				const productVO = basketList[x].productPreviewDTO.productVO;
+				basketMap[productVO.productId] = productVO;
+				basketMap[productVO.productId].imgUrl = basketList[x].productPreviewDTO.imgUrl;
+				basketMap[productVO.productId].productNum = basketList[x].productNum;
 			}
 		} // end setBasketMap
 		
@@ -308,19 +308,6 @@
 			return $(input).parents('.basket_item').find('.product_id').text();
 		} // end getTargetId
 		
-		function loadImg(input){
-			$(input).find('img').each(function(){
-				let target = $(this);
-				let imgId = target.attr("alt");
-				$.ajax({
-					method : 'GET',
-					url : '../image/' + imgId,
-					success : function(result){
-						target.attr('src', result);
-					}
-				}); // end ajax
-			});
-		} // end loadImg
 	</script>
 	
 </body>

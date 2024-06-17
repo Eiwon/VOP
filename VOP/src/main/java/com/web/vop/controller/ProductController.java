@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +33,11 @@ import com.web.vop.domain.AlertVO;
 import com.web.vop.domain.BasketVO;
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.MemberDetails;
+import com.web.vop.domain.PagingListDTO;
 import com.web.vop.domain.ProductDetailsDTO;
+import com.web.vop.domain.ProductPreviewDTO;
 import com.web.vop.domain.ProductVO;
+import com.web.vop.domain.SellerVO;
 import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.ImageService;
 import com.web.vop.service.ProductService;
@@ -149,13 +153,13 @@ public class ProductController {
 			e.printStackTrace();
 		}
 	    
-	    return "redirect:../seller/sellerRequest";
+	    return "redirect:../seller/main";
 	} // end registerPOST
 
 	@GetMapping("search")
 	public void search(Model model, String category, String word, Pagination pagination) {
 		log.info("search category : " + category + ", word : " + word);
-		List<ProductVO> productList = new ArrayList<>();
+		List<ProductPreviewDTO> productList;
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
 		
@@ -180,6 +184,7 @@ public class ProductController {
 		}
 		// 카테고리가 전체, 검색어도 없는 경우 -- 클라이언트 측에서 실행 X
 		log.info("검색결과 = 총 " + pageMaker.getTotalCount() + "개 검색");
+		awsS3Service.toImageUrl(productList);
 		model.addAttribute("productList", productList);
 		model.addAttribute("pageMaker", pageMaker);
 		model.addAttribute("category", category); // 검색결과 내에서 페이지 이동을 구현하기 위해, 기존 검색 조건 return
@@ -190,70 +195,78 @@ public class ProductController {
 	// 해당 유저가 등록한 상품 검색
 	@GetMapping("/myList")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> productList(
+	public ResponseEntity<PagingListDTO<ProductPreviewDTO>> productList(
 			Pagination pagination, @AuthenticationPrincipal MemberDetails memberDetails) {
 		String memberId = memberDetails.getUsername();
 		log.info(memberId + "가 등록한 상품 검색");
 
-		Map<String, Object> resultMap = new HashMap<>();
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
-
-		List<ProductVO> productList = productService.searchByMemberId(memberId, pageMaker);
-
-		if (productList != null) {
-			log.info(productList.size() + "개 데이터 검색 성공");
-		}
-
-		resultMap.put("productList", productList);
-		resultMap.put("pageMaker", pageMaker);
-
-		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+		
+		List<ProductPreviewDTO> productPreviewList = productService.searchByMemberId(memberId, pageMaker);
+		awsS3Service.toImageUrl(productPreviewList);
+		
+		pageMaker.update();
+		
+		PagingListDTO<ProductPreviewDTO> pagingList = new PagingListDTO<>();
+		pagingList.setList(productPreviewList);
+		pagingList.setPageMaker(pageMaker);
+		
+		return new ResponseEntity<PagingListDTO<ProductPreviewDTO>>(pagingList, HttpStatus.OK);
 	} // end productList
 	
-	// 썸네일 이미지 파일 요청
-	@GetMapping(value = "/showImg", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	@ResponseBody
-	public ResponseEntity<Resource> showImg(int imgId){
-		log.info("showImg() : " + imgId);
-		ImageVO imageVO = imageService.getImageById(imgId);
-		if(imageVO == null) {
-			return new ResponseEntity<Resource>(null, null, HttpStatus.OK);
-		}
-		String fullPath = imageVO.getImgPath() + File.separator + imageVO.getImgChangeName();
-		HttpHeaders headers = new HttpHeaders();
-		// 다운로드할 파일 이름을 헤더에 설정
-		headers.add(HttpHeaders.CONTENT_DISPOSITION,
-				"attachment; filename=" + fullPath + "." + imageVO.getImgExtension());
-
-		Resource resource = FileUploadUtil.getFile(fullPath, imageVO.getImgExtension());
-       
-        return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
-	} // end showImg
+//	// 썸네일 이미지 파일 요청
+//	@GetMapping(value = "/showImg", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+//	@ResponseBody
+//	public ResponseEntity<Resource> showImg(int imgId){
+//		log.info("showImg() : " + imgId);
+//		ImageVO imageVO = imageService.getImageById(imgId);
+//		if(imageVO == null) {
+//			return new ResponseEntity<Resource>(null, null, HttpStatus.OK);
+//		}
+//		String fullPath = imageVO.getImgPath() + File.separator + imageVO.getImgChangeName();
+//		HttpHeaders headers = new HttpHeaders();
+//		// 다운로드할 파일 이름을 헤더에 설정
+//		headers.add(HttpHeaders.CONTENT_DISPOSITION,
+//				"attachment; filename=" + fullPath + "." + imageVO.getImgExtension());
+//
+//		Resource resource = FileUploadUtil.getFile(fullPath, imageVO.getImgExtension());
+//       
+//        return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+//	} // end showImg
   
 	
 	@GetMapping("/bestReview")
 	@ResponseBody
-	public ResponseEntity<Map<String, List<ProductVO>>> getBestProductByCategory(){
+	public ResponseEntity<Map<String, List<ProductPreviewDTO>>> getBestProductByCategory(){
 		log.info("각 카테고리별 최고 리뷰 상품 5개 요청");
-		Map<String, List<ProductVO>> resultMap = new HashMap<>();
+		List<ProductPreviewDTO> list = productService.getTopProductByCategory();
+		awsS3Service.toImageUrl(list);
 		
-		for(String category : categoryList) {
-			List<ProductVO> list = productService.getTopProductInCategory(category);
-			log.info(category + " 검색 결과 : " + list);
-			resultMap.put(category, list);
+		// key : 카테고리 이름, value : 상품 리스트 형태로 변환
+		Map<String, List<ProductPreviewDTO>> resultMap = new HashMap<>();
+		String category;
+		for(ProductPreviewDTO product : list) {
+			category = product.getProductVO().getCategory();
+			if(!resultMap.containsKey(category)) { // 맵에 해당 카테고리가 없다면 공간 생성
+				resultMap.put(category, new LinkedList<>());
+			}
+			resultMap.get(category).add(product);
 		}
-		return new ResponseEntity<Map<String, List<ProductVO>>>(resultMap, HttpStatus.OK);
+		return new ResponseEntity<Map<String, List<ProductPreviewDTO>>>(resultMap, HttpStatus.OK);
 	} // end getBestProductInCategory
 	
 	@GetMapping("/recent")
 	@ResponseBody
-	public ResponseEntity<List<ProductVO>> getRecent5(){
+	public ResponseEntity<List<ProductPreviewDTO>> getRecent5(){
 		log.info("최근 등록된 상품 5개 요청");
 		
-		List<ProductVO> list = productService.getRecent5();
+		List<ProductPreviewDTO> list = productService.getRecent5();
 		log.info("검색 결과 : " + list);
-		return new ResponseEntity<List<ProductVO>>(list, HttpStatus.OK);
+		
+		awsS3Service.toImageUrl(list);
+		
+		return new ResponseEntity<List<ProductPreviewDTO>>(list, HttpStatus.OK);
 	} // end getRecent5
 	
 	
@@ -399,7 +412,7 @@ public class ProductController {
 	// 상품 등록 요청 조회
 	@GetMapping("/registerRequest")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> getRegisterRequest(Pagination pagination) {
+	public ResponseEntity<PagingListDTO<ProductVO>> getRegisterRequest(Pagination pagination) {
 		log.info("모든 상품 등록 요청 조회");
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
@@ -407,17 +420,18 @@ public class ProductController {
 		log.info(list);
 
 		pageMaker.update();
-		Map<String, Object> resultMap = new HashMap<>();
-		resultMap.put("pageMaker", pageMaker);
-		resultMap.put("list", list);
 
-		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+		PagingListDTO<ProductVO> pagingList = new PagingListDTO<>();
+		pagingList.setList(list);
+		pagingList.setPageMaker(pageMaker);
+
+		return new ResponseEntity<PagingListDTO<ProductVO>>(pagingList, HttpStatus.OK);
 	} // end getWaitProduct
 
 	// 상품 삭제 요청 조회
 	@GetMapping("/deleteRequest")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> getdeleteRequest(Pagination pagination) {
+	public ResponseEntity<PagingListDTO<ProductVO>> getdeleteRequest(Pagination pagination) {
 		log.info("상품 삭제 요청 조회");
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
@@ -425,11 +439,12 @@ public class ProductController {
 		log.info(list);
 
 		pageMaker.update();
-		Map<String, Object> resultMap = new HashMap<>();
-		resultMap.put("pageMaker", pageMaker);
-		resultMap.put("list", list);
+		
+		PagingListDTO<ProductVO> pagingList = new PagingListDTO<>();
+		pagingList.setList(list);
+		pagingList.setPageMaker(pageMaker);
 
-		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+		return new ResponseEntity<PagingListDTO<ProductVO>>(pagingList, HttpStatus.OK);
 	} // end getWaitProduct
 	
 } 

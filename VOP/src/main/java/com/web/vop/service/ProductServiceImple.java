@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductDetailsDTO;
+import com.web.vop.domain.ProductPreviewDTO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.persistence.ImageMapper;
 import com.web.vop.persistence.ProductMapper;
@@ -95,29 +96,24 @@ public class ProductServiceImple implements ProductService{
 	public int registerProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details) throws IOException { // 등록 성공시, 등록한 상품 id 반환
 		log.info("registerProduct : " + productVO);
 		int res = 0;
-		
+		productVO.setProductState(Constant.STATE_APPROVAL_WAIT);
+
 		// DB에 상품 정보 등록
-		if(thumbnail != null) { 
-			// 썸네일 등록
+		if(thumbnail == null) { 
+			productMapper.insertProduct(productVO);						
+		}else {
 			imageMapper.insertImg(thumbnail);
-			int imgId = imageMapper.selectRecentImgId();
-			productVO.setImgId(imgId);
+			productMapper.insertProductWithThumbnail(productVO);
 		}
 		
-		// 상품 등록
-		productVO.setProductState(Constant.STATE_APPROVAL_WAIT);
-		productMapper.insertProduct(productVO);
-		int productId = productMapper.selectLastInsertId();
-		
 		for(ImageVO detail : details) {
-			detail.setProductId(productId);
-			res = imageMapper.insertImg(detail);
+			res = imageMapper.insertProductDetailsImg(detail);
 		}
 		return res;
 	} // end registerProduct
 	
 	@Override
-	public List<ProductVO> searchByCategory(String category, PageMaker pageMaker) {
+	public List<ProductPreviewDTO> searchByCategory(String category, PageMaker pageMaker) {
 		log.info("searchByCategory()");
 		int totalCnt = productMapper.selectByCategoryCnt(category, Constant.STATE_SELL);
 		pageMaker.setTotalCount(totalCnt);
@@ -125,7 +121,7 @@ public class ProductServiceImple implements ProductService{
 	} // end selectByCategory
 	
 	@Override
-	public List<ProductVO> searchByName(String productName, PageMaker pageMaker) {
+	public List<ProductPreviewDTO> searchByName(String productName, PageMaker pageMaker) {
 		log.info("searchByName()");
 		String includeName = '%' + productName + '%';
 		int totalCnt = productMapper.selectByNameCnt(includeName, Constant.STATE_SELL);
@@ -134,7 +130,7 @@ public class ProductServiceImple implements ProductService{
 	} // end selectByName
 	
 	@Override
-	public List<ProductVO> searchByNameInCategory(String category, String productName, PageMaker pageMaker) {
+	public List<ProductPreviewDTO> searchByNameInCategory(String category, String productName, PageMaker pageMaker) {
 		log.info("searchByNameInCategory()");
 		String includeName = '%' + productName + '%';
 		int totalCnt = productMapper.selectByNameInCategoryCnt(category, includeName, Constant.STATE_SELL);
@@ -143,7 +139,7 @@ public class ProductServiceImple implements ProductService{
 	} // end selectByNameInCategory
 	
 	@Override
-	public List<ProductVO> searchByMemberId(String memberId, PageMaker pageMaker) {
+	public List<ProductPreviewDTO> searchByMemberId(String memberId, PageMaker pageMaker) {
 		log.info("selectByMemberId()");
 		int totalCnt = productMapper.selectByMemberIdCnt(memberId);
 		pageMaker.setTotalCount(totalCnt);
@@ -184,13 +180,13 @@ public class ProductServiceImple implements ProductService{
 	} // end deleteProduct
 
 	@Override
-	public List<ProductVO> getTopProductInCategory(String category) {
-		log.info("getTopProductInCategory()");
-		return productMapper.selectTopProductInCategory(category);
-	} // end getTopProductInCategory
-
+	public List<ProductPreviewDTO> getTopProductByCategory() {
+		log.info("getTopProductByCategory()");
+		return productMapper.selectTopProductByCategory();
+	} // end getTopProductByCategory
+	
 	@Override
-	public List<ProductVO> getRecent5() {
+	public List<ProductPreviewDTO> getRecent5() {
 		log.info("getRecent5()");
 		return productMapper.selectRecent5();
 	} // end getRecent5
@@ -276,7 +272,6 @@ public class ProductServiceImple implements ProductService{
 		log.info("상품의 세부 이미지 검색");
 		return imageMapper.selectByProductId(productId);
 	} // end getProductDetails
-
 
 	
 }

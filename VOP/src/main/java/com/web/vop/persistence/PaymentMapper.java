@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.web.vop.domain.PaymentVO;
 
@@ -14,10 +15,7 @@ public interface PaymentMapper {
 	public int selectNextPaymentId();
 	
 	// 결제 결과 등록
-	public int insertPayment(PaymentVO paymentVO);
-	
-	// 최근에 등록된 결제 결과 검색 by memberId
-	//public PaymentVO selectLastPayment(String memberId);
+	public int insertPayment(PaymentVO paymentVO) throws DataIntegrityViolationException;
 	
 	// memberId와 paymentId로 결제 결과 검색
 	public PaymentVO selectByMemberIdAndPaymentId(

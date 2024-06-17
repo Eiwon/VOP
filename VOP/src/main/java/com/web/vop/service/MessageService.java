@@ -13,11 +13,8 @@ public interface MessageService {
 	// receiver id로 수신 가능한 모든 메세지 검색
 	public List<MessageVO> getMyMessage(String receiverId);
 		
-	// 지정 메세지 삭제(client)
-	public int removeExceptNotice(int messageId);
-
-	// 지정 메세지 삭제(admin)
-	public int removeById(int messageId);
+	// 메세지 삭제
+	public int removeById(List<Integer> messageIds);
 	
 	// 지정 수신자 메시지 삭제
 	public int removeByReceiverId(String receiverId);

@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <style type="text/css">
 .formContainer{
 	border: 1px solid black;
@@ -62,9 +63,7 @@
 		</div>
 		<div>
 			<input type="button" value="등록" onclick="registerPopupAds()">
-			<!-- <input type="button" value="삭제" onclick="deleteCoupon()">
-			<input type="button" value="배포" onclick="publishCoupon(1)">
-			<input type="button" value="배포 취소" onclick="publishCoupon(0)"> -->
+			<input type="button" value="삭제" onclick="deletePopupAds()">
 		</div>
 	</div>
 
@@ -181,6 +180,32 @@
 			} // end popup.onbeforeunload
 			
 		} // end registerPopupAds
+		
+		
+		function deletePopupAds() {
+			if(selectedList.length == 0){
+				alert('삭제할 팝업 광고를 선택해주세요');
+				return;
+			}
+			let deleteCheck = confirm(selectedList.length + '개 항목이 삭제됩니다. 정말 삭제하시겠습니까?');
+			
+			if(deleteCheck){
+				$.ajax({
+					method : 'DELETE',
+					url : 'delete',
+					headers : {
+						'Content-type' : 'application/json'
+					},
+					data : JSON.stringify(selectedList),
+					success : function(result){
+						selectedList = [];
+						alert(result + '개 항목이 삭제되었습니다.');
+						loadPopupAdsList(pageMaker.pagination.pageNum);
+					} // end success
+				}); // end ajax
+			}
+		} // end deletePopupAds
+		
 		
 	</script>
 

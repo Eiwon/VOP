@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -18,6 +19,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.web.vop.domain.ImageVO;
+import com.web.vop.domain.ProductPreviewDTO;
 import com.web.vop.util.Constant;
 
 import lombok.extern.log4j.Log4j;
@@ -94,6 +96,24 @@ public class AWSS3ServiceImple implements AWSS3Service {
 		
 		return 1;
 	} // end removeImage
+
+	@Override
+	public String toImageUrl(String imgPath, String imgChangeName) {
+		String fullPath = 
+				(imgChangeName == null) ? Constant.DEFAULT_IMG_PATH : imgPath + imgChangeName;
+		
+		return awsS3Client.getUrl(bucketName, fullPath).toString();
+	} // end toImageUrl
+
+	@Override
+	public void toImageUrl(List<ProductPreviewDTO> list) {
+		String fullPath;
+		for(ProductPreviewDTO item : list) {
+			fullPath = (item.getImgChangeName() == null) ? Constant.DEFAULT_IMG_PATH : item.getImgPath() + item.getImgChangeName();
+			item.setImgUrl(awsS3Client.getUrl(bucketName, fullPath).toString());
+		}
+		
+	} // end toImageUrl
 
 	
 

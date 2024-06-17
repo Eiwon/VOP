@@ -99,21 +99,11 @@
 		alert(msg.content);
 	}; // 타입이 alert인 메시지 수신시 호출될 함수
 	
-	msgHandler.notice = function(msg){
-		console.log('notice 메시지 수신');
-		//showSocketNotification(msg, null);
-	}; // 타입이 notice인 메시지 수신시 호출될 함수
-	
-	msgHandler.instanceMsg = function(msg){
-		console.log('instance 메시지 수신');
-		showSocketNotification(msg, null);
-	}; // 타입이 instanceMsg인 메시지 수신시 호출될 함수 
-	
 	msgHandler.replyAlarm = function(msg){
 		console.log('replyAlarm 메시지 수신');
 		
 		showSocketNotification(msg, function(){
-			window.open(msg.callbackInfo);
+			window.open('../product/detail?productId=' + msg.callbackInfo);
 		});
 	}; // 타입이 replyAlarm인 메시지 수신시 호출될 함수
 	

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.web.vop.domain.BasketDTO;
 import com.web.vop.domain.BasketVO;
 import com.web.vop.domain.MemberDetails;
+import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.BasketService;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
@@ -35,6 +36,9 @@ public class BasketController {
 	@Autowired
 	BasketService basketService;
 	
+	@Autowired
+	AWSS3Service awsS3Service;
+	
 	@GetMapping("/main")
 	public void basketMainGET() {
 		log.info("basket/main.jsp 이동");
@@ -43,12 +47,18 @@ public class BasketController {
 	
 	// 내 장바구니 물품 목록 조회
 	// 입력값 : memberId, pageNum
-	// return : 장바구니 물품 리스트, 페이지 메이커
+	// return : 장바구니 물품 리스트
 	@GetMapping("/myBasket")
 	@ResponseBody
 	public ResponseEntity<List<BasketDTO>> getMyBasket(@AuthenticationPrincipal MemberDetails memberDetails){
 		log.info("getMyBasket()");
 		List<BasketDTO> basketList = basketService.getMyBasket(memberDetails.getUsername());
+		for(BasketDTO basketDTO : basketList) {
+			basketDTO.getProductPreviewDTO().setImgUrl(
+					awsS3Service.toImageUrl(basketDTO.getProductPreviewDTO().getImgPath(), basketDTO.getProductPreviewDTO().getImgChangeName())
+					); 
+		}
+		
 		log.info(basketList);
 		return new ResponseEntity<List<BasketDTO>>(basketList, HttpStatus.OK);
 	} // end getMyBasket
