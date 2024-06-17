@@ -144,7 +144,8 @@ public class BasketController {
 		log.info("basketVOList" + basketVOList);
 		
 		int res = 0;
-		
+		// 체크 없이 update : update 결과가 0이면 insert
+		// update : update basket set product_num = product_num + #{product_num} where member_id = ?? and product
 		if(basketVOList == null) {
 			log.info("장바구니 등록");
 			res = basketService.addToBasket(basketVO);

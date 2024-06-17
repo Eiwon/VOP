@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.MessageVO;
+import com.web.vop.domain.SellerRequestDTO;
 import com.web.vop.domain.SellerVO;
 import com.web.vop.persistence.MemberMapper;
-import com.web.vop.persistence.MessageMapper;
 import com.web.vop.persistence.SellerMapper;
 import com.web.vop.util.Constant;
 import com.web.vop.util.PageMaker;
@@ -26,9 +26,6 @@ public class SellerServiceImple implements SellerService{
 	
 	@Autowired
 	SellerMapper sellerMapper;
-	
-	@Autowired
-	MessageMapper messageMapper;
 	
 	@Override
 	public List<SellerVO> getRequestByState(String requestState, PageMaker pageMaker) {
@@ -85,11 +82,13 @@ public class SellerServiceImple implements SellerService{
 	} // end deleteRequest
 
 	@Override
-	public int registerNotice(MessageVO messageVO) {
-		log.info("공지사항 등록");
-		int res = messageMapper.insertMessage(messageVO);
-		return res;
-	} // end registerNotice
+	public SellerRequestDTO getSellerRequestDetails(String memberId) {
+		log.info("판매자 등록 요청 상세정보 조회");
+		SellerRequestDTO sellerRequestDTO = sellerMapper.selectSellerRequestDeteails(memberId);
+		log.info("검색 결과 : " + sellerRequestDTO);
+		return sellerRequestDTO;
+	} // end getSellerRequestDetails
+	
 
 	
 }

@@ -97,13 +97,6 @@ public class PaymentServiceImple implements PaymentService {
 		for(OrderViewDTO order : orderList) {
 			order.getOrderVO().setPurchaseNum(amountMap.get(order.getOrderVO().getProductId()));
 		}
-//		for(int i = 0; i < productIds.length; i++) {
-//			ProductVO productVO = productMapper.selectProduct(productIds[i]);
-//			orderList.add(new OrderVO(
-//							0, 0, productVO.getProductId(), productVO.getProductName(), productVO.getProductPrice(), 
-//							productNums[i], null, productVO.getImgId(), memberId)
-//							);
-//		} // end for
 		payment.setOrderList(orderList);
 		
 		// 멤버십 정보 등록

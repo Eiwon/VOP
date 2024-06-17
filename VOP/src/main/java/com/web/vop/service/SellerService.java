@@ -3,6 +3,7 @@ package com.web.vop.service;
 import java.util.List;
 
 import com.web.vop.domain.MessageVO;
+import com.web.vop.domain.SellerRequestDTO;
 import com.web.vop.domain.SellerVO;
 import com.web.vop.util.PageMaker;
 
@@ -19,7 +20,7 @@ public interface SellerService {
 	public int approveRequest(SellerVO sellerVO);
 	
 	public int deleteRequest(String memberId);
-
-	public int registerNotice(MessageVO messageVO);
+	
+	public SellerRequestDTO getSellerRequestDetails(String memberId);
 	
 }

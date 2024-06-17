@@ -28,10 +28,6 @@ public class UserDetailsServiceImple implements UserDetailsService{
 		// ID로 계정 정보 검색 후, 검색한 비밀번호와 입력된 비밀번호를 비교 
 		// (비밀번호는 암호화되서 저장하기 때문에 가져와서 복호화한 후 비교)
 		
-		if(memberVO == null) {
-			log.info("잘못된 ID 또는 비밀번호");
-			throw new UsernameNotFoundException("UsernameNotFound");
-		}
 		MemberDetails memberDetails = new MemberDetails();
 		memberDetails.setMemberVO(memberVO);
 		return memberDetails;

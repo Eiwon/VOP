@@ -6,6 +6,8 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<!-- 카카오 주소검색 API 사용하기 위한 script -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <style type="text/css">
 td {
 	width: 200px;
@@ -24,70 +26,104 @@ img {
 <title>상품 상세 정보</title>
 </head>
 <body>
+	<c:set var="productVO" value="${productDetailsDTO.productVO }"/>
+	<c:set var="memberVO" value="${productDetailsDTO.memberVO }"/>
 	<h2>상품 상세 정보</h2>
 	<form action="../product/update" method="POST" id="formProduct" enctype="multipart/form-data">
 	<table class="form_info">
 		<tbody>
 			<tr>
 				<td>판매자 ID</td>
-				<td id="memberId"></td>
+				<td>${memberVO.memberId }</td>
 			</tr>
 			<tr>
 				<td>판매자 이름</td>
-				<td id="memberName"></td>
+				<td>${memberVO.memberName }</td>
 			</tr>
 			<tr>
 				<td>판매자 전화번호</td>
-				<td id="memberPhone"></td>
+				<td>${memberVO.memberPhone }</td>
 			</tr>
 			<tr>
 				<td>판매자 이메일</td>
-				<td id="memberEmail"></td>
+				<td>${memberVO.memberEmail }</td>
 			</tr>
 			<tr>
 				<td>사업체 명</td>
-				<td id="businessName"></td>
+				<td>${productDetailsDTO.businessName }</td>
 			</tr>
 			<tr>
 				<td>등록 일자</td>
-				<td id="productDateCreated"></td>
+				<td>${productVO.productDateCreated.toLocaleString() }</td>
 			</tr>
 			<tr>
 				<td>등록 번호</td>
-				<td id="productId"></td>
+				<td>${productVO.productId }</td>
 			</tr>
 			<tr>
 				<td>상품명</td>
-				<td><input id="productName" name="productName"></td>
+				<td><input type="text" id="productName" name="productName" value="${productVO.productName }"></td>
 			</tr>
 			<tr>
 				<td>분류</td>
-				<td><input id="category" name="category"></td>
+				<td>
+				<select id="category" name="category">
+					<option value="${productVO.category }" selected hidden="hidden">${productVO.category }</option>
+					<option value="여성패션">여성패션</option>
+					<option value="남성패션">남성패션</option>
+					<option value="남녀 공용 의류">남녀 공용 의류</option>
+					<option value="유아동 패션">유아동 패션</option>
+					<option value="뷰티">뷰티</option>
+					<option value="출산/유아동">출산/유아동</option>
+					<option value="식품">식품</option>
+					<option value="주방용품">주방용품</option>
+					<option value="생활용품">생활용품</option>
+					<option value="홈인테리어">홈인테리어</option>
+					<option value="가전디지털">가전디지털</option>
+					<option value="스포츠/레저">스포츠/레저</option>
+					<option value="자동차 용품">자동차 용품</option>
+					<option value="도서/음반/DVD">도서/음반/DVD</option>
+					<option value="완구/취미">완구/취미</option>
+					<option value="문구/오피스">문구/오피스</option>
+					<option value="반려동물용품">반려동물용품</option>
+					<option value="헬스/건강식품">헬스/건강식품</option>
+				</select> </td>
 			</tr>
 			<tr>
 				<td>가격</td>
-				<td><input id="productPrice" name="productPrice"></td>
+				<td><input type="text" id="productPrice" name="productPrice" value="${productVO.productPrice }"></td>
 			</tr>
 			<tr>
 				<td>재고</td>
-				<td><input id="productRemains" name="productRemains"></td>
+				<td><input type="number" id="productRemains" name="productRemains" value="${productVO.productRemains }"></td>
 			</tr>
 			<tr>
 				<td>보관 위치</td>
-				<td><input id="productPlace" name="productPlace"></td>
+				<td><input id="productPlace" name="productPlace" value="${productVO.productPlace }" readonly>
+				<input type="button" value="주소 검색" onclick="searchAddress()"></td>
 			</tr>
 			<tr>
 				<td>등록 상태</td>
-				<td id="productState"></td>
+				<td id="productState">${productVO.productState }</td>
 			</tr>
 			<tr>
 				<td>썸네일 <input id="inputThumbnail" type="file" name="thumbnail" onchange="showThumbPreview()"></td>
-				<td id="productThumbnail"></td>
+				<td id="productThumbnail">
+				<c:choose>
+					<c:when test="${productDetailsDTO.thumbnailUrl != null }">
+						<img src="${productDetailsDTO.thumbnailUrl }">
+					</c:when>
+				</c:choose>
+				</td>
 			</tr>
 			
 			<tr>
 				<td>상세 이미지 <input id="inputDetails" type="file" name="details" multiple="multiple" onchange="showDetailsPreview()"></td>
-				<td id="productDetails"></td>
+				<td id="productDetails">
+				<c:forEach var="imgUrl" items="${productDetailsDTO.detailsUrl }">
+					<img src="${imgUrl }">
+				</c:forEach>
+				</td>
 			</tr>
 		</tbody>
 		<tfoot>
@@ -100,16 +136,22 @@ img {
 	</table>
 	</form>
 	<script type="text/javascript">
-		// 변경해도 되는 값 : productName, productPrice, productRemains,
-		let productDetails = JSON.parse('${productDetails}');
-		const productId = productDetails.productId;
+		const productId = '${productVO.productId}';
+		let productState = '${productVO.productState}';
 		let btnContinue = $('#btn_continue');
 		let btnUpdate = $('#btn_update');
 		let btnDelete = $('#btn_delete');
 		
 		$(document).ready(function(){
 			
-			setInfo();
+			if(productState == '판매중'){
+				btnContinue.text('판매 중단');
+			}else if(productState == '판매 중단'){
+				btnContinue.text('판매 재개');
+			}else{
+				btnContinue.css('visibility', "hidden");
+			}
+			
 			btnContinue.click(function(){
 				toggleProductState();
 			});
@@ -120,52 +162,12 @@ img {
 				deleteRequest();
 			});
 			
-			loadImg();
-			
 		}); // end document.ready
-		
-		
-		function setInfo(){
-			$('#memberId').text(productDetails.memberId);
-			$('#memberName').text(productDetails.memberName);
-			$('#memberPhone').text(productDetails.memberPhone);
-			$('#memberEmail').text(productDetails.memberEmail);
-			$('#businessName').text(productDetails.businessName);
-			$('#productDateCreated').text(productDetails.productDateCreated);
-			$('#productId').text(productDetails.productId);
-			
-			$('#productName').val(productDetails.productName);
-			$('#category').val(productDetails.category);
-			$('#productPrice').val(productDetails.productPrice);
-			$('#productRemains').val(productDetails.productRemains);
-			$('#productPlace').val(productDetails.productPlace);
-			$('#productState').text(productDetails.productState);
-			$('#productThumbnail').html('<img alt="' + productDetails.imgId + '">');
-			
-			let imgDetailsForm = '';
-			for (x in productDetails.imgIdDetails){
-				imgDetailsForm += '<img alt="' + productDetails.imgIdDetails[x] + '"><br>';
-			}
-			$('#productDetails').html(imgDetailsForm);
-			
-			if(productDetails.productState == '판매중'){
-				btnContinue.text('판매 중단');
-			}else if(productDetails.productState == '판매 중단'){
-				btnContinue.text('판매 재개');
-			}else{
-				btnContinue.css('visibility', "hidden");
-			}
-			
-		} // end setInfo
 		
 		function toggleProductState() {
 			// 상품 판매 중지, 재개
-			let productState;
-			
-			if(productDetails.productState == '판매중'){
-				productState = '판매 중단';
-			}else if(productDetails.productState == '판매 중단'){
-				productState = '판매중';
+			if(productState != '판매중' && productState != '판매 중단'){
+				return;
 			}
 			
 			$.ajax({
@@ -181,11 +183,12 @@ img {
 				success : function(result){
 					console.log('상품 상태 변경 결과 : ' + result);
 					if(result == 1){
-						productDetails.productState = productState;
-						if(productDetails.productState == '판매 중단'){
+						if(productState == '판매중'){
+							productState = '판매 중단';
 							alert("판매가 중단되었습니다.");
 							btnContinue.text('판매 재개');
-						}else if(productDetails.productState == '판매중'){
+						}else if(productState == '판매 중단'){
+							productState = '판매중';
 							alert("다시 판매를 시작합니다.");
 							btnContinue.text('판매 중단');
 						}
@@ -202,8 +205,8 @@ img {
 				 event.preventDefault();
 				 return;
 			}
-			formProduct.append('<input type="hidden" name="productId" value="' + productDetails.productId + '">');
-			formProduct.append('<input type="hidden" name="imgId" value="' + productDetails.imgId + '">');
+			formProduct.append('<input type="hidden" name="productId" value="' + productId + '">');
+			formProduct.append('<input type="hidden" name="imgId" value="${productVO.imgId}">');
 			formProduct.append('<input type="hidden" name="productState" value="승인 대기중">');
 			alert("변경 사항은 관리자의 승인 후 반영됩니다.");
 		});
@@ -216,15 +219,17 @@ img {
 					'Content-Type' : 'application/json'
 				},
 				url : 'request',
-				data : JSON.stringify(productId),
+				data : productId,
 				success : function(result){
 					console.log(result);
-					if(result == 1){
+					if(result == 201){
 						alert('삭제 요청이 등록되었습니다. 관리자의 승인 후 삭제됩니다.');
-					}else if(result == 2){
+					}else if(result == 200){
+						alert('삭제 요청 실패');
+					}else if(result == 101){
 						alert('삭제 성공');
 						window.close();
-					}else {
+					}else if(result == 100){
 						alert('삭제 실패');
 					}
 				} // end success
@@ -236,10 +241,8 @@ img {
        	 	console.log("changed");
        		let inputThumbnail = $("#inputThumbnail");
             let file = inputThumbnail.prop('files')[0]; // file 객체 참조
-            let previewThumbnail = $('#productThumbnail');
-            previewThumbnail.html('');
-            resizeImg(file, 120, 120, previewThumbnail);
-            
+            let fileUrl = URL.createObjectURL(file);
+            $('#productThumbnail').html($('<img src="' + fileUrl + '">'));
         } // end showThumbPreview()
 		
         function showDetailsPreview(){
@@ -257,42 +260,16 @@ img {
          	previewDetails.html(form);
         } // end showDetailsPreview()
 		
-		function toDate(timestamp){
-			let date = new Date(timestamp);
-			let formatted = (date.getYear() + 1900) + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + 
-					date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-			return formatted;
-		} // end toDate
-		
-		function resizeImg(file, width, height, previewThumbnail){ // 변경할 파일, 너비, 높이, 변경 후 출력할 form
-			let fileUrl = URL.createObjectURL(file);
-            
-            let image = new Image();
-            image.src = fileUrl; // 이미지 객체 생성 후 src 등록 (<img src="fileUrl"> 과 동일)
-            image.onload = function(){ // 이미지 등록이 완료되면 함수 실행
-            	let canvas = $('<canvas>');
-                let context = canvas[0].getContext('2d');
-                context.drawImage(image, 0, 0, width, height); // 캔버스 객체 생성 후, 이미지를 지정한 크기로 다시 그림
-                image.src = canvas[0].toDataURL(); // 그려진 이미지를 다시 image 객체에 등록
-                image.onload = function(){ // 이미지 등록이 완료되면 출력
-	                previewThumbnail.append(image);
-                }
-            }
-		} // end resizeImg
-		
-		function loadImg(){
-			$(document).find('img').each(function(){
-				let target = $(this);
-				let imgId = target.attr("alt");
-				$.ajax({
-					method : 'GET',
-					url : '../image/' + imgId,
-					success : function(result){
-						target.attr('src', result);
-					}
-				}); // end ajax
-			});
-		} // end loadImg
+		 function searchAddress(){
+	 			new daum.Postcode({ // 카카오 주소검색 API 팝업창 띄우는 코드
+	 		        oncomplete: function(data) {
+	 		            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+	 		            console.log(data);
+	 		            $('#productPlace').val(data.roadAddress);
+	 		        }
+	 		    }).open();
+	 	} // end searchAddress
+	 		
 	</script>
 	
 		

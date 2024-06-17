@@ -11,6 +11,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class BasketDTO {
 	private ProductPreviewDTO productPreviewDTO;
+	private int productId;
 	private int productNum;
 }
 

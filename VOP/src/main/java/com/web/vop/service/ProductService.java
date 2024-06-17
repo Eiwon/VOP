@@ -70,7 +70,7 @@ public interface ProductService {
 	List<ProductPreviewDTO> getRecent5();
 	
 	// 상태가 ?? 대기중인 상품 조회
-	List<ProductVO> searchByState(String productState, PageMaker pageMaker);
+	List<ProductPreviewDTO> searchByState(String productState, PageMaker pageMaker);
 	
 	// productId로 상세 정보 조회
 	ProductDetailsDTO getDetails(int productId);

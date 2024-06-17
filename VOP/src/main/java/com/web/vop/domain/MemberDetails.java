@@ -1,5 +1,6 @@
 package com.web.vop.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,7 +13,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MemberDetails implements UserDetails{
+public class MemberDetails implements Serializable, UserDetails{
 
 	private static final long serialVersionUID = 1L;
 	private MemberVO memberVO;
@@ -42,7 +43,8 @@ public class MemberDetails implements UserDetails{
 
 	@Override
 	public String getUsername() {
-		return memberVO.getMemberId();
+		
+		return (memberVO == null) ? null : memberVO.getMemberId();
 	}
 
 	public String getAuth() {
