@@ -37,6 +37,8 @@
 
 <body>
 
+
+
 <script type="text/javascript">
 	 let paymentWrapper = JSON.parse('${paymentWrapper}');	
 	 let memberVO = paymentWrapper.memberVO;

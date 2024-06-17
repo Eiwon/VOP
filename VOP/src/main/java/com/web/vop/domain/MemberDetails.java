@@ -44,10 +44,8 @@ public class MemberDetails implements UserDetails{
 	public String getUsername() {
 		return memberVO.getMemberId();
 	}
-
-	public String getAuth() {
-		return memberVO.getMemberAuth();
-	}
+	
+	// getAuth() ªË¡¶
 	
 	@Override
 	public boolean isAccountNonExpired() {
