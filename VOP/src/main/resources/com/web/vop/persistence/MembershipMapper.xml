@@ -28,8 +28,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 멤버십 등록 -->
    <insert id="insertMembership">
-      INSERT INTO MEMBERSHIP (MEMBERSHIP_ID, MEMBER_ID, JOIN_DATE, EXPIRY_DATE, PAYMENT_DATE, MEMBERSHIP_FEE) 
-      VALUES (#{membershipId}, #{memberId}, SYSDATE, SYSDATE + INTERVAL '5' DAY, SYSDATE, #{membershipFee})
+      INSERT INTO MEMBERSHIP (MEMBERSHIP_ID, MEMBER_ID, JOIN_DATE, EXPIRY_DATE, PAYMENT_DATE, MEMBERSHIP_FEE, CHARGE_ID) 
+      VALUES (#{membershipId}, #{memberId}, SYSDATE, SYSDATE + INTERVAL '5' DAY, SYSDATE, #{membershipFee}, #{chargeId})
    </insert>
 
 	<!-- 멤버십 권한 수정 -->

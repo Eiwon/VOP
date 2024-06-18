@@ -4,9 +4,11 @@ import java.util.Date;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.MembershipVO;
+import com.web.vop.domain.PaymentVO;
 import com.web.vop.domain.PaymentWrapper;
 
 @Mapper
@@ -20,8 +22,8 @@ public interface MembershipMapper {
 	//int insertMembershipPayment(MembershipVO membershipVO);
 	
 	// 멤버십 등록 
-	int insertMembership(MembershipVO membershipVO);
-		
+	int insertMembership(MembershipVO membershipVO) throws DataIntegrityViolationException;
+	
 	// 멤버십 권한 업데이트 
 	void updateMemberAuthOnInsert(@Param("memberId") String memberId);
 	
