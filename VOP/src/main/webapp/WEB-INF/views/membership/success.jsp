@@ -86,23 +86,14 @@ $(document).ready(function() {
 	
 	<sec:authorize access="isAuthenticated()">
 	<p>일반사용자 전용</p>
-
-	 <script type="text/javascript">
-        // 일반 사용자 전용 alert 및 redirect
-        alert('멤버십 회원만 접근 가능합니다.');
-        window.location.href = '<%= request.getContextPath() %>/membership/register';
-    </script>
+		<p>멤버십 전용</p>
+	
+ 		<div id="expirydate"></div>
+	
+		<button id="cancelMembershipBtn" style="display: none;">멤버십 해지하기</button>
+	 
 	</sec:authorize>
 	
-	
-	<sec:authorize access="hasRole('ROLE_판매자')">
-	<p>멤버십 전용</p>
-	
- 	<div id="expirydate"></div>
-	
-	<button id="cancelMembershipBtn" style="display: none;">멤버십 해지하기</button>
-
-	</sec:authorize>
 	
 
 </body>

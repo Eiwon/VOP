@@ -3,6 +3,7 @@ package com.web.vop.service;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,13 +62,18 @@ public class MembershipServiceImple implements MembershipService{
 	}//end makeMembershipForm()
 	
 	
-	@Transactional(value = "transactionManager")
+	//@Transactional(value = "transactionManager")
 	@Override
-	public int registerMembership(PaymentWrapper payment) {
+	public int registerMembership(PaymentWrapper payment)throws DataIntegrityViolationException{
+		log.info("registerMembership()");
 		int res = 0;
-		PaymentVO paymentVO = payment.getPaymentVO();
-		int paymentId = paymentVO.getPaymentId();
 		MembershipVO membershipVO = payment.getMembershipVO();
+		// 결제 정보에서 chargeId 설정
+		String chargeId = payment.getMembershipVO().getChargeId();
+		// membershipVO에 chargeId 설정
+	    membershipVO.setChargeId(chargeId);
+	    
+		log.info("chargeId ->> " + membershipVO);
 		
 		res = membershipMapper.insertMembership(membershipVO);
 		

@@ -58,14 +58,21 @@ public class MembershipRESTController {
 		log.info("결제 내역 : " + membershipResult.toString());
 		
 		MembershipVO membershipVO = membershipResult.getMembershipVO();
+		log.info(membershipVO);
 		
 		String memberId = membershipVO.getMemberId(); // 사용자 아이디
 		log.info("사용자 아이디 :" + memberId);
 		String impUid = membershipVO.getChargeId(); // 환불 아이디
 		log.info("환불 아이디 :" + impUid);
+		membershipVO.setChargeId(impUid);
+		
 		int chargePrice = membershipVO.getMembershipFee(); // 결제금액 
 		log.info("결제 금액 :" + chargePrice);
 		int res = 0;
+		
+		// membershipResult에서 MembershipVO 객체를 가져와 chargeId를 설정
+	    // 이 줄은 실제 사용해야 하는 impUid 값을 MembershipVO 객체에 설정합니다.
+		//membershipResult.getMembershipVO().setChargeId(impUid);
 		
 		if (membershipResult == null || membershipResult.getMembershipVO() == null) {
 	        // 예외 처리 또는 오류 응답을 반환할 수 있습니다
@@ -87,7 +94,7 @@ public class MembershipRESTController {
 		MembershipVO vo = membershipService.selectByMemberId(memberId);
 		log.info("멤버십 전체 조회 = " + vo);
 		
-		if (res == 1) {
+		if (result == 1) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return ResponseEntity.status(500).body(result);
