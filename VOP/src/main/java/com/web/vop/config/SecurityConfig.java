@@ -99,6 +99,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 			.accessDeniedPage("/access/denied");
 
 		http.csrf().disable();
+		// header 정보에 xssProtection 기능 설정
+		http.headers().xssProtection().block(true);
+		http.headers().contentSecurityPolicy("script-src 'self'");
+		
 			//.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		//http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		//http.headers().cacheControl();
