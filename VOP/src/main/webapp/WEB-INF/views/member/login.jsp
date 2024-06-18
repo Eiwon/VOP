@@ -27,5 +27,9 @@
 			<a href="register">회원 가입</a>
 		</div>
 	</div>
+	
+	<script type="text/javascript">
+		
+	</script>
 </body>
 </html>

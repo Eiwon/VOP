@@ -4,7 +4,9 @@ package com.web.vop.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,21 +63,25 @@ public class MemberController {
 	} // end loginGET
 	
 	@PostMapping("/login")
-	public String loginPOST(Model model, MemberVO memberVO) {
+	public String loginPOST(Model model, HttpServletResponse response, MemberVO memberVO) {
 		UserDetails memberDetails = memberService.authentication(memberVO.getMemberId(), memberVO.getMemberPw());
 		String token = null;
+		AlertVO alertVO = new AlertVO();
 		log.info(memberDetails);
 		if(memberDetails != null) {
 			token = tokenAuthenticationService.createToken(memberDetails);
-			model.addAttribute("token", token);
-			return "member/loginSuccess";
+			response.addHeader("Authorization", "Bearer " + token);
+			Cookie cookie = new Cookie("Refresh", token);
+			response.addCookie(cookie);
+			model.addAttribute("Refresh", token);
+			alertVO.setAlertMsg("로그인 성공");
+			alertVO.setRedirectUri("board/main");
 		}else {
-			AlertVO alertVO = new AlertVO();
 			alertVO.setAlertMsg("유효하지 않은 아이디 또는 비밀번호입니다");
 			alertVO.setRedirectUri("member/login");
-			model.addAttribute("alertVO", alertVO);
-			return Constant.ALERT_PATH;
 		}
+		model.addAttribute("alertVO", alertVO);
+		return Constant.ALERT_PATH;
 	}
 	
 	@GetMapping("/loginSuccess")

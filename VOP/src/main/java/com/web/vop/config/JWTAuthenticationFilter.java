@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.amazonaws.services.guardduty.model.SecurityContext;
@@ -34,7 +35,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
 		String token = request.getHeader(AUTHORIZATION_HEADER);
 		
-		if((token != null && !token.isBlank())) {
+		if(StringUtils.hasText(token)) {
 			UserDetails memberDetails = tokenAuthenticationService.getUserFromToken(token);
 			if(memberDetails != null) {
 				UsernamePasswordAuthenticationToken authenticationToken

@@ -23,6 +23,7 @@
 		if(redirectUri == 'close'){
 			window.close();
 		}else{
+			
 			location.href = '../' + redirectUri;		
 		}
 	</script>

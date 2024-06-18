@@ -101,7 +101,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 		http.csrf().disable()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-		http.headers().cacheControl();
+		http.headers().cacheControl()
+			.and()
+			.frameOptions().sameOrigin();
 		
 	} // end configure
 
