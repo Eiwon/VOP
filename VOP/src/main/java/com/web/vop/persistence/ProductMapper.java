@@ -89,7 +89,7 @@ public interface ProductMapper {
 	List<ProductPreviewDTO> selectRecent5();
 	
 	// 상태가 ??인 상품 조회
-	List<ProductVO> selectStateIs(@Param("productState") String productState, @Param("pagination") Pagination pagination);
+	List<ProductPreviewDTO> selectStateIs(@Param("productState") String productState, @Param("pagination") Pagination pagination);
 	
 	// 상태가 ??인 상품 수 조회
 	int selectStateIsCnt(String productState);

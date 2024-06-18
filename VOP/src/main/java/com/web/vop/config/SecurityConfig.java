@@ -13,12 +13,14 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -64,8 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 			.antMatchers(NORMAL_OVER).authenticated()
 			.antMatchers(ADMIN_ONLY).hasAuthority(ROLE_ADMIN)
 			.antMatchers(SELLER_OVER).hasRole(AUTH_SELLER)
-			.expressionHandler(expressionHandler())
-			;
+			.expressionHandler(expressionHandler());
 		// hasRole("권한") : 특정 권한이 있는지 체크 (권한 계층 적용)
 		// hasAnyRole("권한1", "권한2", ...) : 목록 중 하나의 권한이라도 있는지 체크
 		// hasAuthority("ROLE_권한") : 특정 권한이 있는지 체크(권한 계층 미적용)
@@ -77,7 +78,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 			.loginProcessingUrl("/member/login")
 			.successHandler(loginSuccessHandler)
 			.failureHandler(loginFailHandler);
-			//.defaultSuccessUrl("/board/main", false);
 
 		http.rememberMe() // 자동 로그인
 			.key("key") 
@@ -98,11 +98,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 		http.exceptionHandling()
 			.accessDeniedPage("/access/denied");
 
-		http.csrf().disable()
-			.sessionManagement() // maximumSessions, maxSessionsPreventsLogin을 설정하기 위해 호출
-			.maximumSessions(1) // 하나의 아이디로 동시에 로그인 할 수 있는 최대치 : 1
-			.maxSessionsPreventsLogin(true); // 설정값을 초과하여 로그인시, 먼저 로그인한 아이디의 세션 만료 설정
-	
+		http.csrf().disable();
+			//.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		//http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+		//http.headers().cacheControl();
+		
 	} // end configure
 
 	@Override
@@ -115,6 +115,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	} // end passwordEncoder
+	
+	@Bean
+	public JWTAuthenticationFilter jwtAuthenticationFilter() {
+		return new JWTAuthenticationFilter();
+	} // end jwtAuthenticationFilter
 	
 	@Bean
 	public SimpleUrlAuthenticationSuccessHandler loginSuccessHandler() {

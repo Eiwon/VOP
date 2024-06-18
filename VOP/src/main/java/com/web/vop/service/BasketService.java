@@ -15,6 +15,9 @@ public interface BasketService {
 	
 	//내 장바구니 조회 // 우제영 제작
 	BasketVO getMyBasketList(int productId, String memberId);
+	
+	// 장바구니 등록 or 수정
+	int createBasket(BasketVO basketVO);
 
 	// 내 장바구기 물품 수 조회
 	int getMyBasketCnt(String memberId);

@@ -131,30 +131,9 @@ public class BasketController {
 	@PostMapping("/myBasketDate")
 	public ResponseEntity<Integer> registerBasket(@RequestBody BasketVO basketVO){
 		log.info("registerBasketPOST()");
-		int dbProductId = basketVO.getProductId();
-		String dbMemberId = basketVO.getMemberId();
-		int dbProductNum =  basketVO.getProductNum();
-		log.info("basketVO : " + basketVO);
-		log.info("dbProductId : " + dbProductId);
-		log.info("dbMemberId : " + dbMemberId);
-		log.info("dbProductNum : " + dbProductNum);
 		
-		// 장바구니 리스트 검색
-		BasketVO basketVOList = basketService.getMyBasketList(dbProductId, dbMemberId);
-		log.info("basketVOList" + basketVOList);
-		
-		int res = 0;
-		
-		if(basketVOList == null) {
-			log.info("장바구니 등록");
-			res = basketService.addToBasket(basketVO);
-		} else {
-			basketVO.setProductNum(dbProductNum + basketVOList.getProductNum());
-			log.info("ProductNum : " + basketVO.getProductNum());
-			log.info("장바구니 수정");// 수량만 수정
-			res = basketService.updateProductNum(basketVO);
-		}
-		log.info(res + "행 성공");
+		int res = basketService.createBasket(basketVO);
+
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	}// end registerBasket
 	

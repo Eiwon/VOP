@@ -15,12 +15,14 @@ tr {
 	border: 1px solid black;
 }
 </style>
-<title>${sellerVO.memberId } 님의 판매자 정보</title>
+<title>${sellerDetailsDTO.memberId } 님의 판매자 정보</title>
 </head>
 <body>
 	<h2>판매자 정보</h2>
 	<table class="form_info">
 		<tbody>
+			<c:set var="sellerVO" value="${sellerRequestDTO.sellerVO }"/>
+			<c:set var="memberVO" value="${sellerRequestDTO.memberVO }"></c:set>
 			<tr>
 				<td>ID</td>
 				<td>${sellerVO.memberId }</td>
@@ -38,7 +40,7 @@ tr {
 				<td>${memberVO.memberEmail }</td>
 			</tr>
 			<tr>
-				<td>사업체 명</td>
+				<td>사업자 명</td>
 				<td>${sellerVO.businessName }</td>
 			</tr>
 			
@@ -52,43 +54,28 @@ tr {
 			</tr>
 			<tr>
 				<td>결과 메시지</td>
-				<td><textarea id="refuseMsg">최대 50자 입력</textarea></td>
+				<c:if test="${sellerVO.refuseMsg != null }">
+					<td><textarea id="refuseMsg">최대 50자 입력</textarea></td>
+				</c:if>
 			</tr>
 		</tbody>
 		<tfoot>
 			<tr>
-				<td><button id="btn_approve"></button></td>
-				<td><button id="btn_refuse"></button></td>
+				<c:choose>
+					<c:when test="${memberVO.memberAuth eq '판매자' }">
+						<td><button id="btn_approve" onclick="sendResult('승인')">판매자 권한 취소</button></td>
+						<td><button id="btn_refuse" onclick="window.close()"></button>돌아가기</td>
+					</c:when>
+					<c:otherwise>
+						<td><button id="btn_approve" onclick="sendResult('승인')">승인</button></td>
+						<td><button id="btn_refuse" onclick="sendResult('거절')">거절</button></td>
+					</c:otherwise>
+				</c:choose>
 			</tr>
 		</tfoot>
 	</table>
 	
 	<script type="text/javascript">
-		const memberAuth = '${memberVO.memberAuth }';
-		let btnApprove = $('#btn_approve');
-		let btnRefuse = $('#btn_refuse');
-		
-		// 대상 유저의 권한이 "판매자"이면 판매자 권한 취소 페이지 출력
-		if(memberAuth == '판매자'){
-			btnApprove.text('판매자 권한 취소');
-			btnApprove.click(function(){
-				sendResult('승인');
-			});
-			btnRefuse.text('돌아가기');
-			btnRefuse.click(function(){
-				window.close();
-			});
-		}else { // "일반"이면 판매자 권한 등록 페이지 출력
-			btnApprove.text('승인');
-			btnApprove.click(function(){
-				sendResult('승인');
-			});
-			btnRefuse.text('거절');
-			btnRefuse.click(function(){
-				sendResult('거절');
-			});
-		}
-		
 		
 		function sendResult(requestState){
 			let refuseMsg = $('#refuseMsg').text();
@@ -100,7 +87,7 @@ tr {
 				},
 				method : 'PUT',
 				data : JSON.stringify({
-					'memberId' : '${sellerVO.memberId}',
+					'memberId' : '${sellerRequestDTO.sellerVO.memberId}',
 					'refuseMsg' : refuseMsg,
 					'requestState' : requestState
 				}),

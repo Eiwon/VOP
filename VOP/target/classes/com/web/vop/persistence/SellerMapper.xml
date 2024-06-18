@@ -13,8 +13,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="requestTime" column="REQUEST_TIME"/>
       <result property="requestContent" column="REQUEST_CONTENT"/>
 	  <result property="requestState" column="REQUEST_STATE"/>
-   	  <result property="refuseMsg" column="REFUSE_MSG"/>
-   	   	
+   	  <result property="refuseMsg" column="REFUSE_MSG"/>	   	
+   </resultMap>
+   
+   <resultMap type="com.web.vop.domain.SellerRequestDTO" id="sellerRequestResultMap">
+   		<association property="sellerVO" javaType="com.web.vop.domain.SellerVO" 
+   			resultMap="com.web.vop.persistence.SellerMapper.sellerResultMap"/>
+   		<association property="memberVO" javaType="com.web.vop.domain.MemberVO" 
+   			resultMap="com.web.vop.persistence.MemberMapper.memberResultMap"/>
    </resultMap>
    
    <!-- 판매자 권한 요청 조회 -->
@@ -56,5 +62,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		DELETE SELLER WHERE MEMBER_ID = #{memberId}
    </delete>
    
+   <!-- 판매자 권한 요청 상세정보 조회 -->
+   <select id="selectSellerRequestDeteails" resultMap="sellerRequestResultMap">
+   		SELECT SL.*, MEMBER.MEMBER_NAME, MEMBER.MEMBER_EMAIL, MEMBER.MEMBER_PHONE, MEMBER.MEMBER_AUTH 
+   		FROM(
+			SELECT * FROM SELLER WHERE MEMBER_ID = #{memberId}
+		) SL JOIN MEMBER ON SL.MEMBER_ID = MEMBER.MEMBER_ID
+   </select>
    
 </mapper>

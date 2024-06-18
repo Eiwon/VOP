@@ -24,15 +24,14 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 
 		SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
 		String savedPage = (String) request.getSession().getAttribute("prevPage");
-		log.info(savedRequest);
-		log.info(savedPage);
+		
 		if(savedRequest != null) {
 			uri = savedRequest.getRedirectUrl();
 		}else if (savedPage != null){
 			uri = savedPage;
 			request.getSession().removeAttribute("prevPage");
 		}
-		log.info("uri : " + uri);
+		log.info("로그인 성공");
 		response.sendRedirect(uri);
 	}
 	

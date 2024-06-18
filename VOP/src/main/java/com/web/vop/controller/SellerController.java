@@ -30,6 +30,7 @@ import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.MessageVO;
 import com.web.vop.domain.PagingListDTO;
+import com.web.vop.domain.SellerRequestDTO;
 import com.web.vop.domain.SellerVO;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.SellerService;
@@ -186,27 +187,13 @@ public class SellerController {
 	@GetMapping("/popupSellerDetails")
 	public void popupSellerDetailsGET(Model model, String memberId) {
 		log.info("판매자 상세 정보 팝업 요청 " + memberId);
-		SellerVO sellerVO = sellerService.getMyRequest(memberId);
-		MemberVO memberVO = memberService.getMemberInfo(memberId);
-		model.addAttribute("sellerVO", sellerVO);
-		model.addAttribute("memberVO", memberVO);
+		SellerRequestDTO sellerRequestDTO = sellerService.getSellerRequestDetails(memberId);
+		model.addAttribute("sellerRequestDTO", sellerRequestDTO);
 	} // end popupSellerReqGET
 	
 	@GetMapping("/popupRegisterNotice")
 	public void popupRegisterNoticeGET() {
 		log.info("공지사항 등록 팝업 요청");
 	} // end popupRegisterNotice
-	
-	@PostMapping("/notice")
-	@ResponseBody
-	public ResponseEntity<Integer> registerNotice(
-			@RequestBody MessageVO messageVO, @AuthenticationPrincipal UserDetails memberDetails){
-		log.info("공지사항 등록 요청 : " + messageVO);
-		messageVO.setType("notice");
-		messageVO.setWriterId(memberDetails.getUsername());
-		int res = sellerService.registerNotice(messageVO);
-		
-		return new ResponseEntity<Integer>(res, HttpStatus.OK);
-	} // end registerNotice
 	
 }

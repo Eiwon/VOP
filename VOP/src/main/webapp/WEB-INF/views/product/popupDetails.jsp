@@ -18,24 +18,26 @@ tr {
 <title>상품 상세 정보</title>
 </head>
 <body>
+	<c:set var="productVO" value="${productDetails.productVO }"/>
+	<c:set var="memberVO" value="${productDetails.memberVO }"/>
 	<h2>상품 상세 정보</h2>
 	<table class="form_info">
 		<tbody>
 			<tr>
 				<td>판매자 ID</td>
-				<td>${productDetails.memberId }</td>
+				<td>${memberVO.memberId }</td>
 			</tr>
 			<tr>
 				<td>판매자 이름</td>
-				<td>${productDetails.memberName }</td>
+				<td>${memberVO.memberName }</td>
 			</tr>
 			<tr>
 				<td>판매자 전화번호</td>
-				<td>${productDetails.memberPhone }</td>
+				<td>${memberVO.memberPhone }</td>
 			</tr>
 			<tr>
 				<td>판매자 이메일</td>
-				<td>${productDetails.memberEmail }</td>
+				<td>${memberVO.memberEmail }</td>
 			</tr>
 			<tr>
 				<td>사업체 명</td>
@@ -43,87 +45,60 @@ tr {
 			</tr>
 			<tr>
 				<td>요청 시간</td>
-				<td>${productDetails.productDateCreated }</td>
+				<td>${productVO.productDateCreated.toLocaleString() }</td>
 			</tr>
 			<tr>
 				<td>등록 번호</td>
-				<td>${productDetails.productId }</td>
+				<td>${productVO.productId }</td>
 			</tr>
 			<tr>
 				<td>상품명</td>
-				<td>${productDetails.productName }</td>
+				<td>${productVO.productName }</td>
 			</tr>
 			<tr>
 				<td>분류</td>
-				<td>${productDetails.category }</td>
+				<td>${productVO.category }</td>
 			</tr>
 			<tr>
 				<td>가격</td>
-				<td>${productDetails.productPrice }</td>
+				<td>${productVO.productPrice }</td>
 			</tr>
 			<tr>
 				<td>재고</td>
-				<td>${productDetails.productRemains }</td>
+				<td>${productVO.productRemains }</td>
 			</tr>
 			<tr>
 				<td>보관 위치</td>
-				<td>${productDetails.productPlace }</td>
-			</tr>
-			<tr>
-				<td>등록 번호</td>
-				<td>${productDetails.productId }</td>
+				<td>${productVO.productPlace }</td>
 			</tr>
 			<tr>
 				<td>썸네일</td>
-				<td><img alt="${productDetails.imgId}"></td>
+				<td><img src="${productDetails.thumbnailUrl}"></td>
 			</tr>
-			<c:forEach items="${productDetails.imgIdDetails }" var="imgId">
+			<c:forEach items="${productDetails.detailsUrl }" var="imgUrl">
 			<tr>
-				<td><img alt="${imgId}"></td>
+				<td><img src="${imgUrl}"></td>
 			</tr>
 			</c:forEach>
 		</tbody>
 		<tfoot>
+			<c:if test="${productVO.productState eq '삭제 대기중' }">
+				<tr>
+					<td><button onclick="deleteProduct()">삭제</button></td>
+					<td><button onclick="window.close()">취소</button></td>
+				</tr>
+			</c:if>
+			<c:if test="${productVO.productState eq '승인 대기중' }">
+			
+			</c:if>
 			<tr>
-				<td><button id="btn_approve"></button></td>
-				<td><button id="btn_refuse"></button></td>
+				<td><button onclick="sendResult('판매중')">승인</button></td>
+				<td><button onclick="sendResult('판매 불가')">거부</button></td>
 			</tr>
 		</tfoot>
 	</table>
 
 	<script type="text/javascript">
-	
-		let btnApprove = $('#btn_approve');
-		let btnRefuse = $('#btn_refuse');
-		const productState = '${productDetails.productState }';
-		
-		$(document).ready(function(){
-			loadImg();
-		}); // end document.ready
-		
-		
-		
-		// 상품 상태가 '삭제 대기중'이면 상품 삭제 / 취소 버튼 출력
-		if(productState == '삭제 대기중'){
-			btnApprove.text('삭제');
-			btnApprove.click(function(){
-				deleteProduct();
-			});
-			btnRefuse.text('취소');
-			btnRefuse.click(function(){
-				window.close();
-			});
-		}else { // '승인 대기중'이면 등록 승인 / 거부 버튼 출력
-			btnApprove.text('승인');
-			btnApprove.click(function(){
-				sendResult('판매중');
-			});
-			btnRefuse.text('거부');
-			btnRefuse.click(function(){
-				sendResult('판매 불가');
-			});
-		}
-	
 	
 	function sendResult(productState){
 		
@@ -134,7 +109,7 @@ tr {
 			},
 			method : 'PUT',
 			data : JSON.stringify({
-				'productId' : '${productDetails.productId}',
+				'productId' : '${productVO.productId}',
 				'productState' : productState
 			}),
 			success : function(result){
@@ -152,7 +127,7 @@ tr {
 			},
 			method : 'DELETE',
 			data : JSON.stringify({
-				'productId' : '${productDetails.productId}'
+				'productId' : '${productVO.productId}'
 			}),
 			success : function(result){
 				window.close();	
@@ -168,20 +143,6 @@ tr {
 				date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
 		return formatted;
 	} // end toDate
-	
-	function loadImg(){
-		$(document).find('img').each(function(){
-			let target = $(this);
-			let imgId = target.attr("alt");
-			$.ajax({
-				method : 'GET',
-				url : '../image/' + imgId,
-				success : function(result){
-					target.attr('src', result);
-				}
-			}); // end ajax
-		});
-	} // end loadImg
 		
 	</script>
 </body>

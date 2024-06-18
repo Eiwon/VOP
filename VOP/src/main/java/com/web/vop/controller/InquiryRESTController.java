@@ -73,6 +73,7 @@ public class InquiryRESTController {
 		// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 		return new ResponseEntity<List<InquiryVO>>(inquiryList, HttpStatus.OK);
 	}// end readAllInquiry()
+	
 
 	@PutMapping("/modify") // PUT : 댓글(리뷰) 수정 // 나중에 데이터 받는 거에 따라 달라짐
 	   public ResponseEntity<Integer> updateInquiry(

@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.web.vop.domain.SellerRequestDTO;
 import com.web.vop.domain.SellerVO;
 import com.web.vop.util.Pagination;
 
@@ -25,4 +26,6 @@ public interface SellerMapper {
 
 	public int deleteRequest(String memberId);
 	
+	// 판매자 권한 요청 상세정보 조회
+	public SellerRequestDTO selectSellerRequestDeteails(String memberId);
 }
