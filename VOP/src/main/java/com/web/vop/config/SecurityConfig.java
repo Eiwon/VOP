@@ -1,5 +1,8 @@
 package com.web.vop.config;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.Bean;
@@ -23,6 +26,9 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.web.vop.handler.LoginSuccessHandler;
 import com.web.vop.service.UserDetailsServiceImple;
@@ -99,6 +105,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 			.accessDeniedPage("/access/denied");
 
 		http.csrf().disable()
+			.cors().configurationSource(corsConfigurationSource())
+			.and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.headers().cacheControl()
@@ -147,5 +155,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 		expressionHandler.setRoleHierarchy(roleHierarchyImple);
 		return expressionHandler;
 	} // end roleVoter
+	
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(List.of("*"));
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
+		configuration.setAllowCredentials(true);
+		configuration.addAllowedHeader("access_token");
+		configuration.addAllowedHeader("refresh_token");
+		configuration.addAllowedHeader("*");
+		configuration.setMaxAge(3600L);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
 	
 }

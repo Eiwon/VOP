@@ -1,12 +1,16 @@
 package com.web.vop.controller;
 
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,24 +68,46 @@ public class MemberController {
 	
 	@PostMapping("/login")
 	public String loginPOST(Model model, HttpServletResponse response, MemberVO memberVO) {
+		AlertVO alertVO = new AlertVO();
 		UserDetails memberDetails = memberService.authentication(memberVO.getMemberId(), memberVO.getMemberPw());
 		String token = null;
-		AlertVO alertVO = new AlertVO();
 		log.info(memberDetails);
 		if(memberDetails != null) {
 			token = tokenAuthenticationService.createToken(memberDetails);
-			response.addHeader("Authorization", "Bearer " + token);
-			Cookie cookie = new Cookie("Refresh", token);
-			response.addCookie(cookie);
-			model.addAttribute("Refresh", token);
+			log.info(token);
+			
+			try {
+				token = URLEncoder.encode("Bearer " + token, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			Cookie accessCookie = new Cookie("access_token", token);
+			accessCookie.setHttpOnly(true);
+			accessCookie.setDomain("localhost");
+			accessCookie.setPath("/");
+			accessCookie.setMaxAge(60 * 1000);
+			accessCookie.setSecure(true);
+			response.addCookie(accessCookie);
 			alertVO.setAlertMsg("로그인 성공");
 			alertVO.setRedirectUri("board/main");
 		}else {
-			alertVO.setAlertMsg("유효하지 않은 아이디 또는 비밀번호입니다");
+			alertVO.setAlertMsg("잘못된 아이디 또는 비밀번호입니다");
 			alertVO.setRedirectUri("member/login");
 		}
 		model.addAttribute("alertVO", alertVO);
 		return Constant.ALERT_PATH;
+	}
+	
+	@PostMapping("/logout")
+	public String logoutPOST(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		
+		for(Cookie cookie : cookies) {
+			if(cookie.getName().equals("access_token")) {
+				cookie.setMaxAge(1);
+			}
+		}
+		return "redirect:../board/main";
 	}
 	
 	@GetMapping("/loginSuccess")

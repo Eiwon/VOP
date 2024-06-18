@@ -21,7 +21,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 		String uri = request.getContextPath();
-
+		
 		SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
 		String savedPage = (String) request.getSession().getAttribute("prevPage");
 		

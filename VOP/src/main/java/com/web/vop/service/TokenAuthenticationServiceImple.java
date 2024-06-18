@@ -1,7 +1,11 @@
 package com.web.vop.service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Date;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -18,18 +23,19 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class TokenAuthenticationServiceImple implements TokenAuthenticationService{
 
 	private String signingKey = "testSignKey";
-	private static final String AUTHORIZATION_HEADER = "Authorization";
-	private static final String REFRESH_HEADER = "Refresh";
+	private static final String ACCESS_TOKEN_HEADER = "access_token";
+	private static final String REFRESH_TOKEN_HEADER = "refresh_token";
 	@Autowired
 	private UserDetailsService UserDetailsService;
 	
 	@Override
-	public String getUsernameFromToken(String token) {
+	public String getUsernameFromToken(String token) throws ExpiredJwtException{
+		
 		return Jwts.parser()
-				.setSigningKey(signingKey) 
-				.parseClaimsJws(token)
-				.getBody()
-				.getSubject();
+				  .setSigningKey(signingKey) 
+				  .parseClaimsJws(token)
+				  .getBody()
+				  .getSubject();
 	}
 
 	@Override
@@ -45,7 +51,7 @@ public class TokenAuthenticationServiceImple implements TokenAuthenticationServi
 	}
 
 	@Override
-	public UserDetails getUserFromToken(String token) {
+	public UserDetails getUserFromToken(String token) throws ExpiredJwtException{
 		String memberName = getUsernameFromToken(token);
 		UserDetails memberDetails = UserDetailsService.loadUserByUsername(memberName);
 		return memberDetails;
@@ -80,9 +86,21 @@ public class TokenAuthenticationServiceImple implements TokenAuthenticationServi
 
 	@Override
 	public String extractAccessToken(HttpServletRequest request) {
-		String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-		String token = null;
+		String bearerToken = null;
+		Cookie[] cookies = request.getCookies();
 		
+		if(cookies != null) {
+			for(Cookie cookie : cookies) {
+				if(cookie.getName().equals(ACCESS_TOKEN_HEADER)) {
+					try {
+						bearerToken = URLDecoder.decode(cookie.getValue(), "UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		String token = null;
 		if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
 			token = bearerToken.substring(7);
 		}
@@ -92,8 +110,18 @@ public class TokenAuthenticationServiceImple implements TokenAuthenticationServi
 
 	@Override
 	public String extractRefreshToken(HttpServletRequest request) {
-		String bearerToken = request.getHeader(REFRESH_HEADER);
+		String bearerToken = request.getHeader(REFRESH_TOKEN_HEADER);
 		String token = null;
+		
+		if(!StringUtils.hasText(bearerToken)) {
+			return null;
+		}
+		
+		try {
+			bearerToken = URLDecoder.decode(bearerToken, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		
 		if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
 			token = bearerToken.substring(7);
