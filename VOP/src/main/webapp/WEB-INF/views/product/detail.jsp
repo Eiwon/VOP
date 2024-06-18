@@ -149,9 +149,6 @@ td {
 		<p>판매자 : ${productVO.memberId}</p>
 	</div>
 
-	
-	
-	
 	<!-- 장바구니 버튼 -->
 	<!-- 세션 아이디가 없는 경우 -->
 	<c:if test="${empty memberDetails.getUsername() }">
@@ -208,6 +205,8 @@ td {
 	
 	<h3>문의</h3>
 	<div id="comments"></div>
+	<!-- 문의 페징처리 내용 -->
+	<div id="comments_list_page"></div>
 
 	<div>
 		<h3>배송/교환/반품 안내</h3>
@@ -218,7 +217,8 @@ td {
 
 	<script type="text/javascript">
      
-     let ReviewMap = {};ReviewMap
+     let reviewMap = {};
+     let inquiryMap = {};
      
  	 const memberId = '${memberDetails.getUsername()}';
  	 let productId = ${productVO.productId};
@@ -306,9 +306,10 @@ function createStars(reviewAvg) {
 
 $(document).ready(function() { 
 	loadImg(); // 이미지 불려오는 메소드
-    ReviewMap.show(1); // 리뷰
+    reviewMap.show(1); // 리뷰
+    inquiryMap.show(1);
     createStars(reviewAvg); // 상품 평균 리뷰값 별 표시
-    getAllComments(); // 문의 
+  /*   getAllComments(); // 문의  */
  
     // 장바구니
     $('#btnBasket').click(function(){
@@ -337,33 +338,238 @@ $(document).ready(function() {
            }
         });
      }); // end btnAdd.click()
-     
-    
 
- // 문의(대댓글) 
-    function getAllComments() {
-        let inquiryUrl = '../inquiryRest/list/' + productId; // 문의 데이터 API 엔드포인트
+}); // end document
+
+//ReviewMap 객체에 show 함수를 정의합니다.
+reviewMap.show = function(page) {
+    
+    let url = '../review/all/' + productId + '/' + page;
+    
+    // AJAX 요청을 보내 리뷰 데이터를 가져옵니다.
+    $.ajax({
+        method: 'GET',
+        url: url,
+        dataType: 'json',
+        success: function(data) {
+            let form = '';
+            
+            // ReviewMap 초기화
+            reviewMap.list = data.list;
+            reviewMap.pageMaker = data.pageMaker;
+            
+            const list = reviewMap.list;
+           
+            for (let x in list) {
+            	let reviewStar = list[x].reviewStar;
+            	
+            	let starsHTML = ''; // 별 모양 HTML을 저장할 변수
+                star = parseInt(reviewStar); // 문자열을 정수로 변환
+				for (let i = 1; i <= 5; i++) {
+                    if (i <= star) {
+                        starsHTML += '&#9733;'; // 별 모양 HTML 코드 추가
+                    } else {
+                        starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
+                    }
+                } 
+                form += '<tr>' +
+                        '<td class="reviewId">' + list[x].reviewId + '</td>' +
+                        '<td class="memberId">' + list[x].memberId + '</td>' +
+                        '<td class="reviewStars">' + starsHTML + '</td>' + 
+                        '<td class="reviewContent">' + list[x].reviewContent + '</td>' + 
+                        '<td class="reviewDateCreated">' + toDate(list[x].reviewDateCreated) + '</td>' +
+                        '<td class="button-container">' +
+                        '<div class="button likeButton" data-value="1"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></div>' +
+                        '<div class="button dislikeButton" data-value="0"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></div>' +
+                        '</td>' +
+                        '</tr>';
+            }
+
+      
+            // 페이지를 생성한 후 등록합니다.
+            $('#product_list_page').html(makePageForm(reviewMap));
+            
+            // 저장된 데이터를 review div에 표현합니다.
+            $('#review').html(form);
+        }
+    });
+}
+
+$(document).on('click', '.likeButton, .dislikeButton', function() {
+	console.log("memberId : " + memberId);
+	if (memberId && memberId.trim() !== '') {
+	
+    const isLikeButton = $(this).hasClass('likeButton');
+    const otherButton = isLikeButton ? $(this).closest('tr').find('.dislikeButton') : $(this).closest('tr').find('.likeButton');
+    const icon = $(this).find('i');
+    const otherIcon = otherButton.find('i');
+
+    // 현재 클릭된 버튼의 상태
+    const isActive = $(this).hasClass(isLikeButton ? 'liked' : 'disliked');
+    // 상대 버튼의 상태
+    const isOtherActive = otherButton.hasClass(isLikeButton ? 'disliked' : 'liked');
+    
+    // 현재 클릭된 행에서 reviewId를 가져옵니다.
+    const reviewId = $(this).closest('tr').find('.reviewId').text();
+    console.log('Review ID:', reviewId);
+    
+    // 현재 버튼의 data-value 값을 콘솔에 출력
+    const likesType = $(this).attr('data-value');
+    console.log(isLikeButton ? 'likesType : ' : 'likesType : ', likesType);
+
+    const $this = $(this); // `this`를 변수에 저장
+
+    if (!isActive && isOtherActive) {
+        let obj = {
+            'reviewId': reviewId,
+            'memberId': memberId,
+            'likesType': likesType
+        };
+        // ajax 요청
+        $.ajax({
+            type: 'PUT', // 메서드 타입
+            url: '../likes/modify', // 경로 
+            headers: {
+                'Content-Type': 'application/json' // json content-type 설정
+            }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 405 에러가 나온다.
+            data: JSON.stringify(obj), // JSON으로 변환
+            success: function(result) { // 전송 성공 시 서버에서 result 값 전송
+                if (result == 1) {
+                    // 클릭된 버튼을 활성화하고 상대 버튼을 비활성화
+                    $this.addClass(isLikeButton ? 'liked' : 'disliked');
+                    icon.removeClass(isLikeButton ? 'fa-thumbs-o-up' : 'fa-thumbs-o-down').addClass(isLikeButton ? 'fa-thumbs-up' : 'fa-thumbs-down');
+
+                    otherButton.removeClass(isLikeButton ? 'disliked' : 'liked');
+                    otherIcon.removeClass(isLikeButton ? 'fa-thumbs-down' : 'fa-thumbs-up').addClass(isLikeButton ? 'fa-thumbs-o-down' : 'fa-thumbs-o-up');
+                    console.log(isLikeButton ? '좋아요 수정 성공' : '싫어요 수정 성공');
+                } else {
+                	console.log(isLikeButton ? '좋아요 수정 실패' : '싫어요 수정 실패');
+                }
+            }
+        }); // end ajax()
+
+    } else if (!isActive) {
+        let obj = {
+            'reviewId': reviewId,
+            'memberId': memberId,
+            'likesType': likesType
+        };
+        // ajax 요청
+        $.ajax({
+            type: 'POST', // 메서드 타입
+            url: '../likes/register', // 경로 
+            headers: {
+                'Content-Type': 'application/json' // json content-type 설정
+            }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 405 에러가 나온다.
+            data: JSON.stringify(obj), // JSON으로 변환
+            success: function(result) { // 전송 성공 시 서버에서 result 값 전송
+                if (result == 1) {
+                    // 클릭된 버튼을 활성화
+                    $this.addClass(isLikeButton ? 'liked' : 'disliked');
+                    icon.removeClass(isLikeButton ? 'fa-thumbs-o-up' : 'fa-thumbs-o-down').addClass(isLikeButton ? 'fa-thumbs-up' : 'fa-thumbs-down');
+                    console.log(isLikeButton ? '좋아요 등록 성공' : '싫어요 등록 성공');
+                } else {
+                	console.log(isLikeButton ? '좋아요 등록 실패' : '싫어요 등록 실패');
+                }
+            }
+        }); // end ajax()
+
+    } else {
+        let obj = {
+            'reviewId': reviewId,
+            'memberId': memberId
+        };
+        // ajax 요청
+        $.ajax({
+            type: 'DELETE', // 메서드 타입
+            url: '../likes/delete', // 경로 
+            headers: {
+                'Content-Type': 'application/json' // json content-type 설정
+            }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 405 에러가 나온다.
+            data: JSON.stringify(obj), // JSON으로 변환
+            success: function(result) { // 전송 성공 시 서버에서 result 값 전송
+                if (result == 1) {
+                    $this.removeClass(isLikeButton ? 'liked' : 'disliked');
+                    icon.removeClass(isLikeButton ? 'fa-thumbs-up' : 'fa-thumbs-down').addClass(isLikeButton ? 'fa-thumbs-o-up' : 'fa-thumbs-o-down');
+                    console.log(isLikeButton ? '좋아요 삭제 성공' : '싫어요 삭제 성공');
+                } else {
+                	console.log(isLikeButton ? '좋아요 삭제 실패' : '싫어요 삭제 실패');
+                }
+            }
+        }); // end ajax()
+    }// end else 
+	
+	} else {
+		alert('로그인 후 사용 가능 합니다.');
+		window.location.href = '../member/login';
+	}
+}); // end (document).on
+
+
+ 	// 페이지 버튼 생성 후, reviewMap의 리스트 출력 함수 등록
+    function makePageForm(reviewMap) { 
+		const pageMaker = reviewMap.pageMaker;
+		const startNum = pageMaker.startNum;
+		const endNum = pageMaker.endNum;
+		
+		// 스타일 적용 코드 및 리스트 코드
+		let pageForm = $('<ul class="page_list"></ul>');
+		let numForm;
+		// 클릭 했을 때 이전 페이지로
+		if (pageMaker.prev) {
+			numForm = $('<li>이전&nbsp&nbsp</li>').click(function() {
+				reviewMap.show(startNum - 1);
+			});
+			pageForm.append(numForm);
+		}
+		// 현재 리스트 출력
+		for (let x = startNum; x <= endNum; x++) {
+			numForm = $('<li>' + x + '&nbsp&nbsp</li>').click(function() {
+				reviewMap.show(x);
+			});
+			pageForm.append(numForm);
+		}
+		// 클릭 했을 때 다음 페이지로
+		if (pageMaker.next) {
+			numForm = $('<li>다음</li>').click(function() {
+				reviewMap.show(endNum + 1);
+			});
+			pageForm.append(numForm);
+		}
+		return pageForm;
+	} // end makePageForm
+	
+	// 문의(대댓글) 
+    inquiryMap.show = function(page) {
+        let inquiryUrl = '../inquiryRest/list/' + productId + '/' + page;// 문의 데이터 API 엔드포인트
         let answerUrl = '../answer/list/' + productId;      // 답변 데이터 API 엔드포인트
         
-        let inquiryNUM = [];   // 문의 데이터 배열
-        let answerNUM = [];    // 답변 데이터 배열
+        let inquiryNUM = []; // 문의 데이터 배열
+        let answerNUM = []; // 답변 데이터 배열
         
         // inquiry 데이터 가져오기
         $.ajax({
             method: 'GET',
             url: inquiryUrl,
             success: function(data) {
-                inquiryNUM = data;  // 성공적으로 데이터를 가져오면 inquiryNUM에 저장
+             	// reviewMap 초기화
+                inquiryMap.inquiryList = data.inquiryList || [];
+                inquiryMap.pageMaker = data.pageMaker || null;
+
+                inquiryNUM = inquiryMap.inquiryList;  // 성공적으로 데이터를 가져오면 inquiryNUM에 저장
+                console.log("inquiryNUM : " + inquiryNUM);
                 processComments();  // 데이터를 가져왔으므로 처리 함수 호출
+                $('#comments_list_page').html(inquiryMakePageForm(inquiryMap));
             },
         });
-
+       
         // answer 데이터 가져오기
         $.ajax({
             method: 'GET',
             url: answerUrl,
             success: function(data) {
                 answerNUM = data;   // 성공적으로 데이터를 가져오면 answerNUM에 저장
+                console.log("answerNUM : " + answerNUM);
                 processComments();  // 데이터를 가져왔으므로 처리 함수 호출
             },
         });
@@ -381,7 +587,6 @@ $(document).ready(function() {
         // 문의와 답변 데이터를 비교하여 일치하는 요소들을 반환하는 함수
         function printMatchingItems(inquiryNUM, answerNUM) {
             let result = [];
-
             // 모든 문의와 답변 데이터를 비교하여 일치하는 경우를 찾음
             for (let i = 0; i < inquiryNUM.length; i++) {
                 let matchingAnswers = []; // 현재 문의에 대한 일치하는 답변들을 저장할 배열
@@ -414,7 +619,6 @@ $(document).ready(function() {
         // 일치하는 요소들을 HTML 테이블 형식으로 렌더링하여 출력하는 함수
         function renderComments(comments) {// comments변수 값은 따로 선언 하는것이 아니라 그 어떤값이 들어 가도 상관이없다.
         	// comments의 변수 값은 printMatchingItems함수를 통해 조건문에 맞게 정렬된 배열 형태의 값이다.
-        	console.log("comments : " + comments);// 문의 내용 리스트만 저장 되어 있는 것 같다.
             let form = '';  // 출력할 HTML 문자열을 저장할 변수
 
             // 모든 일치하는 요소들을 테이블의 각 행으로 변환하여 form에 추가
@@ -447,179 +651,45 @@ $(document).ready(function() {
             // 결과를 id가 'comments'인 요소에 HTML로 출력
             $('#comments').html(form);
         }
-    }
-
-
-
-}); // end document
-
-//ReviewMap 객체에 show 함수를 정의합니다.
-ReviewMap.show = function(page) {
-    
-    let url = '../review/all/' + productId + '/' + page;
-    
-    // AJAX 요청을 보내 리뷰 데이터를 가져옵니다.
-    $.ajax({
-        method: 'GET',
-        url: url,
-        dataType: 'json',
-        success: function(data) {
-            console.log(data);
-            let form = '';
-            
-            // ReviewMap 초기화
-            ReviewMap.list = data.list;
-            ReviewMap.pageMaker = data.pageMaker;
-            
-            const list = ReviewMap.list;
-           
-            for (let x in list) {
-            	let reviewStar = list[x].reviewStar;
-            	
-            	let starsHTML = ''; // 별 모양 HTML을 저장할 변수
-                star = parseInt(reviewStar); // 문자열을 정수로 변환
-				for (let i = 1; i <= 5; i++) {
-                    if (i <= star) {
-                        starsHTML += '&#9733;'; // 별 모양 HTML 코드 추가
-                    } else {
-                        starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
-                    }
-                } 
-                form += '<tr>' +
-                        '<td class="reviewId">' + list[x].reviewId + '</td>' +
-                        '<td class="memberId">' + list[x].memberId + '</td>' +
-                        '<td class="reviewStars">' + starsHTML + '</td>' + 
-                        '<td class="reviewContent">' + list[x].reviewContent + '</td>' + 
-                        '<td class="reviewDateCreated">' + toDate(list[x].reviewDateCreated) + '</td>' +
-                        '<td class="button-container">' +
-                        '<div class="button likeButton" data-value="0"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></div>' +
-                        '<div class="button dislikeButton" data-value="0"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></div>' +
-                        '</td>' +
-                        '</tr>';
-            }
-
-      
-            // 페이지를 생성한 후 등록합니다.
-            $('#product_list_page').html(makePageForm(ReviewMap));
-            
-            // 저장된 데이터를 review div에 표현합니다.
-            $('#review').html(form);
-        }
-    });
-}
-
-//좋아요 코드
-$(document).on('click', '.likeButton', function() {
-    // 현재 클릭된 likeButton의 같은 행에 있는 dislikeButton을 찾습니다.
-    // 찾는 이유는 싫어요가 클릭 되어있는 상태인지 확인 하기 위해서
-    const dislikeButton = $(this).closest('tr').find('.dislikeButton');
-    
-
-    // likeButton에 'liked' 클래스를 토글합니다.
-    $(this).toggleClass('liked');
-    
-    // dislikeButton에서 'disliked' 클래스를 제거합니다.
-    // 여기서 dislikeButton 클릭이 되어있든 아니든 제거 하는것 같다.
-    dislikeButton.removeClass('disliked');
-    
-    // likeButton 내의 <i> 요소를 찾습니다.
-    const likeIcon = $(this).find('i');
-    // dislikeButton 내의 <i> 요소를 찾습니다.
-    const dislikeIcon = dislikeButton.find('i');
-
-    // 'liked' 클래스가 있는지 확인합니다.
-    if ($(this).hasClass('liked')) {
-        // 'liked' 클래스가 있으면 likeIcon의 클래스를 변경합니다.
-        likeIcon.removeClass('fa-thumbs-o-up').addClass('fa-thumbs-up');
-        // likeButton의 data-value를 1로 설정합니다.
-        $(this).attr('data-value', '1');
-        // dislikeIcon의 클래스를 원래대로 돌립니다.
-        dislikeIcon.removeClass('fa-thumbs-down').addClass('fa-thumbs-o-down');
-        // dislikeButton의 data-value를 0으로 설정합니다.
-        dislikeButton.attr('data-value', '0');
-    } else {
-        // 'liked' 클래스가 없으면 likeIcon의 클래스를 원래대로 돌립니다.
-        likeIcon.removeClass('fa-thumbs-up').addClass('fa-thumbs-o-up');
-        // likeButton의 data-value를 0으로 설정합니다.
-        $(this).attr('data-value', '1');
-    }
-
-    // 현재 likeButton의 data-value 값을 콘솔에 출력합니다.
-    const likeValue = $(this).attr('data-value');
-    console.log('Like value:', likeValue);
-});
-
-//싫어요 코드
-$(document).on('click', '.dislikeButton', function() {
-    // 현재 클릭된 dislikeButton의 같은 행에 있는 likeButton을 찾습니다.
-    const likeButton = $(this).closest('tr').find('.likeButton');
-
-    // dislikeButton에 'disliked' 클래스를 토글합니다.
-    $(this).toggleClass('disliked');
-    // likeButton에서 'liked' 클래스를 제거합니다.
-    likeButton.removeClass('liked');
-    
-    // dislikeButton 내의 <i> 요소를 찾습니다.
-    const dislikeIcon = $(this).find('i');
-    // likeButton 내의 <i> 요소를 찾습니다.
-    const likeIcon = likeButton.find('i');
-
-    // 'disliked' 클래스가 있는지 확인합니다.
-    if ($(this).hasClass('disliked')) {
-        // 'disliked' 클래스가 있으면 dislikeIcon의 클래스를 변경합니다.
-        dislikeIcon.removeClass('fa-thumbs-o-down').addClass('fa-thumbs-down');
-        // dislikeButton의 data-value를 0으로 설정합니다.
-        $(this).attr('data-value', '0');
-        // likeIcon의 클래스를 원래대로 돌립니다.
-        likeIcon.removeClass('fa-thumbs-up').addClass('fa-thumbs-o-up');
-        // likeButton의 data-value를 0으로 설정합니다.
-        likeButton.attr('data-value', '0');
-    } else {
-        // 'disliked' 클래스가 없으면 dislikeIcon의 클래스를 원래대로 돌립니다.
-        dislikeIcon.removeClass('fa-thumbs-down').addClass('fa-thumbs-o-down');
-        // dislikeButton의 data-value를 0으로 설정합니다.
-        $(this).attr('data-value', '0');
-    }
-
-    // 현재 dislikeButton의 data-value 값을 콘솔에 출력합니다.
-    const dislikeValue = $(this).attr('data-value');
-    console.log('Dislike value:', dislikeValue);
-});
-
-    
- 	// 페이지 버튼 생성 후, ReviewMap의 리스트 출력 함수 등록
-    function makePageForm(ReviewMap) { 
-		const pageMaker = ReviewMap.pageMaker;
-		const startNum = pageMaker.startNum;
-		const endNum = pageMaker.endNum;
+        
+        
+    }// end getAllComments()
+	
+	
+	// 페이지 버튼 생성 후, reviewMap의 리스트 출력 함수 등록
+    function inquiryMakePageForm(inquiryMap) { 
+		const inquiryPageMaker = inquiryMap.pageMaker;  
+		const inquiryStartNum = inquiryPageMaker.startNum; 
+		const inquiryEndNum = inquiryPageMaker.endNum; 
 		
 		// 스타일 적용 코드 및 리스트 코드
 		let pageForm = $('<ul class="page_list"></ul>');
 		let numForm;
 		// 클릭 했을 때 이전 페이지로
-		if (pageMaker.prev) {
+		if (inquiryPageMaker.prev) {
 			numForm = $('<li>이전&nbsp&nbsp</li>').click(function() {
-				ReviewMap.show(startNum - 1);
+				inquiryMap.show(inquiryStartNum - 1);
 			});
 			pageForm.append(numForm);
 		}
 		// 현재 리스트 출력
-		for (let x = startNum; x <= endNum; x++) {
+		for (let x = inquiryStartNum; x <= inquiryEndNum; x++) {
 			numForm = $('<li>' + x + '&nbsp&nbsp</li>').click(function() {
-				ReviewMap.show(x);
+				inquiryMap.show(x);
 			});
 			pageForm.append(numForm);
 		}
 		// 클릭 했을 때 다음 페이지로
-		if (pageMaker.next) {
+		if (inquiryPageMaker.next) {
 			numForm = $('<li>다음</li>').click(function() {
-				ReviewMap.show(endNum + 1);
+				inquiryMap.show(inquiryEndNum + 1);
 			});
 			pageForm.append(numForm);
 		}
 		return pageForm;
-	} // end makePageForm
+	} // end inquiryMakePageForm
 	
+	// 이미지가 없을때 대체하는 코드
 	function loadImg(){
 		$(document).find('.productImg').each(function(){
 			let target = $(this);
