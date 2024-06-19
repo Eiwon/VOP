@@ -223,7 +223,6 @@ td {
  	 const memberId = '${memberDetails.getUsername()}';
  	 let productId = ${productVO.productId};
  	 let reviewAvg = parseInt("${productVO.reviewAvg}"); // 서버 사이드 값 사용
-     
   	 // 썸네일 이미지 ID 변수 정의 (이 ID가 맞는지 확인해야 합니다)
      const thumbnailImgId = '${productVO.imgId}';
      
@@ -264,24 +263,26 @@ td {
      
      /* 상품 수량 관련 코드 */
   	 // 수량 입력 필드 가져오기
-     let quantityInput = document.getElementById("quantity");
-     // 상품 가격을 표시하는 span 요소 가져오기
-     let totalPriceSpan = document.getElementById("totalPrice");
-     // 상품 가격 가져오기
-     let productPrice = parseInt('${productVO.productPrice}');
+    let quantityInput = document.getElementById("quantity");
+    let totalPriceSpan = document.getElementById("totalPrice");
+    let productPrice = parseInt('${productVO.productPrice}');
 
-     // 수량 입력 필드의 변경 이벤트 감지
-     quantityInput.addEventListener("input", function() {
-         // 현재 입력된 수량 가져오기
-         let quantity = parseInt(this.value);
-         // 총 상품 가격 계산
-         let totalPrice = quantity * productPrice;
-         // 총 상품 가격을 span 요소에 업데이트
-         // textContent : 텍스트의 내용 변경
-         totalPriceSpan.textContent = totalPrice;
-         // 현재 수량을 productNums에 적용하는 코드
-         document.querySelector('input[name="productNums"]').value = quantity;
-     });
+    quantityInput.addEventListener("input", function() {
+        let quantity = parseInt(this.value);
+
+        // 수량이 99를 초과할 경우
+        if (quantity > 99) {
+            this.value = 99; // 수량을 99로 제한
+            quantity = 99;   // 수량 변수도 업데이트
+        }
+
+        // 총 상품 가격 계산 및 표시
+        let totalPrice = quantity * productPrice;
+        totalPriceSpan.textContent = totalPrice;
+
+        // 수량을 form 요소에 업데이트
+        document.querySelector('input[name="productNums"]').value = quantity;
+    });
      /* end 상품 수량 관련 코드 */
       
 
@@ -344,12 +345,14 @@ $(document).ready(function() {
 //ReviewMap 객체에 show 함수를 정의합니다.
 reviewMap.show = function(page) {
     
-    let url = '../review/all/' + productId + '/' + page;
+    let reviewUrl = '../review/all/' + productId + '/' + page;
+    
+    // 여기 위치에 실험 중인 코드 넣기
     
     // AJAX 요청을 보내 리뷰 데이터를 가져옵니다.
     $.ajax({
         method: 'GET',
-        url: url,
+        url: reviewUrl,
         dataType: 'json',
         success: function(data) {
             let form = '';
@@ -384,8 +387,6 @@ reviewMap.show = function(page) {
                         '</td>' +
                         '</tr>';
             }
-
-      
             // 페이지를 생성한 후 등록합니다.
             $('#product_list_page').html(makePageForm(reviewMap));
             
@@ -397,6 +398,7 @@ reviewMap.show = function(page) {
 
 $(document).on('click', '.likeButton, .dislikeButton', function() {
 	console.log("memberId : " + memberId);
+	
 	if (memberId && memberId.trim() !== '') {
 	
     const isLikeButton = $(this).hasClass('likeButton');
@@ -577,7 +579,8 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
         // 문의와 답변 데이터를 처리하는 함수
         function processComments() {// 여기 비동기 동작 어떻게 처리 하는지 잘모르겠음
             // inquiryNUM과 answerNUM이 모두 데이터를 가져온 경우에만 처리
-            if (inquiryNUM.length > 0 && answerNUM.length > 0) {
+            /* if (inquiryNUM.length > 0 && answerNUM.length > 0) { */
+            if (inquiryNUM.length > 0) {
                 // 데이터를 비교하여 일치하는 요소들을 찾음
                 let matchingItems = printMatchingItems(inquiryNUM, answerNUM);// 그럼 여기서 함수가 실행 된 다음 변수에 저장?
                 renderComments(matchingItems);  // 일치하는 요소들을 렌더링 함수로 전달하여 출력
@@ -647,12 +650,9 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
                             '</tr>';
                 }
             }
-
             // 결과를 id가 'comments'인 요소에 HTML로 출력
             $('#comments').html(form);
         }
-        
-        
     }// end getAllComments()
 	
 	

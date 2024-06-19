@@ -7,6 +7,8 @@
 	<sec:authentication var="memberDetails" property="principal"/>
 </sec:authorize> 
 
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,7 +53,12 @@
 		console.log(paymentWrapper);
 		let memberId = "${memberDetails.getUsername()}";
 		console.log("memberId:", memberId);
-         
+		
+		<sec:authorize access="hasRole('ROLE_MEMBERSHIP')">
+	        console.log("멤버십 회원은 이동");
+	        window.location.href = '../membership/success';
+		</sec:authorize>
+		
          // 멤버십 신청
          $('#registerBtn').on('click', function() {
         	 payment();
@@ -215,7 +222,6 @@
                    console.log('멤버십 권한 업데이트 실패');
                }
            });
-		
 	} // end sendPaymentResult
 		
 </script>
@@ -229,6 +235,7 @@
     <h2>멤버십 혜택</h2>
     <p>무제한 20% 할인 혜택 제공</p>
     
+   
    
 </body>
 </html>

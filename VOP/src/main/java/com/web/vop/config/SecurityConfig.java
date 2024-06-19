@@ -66,7 +66,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.antMatchers(NORMAL_OVER).authenticated()
 			.antMatchers(ADMIN_ONLY).hasAuthority(ROLE_ADMIN)
 			.antMatchers(SELLER_OVER).hasRole(AUTH_SELLER)
+			.antMatchers("/membership/success").hasRole(AUTH_MEMBERSHIP)
 			.expressionHandler(expressionHandler());
+			
 		// hasRole("권한") : 특정 권한이 있는지 체크 (권한 계층 적용)
 		// hasAnyRole("권한1", "권한2", ...) : 목록 중 하나의 권한이라도 있는지 체크
 		// hasAuthority("ROLE_권한") : 특정 권한이 있는지 체크(권한 계층 미적용)

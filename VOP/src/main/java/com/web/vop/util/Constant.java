@@ -7,9 +7,6 @@ public interface Constant {
 	public static final String AUTH_MEMBERSHIP = "멤버십";
 	public static final String AUTH_NORMAL = "일반";
 	
-	
-	
-	
 	public static final String STATE_APPROVAL_WAIT = "승인 대기중";
 	public static final String STATE_APPROVED = "승인";
 	public static final String STATE_SELL = "판매중";

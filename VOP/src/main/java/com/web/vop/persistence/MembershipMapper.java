@@ -1,15 +1,16 @@
 package com.web.vop.persistence;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import com.web.vop.domain.MemberVO;
+
+import com.web.vop.domain.MembershipExpiryDTO;
 import com.web.vop.domain.MembershipVO;
-import com.web.vop.domain.PaymentVO;
-import com.web.vop.domain.PaymentWrapper;
+
 
 @Mapper
 public interface MembershipMapper {
@@ -38,4 +39,7 @@ public interface MembershipMapper {
 
 	// 멤버십 삭제 시 권한 업데이트
 	void updateMemberAuthOnDelete(@Param("memberId") String memberId);
+	
+	// 멤버십 만료일 조회 (스케줄링)
+	List<MembershipExpiryDTO> selectExpiryDateBySchedulling();
 }
