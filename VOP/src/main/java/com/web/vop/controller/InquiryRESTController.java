@@ -61,17 +61,42 @@ public class InquiryRESTController {
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}// end createInquiry()
 	
-	@GetMapping("/list/{productId}") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
-	public ResponseEntity<List<InquiryVO>> readAllInquiry(
-			@PathVariable("productId") int productId){
+//	@GetMapping("/list/{productId}") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
+//	public ResponseEntity<List<InquiryVO>> readAllInquiry(
+//			@PathVariable("productId") int productId){
+//		log.info("readAllInquiry()");
+//		
+//		// productId에 해당하는 댓글(리뷰) list을 전체 검색
+//		List<InquiryVO> inquiryList = inquiryService.getAllInquiry(productId);
+//		
+//		
+//		// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
+//		return new ResponseEntity<List<InquiryVO>>(inquiryList, HttpStatus.OK);
+//	}// end readAllInquiry()
+	
+	@GetMapping("/list/{productId}/{page}") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
+	public ResponseEntity<Map<String, Object>> readAllInquiry(
+			Pagination pagination,
+			@PathVariable("productId") int productId,
+			@PathVariable("page") int page){
 		log.info("readAllInquiry()");
 		
-		// productId에 해당하는 댓글(리뷰) list을 전체 검색
-		List<InquiryVO> inquiryList = inquiryService.getAllInquiry(productId);
+		pagination.setPageNum(page);
+		log.info("pagination : " + pagination);
+		Map<String, Object> resultMap = new HashMap<>();
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setPagination(pagination);	
+		log.info("쪽수 기본값 : " + pageMaker.getPagination());
 		
+		// productId에 해당하는 댓글(리뷰) list을 전체 검색
+		List<InquiryVO> inquiryList = inquiryService.getAllInquiryPaging(productId, pageMaker);
+		
+		log.info("inquiryList : " + inquiryList);
+		resultMap.put("inquiryList", inquiryList);
+		resultMap.put("pageMaker", pageMaker);
 		
 		// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
-		return new ResponseEntity<List<InquiryVO>>(inquiryList, HttpStatus.OK);
+		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	}// end readAllInquiry()
 	
 
