@@ -14,6 +14,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="chargeId" column="CHARGE_ID"/>
    </resultMap>
    
+   <resultMap type="com.web.vop.domain.MembershipExpiryDTO" id="MembershipExpiryResultMap">
+   		<id property="memberId" column="MEMBER_ID"/> 
+      	<result property="expiryDate" column="EXPIRY_DATE"/>
+   </resultMap>
+   
    
    <!-- membershipId 생성 -->
 	<select id="selectNextMembershipId" resultType="Integer">
@@ -57,6 +62,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         UPDATE MEMBER SET MEMBER_AUTH = '일반' WHERE MEMBER_ID = #{memberId}
 	</update>
 	
+	<!-- 멤버십 만료일 조회 (스케줄링) -->
+	<select id="selectExpiryDateBySchedulling" resultMap="MembershipExpiryResultMap">
+		SELECT MEMBER_ID, EXPIRY_DATE FROM MEMBERSHIP
+	</select>
 	
 	
 </mapper>
+
+
