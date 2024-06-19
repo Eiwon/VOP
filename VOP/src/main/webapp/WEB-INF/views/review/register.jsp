@@ -124,7 +124,7 @@ $(document).ready(function(){
        console.log("reviewStar : " + reviewStar);
        console.log("reviewContent : " + reviewContent);
        
-        if(reviewStar !== null && reviewStar !== '' && reviewStar !== undefined && reviewContent !== null && reviewContent !== '') {// productId와 reviewContent 값이 있어야 한다.
+        if(reviewStar !== null && reviewStar !== '' && reviewStar !== undefined && reviewContent !== null && reviewContent !== '') {
     	// javascript 객체 생성
            let obj = {    
                  'memberId' : memberId,

@@ -31,7 +31,7 @@ public interface Constant {
 	public static final String[] NORMAL_OVER = {
 		"/board/mypage", "/board/orderlist", "/delivery/**", "/member/modify", "/order/**",
 		"/payment/**", "/review/modify", "/review/register", "/member/logout",
-		"/basket/**", "/seller/sellerRequest"
+		"/basket/**", "/seller/sellerRequest", "/membership/**"
 	};
 	
 	// 관리자, 판매자가 아닌 유저만 접근 가능
