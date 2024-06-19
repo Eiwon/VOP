@@ -1,6 +1,7 @@
 package com.web.vop.controller;
 
 import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 
@@ -8,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.WebSocketHandler;
 
-import com.web.vop.domain.AnswerVO;
+
 import com.web.vop.domain.InquiryVO;
 import com.web.vop.domain.MemberDetails;
-import com.web.vop.persistence.AnswerMapper;
+
 import com.web.vop.service.InquiryService;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;

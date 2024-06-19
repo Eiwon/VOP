@@ -131,7 +131,7 @@ public class BasketController {
 	@PostMapping("/myBasketDate")
 	public ResponseEntity<Integer> registerBasket(@RequestBody BasketVO basketVO){
 		log.info("registerBasketPOST()");
-		
+		log.info("basketVO : " + basketVO);
 		int res = basketService.createBasket(basketVO);
 
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);

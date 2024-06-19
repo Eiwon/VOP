@@ -1,10 +1,15 @@
 package com.web.vop.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +21,7 @@ import com.web.vop.domain.ReviewVO;
 import com.web.vop.service.LikesService;
 import com.web.vop.socket.AlarmHandler;
 
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 @RestController
@@ -58,5 +64,17 @@ public class LikesRESTController {
 		 int res = likesService.deleteLikes(reviewId, memberId);
 		 return new ResponseEntity<>(res, HttpStatus.OK);
 	 }
+	 
+	@GetMapping("/list/{reviewId}/{memberId}") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
+	public ResponseEntity<List<LikesVO>> readAllLikes(
+			@PathVariable("reviewId") int reviewId,
+			@PathVariable("memberId") String memberId){
+		 log.info("readAllLikes()");
+		 
+		 List<LikesVO> listLikes = likesService.getAllLikesPaging(memberId, null);
+		 
+		 return new ResponseEntity<List<LikesVO>>(listLikes, HttpStatus.OK);
+	 }
+	 
 	
 }
