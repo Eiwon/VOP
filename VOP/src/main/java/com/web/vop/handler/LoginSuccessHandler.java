@@ -20,11 +20,14 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
-		String uri = request.getContextPath();
-
-		SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
-		String savedPage = (String) request.getSession().getAttribute("prevPage");
+		String uri = request.getContextPath(); // 메인페이지 경로 ("/vop")
 		
+		SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
+		// 시큐리티로 인해 강제 이동시 돌아갈 URL
+		String savedPage = (String) request.getSession().getAttribute("prevPage");
+		// 직접 로그인 페이지 이동시 돌아갈 URL
+		
+		log.info("savedRequest : " + savedRequest + ", savedPage : " + savedPage);
 		if(savedRequest != null) {
 			uri = savedRequest.getRedirectUrl();
 		}else if (savedPage != null){

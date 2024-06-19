@@ -167,10 +167,10 @@ td {
 	<!-- 바로구매 버튼 -->
 	<!-- 로그인된 세션 아이디 전달 -->
 	<form id="checkoutForm" action="../payment/checkout" method="POST">
-		<input type="hidden" name="memberId"
-			value="${memberDetails.getUsername() }"> <input type="hidden"
-			name="productIds" value="${productVO.productId}"> <input
-			type="hidden" name="productNums" value="1">
+		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
+		<input type="hidden" name="memberId" value="${memberDetails.getUsername() }"> 
+		<input type="hidden" name="productIds" value="${productVO.productId}">
+		<input type="hidden" name="productNums" value="1">
 
 		<!-- 세션 아이디가 없 경우 -->
 		<c:if test="${empty memberDetails.getUsername() }">

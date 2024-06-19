@@ -11,6 +11,7 @@
 <body>
 	<h2>비밀번호 찾기</h2>
 	<form action="findPassword" method="POST">
+	<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
 		<div>
 			아이디
 			<input type="text" id="memberId" name="memberId">

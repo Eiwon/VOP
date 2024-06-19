@@ -115,6 +115,7 @@ public class PaymentServiceImple implements PaymentService {
 		PaymentVO paymentVO = payment.getPaymentVO();
 		MyCouponVO myCouponVO = payment.getMyCouponVO();
 		int paymentId = paymentVO.getPaymentId();
+		String memberId = paymentVO.getMemberId();
 		
 		paymentMapper.insertPayment(paymentVO); // 결제 결과 등록
 		
@@ -122,6 +123,7 @@ public class PaymentServiceImple implements PaymentService {
 		for(OrderViewDTO orderDTO : payment.getOrderList()) {
 			OrderVO order = orderDTO.getOrderVO();
 			order.setPaymentId(paymentId); // 결제 id 추가
+			order.setMemberId(memberId);
 			productMapper.updateRemains(order.getProductId(), order.getPurchaseNum() * -1);				
 			orderMapper.insertOrder(order);
 			// 결제된 상품을 장바구니에서 제거
@@ -131,7 +133,6 @@ public class PaymentServiceImple implements PaymentService {
 		// 쿠폰 사용 처리
 		if(myCouponVO != null) {
 			int couponId = myCouponVO.getCouponId();
-			String memberId = paymentVO.getMemberId();
 			couponPocketMapper.updateIsUsed(couponId, memberId, Constant.IS_USED);
 		}
 		

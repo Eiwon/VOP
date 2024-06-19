@@ -210,6 +210,7 @@
     	<sec:authorize access="isAuthenticated()">
     		<form action="../member/logout" method="POST">
     			<input type="submit" value="로그아웃">
+    			<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
     		</form>
     	</sec:authorize>
     	<sec:authorize access="isAnonymous()">

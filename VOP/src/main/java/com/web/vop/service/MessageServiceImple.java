@@ -78,9 +78,9 @@ public class MessageServiceImple implements MessageService{
 	} // end getAllPopup
 
 	@Override
-	public List<Integer> getAllPopupId() {
-		log.info("모든 팝업광고 검색");
-		List<Integer> list = messageMapper.selectAllPopupId();
+	public List<Integer> getMyPopupId(String memberId) {
+		log.info("모든 공지사항, 수령하지 않은 쿠폰 검색");
+		List<Integer> list = messageMapper.selectMyPopupId(memberId);
 		return list;
 	} // end getAllPopup
 }

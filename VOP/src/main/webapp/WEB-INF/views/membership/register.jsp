@@ -227,7 +227,7 @@
     <button id="registerBtn">멤버십 신청하기</button>
 
     <h2>멤버십 혜택</h2>
-    <p>무제한 할인 쿠폰 제공</p>
+    <p>무제한 20% 할인 혜택 제공</p>
     
    
 </body>

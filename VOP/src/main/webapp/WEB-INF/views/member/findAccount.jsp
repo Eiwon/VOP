@@ -12,6 +12,7 @@
 	<h2>아이디 찾기</h2>
 	<form action="findAccount" method="POST">
 		<strong>등록된 이메일로 찾기</strong><br>
+		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
 		<div>
 			등록된 이메일 
 			<input type="text" id="member_email" name="memberEmail">

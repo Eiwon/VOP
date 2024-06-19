@@ -16,6 +16,7 @@
 		<h2>판매자 등록 신청</h2>
 		
 		<form action="sellerRequest" method="POST">
+		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
 			<table>
 				<tbody>
 					<tr>

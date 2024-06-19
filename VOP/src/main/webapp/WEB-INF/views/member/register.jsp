@@ -29,6 +29,7 @@
 <body>
 	<div style="text-align: center;">
 		<form class="form_container" action="register" method="POST">
+			<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
 			<div class="input_box">
 				<input type="text" id="memberId" class="input_tag" name="memberId" placeholder="아이디" onblur="checkValid(this)">
 				<div></div>

@@ -16,6 +16,7 @@
 	</div>
 	
 	<form action="getCoupon" method="POST">
+		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
 		<input type="hidden" name="couponId" value="${couponVO.couponId}">
 		<input type="submit" value="쿠폰 받기">
 	</form>

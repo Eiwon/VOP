@@ -1,17 +1,15 @@
 package com.web.vop.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,8 +21,6 @@ import com.web.vop.domain.BasketVO;
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.BasketService;
-import com.web.vop.util.PageMaker;
-import com.web.vop.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -39,6 +35,7 @@ public class BasketController {
 	@Autowired
 	AWSS3Service awsS3Service;
 	
+	@PreAuthorize("authenticated()")
 	@GetMapping("/main")
 	public void basketMainGET() {
 		log.info("basket/main.jsp 이동");
@@ -48,6 +45,7 @@ public class BasketController {
 	// 내 장바구니 물품 목록 조회
 	// 입력값 : memberId, pageNum
 	// return : 장바구니 물품 리스트
+	@PreAuthorize("authenticated()")
 	@GetMapping("/myBasket")
 	@ResponseBody
 	public ResponseEntity<List<BasketDTO>> getMyBasket(@AuthenticationPrincipal MemberDetails memberDetails){
@@ -128,6 +126,7 @@ public class BasketController {
 	
 	// 상품상세 정보에서 버튼 클릭시 동작되는 코드// 우제영 제작 함
 	@ResponseBody
+	@PreAuthorize("authenticated()")
 	@PostMapping("/myBasketDate")
 	public ResponseEntity<Integer> registerBasket(@RequestBody BasketVO basketVO){
 		log.info("registerBasketPOST()");

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,12 +53,8 @@ public class PaymentController {
 		for(OrderViewDTO order : payment.getOrderList()) {
 			order.setImgUrl(awsS3Service.toImageUrl(order.getImgPath(), order.getImgChangeName()));
 		}
-		
-		try { // 자바스크립트에서 쓰기 위해 json 형식 문자열로 변환
-			model.addAttribute("paymentWrapper", new ObjectMapper().writeValueAsString(payment));
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
+		log.info("결제 정보 : " + payment);
+		model.addAttribute("paymentWrapper", payment);
 	} // end makePayment
 	
 	
@@ -88,7 +85,7 @@ public class PaymentController {
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/apply")
 	@ResponseBody
-	public ResponseEntity<Integer> savePaymentResult(@RequestBody PaymentWrapper paymentResult){
+	public ResponseEntity<Integer> savePaymentResult(@RequestBody PaymentWrapper paymentResult, @AuthenticationPrincipal UserDetails memberDetails){
 		log.info("---------결제 결과 저장--------");
 		log.info("결제 내역 : " + paymentResult.getPaymentVO());
 		log.info("주문 목록 : " + paymentResult.getOrderList());
@@ -96,6 +93,7 @@ public class PaymentController {
 		
 		PaymentVO paymentVO = paymentResult.getPaymentVO();
 		String impUid = paymentVO.getChargeId();
+		String memberId = memberDetails.getUsername();
 		int chargePrice = paymentVO.getChargePrice();
 		int res = 0;
 		// 결제 정보가 유효한지 검사
@@ -104,12 +102,12 @@ public class PaymentController {
 		for(OrderViewDTO orderDTO : paymentResult.getOrderList()) {
 			total += orderDTO.getOrderVO().getProductPrice() * orderDTO.getOrderVO().getPurchaseNum();
 		}
-		total = (total + paymentVO.getDeliveryPrice()) * 
-				(100 - paymentVO.getMembershipDiscount() - paymentVO.getCouponDiscount()) / 100;
-				
+		int totalDiscount = paymentVO.getMembershipDiscount() + paymentVO.getCouponDiscount();
+		total = (totalDiscount >= 100) ? 0 : (total + paymentVO.getDeliveryPrice()) * (100 - totalDiscount) / 100;
+		
 		if(total != chargePrice) {
 			// 결제 에러
-			log.error("구매물품 총액 : 결제액 불일치");
+			log.error("구매물품 총액 " + total + "원 vs " + chargePrice + "원 : 결제액 불일치");
 			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
 			return new ResponseEntity<Integer>(res, HttpStatus.OK);
 		}
@@ -122,7 +120,7 @@ public class PaymentController {
 			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
 			return new ResponseEntity<Integer>(res, HttpStatus.OK);
 		}
-		
+		paymentResult.getPaymentVO().setMemberId(memberId);
 		try {
 			res = paymentService.registerPayment(paymentResult); // 결제 결과 등록
 		}catch(DataIntegrityViolationException e) {

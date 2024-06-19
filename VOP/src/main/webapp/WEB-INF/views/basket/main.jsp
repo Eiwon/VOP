@@ -24,6 +24,7 @@
 	</div>	
 	
 	<form action="../payment/checkout" method="POST" id="form_expense">
+		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
 		<div id="order_list" hidden="hidden"></div>
 		<div id="total_product_price"></div>
 		<input type="button" value="결제하기" onclick="submitOrder()">

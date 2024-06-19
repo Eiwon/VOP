@@ -39,11 +39,9 @@
 					<sec:authorize access="hasRole('ROLE_관리자')">
 						<li><a href="admin">관리자 페이지</a></li>
 					</sec:authorize>
-					<li><a onclick="consult()">1대1 상담</a> </li>
-					<!-- 테스트를 위해 관리자도 1대1 상담 신청할 수 있도록 설정 -->
-					<%-- <sec:authorize access="!hasRole('ROLE_관리자')">
+					<sec:authorize access="!hasRole('ROLE_관리자')">
 						<li><a onclick="consult()">1대1 상담</a> </li>
-					</sec:authorize> --%>
+					</sec:authorize>
 				</ul>
 			</div>
 		</div>

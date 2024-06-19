@@ -31,6 +31,7 @@
 		<div>
 			<c:if test="${messageVO.type eq 'coupon' }">
 				<form action="../coupon/getCoupon" method="POST">
+					<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
 					<input type="hidden" name="couponId" value="${messageVO.callbackInfo }">
 					<input type="submit" value="쿠폰 받기">
 				</form>

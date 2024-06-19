@@ -77,11 +77,9 @@
 				<div class="product-info">
 					<!-- 리뷰 수정 코드 -->
 					<form action="../review/modify" method="get">
-						<input type="hidden" name="productId"
-							value="${ProductVO.productId}"> <input type="hidden"
-							name="imgId" value="${ProductVO.imgId}"> <input
-							type="hidden" name="memberId"
-							value="${memberDetails.getUsername()}">
+						<input type="hidden" name="productId" value="${ProductVO.productId}"> 
+						<input type="hidden" name="imgId" value="${ProductVO.imgId}"> 
+						<input type="hidden" name="memberId" value="${memberDetails.getUsername()}">
 						<button type="submit">리뷰 수정</button>
 					</form>
 					<!-- 리뷰 삭제 동기 코드 -->
