@@ -121,38 +121,43 @@ $(document).ready(function(){
        let reviewStar = selectedStar;// 리뷰(별)
        let reviewContent = $('#reviewContent').val(); // 댓글 내용
        
-       console.log(reviewStar);
-       console.log(memberId);
+       console.log("reviewStar : " + reviewStar);
+       console.log("reviewContent : " + reviewContent);
        
-       // javascript 객체 생성
-       let obj = {    
-             'memberId' : memberId,
-             'productId' : productId,
-             'reviewStar' : reviewStar,
-             'reviewContent' : reviewContent
-       };
-       console.log(obj);
+        if(reviewStar !== null && reviewStar !== '' && reviewStar !== undefined && reviewContent !== null && reviewContent !== '') {// productId와 reviewContent 값이 있어야 한다.
+    	// javascript 객체 생성
+           let obj = {    
+                 'memberId' : memberId,
+                 'productId' : productId,
+                 'reviewStar' : reviewStar,
+                 'reviewContent' : reviewContent
+           };
+           console.log(obj);
+           
+           // $.ajax로 송수신
+           $.ajax({
+              type : 'POST', // 메서드 타입
+              url : '../review/register', // url
+              headers : { // 헤더 정보
+                 'Content-Type' : 'application/json' // json content-type 설정
+              }, //'Content-Type' : 'application/json' 헤더 정보가 안들어가면 4050에러가 나온다.
+              data : JSON.stringify(obj), // JSON으로 변환
+              success : function(result) { // 전송 성공 시 서버에서 result 값 전송
+                 console.log(result);
+                 if(result == 1) {
+                    alert('댓글 입력 성공');
+                    // 댓글 입력 완료 하면 마이페이지로 이동
+                    //window.location.href = '../review/list?memberId=' + memberId;
+                 } else {
+                     alert('이미 등록하신 리뷰 입니다.');
+                     //window.location.href = '../review/list?memberId=' + memberId;
+                 }
+              } // end success 
+           }); // end ajax
+       } else {
+    	   alert('별 표시와 내용을 모두 입력 해주세요');
+       } 
        
-       // $.ajax로 송수신
-       $.ajax({
-          type : 'POST', // 메서드 타입
-          url : '../review/register', // url
-          headers : { // 헤더 정보
-             'Content-Type' : 'application/json' // json content-type 설정
-          }, //'Content-Type' : 'application/json' 헤더 정보가 안들어가면 4050에러가 나온다.
-          data : JSON.stringify(obj), // JSON으로 변환
-          success : function(result) { // 전송 성공 시 서버에서 result 값 전송
-             console.log(result);
-             if(result == 1) {
-                alert('댓글 입력 성공');
-                // 댓글 입력 완료 하면 마이페이지로 이동
-                window.location.href = '../review/list?memberId=' + memberId;
-             } else {
-                 alert('이미 등록하신 리뷰 입니다.');
-                 window.location.href = '../review/list?memberId=' + memberId;
-             }
-          } // end success 
-       }); // end ajax
     }); // end btnAdd.click()
     
   }); // end document.ready()
