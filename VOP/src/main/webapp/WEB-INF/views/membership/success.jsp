@@ -84,7 +84,7 @@ $(document).ready(function() {
 <body>
 	
 	<!-- 로그인 된 사용자가 멤버십을 등록했을 때  -->
-	<sec:authorize access="isAuthenticated()">
+	<sec:authorize access="hasRole('ROLE_멤버십')">
 	
 		<h2>VOP 멤버십 가입을 환영합니다!</h2>
 	

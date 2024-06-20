@@ -54,11 +54,6 @@
 		let memberId = "${memberDetails.getUsername()}";
 		console.log("memberId:", memberId);
 		
-		<sec:authorize access="hasRole('ROLE_MEMBERSHIP')">
-	        console.log("멤버십 회원은 이동");
-	        window.location.href = '../membership/success';
-		</sec:authorize>
-		
          // 멤버십 신청
          $('#registerBtn').on('click', function() {
         	 payment();
@@ -233,9 +228,11 @@
     <button id="registerBtn">멤버십 신청하기</button>
 
     <h2>멤버십 혜택</h2>
-    <p>무제한 할인 쿠폰 제공</p>
+    <p>무제한 할인 쿠폰 제공</p><br><br>
     
-   
+   <sec:authorize access="hasRole('ROLE_멤버십')">
+	        <a href="success">멤버십 페이지로 이동하기</a>
+   </sec:authorize>
    
 </body>
 </html>
