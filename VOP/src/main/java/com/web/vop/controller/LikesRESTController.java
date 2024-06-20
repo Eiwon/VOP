@@ -41,7 +41,7 @@ public class LikesRESTController {
 		int res = likesService.createLikes(likesVO);
 		
 		// result 값을 전송하여 리턴하는 방식으로 성공하면 200 OK를 전송합니다.
-		return new ResponseEntity<>(res, HttpStatus.OK);
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	}
 	
 	// 좋아요 or 싫어요 수정
@@ -51,7 +51,7 @@ public class LikesRESTController {
 		log.info("updateLikes()");
 		log.info("likesVO : " + likesVO);
 		int res = likesService.updateLikes(likesVO);
-		return new ResponseEntity<>(res, HttpStatus.OK);
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	}
 	
 	// 좋아요 or 싫어요 삭제
@@ -66,6 +66,7 @@ public class LikesRESTController {
 		
 		 int res = likesService.deleteLikes(reviewId, memberId, likesType);
 		 return new ResponseEntity<>(res, HttpStatus.OK);
+
 	 }
 	 
 	@GetMapping("/list/{productId}/{memberId}") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐

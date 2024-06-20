@@ -5,6 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <style type="text/css">
 tr {
@@ -105,12 +106,14 @@ tr {
 		$.ajax({
 			url : 'changeState',
 			headers : {
-				'Content-Type' : 'application/json'
+				'Content-Type' : 'application/json',
+				'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
 			},
 			method : 'PUT',
 			data : JSON.stringify({
 				'productId' : '${productVO.productId}',
-				'productState' : productState
+				'productState' : productState,
+				'memberId' : '${productVO.memberId}'
 			}),
 			success : function(result){
 				window.close();	
@@ -121,13 +124,15 @@ tr {
 	function deleteProduct(){
 		// 상품 삭제 요청
 		$.ajax({
-			url : 'product',
+			url : 'delete',
 			headers : {
-				'Content-Type' : 'application/json'
+				'Content-Type' : 'application/json',
+				'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
 			},
 			method : 'DELETE',
 			data : JSON.stringify({
-				'productId' : '${productVO.productId}'
+				'productId' : '${productVO.productId}',
+				'memberId' : '${productVO.memberId}'
 			}),
 			success : function(result){
 				window.close();	

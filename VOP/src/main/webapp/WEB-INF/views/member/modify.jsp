@@ -6,6 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <style type="text/css">
@@ -93,6 +94,9 @@ tr{
 			
 			$.ajax({
 				method : 'POST',
+				headers : {
+					'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+				},
 				url : 'check',
 				data : {
 					'memberPw' : memberPwVal
@@ -112,10 +116,10 @@ tr{
 		
 		function printModify(){
 			$('#subtitle').text("회원 정보 변경");
-			let form = '<form action="modify" method="POST" id="formUpdate"><table><tbody>' +
+			let form = '<form action="modify" method="POST" id="formUpdate" accept-charset="UTF-8"><table><tbody>' +
 				'<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">' +
 				'<tr><td>아이디</td>' +
-				'<td><input type="text" value="${memberVO.memberId }" readonly></td><td></td></tr>' +
+				'<td><input type="text" name="memberId" value="${memberVO.memberId }" readonly></td><td></td></tr>' +
 				'<tr><td>이름</td>' +
 				'<td><input type="text" name="memberName" value="${memberVO.memberName }" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
 				'<tr><td>휴대폰 번호</td>' +

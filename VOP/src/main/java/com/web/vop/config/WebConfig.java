@@ -14,8 +14,7 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
    protected Class<?>[] getRootConfigClasses() {
       
       return new Class[] {
-    		  RootConfig.class, SecurityConfig.class, S3Config.class, 
-    		  MailAuthenticationConfig.class, PaymentAPIConfig.class}; // RootConfig 클래스 리턴
+    		  RootConfig.class, SecurityConfig.class, S3Config.class, PaymentAPIConfig.class}; // RootConfig 클래스 리턴
    }
 
    // servlet application context(Servlet WebApplicationContext)에 적용하는 설정 클래스 지정 메서드
@@ -30,16 +29,6 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
    protected String[] getServletMappings() {
       
       return new String[] {"/"}; // 기본 경로 리턴
-   }
-   
-   // Filter 설정 메서드
-   @Override
-   protected Filter[] getServletFilters() {
-      CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
-      encodingFilter.setEncoding("UTF-8");
-      encodingFilter.setForceEncoding(true);
-      
-      return new Filter[] { encodingFilter };
    }
    
    @Override

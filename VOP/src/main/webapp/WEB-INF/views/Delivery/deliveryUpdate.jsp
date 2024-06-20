@@ -88,7 +88,10 @@
 
             // 배송지 삭제를 위한 Ajax 요청
             $.ajax({
-                url: "delete",
+                url: "delete"
+                headers : {
+    				'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+    			},
                 type: "POST",
                 data: { deliveryId: deliveryId },
                 success: function(data) {

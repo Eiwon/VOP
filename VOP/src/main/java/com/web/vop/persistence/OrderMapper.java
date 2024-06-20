@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.web.vop.domain.DeliveryExpectDTO;
 import com.web.vop.domain.OrderVO;
 import com.web.vop.domain.OrderViewDTO;
 
@@ -26,4 +27,6 @@ public interface OrderMapper {
 	// 주문 목록 조회 
 	public List<OrderViewDTO> selectOrderListByMemberId(String memberId);
 
+	// 배송 예정일 조회 스케줄링
+	List<DeliveryExpectDTO> selectDeliveryExpect();
 }

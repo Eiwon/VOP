@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.amazonaws.services.accessanalyzer.model.AccessDeniedException;
+import com.web.vop.domain.AlertVO;
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.PagingListDTO;
 import com.web.vop.domain.SellerRequestDTO;
@@ -52,28 +53,34 @@ public class SellerController {
 		log.info("판매자 메인 페이지 이동");
 	} // end sellerMainGET
 	
+	@PreAuthorize("#sellerVO.memberId == authentication.principal.username")
 	@PostMapping("/sellerRequest")
-	public String sellerRequestPOST(SellerVO sellerVO, @AuthenticationPrincipal UserDetails memberDetails) {
-		sellerVO.setMemberId(memberDetails.getUsername());
+	public String sellerRequestPOST(Model model, SellerVO sellerVO, @AuthenticationPrincipal UserDetails memberDetails) {
 		log.info("sellerRequestPOST : " + sellerVO);
-		sellerService.registerRequest(sellerVO);
-		return "redirect:sellerRequest";
+		AlertVO alertVO = new AlertVO();
+		int res = sellerService.registerRequest(sellerVO);
+		if(res == 1) {
+			alertVO.setAlertMsg("신청이 등록되었습니다. 관리자 승인 후 상품 등록이 가능합니다.");
+			alertVO.setRedirectUri("seller/sellerRequest");
+		}else {
+			alertVO.setAlertMsg("신청에 실패했습니다. 다시 시도해주세요.");
+			alertVO.setRedirectUri("seller/sellerRequest");
+		}
+		model.addAttribute("alertVO", alertVO);
+		return Constant.ALERT_PATH;
 	} // end sellerRequestPOST
 	
-	@PreAuthorize("hasRole('판매자')")
 	@GetMapping("/registerProduct")
 	public String registerProductGET() {
 		log.info("상품 등록 페이지로 이동");
 		return "redirect:../product/register";
 	} // end registerProductGET
 	
-	@PreAuthorize("hasAuthority('관리자')")
 	@GetMapping("/admin")
 	public void adminGET() {
 		log.info("관리자 페이지로 이동");
 	} // end myInfoGet
 	
-	//@PreAuthorize("hasRole('판매자')")
 	@GetMapping("/myProduct")
 	public String listProductGET() {
 		log.info("상품 조회 페이지 이동");
@@ -81,37 +88,37 @@ public class SellerController {
 	} // end listProductGET
 	
 
-	// 자신의 판매자 권한 요청 조회
-	@GetMapping("/mySellerReq")
-	@ResponseBody
-	public ResponseEntity<SellerVO> getMyRequest(@AuthenticationPrincipal MemberDetails memberDetails){
-		log.info("내 권한요청 조회");
-		String memberId = memberDetails.getUsername();
-		SellerVO result = sellerService.getMyRequest(memberId);
-			
-		return new ResponseEntity<SellerVO>(result, HttpStatus.OK);
-	} // end getMyRequest
+//	// 자신의 판매자 권한 요청 조회
+//	@GetMapping("/mySellerReq")
+//	@ResponseBody
+//	public ResponseEntity<SellerVO> getMyRequest(@AuthenticationPrincipal MemberDetails memberDetails){
+//		log.info("내 권한요청 조회");
+//		String memberId = memberDetails.getUsername();
+//		SellerVO result = sellerService.getMyRequest(memberId);
+//			
+//		return new ResponseEntity<SellerVO>(result, HttpStatus.OK);
+//	} // end getMyRequest
 		
 		
-	// 판매자 권한 요청 등록
-	@PostMapping("/registerReq")
-	@ResponseBody
-	public ResponseEntity<Integer> registerRequest(@RequestBody SellerVO sellerVO) {
-		log.info("요청 등록 : " + sellerVO);
-		int res = sellerService.registerRequest(sellerVO);
-
-		return new ResponseEntity<Integer>(res, HttpStatus.OK);
-	} // end registerRequest
+//	// 판매자 권한 요청 등록
+//	@PostMapping("/registerReq")
+//	@ResponseBody
+//	public ResponseEntity<Integer> registerRequest(@RequestBody SellerVO sellerVO) {
+//		log.info("요청 등록 : " + sellerVO);
+//		int res = sellerService.registerRequest(sellerVO);
+//
+//		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+//	} // end registerRequest
 		
-	// 판매자 권한 요청 수정(유저)
-	@PutMapping("/updateReq")
-	@ResponseBody
-	public ResponseEntity<Integer> updateRequest(@RequestBody SellerVO sellerVO) {
-		log.info("요청 수정 : " + sellerVO);
-		int res = sellerService.updateMemberContent(sellerVO);
-
-		return new ResponseEntity<Integer>(res, HttpStatus.OK);
-	} // end updateRequest
+//	// 판매자 권한 요청 수정(유저)
+//	@PutMapping("/updateReq")
+//	@ResponseBody
+//	public ResponseEntity<Integer> updateRequest(@RequestBody SellerVO sellerVO) {
+//		log.info("요청 수정 : " + sellerVO);
+//		int res = sellerService.updateMemberContent(sellerVO);
+//
+//		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+//	} // end updateRequest
 
 	// 판매자 권한 요청 승인/거절(관리자)
 	@PutMapping("/approval")

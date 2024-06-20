@@ -109,6 +109,7 @@ public class DeliveryServiceImple implements DeliveryService{
 		log.info("updateDefault() - memberId : " + memberId);
 		int res = deliveryMapper.updateDefault(memberId);
 		log.info(res + "행 기본배송지 해지 완료");
+		
 		return res;
 	} //end updateNewDefault
 

@@ -5,6 +5,8 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
+	
+	
 </sec:authorize> 
 
 <!DOCTYPE html>
@@ -14,10 +16,15 @@
 <title>멤버십</title>
 <!-- jquery 라이브러리 import -->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<meta name="${_csrf.token }" content="${_csrf.token }">
+</head>
+<body>
+	
 
 <script>
 		
 $(document).ready(function() {
+		
 	
 		let memberId = "${memberDetails.getUsername()}";
 		console.log("memberId : ", memberId);
@@ -51,6 +58,9 @@ $(document).ready(function() {
 			$.ajax({
 				type : 'DELETE',
 				url : 'deleteMembership/' + memberId,
+				headers : {
+					'X-CSRF-TOKEN' : '${_csrf.token }' 
+				},
 				success: function(response) {
 					console.log('멤버십 정보가 삭제되었습니다.');
 				},
@@ -64,6 +74,9 @@ $(document).ready(function() {
 			$.ajax({
                 type: 'PUT',
                 url: 'updateAuthOnUser/' + memberId,
+                headers : {
+					'X-CSRF-TOKEN' : '${_csrf.token }' 
+				},
                 success: function() {
                     console.log('멤버십 권한 업데이트 성공');
                  // 일반 유저로 권한까지 수정 하면 다시 등록 페이지로 이동한다. 
@@ -80,11 +93,9 @@ $(document).ready(function() {
 	
 	
 </script>
-</head>
-<body>
-	
+
 	<!-- 로그인 된 사용자가 멤버십을 등록했을 때  -->
-	<sec:authorize access="isAuthenticated()">
+	<sec:authorize access="hasRole('ROLE_멤버십')">
 	
 		<h2>VOP 멤버십 가입을 환영합니다!</h2>
 	

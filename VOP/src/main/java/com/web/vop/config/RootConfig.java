@@ -16,6 +16,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.vop.util.MailAuthenticationUtil;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -66,5 +67,11 @@ public class RootConfig {
    public ObjectMapper objectMapper() {
 	   return new ObjectMapper();
    } 
+   
+   // 이메일 인증용 클래스
+   @Bean
+   public MailAuthenticationUtil mailAuthenticationUtil() {
+	   return new MailAuthenticationUtil();
+   } // end mailAuthenticationUtil
    
 } // end RootConfig

@@ -14,6 +14,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <!-- 모바일 관련 코드라서 없어도 동작 가능 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- jquery 라이브러리 import -->
@@ -328,7 +329,11 @@ $(document).ready(function() {
            url : '../basket/myBasketDate', // url
            headers : { // 헤더 정보
               'Content-Type' : 'application/json', // json content-type 설정
+<<<<<<< HEAD
               'X-CSRF-TOKEN' : '${_csrf.token }' // CSRF 활성화로 인한 변경점
+=======
+              'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+>>>>>>> 65c367f7a92646ca392740272875a59a04ead183
            }, //'Content-Type' : 'application/json' 헤더 정보가 안들어가면 4050에러가 나온다.
            data : JSON.stringify(obj), // JSON으로 변환
            success : function(result) { // 전송 성공 시 서버에서 result 값 전송
@@ -525,8 +530,13 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
             type: 'PUT', // 메서드 타입
             url: '../likes/modify', // 경로 
             headers: {
+<<<<<<< HEAD
                 'Content-Type': 'application/json',// json content-type 설정
                 'X-CSRF-TOKEN' : '${_csrf.token }' // CSRF 활성화로 인한 변경점
+=======
+                'Content-Type': 'application/json', // json content-type 설정
+                'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+>>>>>>> 65c367f7a92646ca392740272875a59a04ead183
             }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 405 에러가 나온다.
             data: JSON.stringify(obj), // JSON으로 변환
             success: function(result) { // 전송 성공 시 서버에서 result 값 전송

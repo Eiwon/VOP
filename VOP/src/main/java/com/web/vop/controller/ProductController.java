@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -69,10 +70,6 @@ public class ProductController {
 	
 	@Autowired
 	private String uploadPath;
-	
-	private static final String[] categoryList = {"여성패션", "남성패션", "남녀 공용 의류", "유아동 패션", "뷰티", "출산/유아동", 
- 			"식품", "주방용품", "생활용품", "홈인테리어", "가전디지털", "스포츠/레저", "자동차 용품", "도서/음반/DVD", 
- 			"완구/취미", "문구/오피스", "반려동물용품", "헬스/건강식품"};
 	
 	// 상품 상세 정보 조회
 	@GetMapping("/detail")
@@ -259,22 +256,23 @@ public class ProductController {
 		return new ResponseEntity<List<ProductPreviewDTO>>(list, HttpStatus.OK);
 	} // end getRecent5
 	
-	
-	@GetMapping("/searchProduct")
-	@ResponseBody
-	public ResponseEntity<?> searchProduct(@RequestParam("category") String category, @RequestParam("word") String word) {
-        log.info("searchProduct()");
-        
-     // 검색 결과를 JSON 형태로 가공
-        Map<String, Object> result = new HashMap<>();
-        result.put("카테고리 : ", category);
-        result.put("입력한 단어 : ", word);
-        
-        // ResponseEntity에 JSON 데이터를 담아서 반환
-        return ResponseEntity.ok(result);
-    }// end searchProduct()
+
+//	@GetMapping("/searchProduct")
+//	@ResponseBody
+//	public ResponseEntity<?> searchProduct(@RequestParam("category") String category, @RequestParam("word") String word) {
+//        log.info("searchProduct()");
+//        
+//     // 검색 결과를 JSON 형태로 가공
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("카테고리 : ", category);
+//        result.put("입력한 단어 : ", word);
+//        
+//        // ResponseEntity에 JSON 데이터를 담아서 반환
+//        return ResponseEntity.ok(result);
+//    }// end searchProduct()
 
 	// 상품 정보 수정
+	@PreAuthorize("#productVO.memberId == authentication.principal.username")
 	@PostMapping("/update")
 	public String updateProduct(ProductVO productVO, MultipartFile thumbnail, MultipartFile[] details) {
 		log.info("----------상품 수정---------------------");
@@ -367,6 +365,8 @@ public class ProductController {
 	} // end popupProductUpdateGET
 	
 	// 상품 상태 변경
+	// 상품 등록한 사람 또는 관리자만 변경 가능
+	@PreAuthorize("#productVO.memberId == authentication.principal.username || hasRole('관리자')")
 	@PutMapping("/changeState")
 	@ResponseBody
 	public ResponseEntity<Integer> updateProductState(@RequestBody ProductVO productVO) {
@@ -377,7 +377,7 @@ public class ProductController {
 	} // end updateProductState
 
 	// 상품 즉시 삭제
-	@DeleteMapping("/product")
+	@DeleteMapping("/delete")
 	@ResponseBody
 	public ResponseEntity<Integer> deleteProduct(@RequestBody ProductVO productVO) {
 		log.info("상품 삭제 : " + productVO.getProductId());
@@ -398,10 +398,13 @@ public class ProductController {
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end updateProductState
 	
+	// 상품 등록한 사람만 요청 가능
+	@PreAuthorize("#productVO.memberId == authentication.principal.username")
 	// 상품 삭제 요청 등록 (삭제 가능한 상태면 삭제)
 	@DeleteMapping("/request")
 	@ResponseBody
-	public ResponseEntity<Integer> deleteRequestProduct(@RequestBody int productId) {
+	public ResponseEntity<Integer> deleteRequestProduct(@RequestBody ProductVO productVO) {
+		int productId = productVO.getProductId();
 		log.info("상품 삭제 요청 : " + productId);
 		String productState = productService.selectStateByProductId(productId);
 		

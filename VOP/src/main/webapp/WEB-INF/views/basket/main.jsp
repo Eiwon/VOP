@@ -4,6 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>장바구니</title>
 </head>
@@ -203,7 +204,8 @@
 				method : 'DELETE',
 				url : 'myBasket',
 				headers : {
-	                  'Content-Type' : 'application/json'
+	                'Content-Type' : 'application/json',
+	                'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
 	            },
 				data : targetId,
 				success : function(result){
@@ -230,7 +232,8 @@
 				method : 'DELETE',
 				url : 'multi',
 				headers : {
-	                  'Content-Type' : 'application/json'
+	                  'Content-Type' : 'application/json',
+	                  'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
 	            },
 	            data : JSON.stringify(targetList),
 				success : function(result){
@@ -244,6 +247,9 @@
 		function clearBasket(){
 			$.ajax({
 				method : 'DELETE',
+				headers : {
+					'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+				}
 				url : 'clear',
 				success : function(result){
 					console.log(result);
@@ -263,7 +269,8 @@
 				method : 'PUT',
 				url : 'myBasket',
 				headers : {
-	                  'Content-Type' : 'application/json'
+	                  'Content-Type' : 'application/json',
+	                  'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
 	            }, 
 				data : JSON.stringify(obj),
 				success : function(result){

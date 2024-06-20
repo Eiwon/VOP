@@ -17,6 +17,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <!-- 모달 스타일 창크기가 변하면는 같이변하게 하는기능 -->

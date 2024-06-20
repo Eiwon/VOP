@@ -5,6 +5,15 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
+	
+	<!-- EL을 사용하여 권한 정보를 확인 -->
+    <c:set var="hasMembership" value="false"/>
+    <c:forEach var="authority" items="${memberDetails.getAuthorities()}">
+        <c:if test="${authority.authority == 'ROLE_멤버십'}">
+            <c:set var="hasMembership" value="true"/>
+        </c:if>
+    </c:forEach>
+   
 </sec:authorize> 
 
 
@@ -35,6 +44,7 @@
 	}
 </style>
 <title>멤버십 등록</title>
+<meta name="${_csrf.token }" content="${_csrf.token }">
 </head>
 
 <body>
@@ -45,7 +55,7 @@
 	 let paymentWrapper = JSON.parse('${paymentWrapper}');	
 	 let memberVO = paymentWrapper.memberVO;
 	 let membershipVO = paymentWrapper.membershipVO;
-	 
+	
 	 console.log(paymentWrapper);
 	 console.log(memberVO);
 	 
@@ -53,11 +63,6 @@
 		console.log(paymentWrapper);
 		let memberId = "${memberDetails.getUsername()}";
 		console.log("memberId:", memberId);
-		
-		<sec:authorize access="hasRole('ROLE_MEMBERSHIP')">
-	        console.log("멤버십 회원은 이동");
-	        window.location.href = '../membership/success';
-		</sec:authorize>
 		
          // 멤버십 신청
          $('#registerBtn').on('click', function() {
@@ -190,10 +195,14 @@
 		
 		console.log('sendPaymentResult - MembershipVO : ', membershipVO);
 		
+		
 		$.ajax({
 			method : 'POST',
 			url :  'membershipRegister',
-			contentType: 'application/json',
+			headers : {
+				'Content-type' : 'application/json',
+				'X-CSRF-TOKEN' : '${_csrf.token }' 
+			},
 			data : JSON.stringify({
 				'membershipVO': membershipVO,
 				'orderList': orderList, // 필요 없다면 제외하거나 빈 배열로 전달
@@ -215,6 +224,9 @@
            $.ajax({
                type: 'PUT',
                url: 'updateAuth/' + memberId,
+               headers : {
+   				'X-CSRF-TOKEN' : '${_csrf.token }' 
+   				},
                success: function() {
                    console.log('멤버십 권한 업데이트 성공');
                },
@@ -223,6 +235,7 @@
                }
            });
 	} // end sendPaymentResult
+	
 		
 </script>
 
@@ -233,9 +246,23 @@
     <button id="registerBtn">멤버십 신청하기</button>
 
     <h2>멤버십 혜택</h2>
-    <p>무제한 20% 할인 혜택 제공</p>
+
+    <p>무제한 20% 할인 혜택 제공</p><br><br>
+   
+
+<script type="text/javascript">
+	var hasMembership = "${hasMembership}"; // 변수 초기화
+	
+	console.log("멤버 권한 = ", hasMembership);
+	
+    // JavaScript에서 권한 확인 후 링크 표시
+    if (hasMembership === 'true') {
+        document.getElementById("membershipLink").style.display = "block";
+    }
+</script>
+
+<a id="membershipLink" href="success" style="display:none;">멤버십 페이지로 이동하기</a>   
     
-   
-   
+
 </body>
 </html>
