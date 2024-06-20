@@ -113,6 +113,7 @@ tr{
 		function printModify(){
 			$('#subtitle').text("회원 정보 변경");
 			let form = '<form action="modify" method="POST" id="formUpdate"><table><tbody>' +
+				'<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">' +
 				'<tr><td>아이디</td>' +
 				'<td><input type="text" value="${memberVO.memberId }" readonly></td><td></td></tr>' +
 				'<tr><td>이름</td>' +
@@ -126,6 +127,7 @@ tr{
 				'<tr><td>비밀번호 확인</td>' +
 				'<td><input type="password" id="memberPwChk"></td><td class="alert"></td></tr>' +
 				'</tbody></table>' + 
+				'<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">' + 
 				'<td><input type="submit"></td>' + 
 				'</form>';
 			

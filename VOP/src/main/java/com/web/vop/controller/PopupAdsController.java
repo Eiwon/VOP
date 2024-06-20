@@ -14,6 +14,8 @@ import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -103,6 +105,7 @@ public class PopupAdsController {
 	@GetMapping("/list")
 	@ResponseBody
 	public ResponseEntity<PagingListDTO<MessageVO>> getAllList(Pagination pagination){
+		log.info("모든 팝업 광고 리스트 조회");
 		PagingListDTO<MessageVO> pagingListDTO = new PagingListDTO<>();
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
@@ -161,9 +164,12 @@ public class PopupAdsController {
 	
 	@GetMapping("/myPopupAds")
 	@ResponseBody
-	public ResponseEntity<List<Integer>> getPopupAds(@CookieValue(name = "blockPopup", required = false) String cookie) {
+	public ResponseEntity<List<Integer>> getPopupAds(
+			@CookieValue(name = "blockPopup", required = false) String cookie,
+			@AuthenticationPrincipal UserDetails memberDetails) {
 		log.info("팝업 광고 id 호출 요청");
 		
+		String memberId = (memberDetails == null) ? "" : memberDetails.getUsername();
 		List<Integer> blockList = null;
 		
 		if(cookie != null) { // 쿠키가 있으면 차단 목록 불러옴
@@ -174,7 +180,7 @@ public class PopupAdsController {
 			}
 		}
 		// 모든 팝업광고 id 불러오기
-		List<Integer> popupAdsList = messageService.getAllPopupId();
+		List<Integer> popupAdsList = messageService.getMyPopupId(memberId);
 		
 		if(blockList == null) {
 			return new ResponseEntity<List<Integer>>(popupAdsList, HttpStatus.OK);

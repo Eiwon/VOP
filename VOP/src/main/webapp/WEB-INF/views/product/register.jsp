@@ -17,6 +17,7 @@
 <body>
 	<div>
 		<form id="productForm" action="register" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
 			<div>
 				판매자
 				<input type="text" value='${memberDetails.getUsername() }' readonly>

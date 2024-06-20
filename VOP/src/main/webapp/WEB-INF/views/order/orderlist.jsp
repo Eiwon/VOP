@@ -95,12 +95,12 @@
     	<c:set value="${orderViewDTO.orderVO }" var="orderVO"></c:set>
         <div class="order-box">
             <div class="order-details">
-                <p>예상 배송일 : ${orderVO.expectDeliveryDate.toLocaleString()}</p>
                 	<!-- 이미지 목록 표시 -->
 				<div>
                     <img src="${orderViewDTO.imgUrl }" />
 				</div>	
                 <div>
+                	<p>예상 배송일 : ${orderVO.expectDeliveryDate.toLocaleString()}</p>
                     <p>상품명 : ${orderVO.productName}</p>
                     <p>상품 가격 : ${orderVO.productPrice} 원</p>
                     <p>상품 수량 : ${orderVO.purchaseNum} 개</p>
@@ -137,6 +137,7 @@
         				<span class="close">&times;</span>
         				<h2>판매자 문의</h2>
         					<form class="createInquiry">
+        						<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
             					<input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
             					<input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
             					<label for="message">내용:</label><br>
@@ -155,6 +156,7 @@
         				<span class="close">&times;</span>
         				<h2>판매자 수정</h2>
         					<form class="updateInquiry">
+        						<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
             					<input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
             					<input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
             					<label for="message">내용:</label><br>
@@ -172,6 +174,7 @@
     					<div class="modal-content">
         				<span class="close">&times;</span>
 	                	<form class="deleteInquiry">
+	                		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
 	                		<input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
             				<input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
             				<button type="submit">삭제하시 겠습니까?</button>
@@ -205,6 +208,7 @@
         // 세션에서 memberId 가져오기
         /* let memberId; */ // JSP 코드를 사용하여 세션 데이터 가져오기
         let buttons;
+        console.log('${orderList}');
     	// 공통 함수로 이벤트 리스너 추가
     	function addModalEventListener(buttonClass, modalClass) {
     	    buttons = document.querySelectorAll(buttonClass);
@@ -366,7 +370,6 @@
        }); 
     });// end form()
     });// end inquiryDelete()
-    	loadImg();
     }); // end document.ready()
 
     

@@ -1,7 +1,5 @@
 package com.web.vop.domain;
 
-import java.util.Date;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +11,7 @@ import lombok.ToString;
 @ToString
 public class OrderViewDTO {
 	private OrderVO orderVO;
+	private int orderId;
 	private String imgPath;
 	private String imgChangeName;
 	private String imgUrl; 

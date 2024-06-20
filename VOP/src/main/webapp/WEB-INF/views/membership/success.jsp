@@ -73,8 +73,7 @@ $(document).ready(function() {
                     console.error('멤버십 권한 업데이트 실패', error);
                 }
             });
-
-			
+	
 		});
 		
 	});
@@ -84,25 +83,18 @@ $(document).ready(function() {
 </head>
 <body>
 	
+	<!-- 로그인 된 사용자가 멤버십을 등록했을 때  -->
 	<sec:authorize access="isAuthenticated()">
-	<p>일반사용자 전용</p>
-
-	 <script type="text/javascript">
-        // 일반 사용자 전용 alert 및 redirect
-        alert('멤버십 회원만 접근 가능합니다.');
-        window.location.href = '<%= request.getContextPath() %>/membership/register';
-    </script>
+	
+		<h2>VOP 멤버십 가입을 환영합니다!</h2>
+	
+ 		<div id="expirydate"></div><br>
+	
+		<button id="cancelMembershipBtn" style="display: none;">멤버십 해지하기</button><br>
+	 	
+	 	<a href="../board/mypage">마이페이지로 이동</a>
 	</sec:authorize>
 	
-	
-	<sec:authorize access="hasRole('ROLE_판매자')">
-	<p>멤버십 전용</p>
-	
- 	<div id="expirydate"></div>
-	
-	<button id="cancelMembershipBtn" style="display: none;">멤버십 해지하기</button>
-
-	</sec:authorize>
 	
 
 </body>

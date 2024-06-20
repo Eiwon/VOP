@@ -7,6 +7,8 @@
 	<sec:authentication var="memberDetails" property="principal"/>
 </sec:authorize> 
 
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,7 +53,12 @@
 		console.log(paymentWrapper);
 		let memberId = "${memberDetails.getUsername()}";
 		console.log("memberId:", memberId);
-         
+		
+		<sec:authorize access="hasRole('ROLE_MEMBERSHIP')">
+	        console.log("멤버십 회원은 이동");
+	        window.location.href = '../membership/success';
+		</sec:authorize>
+		
          // 멤버십 신청
          $('#registerBtn').on('click', function() {
         	 payment();
@@ -71,6 +78,14 @@
 			IMP.init('imp04667313'); // 가맹점 식별코드 설정(포트원 홈페이지에서 확인)
 			let paymentId;
 			
+			let membershipVO = {
+				    membershipId: null,
+				    memberId: null,
+				    chargeId: null,
+				    membershipFee : null
+				    // 필요한 다른 필드들도 추가할 수 있음
+				};
+			
 			let membershipFee = calcTotalPrice(); // 최종 결제 금액 계산
 			
 			// 서버에서 결제 고유 번호 받아오기
@@ -83,10 +98,12 @@
 					}else{
 						console.log('결제 고유 번호 : ' + result);
 						paymentId = result;
+						console.log('paymentId : ', paymentId);
 						IMP.request_pay({
 							pg: 'kakaopay.TC0ONETIME', // PG사 코드(포트원 홈페이지에서 찾아서 넣어야함)
 			                pay_method: 'card', // 결제 방식
 			                merchant_uid: paymentId, // 결제 고유 번호
+			                name: 'VOP_ Membership Fee', // 제품명 (멤버십 결제를 위한 기본 값)
 			                amount: membershipFee, // 결제 가격
 			                buyer_name: memberVO.memberId,
 			                buyer_email: memberVO.memberEmail,
@@ -127,12 +144,15 @@
 			            		membershipVO.membershipId = rsp.merchant_uid;
 			            		membershipVO.memberId = rsp.buyer_name;
 			                    membershipVO.chargeId = rsp.imp_uid;
-			            	
+			            		membershipVO.membershipFee = rsp.paid_amount;
+			                    
 			            		// membershipVO 객체의 내용 확인
 			                	console.log('membershipVO : ', membershipVO);
 			            		
 			            		sendPaymentResult(rsp);
-			                }
+			                } else {
+		                        console.log('결제 실패:', rsp);
+		                    }
 			            }); // end IMP.request_pay 
 					}
 				}, // end success 
@@ -144,29 +164,45 @@
 	} // end payment
 	
 	
+	
+	
 	function sendPaymentResult(membershipResult){
+		let memberId = "${memberDetails.getUsername()}";
+		console.log("memberId:", memberId);
+		
+		let orderList = []; // 예시: 빈 배열로 초기화
+		let myCouponVO = null; // 예시: null로 초기화
+		
+		let membershipVO = {
+		        membershipId: null,
+		        memberId: null,
+		        chargeId: null,
+		        membershipFee : null
+		        // 필요한 다른 필드들도 추가할 수 있음
+		    };
+		
 		console.log('결제 완료');
 		
 		membershipVO.membershipId = membershipResult.merchant_uid;
 		membershipVO.memberId = membershipResult.buyer_name;
 		membershipVO.chargeId = membershipResult.imp_uid;
-	
+		membershipVO.membershipFee = membershipResult.paid_amount;
 		
-		console.log(membershipVO);
+		console.log('sendPaymentResult - MembershipVO : ', membershipVO);
 		
 		$.ajax({
 			method : 'POST',
 			url :  'membershipRegister',
-			contentType: 'text/plain',
-			headers : {
-				'Content-Type' : 'application/json'
-			},
+			contentType: 'application/json',
 			data : JSON.stringify({
-				'membershipVO' : membershipVO,
+				'membershipVO': membershipVO,
+				'orderList': orderList, // 필요 없다면 제외하거나 빈 배열로 전달
+				'myCouponVO': myCouponVO // 필요 없다면 제외하거나 null로 전달
 			}),
 			success : function(result){
 				console.log('결제 내역 전송 결과 : ' + result);
-				if(result > 0){
+				if(result == 1){
+					window.location.href = "../membership/success";
 					console.log("결제 내역 전송 성공");
 				}else {
 					alert('결제 내역 전송 실패');		
@@ -181,13 +217,11 @@
                url: 'updateAuth/' + memberId,
                success: function() {
                    console.log('멤버십 권한 업데이트 성공');
-                   window.location.href = "../membership/success";
                },
                error: function() {
                    console.log('멤버십 권한 업데이트 실패');
                }
            });
-		
 	} // end sendPaymentResult
 		
 </script>
@@ -199,8 +233,9 @@
     <button id="registerBtn">멤버십 신청하기</button>
 
     <h2>멤버십 혜택</h2>
-    <p>무제한 할인 쿠폰 제공</p>
+    <p>무제한 20% 할인 혜택 제공</p>
     
+   
    
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.web.vop.controller;
 
 import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 
@@ -8,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.WebSocketHandler;
 
-import com.web.vop.domain.AnswerVO;
+
 import com.web.vop.domain.InquiryVO;
 import com.web.vop.domain.MemberDetails;
-import com.web.vop.persistence.AnswerMapper;
+
 import com.web.vop.service.InquiryService;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
@@ -61,17 +61,42 @@ public class InquiryRESTController {
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}// end createInquiry()
 	
-	@GetMapping("/list/{productId}") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
-	public ResponseEntity<List<InquiryVO>> readAllInquiry(
-			@PathVariable("productId") int productId){
+//	@GetMapping("/list/{productId}") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
+//	public ResponseEntity<List<InquiryVO>> readAllInquiry(
+//			@PathVariable("productId") int productId){
+//		log.info("readAllInquiry()");
+//		
+//		// productId에 해당하는 댓글(리뷰) list을 전체 검색
+//		List<InquiryVO> inquiryList = inquiryService.getAllInquiry(productId);
+//		
+//		
+//		// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
+//		return new ResponseEntity<List<InquiryVO>>(inquiryList, HttpStatus.OK);
+//	}// end readAllInquiry()
+	
+	@GetMapping("/list/{productId}/{page}") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
+	public ResponseEntity<Map<String, Object>> readAllInquiry(
+			Pagination pagination,
+			@PathVariable("productId") int productId,
+			@PathVariable("page") int page){
 		log.info("readAllInquiry()");
 		
-		// productId에 해당하는 댓글(리뷰) list을 전체 검색
-		List<InquiryVO> inquiryList = inquiryService.getAllInquiry(productId);
+		pagination.setPageNum(page);
+		log.info("pagination : " + pagination);
+		Map<String, Object> resultMap = new HashMap<>();
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setPagination(pagination);	
+		log.info("쪽수 기본값 : " + pageMaker.getPagination());
 		
+		// productId에 해당하는 댓글(리뷰) list을 전체 검색
+		List<InquiryVO> inquiryList = inquiryService.getAllInquiryPaging(productId, pageMaker);
+		
+		log.info("inquiryList : " + inquiryList);
+		resultMap.put("inquiryList", inquiryList);
+		resultMap.put("pageMaker", pageMaker);
 		
 		// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
-		return new ResponseEntity<List<InquiryVO>>(inquiryList, HttpStatus.OK);
+		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	}// end readAllInquiry()
 	
 

@@ -62,9 +62,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		WHERE TYPE NOT LIKE '%Alarm'
    </select>
    
-   <!-- 모든 팝업 광고 id 검색 -->
-   <select id="selectAllPopupId" resultType="Integer">
-   		SELECT MESSAGE_ID FROM MESSAGE WHERE TYPE NOT LIKE '%Alarm' ORDER BY MESSAGE_ID DESC
+   <!-- 공지사항, 수령하지 않은 쿠폰 광고 id 검색 -->
+   <select id="selectMyPopupId" resultType="Integer">
+   		SELECT MESSAGE_ID FROM MESSAGE 
+		WHERE TYPE = 'notice' OR (TYPE = 'coupon' AND CALLBACK_INFO NOT IN (
+		SELECT COUPON_ID FROM COUPON_POCKET WHERE MEMBER_ID = #{memberId}
+		))
+		ORDER BY MESSAGE_ID DESC
    </select>
    
  </mapper>

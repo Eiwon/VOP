@@ -103,10 +103,7 @@
                                 '<td class="productId">' + list[x].productId + '</td>' + 
                                 '<td class="inquiryContent">' + list[x].inquiryContent + '</td>' + 
                                 '<td class="inquiryDateCreated">' + toDate(list[x].inquiryDateCreated) + '</td>' +
-                                '<td class="button-container">' +
-                                '<div class="button likeButton" data-value="0"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></div>' +
-                                '<div class="button dislikeButton" data-value="0"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></div>' +
-                                '</td>' +
+                                '<td class="button-container"></td>' +
                                 '</tr>';
                     }
 
@@ -115,79 +112,6 @@
                 } // end success
             }); // end ajax
         } // end show
-
-     	// 이벤트 위임을 사용하여 동적 요소에 이벤트 리스너 등록
-        $(document).on('click', '.likeButton', function() {
-            // 현재 클릭된 likeButton의 같은 행에 있는 dislikeButton을 찾습니다.
-            const dislikeButton = $(this).closest('tr').find('.dislikeButton');
-
-            // likeButton에 'liked' 클래스를 토글합니다.
-            $(this).toggleClass('liked');
-            // dislikeButton에서 'disliked' 클래스를 제거합니다.
-            dislikeButton.removeClass('disliked');
-            
-            // likeButton 내의 <i> 요소를 찾습니다.
-            const likeIcon = $(this).find('i');
-            // dislikeButton 내의 <i> 요소를 찾습니다.
-            const dislikeIcon = dislikeButton.find('i');
-
-            // 'liked' 클래스가 있는지 확인합니다.
-            if ($(this).hasClass('liked')) {
-                // 'liked' 클래스가 있으면 likeIcon의 클래스를 변경합니다.
-                likeIcon.removeClass('fa-thumbs-o-up').addClass('fa-thumbs-up');
-                // likeButton의 data-value를 1로 설정합니다.
-                $(this).attr('data-value', '1');
-                // dislikeIcon의 클래스를 원래대로 돌립니다.
-                dislikeIcon.removeClass('fa-thumbs-down').addClass('fa-thumbs-o-down');
-                // dislikeButton의 data-value를 0으로 설정합니다.
-                dislikeButton.attr('data-value', '0');
-            } else {
-                // 'liked' 클래스가 없으면 likeIcon의 클래스를 원래대로 돌립니다.
-                likeIcon.removeClass('fa-thumbs-up').addClass('fa-thumbs-o-up');
-                // likeButton의 data-value를 0으로 설정합니다.
-                $(this).attr('data-value', '1');
-            }
-
-            // 현재 likeButton의 data-value 값을 콘솔에 출력합니다.
-            const likeValue = $(this).attr('data-value');
-            console.log('Like value:', likeValue);
-        });
-
-        $(document).on('click', '.dislikeButton', function() {
-            // 현재 클릭된 dislikeButton의 같은 행에 있는 likeButton을 찾습니다.
-            const likeButton = $(this).closest('tr').find('.likeButton');
-
-            // dislikeButton에 'disliked' 클래스를 토글합니다.
-            $(this).toggleClass('disliked');
-            // likeButton에서 'liked' 클래스를 제거합니다.
-            likeButton.removeClass('liked');
-            
-            // dislikeButton 내의 <i> 요소를 찾습니다.
-            const dislikeIcon = $(this).find('i');
-            // likeButton 내의 <i> 요소를 찾습니다.
-            const likeIcon = likeButton.find('i');
-
-            // 'disliked' 클래스가 있는지 확인합니다.
-            if ($(this).hasClass('disliked')) {
-                // 'disliked' 클래스가 있으면 dislikeIcon의 클래스를 변경합니다.
-                dislikeIcon.removeClass('fa-thumbs-o-down').addClass('fa-thumbs-down');
-                // dislikeButton의 data-value를 0으로 설정합니다.
-                $(this).attr('data-value', '0');
-                // likeIcon의 클래스를 원래대로 돌립니다.
-                likeIcon.removeClass('fa-thumbs-up').addClass('fa-thumbs-o-up');
-                // likeButton의 data-value를 0으로 설정합니다.
-                likeButton.attr('data-value', '0');
-            } else {
-                // 'disliked' 클래스가 없으면 dislikeIcon의 클래스를 원래대로 돌립니다.
-                dislikeIcon.removeClass('fa-thumbs-down').addClass('fa-thumbs-o-down');
-                // dislikeButton의 data-value를 0으로 설정합니다.
-                $(this).attr('data-value', '0');
-            }
-
-            // 현재 dislikeButton의 data-value 값을 콘솔에 출력합니다.
-            const dislikeValue = $(this).attr('data-value');
-            console.log('Dislike value:', dislikeValue);
-        });
 
 
         function makePageForm(inquiryMap) {

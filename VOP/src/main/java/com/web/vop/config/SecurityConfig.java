@@ -17,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -25,6 +26,7 @@ import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuc
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import com.web.vop.handler.LoginSuccessHandler;
+import com.web.vop.handler.SecurityAccessDeniedHandler;
 import com.web.vop.service.UserDetailsServiceImple;
 import com.web.vop.util.Constant;
 
@@ -36,7 +38,7 @@ import lombok.extern.log4j.Log4j;
 @RequiredArgsConstructor
 @Log4j
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter implements Constant {
+public class SecurityConfig extends WebSecurityConfigurerAdapter implements SecurityConfigConstants {
 
 	@Autowired
 	UserDetailsServiceImple userDetailsServiceImple;
@@ -66,11 +68,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 			.antMatchers(NORMAL_OVER).authenticated()
 			.antMatchers(ADMIN_ONLY).hasAuthority(ROLE_ADMIN)
 			.antMatchers(SELLER_OVER).hasRole(AUTH_SELLER)
+			.antMatchers("/membership/success").hasRole(AUTH_MEMBERSHIP)
 			.expressionHandler(expressionHandler());
+		http.exceptionHandling()
+			.accessDeniedHandler(securityAccessDeniedHandler());	
 		// hasRole("권한") : 특정 권한이 있는지 체크 (권한 계층 적용)
 		// hasAnyRole("권한1", "권한2", ...) : 목록 중 하나의 권한이라도 있는지 체크
 		// hasAuthority("ROLE_권한") : 특정 권한이 있는지 체크(권한 계층 미적용)
-		
 		http.formLogin()
 			.loginPage("/member/login")
 			.usernameParameter("memberId")
@@ -95,13 +99,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 			.logoutSuccessHandler(logoutSuccessHandler)
 			.invalidateHttpSession(true); // 세션 무효화 설정
 		
-		http.exceptionHandling()
-			.accessDeniedPage("/access/denied");
-
-		http.csrf().disable();
 		// header 정보에 xssProtection 기능 설정
 		http.headers().xssProtection().block(true);
-		http.headers().contentSecurityPolicy("script-src 'self'");
+		http.headers()
+			.contentSecurityPolicy("script-src " + PERMIT_SCRIPT_SRC)
+			.and()
+			.contentSecurityPolicy("img-src " + PERMIT_IMG_SRC);
 		
 			//.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		//http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -128,8 +131,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 	@Bean
 	public SimpleUrlAuthenticationSuccessHandler loginSuccessHandler() {
 		SimpleUrlAuthenticationSuccessHandler loginSuccessHandler = new LoginSuccessHandler();
-		loginSuccessHandler.setUseReferer(true);
-		loginSuccessHandler.setDefaultTargetUrl("/board/main");
+		//loginSuccessHandler.setUseReferer(true);
+		//loginSuccessHandler.setDefaultTargetUrl("/board/main");
 		return loginSuccessHandler;
 	} // end loginSuccessHandler
 
@@ -139,6 +142,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Cons
 		loginFailHandler.setDefaultFailureUrl("/member/loginFail");
 		return loginFailHandler;
 	} // end loginFailHandler
+	
+	@Bean
+	public AccessDeniedHandler securityAccessDeniedHandler() {
+		return new SecurityAccessDeniedHandler();
+	} // end securityAccessDeniedHandler
 	
 	// 권한에 계층 구조 설정 (상위 권한이 하위의 모든 권한을 포함)
 	@Bean

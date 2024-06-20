@@ -1,6 +1,7 @@
 package com.web.vop.service;
 
 import java.text.DecimalFormat;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import com.web.vop.domain.ReviewVO;
 import com.web.vop.persistence.ProductMapper;
 import com.web.vop.persistence.ReviewMapper;
 import com.web.vop.util.PageMaker;
-import com.web.vop.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 

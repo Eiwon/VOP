@@ -16,15 +16,24 @@
 	flex-direction: row;
 	list-style: none;
 }
-
-tbody {
-	height: 250px;
+.product_table {
+	display: flex;
+	flex-direction: row;
 }
-tr {
-	height: 50px;
-}
-td {
+.thumbnail {
 	width: 200px;
+}
+.category {
+	width : 200px;
+}
+.productName {
+	width: 200px;
+}
+.productPrice {
+	width: 100px;
+}
+.productRemains {
+	width: 100px;
 }
 
 </style>
@@ -36,7 +45,20 @@ td {
 	<div>
 		<strong>${memberDetails.getUsername() } 님이 등록한 상품</strong>
 	</div>
-	<table>
+	<div>
+		<div class="product_table">
+			<div class="thumbnail">썸네일</div>
+			<div class="category">분류</div>
+			<div class="productName">상품명</div>
+			<div class="productPrice">가격</div>
+			<div class="productRemains">재고</div>
+		</div>
+		<div id="product_list">
+		
+		</div>
+		<div id="product_list_page"></div>
+	</div>
+	<!-- <table>
 		<thead>
 			<tr>
 				<th>썸네일</th>
@@ -48,7 +70,7 @@ td {
 		</thead>
 		<tbody id="product_list"></tbody>
 		<tfoot id="product_list_page"></tfoot>
-	</table>
+	</table> -->
 
 	<script type="text/javascript">
 		let pagingListDTO = {}; // 상품 목록과 페이지 정보를 저장할 객체 선언
@@ -73,18 +95,17 @@ td {
 					
 					for (x in pagingListDTO.list) {
 						const productVO = pagingListDTO.list[x].productVO;
-						form += '<tr class="productRow" onclick="popupUpdate(this)">' +
-								'<td class="targetIndex" hidden="hidden">'+ x + '</td>' +
-								'<td><img src="' + pagingListDTO.list[x].imgUrl + '"></td>' +
-								'<td class="productCategory">' + productVO.category + '</td>' + 
-								'<td class="productName">' + productVO.productName + '</td>' + 
-								'<td class="productPrice">' + productVO.productPrice + '원</td>' + 
-								'<td class="productRemains">' + productVO.productRemains + '</td>' + 
-			            		'<td colspan="5">' + 
-								'<form action="../inquiry/list" method="get">' + 
-					    		'<input type="hidden" name="productId" value="' + productVO.productId + '">' +
-					    		'<button type="submit">문의 목록 가기</button>' +
-					    		'</form></tr>';
+						form += '<div class="product_table">' +
+								'<div class="productRow product_table" onclick="popupUpdate(this)">' + 
+								'<div class="targetIndex" hidden="hidden">'+ x + '</div>' +
+								'<div class="thumbnail"><img src="' + pagingListDTO.list[x].imgUrl + '"></div>' +
+								'<div class="category">' + productVO.category + '</div>' + 
+								'<div class="productName">' + productVO.productName + '</div>' + 
+								'<div class="productPrice">' + productVO.productPrice + '원</div>' + 
+								'<div class="productRemains">' + productVO.productRemains + '</div>' + 
+			            		'</div>' + 
+								'<button style="height:50px;" onclick="toInquiry(' + productVO.productId + ')">문의 목록 가기</button>' +
+					    		'</div>';
 					}
 					// 페이지 생성 후 등록
 					$('#product_list_page').html(makePageForm(pagingListDTO));
@@ -95,6 +116,10 @@ td {
 
 		} // end showProductList
 
+		function toInquiry(productId) {
+			location.href='../inquiry/list?productId=' + productId;
+		} // end toInquiry
+		
 		function makePageForm(pagingListDTO) { // 페이지 버튼 생성 후, pagingListDTO의 리스트 출력 함수 등록
 			const pageMaker = pagingListDTO.pageMaker;
 			const startNum = pageMaker.startNum;

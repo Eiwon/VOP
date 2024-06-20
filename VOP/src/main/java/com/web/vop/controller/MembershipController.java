@@ -32,12 +32,17 @@ public class MembershipController {
 	@Autowired
 	private PaymentAPIUtil paymentAPIUtil;
 	
-	@PreAuthorize("!hasRole('판매자')") 
+	@PreAuthorize("isAuthenticated()") // 사용자가 로그인 상태라면 true
 	@GetMapping("/register")
-	public String registerGET(Model model,@AuthenticationPrincipal UserDetails memberDetails){ 
+	public String registerGET(Model model, @AuthenticationPrincipal MemberDetails memberDetails){ 
 		log.info("멤버십 등록 페이지 이동");
-		String memberId = memberDetails.getUserName(); // memberDetails 안쓰면 이름을 어디서 가지고 오지? 
+		  if (memberDetails == null) {
+		        log.error("UserDetails is null");
+		        throw new IllegalArgumentException("UserDetails cannot be null");
+		    }
+		String memberId = memberDetails.getUsername();
 		log.info("memberId : " + memberId);
+		
 		// getAuth() 삭제!
 
 		PaymentWrapper payment = membershipService.makeMembershipForm(memberId);

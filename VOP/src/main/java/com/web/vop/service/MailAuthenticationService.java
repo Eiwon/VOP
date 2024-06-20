@@ -1,6 +1,7 @@
 package com.web.vop.service;
 
 import java.util.Map;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -24,7 +25,7 @@ public class MailAuthenticationService {
 	public void sendAuthEmail(String email) {
 		log.info("본인인증 이메일 송신 to " + email);
 		SimpleMailMessage message = new SimpleMailMessage();
-		String authCode = "1234";
+		String authCode = generateCode();
 		message.setSubject("VOP 본인 인증 요청");
 		message.setText("비밀번호 확인 인증 번호 : " + authCode);
 		emailAuthMap.put(email, authCode);
@@ -34,6 +35,12 @@ public class MailAuthenticationService {
 		
 	} // end sendAuthEmail
 	
+	private String generateCode() {
+		double randomNum = Math.random();
+		String code = String.valueOf(randomNum).substring(2, 6);
+		return code;
+	} // end generateCode
+
 	public boolean verifyAuthCode (String email, String authCode) {
 		log.info("본인인증 이메일 검증");
 		String keyCode = emailAuthMap.get(email);

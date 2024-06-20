@@ -2,9 +2,9 @@ package com.web.vop.service;
 
 import java.util.List;
 
+
 import com.web.vop.domain.ReviewVO;
 import com.web.vop.util.PageMaker;
-import com.web.vop.util.Pagination;
 
 
 public interface ReviewService {

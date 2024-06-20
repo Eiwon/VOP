@@ -140,7 +140,7 @@
 	
 	function showSocketNotification(msg, onclickListener){
 		let temp = confirm(msg.content);
-		if(onclickListener != null || temp){
+		if(onclickListener != null && temp){
 			onclickListener();
 		}
 		console.log(temp);

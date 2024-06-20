@@ -13,10 +13,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @AllArgsConstructor
-public class LikesDislikesVO {
-	private int likesDislikesId;
+public class LikesVO {
+	private int likesId;
 	private String memberId;
 	private int reviewId;
-	private int LikeDislikeType;
-	private Date likesDislikesDateCreated;
+	private int likesType;
+	private Date likesDateCreated;
 }
