@@ -29,17 +29,15 @@ public interface SecurityConfigConstants {
 			"/member/modify", "/order/**", "/payment/**", "/review/modify", "/review/register", "/member/logout",
 			"/basket/**", "/seller/sellerRequest", "/membership/**" };
 
-	// 관리자, 판매자가 아닌 유저만 접근 가능
-	public static final String[] NOT_SELLER_OVER = { "/seller/sellerRequest" };
-
 	// 판매자만 접근 가능
 	public static final String[] SELLER_ONLY = {
 
 	};
 	// 관리자만 접근 가능
 	public static final String[] ADMIN_ONLY = { "/seller/admin", "/seller/popupSellerDetails" };
-	// 판매자 & 관리자
-	public static final String[] SELLER_OVER = { "/product/popup**", "/product/myProduct", "/product/register" };
+	
+	// 판매자 이상만 접근 가능
+	public static final String[] SELLER_OVER = { "/product/popup**", "/product/myProduct", "/product/register", "/seller/main" };
 
 	// 참조 허용 url
 	public static final String PERMIT_IMG_SRC = "https://vop-s3-bucket.s3.ap-northeast-2.amazonaws.com https://developers.kakao.com";

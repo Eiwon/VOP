@@ -17,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -25,6 +26,7 @@ import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuc
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import com.web.vop.handler.LoginSuccessHandler;
+import com.web.vop.handler.SecurityAccessDeniedHandler;
 import com.web.vop.service.UserDetailsServiceImple;
 import com.web.vop.util.Constant;
 
@@ -96,7 +98,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.logoutSuccessHandler(logoutSuccessHandler)
 			.invalidateHttpSession(true); // 세션 무효화 설정
 		http.exceptionHandling()
-			.accessDeniedPage("/access/denied");
+			.accessDeniedHandler(securityAccessDeniedHandler());
 		// header 정보에 xssProtection 기능 설정
 		http.headers().xssProtection().block(true);
 		http.headers()
@@ -140,6 +142,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 		loginFailHandler.setDefaultFailureUrl("/member/loginFail");
 		return loginFailHandler;
 	} // end loginFailHandler
+	
+	@Bean
+	public AccessDeniedHandler securityAccessDeniedHandler() {
+		return new SecurityAccessDeniedHandler();
+	} // end securityAccessDeniedHandler
 	
 	// 권한에 계층 구조 설정 (상위 권한이 하위의 모든 권한을 포함)
 	@Bean
