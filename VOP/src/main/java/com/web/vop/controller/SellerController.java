@@ -40,20 +40,19 @@ public class SellerController {
 	@Autowired
 	private SellerService sellerService;
 	
-	@GetMapping("sellerRequest")
-	public void sellerRequestGET() {
+	@GetMapping("/sellerRequest")
+	public void sellerRequestGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
 		log.info("판매자 권한 신청 페이지로 이동");
+		SellerVO sellerRequest = sellerService.getMyRequest(memberDetails.getUsername());
+		model.addAttribute("sellerRequest", sellerRequest);
 	} // end sellerRequestGET
 	
 	@GetMapping("/main")
-	public void sellerMainGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
+	public void sellerMainGET() {
 		log.info("판매자 메인 페이지 이동");
-		SellerVO sellerRequest = sellerService.getMyRequest(memberDetails.getUsername());
-		model.addAttribute("sellerRequest", sellerRequest);
-		
 	} // end sellerMainGET
 	
-	@PostMapping("sellerRequest")
+	@PostMapping("/sellerRequest")
 	public String sellerRequestPOST(SellerVO sellerVO, @AuthenticationPrincipal UserDetails memberDetails) {
 		sellerVO.setMemberId(memberDetails.getUsername());
 		log.info("sellerRequestPOST : " + sellerVO);
@@ -62,7 +61,7 @@ public class SellerController {
 	} // end sellerRequestPOST
 	
 	@PreAuthorize("hasRole('판매자')")
-	@GetMapping("registerProduct")
+	@GetMapping("/registerProduct")
 	public String registerProductGET() {
 		log.info("상품 등록 페이지로 이동");
 		return "redirect:../product/register";
