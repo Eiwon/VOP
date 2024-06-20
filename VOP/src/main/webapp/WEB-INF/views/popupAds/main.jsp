@@ -4,6 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <style type="text/css">
@@ -194,7 +195,8 @@
 					method : 'DELETE',
 					url : 'delete',
 					headers : {
-						'Content-type' : 'application/json'
+						'Content-type' : 'application/json',
+						'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
 					},
 					data : JSON.stringify(selectedList),
 					success : function(result){

@@ -124,7 +124,6 @@ public class BasketController {
 	
 	// 상품상세 정보에서 버튼 클릭시 동작되는 코드// 우제영 제작 함
 	@ResponseBody
-	@PreAuthorize("authenticated()")
 	@PostMapping("/myBasketDate")
 	public ResponseEntity<Integer> registerBasket(@RequestBody BasketVO basketVO){
 		log.info("registerBasketPOST()");

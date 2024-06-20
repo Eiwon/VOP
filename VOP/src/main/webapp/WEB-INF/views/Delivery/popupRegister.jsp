@@ -4,6 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <!-- 카카오 주소검색 API 사용하기 위한 script -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -150,7 +151,8 @@ tr {
 				method : 'POST',
 				url : submitUrl,
 				headers : {
-					'Content-Type' : 'application/json'
+					'Content-Type' : 'application/json',
+					'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
 				},
 				data : JSON.stringify(deliveryVO),
 				success : function(result){

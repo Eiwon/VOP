@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.web.vop.domain.MemberVO;
 import com.web.vop.persistence.MemberMapper;
@@ -64,7 +65,8 @@ public class MemberServiceImple implements MemberService{
 	public int updateMember(MemberVO memberVO) { // 회원 정보 수정
 		log.info("Member Service updateMember()");
 		String memberPw = memberVO.getMemberPw();
-		if(memberPw != null) { // 비밀번호 변경 요청시, 비밀번호 암호화
+		log.info("변경 요청 비밀번호 : " + memberPw);
+		if(StringUtils.hasText(memberPw)) { // 비밀번호 변경 요청시, 비밀번호 암호화
 			memberVO.setMemberPw(passwordEncoder.encode(memberPw));
 		}
 		int res = memberMapper.updateMember(memberVO);

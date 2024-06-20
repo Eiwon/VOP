@@ -24,6 +24,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.web.vop.handler.LoginSuccessHandler;
 import com.web.vop.handler.SecurityAccessDeniedHandler;
@@ -106,6 +108,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.and()
 			.contentSecurityPolicy("img-src " + PERMIT_IMG_SRC);
 		
+		http.addFilterBefore(characterEncodingFilter(), CsrfFilter.class);
 			//.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		//http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		//http.headers().cacheControl();
@@ -124,9 +127,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 	} // end passwordEncoder
 	
 	@Bean
-	public JWTAuthenticationFilter jwtAuthenticationFilter() {
-		return new JWTAuthenticationFilter();
-	} // end jwtAuthenticationFilter
+	public CharacterEncodingFilter characterEncodingFilter() {
+		CharacterEncodingFilter filter = new CharacterEncodingFilter();
+		filter.setEncoding("UTF-8");
+		filter.setForceEncoding(true);
+		return filter;
+	} // end characterEncodingFilter
+	
+//	@Bean
+//	public JWTAuthenticationFilter jwtAuthenticationFilter() {
+//		return new JWTAuthenticationFilter();
+//	} // end jwtAuthenticationFilter
 	
 	@Bean
 	public SimpleUrlAuthenticationSuccessHandler loginSuccessHandler() {
