@@ -21,7 +21,7 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 		log.info("mainGET()");
 	}//end mainGET()
 	
-	// 마이페이지 호출하기 -> 세션이 있을 경우 이동, 없으면 로그인 페이지로 이동
+	// 마이페이지 호출하기
 	@GetMapping("/mypage") 
 	public void mypageGET() {
 		System.out.println("mypage.jsp 이동");

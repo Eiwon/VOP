@@ -62,6 +62,7 @@
 						</tr>
 					</tbody>
 					</table>
+					<input type="hidden" name="memberId" value="${memberDetails.getUsername() }">
 					<input type="submit" value="신청하기">
 				</form>
 			</c:otherwise>

@@ -24,6 +24,9 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import org.springframework.security.web.csrf.CsrfFilter;
+
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.web.vop.handler.LoginSuccessHandler;
@@ -70,7 +73,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.antMatchers(SELLER_OVER).hasRole(AUTH_SELLER)
 			.antMatchers("/membership/success").hasRole(AUTH_MEMBERSHIP)
 			.expressionHandler(expressionHandler());
-			
+		http.exceptionHandling()
+			.accessDeniedHandler(securityAccessDeniedHandler());	
 		// hasRole("권한") : 특정 권한이 있는지 체크 (권한 계층 적용)
 		// hasAnyRole("권한1", "권한2", ...) : 목록 중 하나의 권한이라도 있는지 체크
 		// hasAuthority("ROLE_권한") : 특정 권한이 있는지 체크(권한 계층 미적용)
@@ -97,8 +101,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.deleteCookies("JSESSIONID", "rememberMe") // 로그아웃 후 쿠키 삭제
 			.logoutSuccessHandler(logoutSuccessHandler)
 			.invalidateHttpSession(true); // 세션 무효화 설정
-		http.exceptionHandling()
-			.accessDeniedHandler(securityAccessDeniedHandler());
+		
 		// header 정보에 xssProtection 기능 설정
 		http.headers().xssProtection().block(true);
 		http.headers()
@@ -106,6 +109,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.and()
 			.contentSecurityPolicy("img-src " + PERMIT_IMG_SRC);
 		
+		http.addFilterBefore(characterEncodingFilter(), CsrfFilter.class);
 			//.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		//http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		//http.headers().cacheControl();
@@ -124,9 +128,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 	} // end passwordEncoder
 	
 	@Bean
-	public JWTAuthenticationFilter jwtAuthenticationFilter() {
-		return new JWTAuthenticationFilter();
-	} // end jwtAuthenticationFilter
+	public CharacterEncodingFilter characterEncodingFilter() {
+		CharacterEncodingFilter filter = new CharacterEncodingFilter();
+		filter.setEncoding("UTF-8");
+		filter.setForceEncoding(true);
+		return filter;
+	} // end characterEncodingFilter
+	
+//	@Bean
+//	public JWTAuthenticationFilter jwtAuthenticationFilter() {
+//		return new JWTAuthenticationFilter();
+//	} // end jwtAuthenticationFilter
 	
 	@Bean
 	public SimpleUrlAuthenticationSuccessHandler loginSuccessHandler() {

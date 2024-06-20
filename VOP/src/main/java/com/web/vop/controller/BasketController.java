@@ -35,7 +35,6 @@ public class BasketController {
 	@Autowired
 	AWSS3Service awsS3Service;
 	
-	@PreAuthorize("authenticated()")
 	@GetMapping("/main")
 	public void basketMainGET() {
 		log.info("basket/main.jsp 이동");
@@ -45,7 +44,6 @@ public class BasketController {
 	// 내 장바구니 물품 목록 조회
 	// 입력값 : memberId, pageNum
 	// return : 장바구니 물품 리스트
-	@PreAuthorize("authenticated()")
 	@GetMapping("/myBasket")
 	@ResponseBody
 	public ResponseEntity<List<BasketDTO>> getMyBasket(@AuthenticationPrincipal MemberDetails memberDetails){
@@ -126,7 +124,6 @@ public class BasketController {
 	
 	// 상품상세 정보에서 버튼 클릭시 동작되는 코드// 우제영 제작 함
 	@ResponseBody
-	@PreAuthorize("authenticated()")
 	@PostMapping("/myBasketDate")
 	public ResponseEntity<Integer> registerBasket(@RequestBody BasketVO basketVO){
 		log.info("registerBasketPOST()");

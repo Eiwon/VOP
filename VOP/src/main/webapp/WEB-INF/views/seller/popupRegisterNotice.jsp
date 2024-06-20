@@ -4,6 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>공지사항 등록</title>
 </head>
@@ -38,7 +39,8 @@
 					method : 'POST',
 					url : 'notice',
 					headers : {
-						'Content-Type' : 'application/json'
+						'Content-Type' : 'application/json',
+						'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
 					},
 					data : JSON.stringify({
 						'title' : title,

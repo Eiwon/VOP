@@ -5,6 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <!-- 카카오 주소검색 API 사용하기 위한 script -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -60,6 +61,12 @@ img {
 			<tr>
 				<td>등록 번호</td>
 				<td>${productVO.productId }</td>
+			</tr>
+			<tr>
+				<td><input type="hidden" name="productId" value="${productVO.productId }"></td>
+				<td><input type="hidden" name="imgId" value="${productVO.imgId}"></td>
+				<td><input type="hidden" name="memberId" value="${productVO.memberId }"></td>
+				<td><input type="hidden" name="productState" value="승인 대기중"></td>
 			</tr>
 			<tr>
 				<td>상품명</td>
@@ -142,6 +149,7 @@ img {
 		let btnContinue = $('#btn_continue');
 		let btnUpdate = $('#btn_update');
 		let btnDelete = $('#btn_delete');
+		const allowedExtension = new RegExp("jpg|jpeg|png|bmp|tif|tiff|webp|svg");
 		
 		$(document).ready(function(){
 			
@@ -174,12 +182,14 @@ img {
 			$.ajax({
 				method : 'PUT',
 				headers : {
-					'Content-Type' : 'application/json'
+					'Content-Type' : 'application/json',
+					'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
 				},
 				url : 'changeState',
 				data : JSON.stringify({
 					'productId' : productId,
-					'productState' : productState
+					'productState' : productState,
+					'memberId' : '${productVO.memberId}'
 				}),
 				success : function(result){
 					console.log('상품 상태 변경 결과 : ' + result);
@@ -202,25 +212,67 @@ img {
 		let formProduct = $('#formProduct');
 		
 		formProduct.submit(function update(){
+			
+            let file = $('#inputThumbnail').prop('files')[0]; // file 객체 참조
+            
+            if(!checkFileValid(file)){
+            	event.preventDefault();
+            	return;
+            }
+            
+            let files = $('#inputDetails').prop('files');
+            
+            for(let x = 0; x < files.length; x++){
+            	console.log(files[x].name);
+            	if(!checkFileValid(files[x])){
+            		event.preventDefault();
+                	return;
+            	}
+            }
+			
 			if(!confirm("변경시 관리자의 승인 전까지 판매가 중지됩니다. 변경하시겠습니까?")){
 				 event.preventDefault();
 				 return;
 			}
-			formProduct.append('<input type="hidden" name="productId" value="' + productId + '">');
-			formProduct.append('<input type="hidden" name="imgId" value="${productVO.imgId}">');
-			formProduct.append('<input type="hidden" name="productState" value="승인 대기중">');
+			
 			alert("변경 사항은 관리자의 승인 후 반영됩니다.");
 		});
 		
+		
+		function checkFileValid(file){
+			 
+            if (!file) { // file이 없는 경우
+               alert("파일을 선택하세요.");
+               return false;
+            }
+            
+            if (!allowedExtensions.test(file.name)) { // 차단된 확장자인 경우
+               alert("이미지 파일만 첨부해주세요\n(jpg, jpeg, png, bmp, tif, tiff, webp, svg)");
+               return false;
+            }
+
+            let maxSize = 10 * 1024 * 1024; // 10 MB 
+            if (file.size > maxSize) {
+               alert("파일 크기가 너무 큽니다. 최대 크기는 10MB입니다.");
+               return false;
+            }
+        } // end checkFileValid
+		
+        
+        
 		function deleteRequest() {
 			
 			$.ajax({
 				method : 'DELETE',
 				headers : {
-					'Content-Type' : 'application/json'
+					'Content-Type' : 'application/json',
+					'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
 				},
 				url : 'request',
-				data : productId,
+				data : JSON.stringify({
+					productId : '${productVO.productId}',
+					memberId : '${productVO.memberId}'
+				}),
 				success : function(result){
 					console.log(result);
 					if(result == 201){

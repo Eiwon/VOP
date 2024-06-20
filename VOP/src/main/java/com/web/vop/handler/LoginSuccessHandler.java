@@ -35,6 +35,12 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 			request.getSession().removeAttribute("prevPage");
 		}
 		log.info("로그인 성공");
+		
+		// 이전 페이지가 login 관련 페이지면 메인페이지로 이동
+		if(uri.contains("/member/")) {
+			uri = request.getContextPath();
+		}
+		
 		response.sendRedirect(uri);
 	}
 	

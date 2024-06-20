@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
-import com.web.vop.service.MailAuthenticationService;
 import com.web.vop.service.MemberService;
+import com.web.vop.util.MailAuthenticationUtil;
 
 import lombok.extern.log4j.Log4j;
 
@@ -31,7 +31,7 @@ public class MemberRESTController {
 	MemberService memberService;
 	
 	@Autowired
-	MailAuthenticationService mailAuthService;
+	MailAuthenticationUtil mailAuthService;
 
 	@GetMapping("/idDupChk") // id 중복 체크
 	public ResponseEntity<Integer> checkIdDup(String memberId){
@@ -61,7 +61,7 @@ public class MemberRESTController {
 	} // end findByNameAndPhone
 	
 	@PostMapping("/check")
-	public ResponseEntity<Boolean> checkMember(@AuthenticationPrincipal MemberDetails memberDetails, @RequestParam String memberPw){
+	public ResponseEntity<Boolean> checkMember(@AuthenticationPrincipal MemberDetails memberDetails, String memberPw){
 		log.info("비밀번호 확인");
 		boolean comp = memberService.checkLogin(memberDetails.getUsername(), memberPw);
 		

@@ -195,7 +195,7 @@
                 alert("파일 크기가 너무 큽니다. 최대 크기는 10MB입니다.");
                 return false;
              }
-         }
+         } // end checkFileValid
          
          function searchAddress(){
  			new daum.Postcode({ // 카카오 주소검색 API 팝업창 띄우는 코드

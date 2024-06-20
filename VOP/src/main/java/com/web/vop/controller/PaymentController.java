@@ -41,7 +41,6 @@ public class PaymentController {
 	@Autowired
 	private AWSS3Service awsS3Service;
 	
-	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/checkout")
 	public void makePayment(
 			Model model, int[] productIds, int[] productNums, @AuthenticationPrincipal MemberDetails memberDetails) {
@@ -73,7 +72,6 @@ public class PaymentController {
 		
 	} // end paymentResultGET
 	
-	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/getId")
 	@ResponseBody
 	public ResponseEntity<Integer> getNewPaymentId(){
@@ -82,7 +80,6 @@ public class PaymentController {
 		return new ResponseEntity<Integer>(paymentId, HttpStatus.OK);
 	} // end getNewPaymentId
 	
-	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/apply")
 	@ResponseBody
 	public ResponseEntity<Integer> savePaymentResult(@RequestBody PaymentWrapper paymentResult, @AuthenticationPrincipal UserDetails memberDetails){
