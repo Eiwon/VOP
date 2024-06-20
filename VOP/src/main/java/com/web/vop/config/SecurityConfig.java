@@ -24,6 +24,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.web.vop.handler.LoginSuccessHandler;
 import com.web.vop.handler.SecurityAccessDeniedHandler;
@@ -54,7 +55,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 	
 	@Autowired
 	PersistentTokenRepository tokenRepository;
-	
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -157,5 +157,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 		expressionHandler.setRoleHierarchy(roleHierarchyImple);
 		return expressionHandler;
 	} // end roleVoter
+	
+	
+	
+	
+	
+	
 	
 }

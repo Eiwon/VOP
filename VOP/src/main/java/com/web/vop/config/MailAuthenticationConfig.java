@@ -13,8 +13,13 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 @Configuration
 public class MailAuthenticationConfig {
 	
+	// 이메일 인증용 아이디와 비밀번호
+		public static final String MAIL_AUTH_ID = "rtst606@gmail.com";
+		public static final String MAIL_AUTH_PW = "mslbwxavcqmhztas";
+	
 	@Bean
 	public JavaMailSender javaMailSender() {
+		
 		JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
 
 		javaMailSender.setUsername(ApiKey.MAIL_AUTH_ID);
@@ -35,4 +40,6 @@ public class MailAuthenticationConfig {
 	public Map<String, String> emailAuthMap(){
 		return new HashMap<>();
 	} // end emailAuthMap
+	
+	
 }

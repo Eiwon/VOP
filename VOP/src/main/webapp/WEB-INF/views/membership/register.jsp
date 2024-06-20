@@ -35,10 +35,10 @@
 	}
 </style>
 <title>멤버십 등록</title>
+<meta name="${_csrf.token }" content="${_csrf.token }">
 </head>
 
 <body>
-
 
 
 <script type="text/javascript">
@@ -185,10 +185,14 @@
 		
 		console.log('sendPaymentResult - MembershipVO : ', membershipVO);
 		
+		
 		$.ajax({
 			method : 'POST',
 			url :  'membershipRegister',
-			contentType: 'application/json',
+			headers : {
+				'Content-type' : 'application/json',
+				'X-CSRF-TOKEN' : '${_csrf.token }' 
+			},
 			data : JSON.stringify({
 				'membershipVO': membershipVO,
 				'orderList': orderList, // 필요 없다면 제외하거나 빈 배열로 전달
@@ -210,6 +214,9 @@
            $.ajax({
                type: 'PUT',
                url: 'updateAuth/' + memberId,
+               headers : {
+   				'X-CSRF-TOKEN' : '${_csrf.token }' 
+   				},
                success: function() {
                    console.log('멤버십 권한 업데이트 성공');
                },
@@ -229,9 +236,7 @@
 
     <h2>멤버십 혜택</h2>
 
-    <p>무제한 할인 쿠폰 제공</p><br><br>
-
-    <p>무제한 20% 할인 혜택 제공</p>
+    <p>무제한 20% 할인 혜택 제공</p><br><br>
    
    <sec:authorize access="hasRole('ROLE_멤버십')">
 	        <a href="success">멤버십 페이지로 이동하기</a>
