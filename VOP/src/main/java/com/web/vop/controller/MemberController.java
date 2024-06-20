@@ -48,8 +48,10 @@ public class MemberController {
 	} // end registerGET
 	
 	@GetMapping("/login")
-	public void loginGET() {
+	public void loginGET(HttpServletRequest request) {
 		log.info("login 페이지 이동 요청");
+		String prevPage = request.getHeader("Referer");
+		request.getSession().setAttribute("prevPage", prevPage);
 	} // end loginGET
 	
 	

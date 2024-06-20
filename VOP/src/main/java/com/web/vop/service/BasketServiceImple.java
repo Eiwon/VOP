@@ -67,7 +67,7 @@ public class BasketServiceImple implements BasketService {
 	@Override
 	public int createBasket(BasketVO basketVO) {
 		// 장바구니 수정
-		int res = basketMapper.updateProductNum(basketVO);
+		int res = basketMapper.updateExistProductNum(basketVO);
 		
 		// 장바구니 수정이 안되었을때 등록
 		if(res == 0) {

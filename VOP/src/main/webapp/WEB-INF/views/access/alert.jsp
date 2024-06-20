@@ -22,7 +22,9 @@
 		alert(alertMsg);
 		if(redirectUri == 'close'){
 			window.close();
-		}else{
+		}else if(redirectUri == 'back'){
+			window.history.back();
+		}else {
 			location.href = '../' + redirectUri;		
 		}
 	</script>

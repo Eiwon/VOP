@@ -4,13 +4,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>잘못된 접근</title>
+<title>Errrrrrrrror</title>
 </head>
 <body>
-	
-	<script type="text/javascript">
-		alert('액세스가 거부되었습니다.');
-		window.history.back();
-	</script>	
+
+
+	<h1> 에러 발생 !!!!</h1>
+	<a href="#" onclick="window.history.back()">뒤로 가기</a>
+
+
 </body>
 </html>

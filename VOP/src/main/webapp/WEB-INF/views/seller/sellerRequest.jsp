@@ -13,30 +13,60 @@
 <jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	<div>
-		<h2>판매자 등록 신청</h2>
+		<c:choose>
+			<c:when test="${sellerRequest != null }">
+				<div>
+					<h3>${memberDetails.getUsername() }회원님의 판매자 등록 신청 내역입니다.</h3>
+					<table>
+						<thead>
+						<tr>
+							<th>사업체 이름</th>
+							<th>신청 날짜</th>
+							<th>신청 내용</th>
+							<th>상태</th>
+							<th>비고</th>
+						</tr>
+						</thead>
+					<tbody>
+						<tr>
+							<td>${sellerRequest.businessName }</td>
+							<td>${sellerRequest.requestTime.toLocaleString() }</td>
+							<td>${sellerRequest.requestContent }</td>
+							<td>${sellerRequest.requestState }</td>
+							<td>${sellerRequest.refuseMsg }</td>
+						</tr>
+					</tbody>
+					</table>
+				</div>
+			</c:when>
+			<c:otherwise>
+				<h2>판매자 등록 신청</h2>
 		
-		<form action="sellerRequest" method="POST">
-			<table>
-				<tbody>
-					<tr>
-						<td>유저 ID</td>
-						<td>${memberDetails.getUsername() }</td>
-					</tr>
-					<tr>
-						<td>사업자 명</td>
-						<td><input type="text" name="businessName" onblur="validChk(this)"></td>
-						<td id="businessNameAlert"></td>
-					</tr>
-					<tr>
-						<td>세부 내용</td>
-						<td><input type="text" name="requestContent" onblur="validChk(this)"></td>
-						<td id="requestContentAlert"></td>
-					</tr>
-				</tbody>
-			</table>
-			<input type="submit" value="신청하기">
-		</form>
-	
+				<form action="sellerRequest" method="POST">
+					<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
+					<table>
+					<tbody>
+						<tr>
+							<td>유저 ID</td>
+							<td>${memberDetails.getUsername() }</td>
+						</tr>
+						<tr>
+							<td>사업자 명</td>
+							<td><input type="text" name="businessName" onblur="validChk(this)"></td>
+							<td id="businessNameAlert"></td>
+						</tr>
+						<tr>
+							<td>세부 내용</td>
+							<td><input type="text" name="requestContent" onblur="validChk(this)"></td>
+							<td id="requestContentAlert"></td>
+						</tr>
+					</tbody>
+					</table>
+					<input type="submit" value="신청하기">
+				</form>
+			</c:otherwise>
+		</c:choose>
+		
 	</div>
 	
 	<script type="text/javascript">

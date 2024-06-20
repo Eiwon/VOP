@@ -17,8 +17,13 @@ public class AccessController {
 	
 	
 	@GetMapping("/denied")
-	public void accessDeniedGET() {
+	public String accessDeniedGET(Model model) {
 		log.info("액세스 거부");
+		AlertVO alertVO = new AlertVO();
+		alertVO.setAlertMsg("액세스가 거부되었습니다");
+		alertVO.setRedirectUri("back");
+		model.addAttribute("alertVO", alertVO);
+		return Constant.ALERT_PATH;
 	} // end accessDeniedGET
 	
 	@GetMapping("/notFound")
@@ -26,19 +31,14 @@ public class AccessController {
 		log.info("NoHandlerFoundException");
 		AlertVO alertVO = new AlertVO();
 		alertVO.setAlertMsg("존재하지 않는 페이지입니다.");
-		alertVO.setRedirectUri("board/main");
+		alertVO.setRedirectUri("back");
 		model.addAttribute("alertVO", alertVO);
 		return Constant.ALERT_PATH;
 	} // end NoHandlerFoundException
 	
 	@GetMapping("/exception")
-	public String allException(Model model, Exception exception) {
+	public void allException(Model model) {
 		log.info("allException");
-		AlertVO alertVO = new AlertVO();
-		alertVO.setAlertMsg(exception.toString() + " 예외 발생!!!!!!!");
-		alertVO.setRedirectUri("board/main");
-		model.addAttribute("alertVO", alertVO);
-		return Constant.ALERT_PATH;
 	} // end allException
 	
 }

@@ -32,6 +32,9 @@ public interface BasketMapper {
 	// 장바구니 비우기
 	int deleteAll(String memberId);
 	
+	// 기존 상품 + 새로 등록 한 상품 갯수
+	int updateExistProductNum(BasketVO basketVO);
+	
 	
 	
 }

@@ -30,6 +30,7 @@ img {
 	<c:set var="memberVO" value="${productDetailsDTO.memberVO }"/>
 	<h2>상품 상세 정보</h2>
 	<form action="../product/update" method="POST" id="formProduct" enctype="multipart/form-data">
+	<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
 	<table class="form_info">
 		<tbody>
 			<tr>

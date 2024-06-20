@@ -26,6 +26,11 @@
 <title>결제 페이지</title>
 </head>
 <body>
+	<c:set var="memberVO" value="${paymentWrapper.memberVO}"/>
+	<c:set var="deliveryVO" value="${paymentWrapper.deliveryVO}"/>
+	<c:set var="orderList" value="${paymentWrapper.orderList}"/>
+	<c:set var="membershipVO" value="${paymentWrapper.membershipVO }"/>
+	<c:set var="totalPrice" value="0"/>
 	<div>
 		<h2>주문 / 결제</h2>
 		<div class="box_info" id="buyer_info">
@@ -34,15 +39,15 @@
 				<tbody>
 					<tr>
 						<td>이름</td>
-						<td id="member_name"></td>
+						<td id="member_name">${memberVO.memberName }</td>
 					</tr>
 					<tr>
 						<td>이메일</td>
-						<td id="member_email"></td>
+						<td id="member_email">${memberVO.memberEmail }</td>
 					</tr>
 					<tr>
 						<td>휴대폰 번호</td>
-						<td id="member_phone"></td>
+						<td id="member_phone">${memberVO.memberPhone }</td>
 					</tr>
 				</tbody>
 			</table>
@@ -53,23 +58,23 @@
 				<tbody>
 					<tr>
 						<td>이름</td>
-						<td><input type="text" id="receiverName" readonly></td>
+						<td><input type="text" id="receiverName" value="${deliveryVO.receiverName }" readonly></td>
 					</tr>
 					<tr>
 						<td>배송주소</td>
-						<td><input type="text" id="receiverAddress" readonly></td>
+						<td><input type="text" id="receiverAddress" value="${deliveryVO.receiverAddress }" readonly></td>
 					</tr>
 					<tr>
 						<td>상세주소</td>
-						<td><input type="text" id="deliveryAddressDetails" readonly></td>
+						<td><input type="text" id="deliveryAddressDetails" value="${deliveryVO.deliveryAddressDetails }" readonly></td>
 					</tr>
 					<tr>
 						<td>연락처</td>
-						<td><input type="text" id="receiverPhone" readonly></td>
+						<td><input type="text" id="receiverPhone" value="${deliveryVO.receiverPhone }" readonly></td>
 					</tr>
 					<tr>
 						<td>배송 요청사항</td>
-						<td><input type="text" id="requirement"></td>
+						<td><input type="text" id="requirement" value="${deliveryVO.requirement }"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -78,6 +83,20 @@
 		<div class="box_info" id="order_info">
 			<h2>주문 정보</h2>
 			<div id="order_list">
+				<c:forEach var="orderDTO" items="${orderList }">
+					<c:set var="orderVO" value="${orderDTO.orderVO }"/>
+					<c:set var="totalPrice" value="${totalPrice + orderVO.productPrice *  orderVO.purchaseNum }"></c:set>
+					<div>
+						<div>
+							<img src="${orderDTO.imgUrl }">
+						</div>
+						<div>
+							<div style="width: 200px;">${orderVO.productName }</div>
+							<div style="width: 200px;">${orderVO.purchaseNum }</div>
+							<div style="width: 200px;">${orderVO.productPrice *  orderVO.purchaseNum }원</div>
+						</div>
+					</div>
+				</c:forEach>
 			</div>
 		</div>
 		
@@ -87,15 +106,21 @@
 				<tbody>
 					<tr>
 						<td>총 상품 가격</td>
-						<td id="total_price"></td>
+						<td id="total_price">${totalPrice }</td>
 					</tr>
 					<tr>
 						<td>멤버십 할인</td>
-						<td id="membership_discount"></td>
+						<td id="membership_discount">
+						<c:set var="membershipDiscount" value="0"/>
+						<c:if test="${membershipVO.membershipId != 0 }">
+							<c:set var="membershipDiscount" value="20"/>
+							${membershipDiscount }%
+						</c:if>
+						</td>
 					</tr>
 					<tr>
 						<td>쿠폰 할인</td>
-						<td id="coupon_discount"></td>
+						<td id="coupon_discount">${couponVO.discount }%</td>
 						<td><button id="btn_coupon" onclick="selectCoupon()">쿠폰 선택</button></td>
 					</tr>
 					<tr>
@@ -124,80 +149,52 @@
 	</div>
 	
 	<script type="text/javascript">
-		let paymentWrapper = JSON.parse('${paymentWrapper}');
-		let memberVO = paymentWrapper.memberVO;
-		let orderList = paymentWrapper.orderList;
-		let deliveryVO = paymentWrapper.deliveryVO;
-		let membershipVO = paymentWrapper.membershipVO;
+		let deliveryVO;
 		let myCouponList;
 		let myCouponVO;
 		let paymentVO = {
-				'paymentId' : 0,
-				'memberId' : '',
-				'deliveryAddress' : '',
-				'receiverName' : '',
-				'receiverPhone' : '',
-				'requirement' : '',
-				'membershipDiscount' : 0,
 				'couponDiscount' : 0,
 				'deliveryPrice' : 0,
 				'chargePrice' : 0
 				};
 		let infoContainer = $('#info_container');
 		let tagOrderList = $('#order_list');
-		
+		let totalPrice = parseInt('${totalPrice}');
+		let addressChk = false;
 		
 		$(document).ready(function(){
-			console.log(paymentWrapper);
+			//console.log(paymentWrapper);
 			setInfo();
 			$('#btn_payment').click(function(){
-				location.href = 'paymentResult?paymentId=1048';
-				//payment();
+				
+				paymentVO.requirement = $('#requirement').val();
+				if(!addressChk){
+					alert('주소를 입력해주세요');
+					return;
+				}
+				
+				payment();
 			}); // end btnPayment.click
 			
 		}); // end document.ready
 		
 		function setInfo(){
-			$('#member_name').text(memberVO.memberName);
-			$('#member_email').text(memberVO.memberEmail);
-			$('#member_phone').text(memberVO.memberPhone);
 			
-			if(deliveryVO != null){ // 기본 배송지로 등록된 배송지가 있을 경우에만 출력
-				$('#receiverName').val(deliveryVO.receiverName);
-				$('#receiverAddress').val(deliveryVO.receiverAddress);
-				$('#deliveryAddressDetails').val(deliveryVO.deliveryAddressDetails);
-				$('#receiverPhone').val(deliveryVO.receiverPhone);
-				$('#requirement').val(deliveryVO.requirement);
-			}
-			
-			let form = '';
-			for (x in orderList){
-				form += '<div>' + 
-				'<img src="' + orderList[x].imgUrl + '">' + 
-				'<div>' + 
-				'<div style="width: 200px;">' + orderList[x].orderVO.productName + '</div>' + 
-				'<div style="width: 200px;">' + orderList[x].orderVO.purchaseNum + '</div>' +
-				'<div style="width: 200px;">' + orderList[x].orderVO.productPrice * orderList[x].orderVO.purchaseNum + '원</div>' +
-				'</div>' +
-				'</div>';
-			}
-			tagOrderList.html(form);
-			
-			// 멤버십 정보가 있으면 20% 할인 적용
-			if(membershipVO != null){
-				paymentVO.membershipDiscount = 20;			
+			paymentVO.membershipDiscount = parseInt('${membershipDiscount}');
+			paymentVO.deliveryAddress = '${deliveryVO.receiverAddress}' + '${deliveryVO.deliveryAddressDetails}';
+			paymentVO.receiverName = '${deliveryVO.receiverName}';
+			paymentVO.receiverPhone = '${deliveryVO.receiverPhone}';
+			paymentVO.requirement = '${deliveryVO.requirement}';
+			if(paymentVO.deliveryAddress.length != 0){
+				addressChk = true;			
 			}
 			
 			setPaymentInfo();
-			
-
 		} // end setInfo
 		
 		
 		function setPaymentInfo(){
 			// 결제 정보 출력
-			$('#total_price').text(calcTotalPrice());
-			$('#membership_discount').text(paymentVO.membershipDiscount + '%');
 			$('#coupon_discount').text(paymentVO.couponDiscount + '%');
 			$('#delivery_price').text(paymentVO.deliveryPrice);
 			$('#charge_price').text(calcChargePrice());
@@ -239,22 +236,13 @@
 			setPaymentInfo();
 		} // end applyCoupon
 		
-		function calcTotalPrice() {
-			let totalPrice = 0;
-			
-			for(x in orderList){
-				totalPrice += orderList[x].orderVO.productPrice * orderList[x].orderVO.purchaseNum;
-			}
-			console.log('합계 : ' + totalPrice);
-			return Math.ceil(totalPrice);
-		} // end calcTotalPrice
-		
 		function calcChargePrice(){
-			let chargePrice = calcTotalPrice() + paymentVO.deliveryPrice;
+			let chargePrice = totalPrice + paymentVO.deliveryPrice;
 			let discountPercent = (paymentVO.membershipDiscount + paymentVO.couponDiscount);
-			chargePrice = discountPercent >= 100 ? 0 : chargePrice * (100 - discountPercent) / 100;
+			chargePrice = (discountPercent >= 100) ? 0 : Math.floor(chargePrice * (100 - discountPercent) / 100);
 			
-			return Math.ceil(chargePrice);
+			paymentVO.chargePrice = chargePrice;
+			return chargePrice;
 		} // end calcChargePrice
 		
 		
@@ -274,15 +262,15 @@
 						console.log('고유 번호 받아오기 실패');
 					}else{
 						console.log('결제 고유 번호 : ' + result);
-						paymentId = result;
+						paymentVO.paymentId = result;
 						IMP.request_pay({
 							pg: 'kakaopay.TC0ONETIME', // PG사 코드(포트원 홈페이지에서 찾아서 넣어야함)
 			                pay_method: 'card', // 결제 방식
-			                merchant_uid: paymentId, // 결제 고유 번호
-			                name: orderList[0].orderVO.productName, // 제품명
+			                merchant_uid: paymentVO.paymentId, // 결제 고유 번호
+			                name: '${orderList.get(0).orderVO.productName} 외 ${orderList.size() -1} 개', // 제품명
 			                amount: paymentVO.chargePrice, // 결제 가격
-			                buyer_name: memberVO.memberId,
-			                buyer_email: memberVO.memberEmail,
+			                buyer_name: '${memberVO.memberId}',
+			                buyer_email: '${memberVO.memberEmail}',
 			            }, async function (rsp) { // callback
 			             	/*rsp 예시
 			             	{
@@ -329,11 +317,21 @@
 			console.log(deliveryVO);
 			paymentVO.paymentId = paymentResult.merchant_uid;
 			paymentVO.memberId = paymentResult.buyer_name;
-			paymentVO.deliveryAddress = deliveryVO.receiverAddress;
-			paymentVO.receiverName = deliveryVO.receiverName;
-			paymentVO.receiverPhone = deliveryVO.receiverPhone;
-			paymentVO.requirement = deliveryVO.requirement;
 			paymentVO.chargeId = paymentResult.imp_uid;
+			
+			let orderList = [];
+			<c:forEach var="orderDTO" items="${orderList }">
+			<c:set var="orderVO" value="${orderDTO.orderVO }"/>
+				orderList.push({
+					orderVO : {
+						productId : '${orderVO.productId}',
+						productName : '${orderVO.productName}',
+						productPrice : '${orderVO.productPrice}',
+						purchaseNum : '${orderVO.purchaseNum}',
+						imgId : '${orderVO.imgId}'
+					}
+				});
+			</c:forEach>
 			
 			console.log(paymentVO);
 			
@@ -382,7 +380,11 @@
 			$('#deliveryAddressDetails').val(deliveryVO.deliveryAddressDetails);
 			$('#receiverPhone').val(deliveryVO.receiverPhone);
 			$('#requirement').val(deliveryVO.requirement);
-			
+			paymentVO.deliveryAddress = deliveryVO.receiverAddress + deliveryVO.deliveryAddressDetails;
+			paymentVO.receiverName = deliveryVO.receiverName;
+			paymentVO.receiverPhone = deliveryVO.receiverPhone;
+			paymentVO.requirement = deliveryVO.requirement;
+			addressChk = true;
 			console.log(deliveryVO);
 		}
 		

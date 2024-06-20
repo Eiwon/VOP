@@ -20,6 +20,7 @@
 
 
 <form id="deliveryForm" action="register" method="post">
+	<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
     <label for="receiverName">받는 사람:</label>
     <input type="text" id="receiverName" name="receiverName" required><br><br>
 

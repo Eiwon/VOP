@@ -15,6 +15,7 @@
 <body>
 
 	<form action="register" method="POST">
+		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
 		<div>
 			<span>분류</span>
 			<select name="type" class="type">

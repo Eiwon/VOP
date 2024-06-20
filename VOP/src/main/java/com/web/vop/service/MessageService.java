@@ -32,5 +32,5 @@ public interface MessageService {
 	public List<MessageVO> getAllPopup(PageMaker pageMaker); 
 	
 	// ¸ðµç ÆË¾÷ ±¤°í id °Ë»ö 
-	public List<Integer> getAllPopupId(); 
+	public List<Integer> getMyPopupId(String memberId); 
 }

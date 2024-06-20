@@ -228,8 +228,11 @@
     <button id="registerBtn">멤버십 신청하기</button>
 
     <h2>멤버십 혜택</h2>
+
     <p>무제한 할인 쿠폰 제공</p><br><br>
-    
+
+    <p>무제한 20% 할인 혜택 제공</p>
+   
    <sec:authorize access="hasRole('ROLE_멤버십')">
 	        <a href="success">멤버십 페이지로 이동하기</a>
    </sec:authorize>

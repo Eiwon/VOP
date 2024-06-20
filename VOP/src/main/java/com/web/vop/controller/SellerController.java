@@ -1,22 +1,17 @@
 package com.web.vop.controller;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,17 +19,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.socket.WebSocketHandler;
 
+import com.amazonaws.services.accessanalyzer.model.AccessDeniedException;
 import com.web.vop.domain.MemberDetails;
-import com.web.vop.domain.MemberVO;
-import com.web.vop.domain.MessageVO;
 import com.web.vop.domain.PagingListDTO;
 import com.web.vop.domain.SellerRequestDTO;
 import com.web.vop.domain.SellerVO;
-import com.web.vop.service.MemberService;
 import com.web.vop.service.SellerService;
-import com.web.vop.socket.AlarmHandler;
 import com.web.vop.util.Constant;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
@@ -49,23 +40,19 @@ public class SellerController {
 	@Autowired
 	private SellerService sellerService;
 	
-	@Autowired
-	private MemberService memberService;
-	
-	@GetMapping("sellerRequest")
-	public void sellerRequestGET() {
+	@GetMapping("/sellerRequest")
+	public void sellerRequestGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
 		log.info("판매자 권한 신청 페이지로 이동");
+		SellerVO sellerRequest = sellerService.getMyRequest(memberDetails.getUsername());
+		model.addAttribute("sellerRequest", sellerRequest);
 	} // end sellerRequestGET
 	
 	@GetMapping("/main")
-	public void sellerMainGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
+	public void sellerMainGET() {
 		log.info("판매자 메인 페이지 이동");
-		SellerVO sellerRequest = sellerService.getMyRequest(memberDetails.getUsername());
-		model.addAttribute("sellerRequest", sellerRequest);
-		
 	} // end sellerMainGET
 	
-	@PostMapping("sellerRequest")
+	@PostMapping("/sellerRequest")
 	public String sellerRequestPOST(SellerVO sellerVO, @AuthenticationPrincipal UserDetails memberDetails) {
 		sellerVO.setMemberId(memberDetails.getUsername());
 		log.info("sellerRequestPOST : " + sellerVO);
@@ -73,17 +60,20 @@ public class SellerController {
 		return "redirect:sellerRequest";
 	} // end sellerRequestPOST
 	
-	@GetMapping("registerProduct")
+	@PreAuthorize("hasRole('판매자')")
+	@GetMapping("/registerProduct")
 	public String registerProductGET() {
 		log.info("상품 등록 페이지로 이동");
 		return "redirect:../product/register";
 	} // end registerProductGET
 	
+	@PreAuthorize("hasAuthority('관리자')")
 	@GetMapping("/admin")
 	public void adminGET() {
 		log.info("관리자 페이지로 이동");
 	} // end myInfoGet
 	
+	//@PreAuthorize("hasRole('판매자')")
 	@GetMapping("/myProduct")
 	public String listProductGET() {
 		log.info("상품 조회 페이지 이동");

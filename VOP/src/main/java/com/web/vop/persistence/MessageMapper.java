@@ -34,6 +34,6 @@ public interface MessageMapper {
 	// 모든 팝업 광고 검색 수
 	public int selectAllPopupCnt();
 	
-	// 모든 팝업 광고 id 검색 
-	public List<Integer> selectAllPopupId(); 
+	// 공지사항, 수령하지 않은 쿠폰 광고 id 검색 
+	public List<Integer> selectMyPopupId(String memberId); 
 }

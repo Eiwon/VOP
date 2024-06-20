@@ -40,7 +40,7 @@ public class PaymentAPIUtil {
 	private String CANCEL_PAYMENT_URL = "https://api.iamport.kr/payments/cancel";
 	
 	private String getAccessToken() {
-
+		log.info("토큰 발급");
 		String accessToken = null;
 		
 		// api 설명서에 나온 대로 headers, body 값 입력
@@ -83,7 +83,7 @@ public class PaymentAPIUtil {
 		
 		HttpEntity<String> entity = new HttpEntity<String>(headers);
 		
-		ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
+		ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
 		log.info(response);
 		int chargePrice = Integer.parseInt(((Map<String, Object>)response.getBody().get("response")).get("amount").toString());
 		

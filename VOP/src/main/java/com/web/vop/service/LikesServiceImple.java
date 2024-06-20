@@ -1,14 +1,10 @@
 package com.web.vop.service;
 
 import java.util.List;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.web.vop.domain.LikesVO;
 import com.web.vop.persistence.LikesMapper;
-
 import lombok.extern.log4j.Log4j;
 
 
@@ -48,4 +44,13 @@ public class LikesServiceImple implements LikesService{
 		log.info(deleteRes + "«‡ ªË¡¶");
 		return deleteRes;
 	}
+
+	@Override
+	public List<LikesVO> getAllLikesPaging(String memberId, List<String> reviewIds) {
+		log.info("getAllLikesPaging()");
+		List<LikesVO> list = likesMapper.selectByLikesPaging(memberId, reviewIds);
+		log.info("list : " + list);
+		return list;
+	}
+	
 }

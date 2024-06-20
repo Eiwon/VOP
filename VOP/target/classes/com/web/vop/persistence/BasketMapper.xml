@@ -64,4 +64,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}  
    </select>
    
+   <update id="updateExistProductNum">
+   		UPDATE BASKET
+		SET PRODUCT_NUM = PRODUCT_NUM + #{productNum}
+		WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
+   </update>
+   
 </mapper>
