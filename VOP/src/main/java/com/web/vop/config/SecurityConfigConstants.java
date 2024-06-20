@@ -23,11 +23,11 @@ public interface SecurityConfigConstants {
 
 	// 모두 접근 가능
 	public static final String[] PERMIT_ALL = { "/board/main", "/board/popupNotice", "/product/detail",
-			"/product/search", "/review/list", "/member/login" };
+			"/product/search", "/member/login" };
 	// 로그인한 유저만 접근 가능
 	public static final String[] NORMAL_OVER = { "/board/mypage", "/board/orderlist", "/delivery/**",
 			"/member/modify", "/order/**", "/payment/**", "/review/modify", "/review/register", "/member/logout",
-			"/basket/**", "/seller/sellerRequest", "/membership/**" };
+			"/basket/**", "/seller/sellerRequest", "/membership/**", "/likes/**", "/review/list"};
 
 	// 판매자만 접근 가능
 	public static final String[] SELLER_ONLY = {
