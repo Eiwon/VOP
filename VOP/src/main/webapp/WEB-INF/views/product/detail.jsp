@@ -347,7 +347,6 @@ reviewMap.show = function(page) {
     
     let reviewUrl = '../review/all/' + productId + '/' + page;
     
-    // 여기 위치에 실험 중인 코드 넣기
     
     // AJAX 요청을 보내 리뷰 데이터를 가져옵니다.
     $.ajax({
@@ -579,6 +578,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
         // 문의와 답변 데이터를 처리하는 함수
         function processComments() {// 여기 비동기 동작 어떻게 처리 하는지 잘모르겠음
             // inquiryNUM과 answerNUM이 모두 데이터를 가져온 경우에만 처리
+            // 비동기로 리스트를 가져왔을때 두 데이터가 있는지 확인 하는 코드이다.
             /* if (inquiryNUM.length > 0 && answerNUM.length > 0) { */
             if (inquiryNUM.length > 0) {
                 // 데이터를 비교하여 일치하는 요소들을 찾음
