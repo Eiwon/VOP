@@ -5,6 +5,15 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
+	
+	<!-- EL을 사용하여 권한 정보를 확인 -->
+    <c:set var="hasMembership" value="false"/>
+    <c:forEach var="authority" items="${memberDetails.getAuthorities()}">
+        <c:if test="${authority.authority == 'ROLE_멤버십'}">
+            <c:set var="hasMembership" value="true"/>
+        </c:if>
+    </c:forEach>
+   
 </sec:authorize> 
 
 
@@ -41,11 +50,12 @@
 <body>
 
 
+
 <script type="text/javascript">
 	 let paymentWrapper = JSON.parse('${paymentWrapper}');	
 	 let memberVO = paymentWrapper.memberVO;
 	 let membershipVO = paymentWrapper.membershipVO;
-	 
+	
 	 console.log(paymentWrapper);
 	 console.log(memberVO);
 	 
@@ -225,6 +235,7 @@
                }
            });
 	} // end sendPaymentResult
+	
 		
 </script>
 
@@ -238,9 +249,20 @@
 
     <p>무제한 20% 할인 혜택 제공</p><br><br>
    
-   <sec:authorize access="hasRole('ROLE_멤버십')">
-	        <a href="success">멤버십 페이지로 이동하기</a>
-   </sec:authorize>
-   
+
+<script type="text/javascript">
+	var hasMembership = "${hasMembership}"; // 변수 초기화
+	
+	console.log("멤버 권한 = ", hasMembership);
+	
+    // JavaScript에서 권한 확인 후 링크 표시
+    if (hasMembership === 'true') {
+        document.getElementById("membershipLink").style.display = "block";
+    }
+</script>
+
+<a id="membershipLink" href="success" style="display:none;">멤버십 페이지로 이동하기</a>   
+    
+
 </body>
 </html>

@@ -71,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.antMatchers(NORMAL_OVER).authenticated()
 			.antMatchers(ADMIN_ONLY).hasAuthority(ROLE_ADMIN)
 			.antMatchers(SELLER_OVER).hasRole(AUTH_SELLER)
-			.antMatchers("/membership/success").hasRole(AUTH_MEMBERSHIP)
+			.antMatchers("/membership/**").hasRole(AUTH_MEMBERSHIP)
 			.expressionHandler(expressionHandler());
 		http.exceptionHandling()
 			.accessDeniedHandler(securityAccessDeniedHandler());	
