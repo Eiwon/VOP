@@ -62,9 +62,14 @@ public class SellerServiceImple implements SellerService{
 		return res;
 	} // end updateMemberContent
 	
+	@Transactional(value = "transactionManager")
 	@Override
 	public int approveRequest(SellerVO sellerVO) {
-		log.info("판매자 권한 부여 / 회수");
+		log.info("판매자 권한 신청 승인");
+		
+		String requestState = sellerVO.getRequestState().equals("approve") ? Constant.STATE_APPROVED : Constant.STATE_REJECTED;
+		sellerVO.setRequestState(requestState);
+		
 		int res = sellerMapper.updateAdminContent(sellerVO);
 		log.info(res + "행 수정 성공");
 		if(sellerVO.getRequestState().equals(Constant.STATE_APPROVED)) { // 승인되었다면 회원 권한 변경
@@ -72,7 +77,7 @@ public class SellerServiceImple implements SellerService{
 		}
 		return res;
 	} // end approveRequest
-
+	
 	@Override
 	public int deleteRequest(String memberId) {
 		log.info("요청 삭제");
@@ -88,6 +93,21 @@ public class SellerServiceImple implements SellerService{
 		log.info("검색 결과 : " + sellerRequestDTO);
 		return sellerRequestDTO;
 	} // end getSellerRequestDetails
+
+	@Transactional(value = "transactionManager")
+	@Override
+	public int revokeAuth(SellerVO sellerVO) {
+		log.info("판매자 권한 취소");
+		
+		// 판매자 등록 정보의 상태를 거절로 변경
+		sellerVO.setRequestState(Constant.STATE_REJECTED);
+		sellerMapper.updateAdminContent(sellerVO);
+		
+		// 멤버십이 있다면 멤버십 상태로, 없다면 일반 유저로 변경
+		int res = memberMapper.revokeSellerAuth(sellerVO.getMemberId());
+		
+		return res;
+	} // end revokeAuth
 	
 
 	

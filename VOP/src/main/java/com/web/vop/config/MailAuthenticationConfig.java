@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import com.web.vop.util.MailAuthenticationUtil;
 
-<<<<<<< HEAD
 @Configuration
 public class MailAuthenticationConfig {
 	
@@ -44,8 +44,8 @@ public class MailAuthenticationConfig {
 	
 	
 }
-=======
-import com.web.vop.util.MailAuthenticationUtil;
+
+
 
 //@Configuration
 //public class MailAuthenticationConfig {
@@ -56,4 +56,4 @@ import com.web.vop.util.MailAuthenticationUtil;
 //	} // end mailAuthenticationUtil
 //	
 //}
->>>>>>> 84d86db430c1a96b7705ea713bb224188ba0c2f6
+

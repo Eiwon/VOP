@@ -32,6 +32,10 @@ public class AlarmHandler extends TextWebSocketHandler{
 	@Autowired
 	Map<String, WebSocketSession> alarmConnMap;
 	
+	private static final String TYPE_INSTANCE = "instanceAlarm";
+	private static final String TYPE_REPLY = "replyAlarm";
+	private static final String TYPE_ALERT = "alert";
+	
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		log.info("socket message received : " + message.getPayload());
@@ -42,11 +46,8 @@ public class AlarmHandler extends TextWebSocketHandler{
     	String memberId = session.getPrincipal().getName();
     	messageVO.setWriterId(memberId);
     	
-    	if(msgType.equals("alert")) {
+    	if(msgType.equals(TYPE_ALERT)) {
     		broadcast(messageVO);
-    	}else if(msgType.equals("instanceMsg")){ // 접속 중인 전체 유저에게 송신
-    		returnMsg = messageVO;
-    		broadcast(returnMsg);
     	}
 		
 	} // end handleTextMessage
@@ -128,24 +129,24 @@ public class AlarmHandler extends TextWebSocketHandler{
 	} // end unicast
 	
 	
-	private MessageVO noticeHandler(MessageVO messageVO, String writerId) {
-		MessageVO returnMsg = new MessageVO();
-		returnMsg.setReceiverId(writerId);
-		messageVO.setTitle("공지 사항");
-		messageVO.setReceiverId("all");
-		messageVO.setCallbackInfo(null);
-		
-		log.info(messageVO);
-		int res = messageService.registerMessage(messageVO);
-		
-		if(res == 1) {
-			returnMsg.setContent("공지 등록 성공");
-		}else {
-			returnMsg.setContent("공지 등록에 실패했습니다. 다시 시도해주세요.");
-		}
-		
-		return returnMsg;
-	} // end noticeHandler
+//	private MessageVO noticeHandler(MessageVO messageVO, String writerId) {
+//		MessageVO returnMsg = new MessageVO();
+//		returnMsg.setReceiverId(writerId);
+//		messageVO.setTitle("공지 사항");
+//		messageVO.setReceiverId("all");
+//		messageVO.setCallbackInfo(null);
+//		
+//		log.info(messageVO);
+//		int res = messageService.registerMessage(messageVO);
+//		
+//		if(res == 1) {
+//			returnMsg.setContent("공지 등록 성공");
+//		}else {
+//			returnMsg.setContent("공지 등록에 실패했습니다. 다시 시도해주세요.");
+//		}
+//		
+//		return returnMsg;
+//	} // end noticeHandler
 
 	public void sendAlert(String msg, String receiverId) {
 		MessageVO messageVO = new MessageVO();
@@ -172,11 +173,21 @@ public class AlarmHandler extends TextWebSocketHandler{
 		String receiverId = messageService.getSellerIdOf(productId);
 		String redirectId = String.valueOf(productId);
 		returnMsg.setContent("등록한 상품에 댓글이 등록되었습니다. 이동하려면 클릭하세요.");
-		returnMsg.setType("replyAlarm");
+		returnMsg.setType(TYPE_REPLY);
 		returnMsg.setReceiverId(receiverId);
 		returnMsg.setCallbackInfo(redirectId);
 		unicast(returnMsg);
 	} // end sendReplyAlarm
+	
+	public void sendInstanceAlarm(String title, String content, String receiverId) {
+		MessageVO returnMsg = new MessageVO();
+		returnMsg.setTitle(title);
+		returnMsg.setContent(content);
+		returnMsg.setType(TYPE_INSTANCE);
+		returnMsg.setReceiverId(receiverId);
+		unicast(returnMsg);
+	} // end sendInstanceAlarm
+	
 	
 	private MessageVO convertMsg(String jsonMsg) {
 		MessageVO message = null;

@@ -23,4 +23,6 @@ public interface SellerService {
 	
 	public SellerRequestDTO getSellerRequestDetails(String memberId);
 	
+	// 판매자 권한 취소
+	public int revokeAuth(SellerVO sellerVO);
 }

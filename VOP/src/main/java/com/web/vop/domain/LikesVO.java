@@ -15,6 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class LikesVO {
 	private int likesId;
+	private int productId;
 	private String memberId;
 	private int reviewId;
 	private int likesType;

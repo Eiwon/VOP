@@ -101,7 +101,7 @@ public class ProductController {
 	} // end myProductGET
 	
 	@PostMapping("/register")
-	public String registerPOST(
+	public String registerPOST(Model model,
 			ProductVO productVO,  MultipartFile thumbnail, MultipartFile[] details,
 			@AuthenticationPrincipal MemberDetails memberDetails) {
 		// DB 저장 실패시에는 이미지를 서버에 저장하면 안됨 => DB에 저장 성공을 확인한 후 서버에 저장
@@ -109,9 +109,10 @@ public class ProductController {
 		productVO.setMemberId(memberDetails.getUsername());
 		log.info(productVO);
 		log.info("파일 명 : " + thumbnail.getOriginalFilename());
-		
+	
 		ImageVO imgThumbnail = null;
 		List<ImageVO> imgDetails = new ArrayList<>();
+		int res = 0;
 		
 		// 모든 파일을 imageVO로 변환
 		if (!thumbnail.isEmpty()) { // 파일이 있는 경우
@@ -124,7 +125,7 @@ public class ProductController {
 		}
 		
 		try {
-			int res = productService.registerProduct(productVO, imgThumbnail, imgDetails);
+			res = productService.registerProduct(productVO, imgThumbnail, imgDetails);
 			if(res == 1) { // DB 등록 성공시 S3 서버에 이미지 저장
 		    	if(imgThumbnail != null) { // 썸네일 등록
 					awsS3Service.uploadIcon(thumbnail, imgThumbnail);
@@ -138,9 +139,16 @@ public class ProductController {
 			log.info("상품 등록 결과 : " + res);
 		} catch (IOException e) {
 			e.printStackTrace();
+			res = 0;
 		}
-	    
-	    return "redirect:../seller/main";
+		
+		String resultMsg = (res == 1) ? "상품이 등록되었습니다. 관리자의 승인 후 판매 가능합니다." : "등록 실패";
+		
+	    AlertVO alertVO = new AlertVO();
+	    alertVO.setAlertMsg(resultMsg);
+	    alertVO.setRedirectUri("product/myProduct");
+	    model.addAttribute("alertVO", alertVO);
+	    return Constant.ALERT_PATH;
 	} // end registerPOST
 
 	@GetMapping("search")
@@ -370,9 +378,10 @@ public class ProductController {
 	@PutMapping("/changeState")
 	@ResponseBody
 	public ResponseEntity<Integer> updateProductState(@RequestBody ProductVO productVO) {
-		log.info("상품 상태 변경 : " + productVO.getProductId());
+		log.info("상품 상태 변경 : " + productVO.getProductId() + ", " + productVO.getProductState());
 		int res = productService.setProductState(productVO.getProductState(), productVO.getProductId());
 		log.info(res + "행 수정 성공");
+		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end updateProductState
 

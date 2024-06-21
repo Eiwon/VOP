@@ -36,7 +36,8 @@ public class LikesRESTController {
 	public ResponseEntity<Integer> createLikesPOST(
 			@RequestBody LikesVO likesVO) {
 		log.info("createLikesDislikesPOST()");
-
+		log.info("likesVO : " + likesVO);
+		
 		int res = likesService.createLikes(likesVO);
 		
 		// result 값을 전송하여 리턴하는 방식으로 성공하면 200 OK를 전송합니다.
@@ -47,7 +48,8 @@ public class LikesRESTController {
 	@PutMapping("/modify")
 	   public ResponseEntity<Integer> updateLikes(
 			   @RequestBody LikesVO likesVO){
-		log.info("updateLikesDislikes()");
+		log.info("updateLikes()");
+		log.info("likesVO : " + likesVO);
 		int res = likesService.updateLikes(likesVO);
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	}
@@ -56,22 +58,24 @@ public class LikesRESTController {
 	 @DeleteMapping("/delete")
 	 public ResponseEntity<Integer> deleteLikes(
 			 @RequestBody LikesVO likesVO){
-		 log.info("deleteReview()");
-		 
+		 log.info("deleteLikes()");
+		 log.info("likesVO : " + likesVO);
 		 int reviewId = likesVO.getReviewId();
 		 String memberId = likesVO.getMemberId();
-		 
-		 int res = likesService.deleteLikes(reviewId, memberId);
-		 return new ResponseEntity<Integer>(res, HttpStatus.OK);
+		 int likesType = likesVO.getLikesType();
+		
+		 int res = likesService.deleteLikes(reviewId, memberId, likesType);
+		 return new ResponseEntity<>(res, HttpStatus.OK);
+
 	 }
 	 
-	@GetMapping("/list/{reviewId}/{memberId}") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
+	@GetMapping("/list/{productId}/{memberId}") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
 	public ResponseEntity<List<LikesVO>> readAllLikes(
-			@PathVariable("reviewId") int reviewId,
+			@PathVariable("productId") int productId,
 			@PathVariable("memberId") String memberId){
 		 log.info("readAllLikes()");
 		 
-		 List<LikesVO> listLikes = likesService.getAllLikesPaging(memberId, null);
+		 List<LikesVO> listLikes = likesService.getAllLikesPaging(productId, memberId);
 		 
 		 return new ResponseEntity<List<LikesVO>>(listLikes, HttpStatus.OK);
 	 }

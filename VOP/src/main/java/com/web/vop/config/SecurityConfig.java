@@ -71,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.antMatchers(NORMAL_OVER).authenticated()
 			.antMatchers(ADMIN_ONLY).hasAuthority(ROLE_ADMIN)
 			.antMatchers(SELLER_OVER).hasRole(AUTH_SELLER)
-			.antMatchers("/membership/**").hasRole(AUTH_MEMBERSHIP)
+			//.antMatchers("/membership/**").hasRole(AUTH_MEMBERSHIP)
 			.expressionHandler(expressionHandler());
 		http.exceptionHandling()
 			.accessDeniedHandler(securityAccessDeniedHandler());	
@@ -108,7 +108,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.contentSecurityPolicy("script-src " + PERMIT_SCRIPT_SRC)
 			.and()
 			.contentSecurityPolicy("img-src " + PERMIT_IMG_SRC);
-		
+	
 		http.addFilterBefore(characterEncodingFilter(), CsrfFilter.class);
 			//.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		//http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

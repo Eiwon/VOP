@@ -33,9 +33,9 @@ public interface ReviewMapper {
 	 // 댓글(리뷰) 삭제
 	 int deleteReview(@Param("productId")int productId, @Param("memberId")String memberId);
 	 
+	 // 댓글 좋아요 UP
+	 int updateReviewLikeUp(int reviewId);
 	 
-	
-	 
-	 // 댓글(리뷰) 검색(댓글 내용에 입력한 단어가 포함 되어 있으면 검색 리스트 형태, 제작예정)
-	 
+	 // 댓글 좋아요 DOWN
+	 int updateReviewLikeDown(int reviewId);
 }

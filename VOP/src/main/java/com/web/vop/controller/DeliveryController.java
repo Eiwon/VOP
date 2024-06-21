@@ -33,9 +33,6 @@ public class DeliveryController {
     DeliveryService deliveryService;
     
     @Autowired
-    MemberService memberService;
-    
-    @Autowired
     OrderService orderService;
     
     @Autowired
