@@ -33,9 +33,6 @@ public class DeliveryController {
     DeliveryService deliveryService;
     
     @Autowired
-    MemberService memberService;
-    
-    @Autowired
     OrderService orderService;
     
     @Autowired
@@ -43,8 +40,8 @@ public class DeliveryController {
     
     // 마이페이지에서 주문목록 > 배송조회 페이지로 이동
     @GetMapping("/delivery")
-    public String deliveryGET(@RequestParam("paymentId") int paymentId, Model model) {
-        log.info("deliveryGET - paymentId : " + paymentId);
+    public String deliveryGET(@RequestParam("paymentId") int paymentId,Model model) {
+        /*log.info("deliveryGET - paymentId : " + paymentId);
         // 배송 예정일 조회
     	Date expectedDate = orderService.getExpectDateByPaymentId(paymentId);
     	SimpleDateFormat format = new SimpleDateFormat("yyyy년 MM월 dd일");
@@ -61,8 +58,11 @@ public class DeliveryController {
         List<PaymentVO> paymentList = paymentService.getPaymentByPaymentId(paymentId);
         log.info("paymentList : " + paymentList);
         model.addAttribute("paymentList", paymentList);
+        */
         
-        
+    	// paymentId를 모델에 담아서 delivery.jsp로 전달
+    	model.addAttribute("paymentId", paymentId);
+    	
         return "/Delivery/delivery";  // delivery.jsp 로 이동
     }
     

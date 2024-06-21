@@ -32,9 +32,9 @@
 					<sec:authorize access="hasRole('ROLE_관리자')">
 						<li><a href="admin">관리자 페이지</a></li>
 					</sec:authorize>
-					<sec:authorize access="!hasRole('ROLE_관리자')">
+					<%-- <sec:authorize access="!hasRole('ROLE_관리자')"> --%>
 						<li><a onclick="consult()">1대1 상담</a> </li>
-					</sec:authorize>
+					<%-- </sec:authorize> --%>
 				</ul>
 			</div>
 		</div>

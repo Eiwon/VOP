@@ -44,7 +44,7 @@
 	
 	
 	
-	function sendAlert(){ //테스트 용
+	/* function sendAlert(){ //테스트 용
 		
 		let content = prompt('송신할 메시지를 입력하세요.');
 		if(content != null){
@@ -77,7 +77,7 @@
 			msg.content = instanceMsg;
 			webSocket.send(JSON.stringify(msg));
 		}
-	} // end sendInstanceMsg
+	} // end sendInstanceMsg */
 	
 	/* function sendReplyAlarm(productId){
 		// 댓글 알림 보내기(클라이언트 측에서 보낼 일 X)
@@ -95,26 +95,33 @@
 	// 서버로부터 메시지 수신시 호출되는 함수들
 	
 	msgHandler.alert = function(msg){
-		console.log('alert 메시지 수신');
+		console.log('alert 메시지 수신' + msg);
 		alert(msg.content);
 	}; // 타입이 alert인 메시지 수신시 호출될 함수
 	
 	msgHandler.replyAlarm = function(msg){
-		console.log('replyAlarm 메시지 수신');
+		console.log('replyAlarm 메시지 수신' + msg);
 		
-		showSocketNotification(msg, function(){
+		showSocketAlarm(msg, function(){
 			window.open('../product/detail?productId=' + msg.callbackInfo);
 		});
 	}; // 타입이 replyAlarm인 메시지 수신시 호출될 함수
 	
+	msgHandler.instanceAlarm = function(msg){
+		console.log('알림 메시지 수신 : ' + msg);
+		alarmPermitRequest();
+		showSocketNotification(msg.title, msg.content);
+		
+	} // 일반 알림 메시지 수신
+	
 	msgHandler.consultRequest = function(msg){
-		console.log('consultRequest 메시지 수신 : roomId = ' + msg.roomId);
+		console.log('consultRequest 메시지 수신 ' + msg);
 		
-		let isAccept = confirm("1대1 상담 요청 수신. 수락하시겠습니까?");
+		alarmPermitRequest();
 		
-		if(isAccept){
+		showSocketNotification("1대1 상담 요청", "1대1 상담 요청 수신. 수락하시겠습니까?", function(){
 			let targetUrl = '../board/consult?roomId=' + msg.roomId;
-				
+			console.log('onclick : ' + targetUrl);
 			const popupStat = {
 					'url' : targetUrl,
 					'name' : 'popupConsultAdmin',
@@ -127,26 +134,41 @@
 				// 팝업 닫힐 때 실행
 				console.log("팝업 닫힘");
 			} // end popup.onbeforeunload
-		}
+		});
+		
 	} // end msgHandler.consultRequest
 	
 	
 	function alarmPermitRequest(){ // 알림창 표시 기능 허가 요청 (허가 거부시 크롬 설정->개인정보보호 및 보안->사이트설정->알림에서 재설정 가능)
 		let permission = Notification.permission;
 		console.log('현재 알림창 설정 : ' + permission);
-		Notification.requestPermission();
+		
+		if(permission != 'granted'){
+			Notification.requestPermission();
+		}
 		
 	} // end alarmPermitRequest
 	
-	function showSocketNotification(msg, onclickListener){
+	function showSocketNotification(title, content, onclickListener) {
+		let notification = new Notification(title, {
+			title : title,
+			body : content
+		});
+		notification.onclick = onclickListener;
+		console.log(notification);
+	} // end showSocketNotification
+	
+	function showSocketAlarm(msg, onclickListener){
 		let temp = confirm(msg.content);
 		if(onclickListener != null && temp){
 			onclickListener();
 		}
 		console.log(temp);
-	} // end showSocketNotification
+	} // end showSocketAlarm
 	
-	function showSocketPopup(){
+	
+	
+	/* function showSocketPopup(){
 		let targetUrl = '../board/popupNotice';
 		
 		const popupStat = {
@@ -161,7 +183,7 @@
 			// 팝업 닫힐 때 실행
 			console.log("팝업 닫힘");
 		} // end popup.onbeforeunload
-	} // end showSocketPopup
+	} // end showSocketPopup */
 	
 	</script>
 	

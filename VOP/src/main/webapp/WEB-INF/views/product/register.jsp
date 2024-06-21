@@ -16,8 +16,7 @@
 <jsp:include page="../include/header.jsp"></jsp:include>
 <body>
 	<div>
-		<form id="productForm" action="register" method="post" enctype="multipart/form-data">
-		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
+		<form id="productForm" action="register?${_csrf.parameterName }=${_csrf.token }" method="post" enctype="multipart/form-data">
 			<div>
 				판매자
 				<input type="text" value='${memberDetails.getUsername() }' readonly>

@@ -30,8 +30,8 @@ img {
 	<c:set var="productVO" value="${productDetailsDTO.productVO }"/>
 	<c:set var="memberVO" value="${productDetailsDTO.memberVO }"/>
 	<h2>상품 상세 정보</h2>
-	<form action="../product/update" method="POST" id="formProduct" enctype="multipart/form-data">
-	<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
+	<form action="../product/update?${_csrf.parameterName }=${_csrf.token }" method="POST" id="formProduct" enctype="multipart/form-data">
+	
 	<table class="form_info">
 		<tbody>
 			<tr>
@@ -146,10 +146,13 @@ img {
 	<script type="text/javascript">
 		const productId = '${productVO.productId}';
 		let productState = '${productVO.productState}';
+		let tagProductState = $('#productState');
 		let btnContinue = $('#btn_continue');
 		let btnUpdate = $('#btn_update');
 		let btnDelete = $('#btn_delete');
 		const allowedExtension = new RegExp("jpg|jpeg|png|bmp|tif|tiff|webp|svg");
+		
+		// 상태가 
 		
 		$(document).ready(function(){
 			
@@ -160,7 +163,6 @@ img {
 			}else{
 				btnContinue.css('visibility', "hidden");
 			}
-			
 			btnContinue.click(function(){
 				toggleProductState();
 			});
@@ -175,9 +177,12 @@ img {
 		
 		function toggleProductState() {
 			// 상품 판매 중지, 재개
-			if(productState != '판매중' && productState != '판매 중단'){
-				return;
-			}
+			let changedState;
+			if(productState == '판매중') 
+				changedState = '판매 중단';
+			else if(productState == '판매 중단')
+				changedState = '판매중';
+			else return;
 			
 			$.ajax({
 				method : 'PUT',
@@ -188,22 +193,28 @@ img {
 				url : 'changeState',
 				data : JSON.stringify({
 					'productId' : productId,
-					'productState' : productState,
+					'productState' : changedState,
 					'memberId' : '${productVO.memberId}'
 				}),
 				success : function(result){
 					console.log('상품 상태 변경 결과 : ' + result);
 					if(result == 1){
-						if(productState == '판매중'){
-							productState = '판매 중단';
+						productState = changedState;
+						tagProductState.text(productState);
+						console.log('변경 후 상품 상태 : ' + productState);
+						if(productState == '판매 중단'){
 							alert("판매가 중단되었습니다.");
 							btnContinue.text('판매 재개');
-						}else if(productState == '판매 중단'){
-							productState = '판매중';
+						}else if(productState == '판매중'){
 							alert("다시 판매를 시작합니다.");
 							btnContinue.text('판매 중단');
+						}else{
+							btnContinue.css('visibility', "hidden");
 						}
+					}else{
+						alert('변경에 실패했습니다. 다시 시도해주세요.');
 					}
+					
 				} // end success
 			}); // end ajax
 			
@@ -242,8 +253,7 @@ img {
 		function checkFileValid(file){
 			 
             if (!file) { // file이 없는 경우
-               alert("파일을 선택하세요.");
-               return false;
+               return true;
             }
             
             if (!allowedExtensions.test(file.name)) { // 차단된 확장자인 경우

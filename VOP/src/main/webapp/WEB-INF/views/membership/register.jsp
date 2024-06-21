@@ -250,6 +250,9 @@
     <p>무제한 20% 할인 혜택 제공</p><br><br>
    
 
+<a id="membershipLink" href="success" style="display:none;">멤버십 페이지로 이동하기</a>   
+
+
 <script type="text/javascript">
 	var hasMembership = "${hasMembership}"; // 변수 초기화
 	
@@ -260,8 +263,6 @@
         document.getElementById("membershipLink").style.display = "block";
     }
 </script>
-
-<a id="membershipLink" href="success" style="display:none;">멤버십 페이지로 이동하기</a>   
     
 
 </body>

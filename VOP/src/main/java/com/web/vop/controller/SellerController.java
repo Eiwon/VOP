@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.socket.WebSocketHandler;
 
 import com.amazonaws.services.accessanalyzer.model.AccessDeniedException;
 import com.web.vop.domain.AlertVO;
@@ -27,6 +28,7 @@ import com.web.vop.domain.PagingListDTO;
 import com.web.vop.domain.SellerRequestDTO;
 import com.web.vop.domain.SellerVO;
 import com.web.vop.service.SellerService;
+import com.web.vop.socket.AlarmHandler;
 import com.web.vop.util.Constant;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
@@ -40,6 +42,9 @@ public class SellerController {
 
 	@Autowired
 	private SellerService sellerService;
+	
+	@Autowired
+	private WebSocketHandler alarmHandler;
 	
 	@GetMapping("/sellerRequest")
 	public void sellerRequestGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
@@ -123,13 +128,28 @@ public class SellerController {
 	// 판매자 권한 요청 승인/거절(관리자)
 	@PutMapping("/approval")
 	@ResponseBody
-	public ResponseEntity<Integer> approveRequest(@RequestBody SellerVO sellerVO) {
+	public ResponseEntity<Integer> decideRequest(@RequestBody SellerVO sellerVO) {
 		log.info("요청 승인 / 거절 : " + sellerVO.getMemberId());
 		int res = sellerService.approveRequest(sellerVO);
-
+		String alarmMsg = null;
+		
+		if(res == 1) { // 결과 알람 송신
+			alarmMsg = sellerVO.getRequestState().equals("approve") ? "판매자 등록 신청이 승인되었습니다." : "판매자 등록 신청이 거절되었습니다.";
+			((AlarmHandler)alarmHandler).sendInstanceAlarm("판매자 등록 신청 결과", alarmMsg, sellerVO.getMemberId());
+		}
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end refuseRequest
 		
+	// 판매자 권한 취소
+	@PutMapping("/revoke")
+	@ResponseBody
+	public ResponseEntity<Integer> revokeAuth(@RequestBody SellerVO sellerVO){
+		log.info("판매자 권한 회수");
+		int res = sellerService.revokeAuth(sellerVO);
+		
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+	} // end revokeAuth
+	
 	// 판매자 권한 요청 삭제
 	@DeleteMapping("/delete/{memberId}")
 	@ResponseBody

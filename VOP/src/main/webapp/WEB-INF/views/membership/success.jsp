@@ -94,8 +94,7 @@ $(document).ready(function() {
 	
 </script>
 
-	<!-- 로그인 된 사용자가 멤버십을 등록했을 때  -->
-	<sec:authorize access="hasRole('ROLE_멤버십')">
+	
 	
 		<h2>VOP 멤버십 가입을 환영합니다!</h2>
 	
@@ -104,7 +103,7 @@ $(document).ready(function() {
 		<button id="cancelMembershipBtn" style="display: none;">멤버십 해지하기</button><br>
 	 	
 	 	<a href="../board/mypage">마이페이지로 이동</a>
-	</sec:authorize>
+	
 	
 	
 

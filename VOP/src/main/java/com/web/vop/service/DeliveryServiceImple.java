@@ -1,11 +1,14 @@
 package com.web.vop.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.web.vop.domain.DeliveryListDTO;
 import com.web.vop.domain.DeliveryVO;
 import com.web.vop.persistence.DeliveryMapper;
 import com.web.vop.util.Constant;
@@ -112,6 +115,40 @@ public class DeliveryServiceImple implements DeliveryService{
 		
 		return res;
 	} //end updateNewDefault
+
+	
+	// 배송지 조회
+	@Override
+	public List<DeliveryListDTO> getDeliveryList(int paymentId) {
+		log.info("getDeliveryList() - paymentId : " + paymentId);
+		List<DeliveryListDTO> list = deliveryMapper.selectDeliveryList(paymentId);
+		
+		//리스트가 비어있는지 아닌지 확인 
+		if(list == null || list.isEmpty()) {
+			 log.info("DeliveryList is empty or null");
+		}else {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			for (DeliveryListDTO dto : list) {
+				log.info("배송번호 : " + dto.getPaymentId());
+				log.info("받는 사람 : " + dto.getReceiverName());
+				log.info("주소 : " + dto.getDeliveryAddress());
+				log.info("배송요구사항 : " + dto.getRequirement());
+				
+				 // 날짜 포맷팅 적용
+                Date expectDeliveryDate = dto.getExpectDeliveryDate();
+                String formattedDate = dateFormat.format(expectDeliveryDate);
+                
+                log.info("배송예정일 : " + formattedDate);
+				log.info("배송예정일 : " + dto.getExpectDeliveryDate());
+				
+				// DTO에 포맷팅된 날짜 설정
+                dto.setFormattedExpectDeliveryDate(formattedDate);
+			}
+		}
+		
+		return list;
+	}//end getDeliveryList()
 
 	
 	

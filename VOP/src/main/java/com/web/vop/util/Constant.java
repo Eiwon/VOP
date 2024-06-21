@@ -9,6 +9,7 @@ public interface Constant {
 	
 	public static final String STATE_APPROVAL_WAIT = "승인 대기중";
 	public static final String STATE_APPROVED = "승인";
+	public static final String STATE_REJECTED = "거절";
 	public static final String STATE_SELL = "판매중";
 	public static final String STATE_STOP = "판매 중단";
 	public static final String STATE_REMOVE_WAIT = "삭제 대기중";
