@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.web.vop.domain.DeliveryListDTO;
 import com.web.vop.domain.DeliveryVO;
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.service.DeliveryService;
@@ -42,11 +43,25 @@ public class DeliveryRESTController {
 	@Autowired
 	OrderService orderService;
 	
-
-	// 배송지 수정 페이지에서 deliveryId로 배송 조회
-
 	@Autowired
 	DeliveryService deliveryService;
+	
+	// 배송지(delivery.jsp) 조회
+	@GetMapping("getDeliveryList/{paymentId}")
+	public ResponseEntity<List<DeliveryListDTO>> getDeliveryList(@PathVariable("paymentId") int paymentId){
+		log.info("getDeliveryList()");
+		log.info("송장번호(paymentId) : " + paymentId);
+		List<DeliveryListDTO> deliveryList = deliveryService.getDeliveryList(paymentId);
+		
+		
+		if(deliveryList == null || deliveryList.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(deliveryList, HttpStatus.OK);
+		}
+	}//end getDeliveryList()
+	
+	
 	
 	// Delivery 정보를 JSON 형태로 반환한 API 엔드포인트
 	@GetMapping("/getDeliveryInfo")
@@ -149,8 +164,7 @@ public class DeliveryRESTController {
         	// 배송지의 기본배송지를 1로 수정
         	int res = deliveryService.updateNewDefault(deliveryId, memberId);
         	log.info("res : " + res);
-        
-
+       
         	
         	return new ResponseEntity<Integer>(res, HttpStatus.OK);        		  
  	}// end updateDefault()

@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.web.vop.domain.DeliveryListDTO;
 import com.web.vop.domain.DeliveryVO;
 
 @Mapper
@@ -37,5 +38,7 @@ public interface DeliveryMapper {
 	// memberId로 기본 배송지 검색
 	public DeliveryVO selectDefaultByMemberId(String memberId);
 
+	// 배송지 조회
+	List<DeliveryListDTO> selectDeliveryList(int paymentId);
 	
 }

@@ -17,6 +17,42 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="isDefault" column="IS_DEFAULT"/>
    </resultMap>
    
+   <resultMap type="com.web.vop.domain.OrderVO"
+      id="OrderResultMap">
+      <id property="orderId" column="ORDER_ID" /> 
+      <result property="paymentId" column="PAYMENT_ID" />
+      <result property="productId" column="PRODUCT_ID"/>
+      <result property="productName" column="PRODUCT_NAME"/>
+      <result property="productPrice" column="PRODUCT_PRICE"/>
+      <result property="purchaseNum" column="PURCHASE_NUM"/>
+      <result property="expectDeliveryDate" column="EXPECT_DELIVERY_DATE"/>
+      <result property="imgId" column="IMG_ID"/>
+      <result property="memberId" column="MEMBER_ID"/>
+   </resultMap>
+   
+   <resultMap type="com.web.vop.domain.PaymentVO"
+      id="PaymentResultMap">
+      <id property="paymentId" column="PAYMENT_ID" /> 
+      <result property="memberId" column="MEMBER_ID" />
+      <result property="deliveryAddress" column="DELIVERY_ADDRESS"/>
+      <result property="receiverName" column="RECEIVER_NAME"/>
+      <result property="receiverPhone" column="RECEIVER_PHONE"/>
+      <result property="requirement" column="REQUIREMENT"/>
+      <result property="couponDiscount" column="COUPON_DISCOUNT"/>
+      <result property="deliveryPrice" column="DELIVERY_PRICE"/>
+      <result property="chargePrice" column="CHARGE_PRICE"/>
+      <result property="membershipDiscount" column="MEMBERSHIP_DISCOUNT"/>
+	</resultMap>
+   
+   <resultMap type="com.web.vop.domain.DeliveryListDTO" id="DeliveryListResultMap">
+    <id property="paymentId" column="PAYMENT_ID"/> 
+    <result property="receiverName" column="RECEIVER_NAME"/>
+    <result property="deliveryAddress" column="DELIVERY_ADDRESS"/>
+    <result property="requirement" column="REQUIREMENT"/>
+    <result property="expectDeliveryDate" column="EXPECT_DELIVERY_DATE"/>
+   </resultMap>
+   
+   
    <!-- 배송지 등록 -->
    <insert id="insertDelivery"> 
    		INSERT INTO DELIVERY
@@ -78,6 +114,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT * FROM DELIVERY WHERE MEMBER_ID = #{memberId} AND IS_DEFAULT = 1
 	</select>
 
+    <!-- 배송지(delivery.jsp) 조회 -->
+    <select id="selectDeliveryList" resultMap="DeliveryListResultMap">
+        SELECT 
+        p.PAYMENT_ID as PAYMENT_ID,
+        p.RECEIVER_NAME as RECEIVER_NAME,
+        p.DELIVERY_ADDRESS as DELIVERY_ADDRESS,
+        p.REQUIREMENT as REQUIREMENT,
+        o.EXPECT_DELIVERY_DATE as EXPECT_DELIVERY_DATE
+    	FROM 
+        	PAYMENT p
+   		 JOIN 
+        	"ORDER" o ON p.PAYMENT_ID = o.PAYMENT_ID
+    	WHERE 
+        	p.PAYMENT_ID = #{paymentId}
+    </select>  
    
 </mapper>
 	
