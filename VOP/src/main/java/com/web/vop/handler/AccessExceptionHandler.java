@@ -26,10 +26,11 @@ public class AccessExceptionHandler {
 		return "redirect:/access/denied";
 	} // end accessDeniedExceptionHandler
 	
-//	@ExceptionHandler(Exception.class)
-//	public String exceptionHandler(Exception exception) {
-//		log.error("예외 발생!! : " + exception);
-//		return "redirect:/access/exception";
-//	} // end exceptionHandler
+	
+	@ExceptionHandler(Exception.class)
+	public String exceptionHandler(Exception exception) {
+		log.error("예외 발생!! : " + exception);
+		return "redirect:/access/exception";
+	} // end exceptionHandler
 	
 }

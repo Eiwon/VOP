@@ -64,12 +64,12 @@ tr {
 			<tr>
 				<c:choose>
 					<c:when test="${memberVO.memberAuth eq '판매자' }">
-						<td><button id="btn_approve" onclick="sendResult('승인')">판매자 권한 취소</button></td>
-						<td><button id="btn_refuse" onclick="window.close()"></button>돌아가기</td>
+						<td><button id="btn_approve" onclick="revokeSellerAuth()">판매자 권한 취소</button></td>
+						<td><button id="btn_refuse" onclick="window.close()">돌아가기</button></td>
 					</c:when>
 					<c:otherwise>
-						<td><button id="btn_approve" onclick="sendResult('승인')">승인</button></td>
-						<td><button id="btn_refuse" onclick="sendResult('거절')">거절</button></td>
+						<td><button id="btn_approve" onclick="approveReq()">승인</button></td>
+						<td><button id="btn_refuse" onclick="rejectReq()">거절</button></td>
 					</c:otherwise>
 				</c:choose>
 			</tr>
@@ -77,6 +77,38 @@ tr {
 	</table>
 	
 	<script type="text/javascript">
+		
+		function revokeSellerAuth(){
+			let refuseMsg = $('#refuseMsg').text();
+			
+			$.ajax({
+				url : 'revoke',
+				method : 'PUT',
+				headers : {
+					'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+				},
+				data : JSON.stringify({
+					'memberId' : '${sellerVO.memberId}',
+					'refuseMsg' : refuseMsg
+				}),
+				success : function(result){
+					console.log('권한 취소 결과 : ' + result);
+					if(result == 1){
+						window.close();
+					}else{
+						alert('권한 취소 실패');
+					}
+				}
+			}); // end ajax
+		} // end revokeSellerAuth
+	
+		function approveReq(){
+			sendResult('approve');
+		}
+		
+		function rejectReq(){
+			sendResult('reject');
+		}
 		
 		function sendResult(requestState){
 			let refuseMsg = $('#refuseMsg').text();
@@ -89,7 +121,7 @@ tr {
 				},
 				method : 'PUT',
 				data : JSON.stringify({
-					'memberId' : '${sellerRequestDTO.sellerVO.memberId}',
+					'memberId' : '${sellerVO.memberId}',
 					'refuseMsg' : refuseMsg,
 					'requestState' : requestState
 				}),

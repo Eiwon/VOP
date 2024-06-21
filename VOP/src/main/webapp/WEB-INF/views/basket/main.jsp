@@ -249,7 +249,7 @@
 				method : 'DELETE',
 				headers : {
 					'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
-				}
+				},
 				url : 'clear',
 				success : function(result){
 					console.log(result);

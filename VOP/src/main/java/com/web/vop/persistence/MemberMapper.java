@@ -44,4 +44,8 @@ public interface MemberMapper {
 	// ID와 이메일로 ID 찾기
 	public String selectIdByIdAndEmail(
 			@Param("memberId") String memberId, @Param("memberEmail") String memberEmail);
+	
+	// 판매자 권한 취소(권한을 일반으로 변경, 멤버십 등록된 유저라면 멤버십으로 변경
+	public int revokeSellerAuth(String memberId);
+	
 }

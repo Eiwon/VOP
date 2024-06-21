@@ -35,6 +35,9 @@
 .productRemains {
 	width: 100px;
 }
+.productState {
+	width: 100px;
+}
 
 </style>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -52,6 +55,7 @@
 			<div class="productName">상품명</div>
 			<div class="productPrice">가격</div>
 			<div class="productRemains">재고</div>
+			<div class="productState">상태</div>
 		</div>
 		<div id="product_list">
 		
@@ -91,7 +95,8 @@
 				url : 'myList?pageNum=' + page,
 				success : function(result) {
 					console.log(result);
-					pagingListDTO = result; // 가져온 데이터를 저장
+					pagingListDTO.list = result.list; // 가져온 데이터를 저장
+					pagingListDTO.pageMaker = result.pageMaker;
 					
 					for (x in pagingListDTO.list) {
 						const productVO = pagingListDTO.list[x].productVO;
@@ -103,6 +108,7 @@
 								'<div class="productName">' + productVO.productName + '</div>' + 
 								'<div class="productPrice">' + productVO.productPrice + '원</div>' + 
 								'<div class="productRemains">' + productVO.productRemains + '</div>' + 
+								'<div class="productState">' + productVO.productState + '</div>' + 
 			            		'</div>' + 
 								'<button style="height:50px;" onclick="toInquiry(' + productVO.productId + ')">문의 목록 가기</button>' +
 					    		'</div>';
@@ -165,7 +171,7 @@
 			popup.onbeforeunload = function(){
 				// 팝업 닫힐 때 실행 (닫기 버튼으로 닫는 경우 제외)
 				console.log("팝업 닫힘");
-				productMap.show(pagingListDTO.pageMaker.pagination.pageNum); // 목록 새로고침
+				pagingListDTO.show(pagingListDTO.pageMaker.pagination.pageNum); // 목록 새로고침
 			} // end popup.onbeforeunload
 		} // end popupUpdate
 		

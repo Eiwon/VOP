@@ -86,7 +86,10 @@
 		
 		chatHandler.joinSuccess = function(msg){
 			console.log('join success roomId : ' + msg.roomId);
-			roomId = msg.roomId;
+			tagReadArea.append(msg.senderId + ' 님이 입장했습니다.');
+			if(roomId == undefined){
+				roomId = msg.roomId;			
+			}
 		}
 		
 		chatHandler.joinFail = function(msg){
@@ -96,6 +99,10 @@
 		
 		chatHandler.chatMessage = function(msg){
 			tagReadArea.append(msg.senderId + ' : ' + msg.content + '<br>');
+		}
+		
+		chatHandler.exitMessage = function(msg){
+			tagReadArea.append(msg.senderId + ' 님이 퇴장했습니다.');
 		}
 		
 		function sendChat(){

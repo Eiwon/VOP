@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -46,17 +47,26 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 	@Autowired
 	public MemberService memberService;
 	
+	private static final String TYPE_JOIN_REQ = "joinRequest";
+	private static final String TYPE_CONSULT_REQ = "consultRequest";
+	private static final String TYPE_CHAT_MSG = "chatMessage";
+	private static final String TYPE_JOIN_SUCCESS = "joinSuccess";
+	private static final String TYPE_JOIN_FAIL = "joinFail";
+	private static final String TYPE_EXIT_MSG = "exitMessage";
+	
 	public ConsultHandler() {
 		objectMapper = new ObjectMapper();
 		consultConnMap = new HashMap<>();
 	} // end ConsultHandler
 	
+	// 연결 성공시 실행
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		String memberId = session.getPrincipal().getName();
 		log.info("연결 성공 : " + memberId);
 	} // end afterConnectionEstablished
 	
+	// 연결 종료시 실행
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		String memberId = session.getPrincipal().getName();
@@ -66,7 +76,7 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 			consultRoomList.get(roomId).remove(memberId);
 		}
 		consultConnMap.remove(memberId);
-		
+		sendMsgToRoom(getExitMsg(roomId, memberId));
 	}
 	
 	@Override
@@ -79,8 +89,6 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 		// 클라이언트에서 상담 버튼 클릭시 socket open
 		// 방 생성 요청을 서버에 보내고, 방 id를 생성하여 해당 방에 유저를 추가
 		// 생성된 방 id를 유저에게 return
-		// ㄴ 방 id 생성 방식 : 클라이언트 계정 하나당 1개씩만 유지?(여러개 유지할 수 있게 하면 악용 가능성 ㅇ) 
-		// => 방 id = 클라이언트 id
 		// 
 		// 접속 중인 모든 관리자 계정에게 알람 송신
 		// 최초 수락한 1명만 연결되어야 함
@@ -98,19 +106,19 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 		//						ㄴ 불가능하면 입장 실패 메시지
 		log.info("메시지 수신 : " + message.getPayload());
 		
-		String senderId = session.getPrincipal().getName();
 		ChatMessageVO chatMessageVO = convertMsg(message.getPayload());
+		String senderId = session.getPrincipal().getName();
 		String roomId = chatMessageVO.getRoomId();
-		chatMessageVO.setSenderId(senderId);
 		String type = chatMessageVO.getType();
+		chatMessageVO.setSenderId(senderId);
 		
 		switch(type) {
-		case "joinRequest" : { // 입장 요청
-			if(roomId.length() == 0) { // roomId가 없다면 방 생성, 입장성공 메시지 송신
+		case TYPE_JOIN_REQ : { // 입장 요청
+			if(!StringUtils.hasText(roomId)) { // roomId가 없다면 방 생성, 입장성공 메시지 송신
 				roomId = senderId;
 				Map<String, WebSocketSession> roomMap = createRoom(roomId);
 				roomMap.put(senderId, session);
-				sendJoinSuccess(session, roomId);
+				sendJoinSuccess(roomId, senderId);
 				callConsultant(roomId); // 관리자 초대 메시지 송신
 			}else {
 				Map<String, WebSocketSession> roomMap = consultRoomList.get(roomId);
@@ -120,7 +128,7 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 				}else if(roomMap.size() == 1) {
 					log.info("채팅방 입장");
 					roomMap.put(senderId, session);
-					sendJoinSuccess(session, roomId);
+					sendJoinSuccess(roomId, senderId);
 					consultConnMap.put(senderId, roomId);
 				}else {
 					log.info("다른 상담사가 먼저 수락");
@@ -129,8 +137,8 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 			}
 			break;
 		} // end case joinRequest
-		case "chatMessage" : {
-			sendChatMessage(chatMessageVO);
+		case TYPE_CHAT_MSG : {
+			sendMsgToRoom(chatMessageVO);
 			break;
 		} // end case chatMessage
 		} // end switch
@@ -153,46 +161,53 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 	
 	private void callConsultant(String roomId) throws IOException {
 		// db에서 관리자 목록 검색
+		log.info("callConsultant");
 		List<String> adminList = memberService.getAdminId();
 		ChatMessageVO adminCallMsg = new ChatMessageVO();
-		adminCallMsg.setType("consultRequest");
+		adminCallMsg.setType(TYPE_CONSULT_REQ);
 		adminCallMsg.setRoomId(roomId);
 		TextMessage returnMsg = convertMsg(adminCallMsg);
 		
 		// 상담 중인 모든 관리자 id를 adminList에서 제거해야 함
-		
+		log.info("admin List : " + adminList);
 		for(String adminId : adminList) { // 접속 중이고 상담중이 아닌 관리자들에게 메시지 송신
 			if(alarmConnMap.containsKey(adminId) && !consultConnMap.containsKey(adminId)) {
 				WebSocketSession session = alarmConnMap.get(adminId);
+				log.info("call to " + adminId);
 				session.sendMessage(returnMsg);
 			}
 		}
 	} // end callConsultant
 	
-	private void sendJoinSuccess(WebSocketSession session, String roomId) throws IOException {
+	private void sendJoinSuccess(String roomId, String memberId) throws IOException {
 		log.info("sendJoinSuccess");
 		ChatMessageVO chatMessageVO = new ChatMessageVO();
-		chatMessageVO.setType("joinSuccess");
+		chatMessageVO.setType(TYPE_JOIN_SUCCESS);
 		chatMessageVO.setRoomId(roomId);
+		chatMessageVO.setSenderId(memberId);
 		
-		session.sendMessage(convertMsg(chatMessageVO));
+		sendMsgToRoom(chatMessageVO);
 		
 	} // end sendJoinSuccess
 	
 	private void sendJoinFail(WebSocketSession session, String content) throws IOException {
 		log.info("sendJoinFail");
 		ChatMessageVO chatMessageVO = new ChatMessageVO();
-		chatMessageVO.setType("joinFail");
+		chatMessageVO.setType(TYPE_JOIN_FAIL);
 		chatMessageVO.setContent(content);
 
 		session.sendMessage(convertMsg(chatMessageVO));
 		
 	} // end sendJoinFail
 	
-	private void sendChatMessage(ChatMessageVO chatMessageVO) throws IOException {
+	// 해당 방의 인원 전체에게 메시지 송신
+	private void sendMsgToRoom(ChatMessageVO chatMessageVO) throws IOException {
 		log.info("일반 채팅 송신");
 		
 		Map<String, WebSocketSession> targetRoom = consultRoomList.get(chatMessageVO.getRoomId());
+		if(targetRoom == null) {
+			return;
+		}
 		TextMessage returnMsg = convertMsg(chatMessageVO);
 		
 		Iterator<String> memberIdIter = targetRoom.keySet().iterator();
@@ -205,6 +220,14 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 		
 	} // end sendChatMessage
 	
+	private ChatMessageVO getExitMsg(String roomId, String senderId) {
+		ChatMessageVO message = new ChatMessageVO();
+		message.setRoomId(roomId);
+		message.setType(TYPE_EXIT_MSG);
+		message.setSenderId(senderId);
+		
+		return message;
+	} // end getExitMsg
 	
 	private ChatMessageVO convertMsg(String jsonMsg) {
 		ChatMessageVO message = null;
