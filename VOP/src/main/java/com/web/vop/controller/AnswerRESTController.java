@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ public class AnswerRESTController {
 	private AnswerService answerService;
 	
 	// 댓댓글(답변) 등록	
+	@PreAuthorize("#answerVO.memberId == authentication.principal.username")
 	@PostMapping("/register") // POST : 댓댓글(답변) 입력
 	public ResponseEntity<Integer> createAnswer(@RequestBody AnswerVO answerVO){
 		log.info("createAnswer()");
@@ -42,7 +44,7 @@ public class AnswerRESTController {
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}// end createAnswer()
 	
-	 //댓댓글(답변) 전체 검색
+	//댓댓글(답변) 전체 검색
 	@GetMapping("/list/{productId}") // GET : 댓댓글(답변) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
 	public ResponseEntity<List<AnswerVO>> readAllAnswer(
 			@PathVariable("productId") int productId){
@@ -55,6 +57,7 @@ public class AnswerRESTController {
 	}// end readAllAnswer()
 	
 	// 댓댓글(답변) 수정
+	@PreAuthorize("#answerVO.memberId == authentication.principal.username")
 	@PutMapping("/modify") // PUT : 댓글(리뷰) 수정 // 나중에 데이터 받는 거에 따라 달라짐
 	   public ResponseEntity<Integer> updateAnswer(
 			   @RequestBody AnswerVO answerVO
@@ -73,6 +76,7 @@ public class AnswerRESTController {
 	   }// end updateAnswer()
 	
 	// 댓댓글(답변) 삭제
+	@PreAuthorize("#answerVO.memberId == authentication.principal.username")
 	@DeleteMapping("/delete") // DELETE : 댓글(리뷰) 삭제 // 나중에 데이터 받는 거에 따라 달라짐
 	   public ResponseEntity<Integer> deleteAnswer(
 			   @RequestBody AnswerVO answerVO) {

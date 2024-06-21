@@ -13,6 +13,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <title>문의 리스트</title>
@@ -111,7 +112,7 @@
 
 					const memberId = '${memberDetails.getUsername()}';
 					
-					// 답글 작성 클릭 했을 때 화면띄어주는 역할
+					// 답글 작성 클릭 했을 때 화면띄어주는 역할(등록)
 					$('.btnAdd').click(function() {
 						let inquiryId = $(this).data('inquiryid');
 
@@ -119,15 +120,21 @@
 						$('#inputContainer_' + inquiryId).toggle();
 						// 해당 inquiryId에 대한 modifyContainer와 deleteContainer는 숨깁니다.
 						$('#modifyContainer_' + inquiryId).hide();
+						
+						 // 답글 작성 필드 초기화
+				        $('#replyAnswer_' + inquiryId).val('');
 					});
 
-					// 답글 작성 클릭 했을 때 화면띄어주는 역할
+					// 답글 작성 클릭 했을 때 화면띄어주는 역할(수정)
 					$('.btnModify').click(function() {
 						let inquiryId = $(this).data('inquiryid');
 
 						// 해당 inquiryId에 대한 inputContainer를 toggle합니다.
 						$('#modifyContainer_' + inquiryId).toggle();
 						$('#inputContainer_' + inquiryId).hide();
+						
+						// 답글 수정 필드 초기화
+				        $('#modifyAnswer_' + inquiryId).val('');
 					});
 
 					// 답글 작성 비동기 코드
@@ -155,7 +162,8 @@
 									type : 'POST',
 									url : '../answer/register',
 									headers : {
-										'Content-Type' : 'application/json'
+										'Content-Type' : 'application/json',
+										'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
 									},
 									data : JSON.stringify(obj),
 									success : function(result) {
@@ -189,7 +197,8 @@
 									type : 'PUT',
 									url : '../answer/modify',
 									headers : {
-										'Content-Type' : 'application/json'
+										'Content-Type' : 'application/json',
+										'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
 									},
 									data : JSON.stringify(obj),
 									success : function(result) {
@@ -215,7 +224,8 @@
 							type : 'DELETE',
 							url : '../answer/delete',
 							headers : {
-								'Content-Type' : 'application/json'
+								'Content-Type' : 'application/json',
+								'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
 							},
 							data : JSON.stringify(obj),
 							success : function(result) {

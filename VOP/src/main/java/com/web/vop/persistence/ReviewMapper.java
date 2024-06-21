@@ -38,4 +38,10 @@ public interface ReviewMapper {
 	 
 	 // 댓글 좋아요 DOWN
 	 int updateReviewLikeDown(int reviewId);
+	 
+	// 상품 리뷰(별) 총합 검색
+	int selectReviewStar(int productId);
+	
+	
+	float selectReviewAgv(int productId);
 }

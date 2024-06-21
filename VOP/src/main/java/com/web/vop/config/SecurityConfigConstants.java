@@ -29,7 +29,7 @@ public interface SecurityConfigConstants {
 			"/board/main", "/board/popupNotice", 
 			"/popupAds/popupAds", "/popupAds/blockPopup", "/popupAds/myPopupAds",
 			"/product/detail", "/product/search", "/product/bestReview", "/product/recent", 
-			"/review/list" };
+			 };
 	// 로그인한 유저만 접근 가능
 	public static final String[] NORMAL_OVER = { 
 			"/member/check", "/member/modify", "/member/logout",
@@ -39,7 +39,9 @@ public interface SecurityConfigConstants {
 			"/delivery/**",
 			"/order/**", 
 			"/payment/**", 
-			"/review/modify", "/review/register", 
+			"/review/modify", "/review/register", "/review/list",
+			"/reviewRest/modify", "/reviewRest/register",
+			"inquiry/list", "inquiry/myList",
 			"/basket/**", 
 			"/seller/sellerRequest", 
 			"/membership/**" };

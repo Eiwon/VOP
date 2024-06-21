@@ -170,10 +170,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 		return expressionHandler;
 	} // end roleVoter
 	
-	
-	
-	
-	
-	
-	
 }

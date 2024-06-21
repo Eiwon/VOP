@@ -1,12 +1,14 @@
 package com.web.vop.controller;
 
 import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +37,7 @@ import com.web.vop.util.Pagination;
 import lombok.extern.log4j.Log4j;
 
 @RestController
-@RequestMapping("/review")
+@RequestMapping("/reviewRest")
 @Log4j
 public class ReviewRESTController {
 	
@@ -46,9 +48,10 @@ public class ReviewRESTController {
 	@Autowired
 	public WebSocketHandler alarmHandler;
 	
+	@PreAuthorize("#reviewVO.memberId == authentication.principal.username")
 	@PostMapping("/register") // POST : ´ñ±Û(¸®ºä) ÀÔ·Â
 	public ResponseEntity<Integer> createReviewPOST(@RequestBody ReviewVO reviewVO) {
-
+		
 		log.info("createReview()");
 		log.info("reviewVO : " + reviewVO);
 
@@ -92,7 +95,7 @@ public class ReviewRESTController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	}// end readAllReview()
 	
-	
+	 @PreAuthorize("#reviewVO.memberId == authentication.principal.username")
 	 @PutMapping("/modify") // PUT : ´ñ±Û(¸®ºä) ¼öÁ¤ 
 	   public ResponseEntity<Integer> updateReview(
 	         @RequestBody ReviewVO reviewVO
@@ -116,6 +119,7 @@ public class ReviewRESTController {
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	   }// end updateReview()
 	 
+	 @PreAuthorize("#reviewVO.memberId == authentication.principal.username")
 	 @DeleteMapping("/delete")
 	 public ResponseEntity<Integer> deleteReview(
 			 @RequestBody ReviewVO reviewVO){

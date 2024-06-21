@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
+<%@ page import="javax.servlet.http.HttpSession" %>
 <!-- 시큐리티 사용하는 코드 -->
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
@@ -11,6 +11,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <title>리뷰 수정</title>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
@@ -117,12 +118,13 @@
         let reviewStar = selectedStar// 리뷰(별)
         let reviewContent = $('#reviewContent').val();
         let productId = ${productId};
-        
+        if(reviewStar !== null && reviewStar !== '' && reviewStar !== undefined && reviewContent !== null && reviewContent !== '') {
         let obj = {
         		'reviewId' : reviewId,
         		'reviewStar' : reviewStar,
         		'reviewContent' : reviewContent,
-        		'productId' : productId
+        		'productId' : productId,
+        		'memberId' : memberId
         }
         
         console.log(obj);
@@ -130,10 +132,10 @@
         // ajax 요청
         $.ajax({
            type : 'PUT', // 메서드 타입
-           url : '../review/modify',// 경로 
+           url : '../reviewRest/modify',// 경로 
            headers : {
-              'Content-Type' : 'application/json', // json content-type 설정
-              'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+        	   'Content-Type' : 'application/json', // json content-type 설정
+               'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
            }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 4050에러가 나온다.
            data : JSON.stringify(obj), // JSON으로 변환
            success : function(result) { // 전송 성공 시 서버에서 result 값 전송
@@ -146,7 +148,9 @@
               }
            }
         });
-        
+        } else {
+        	alert('별 표시와 내용을 모두 입력 해주세요');
+        }
      }); // end replies.on()
      }); // end document.ready()
      </script>

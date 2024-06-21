@@ -44,8 +44,10 @@ public class ReviewServiceImple implements ReviewService {
         ReviewVO vo = reviewMapper.selectByReview(productId, memberId);
 		
         log.info("vo : " + vo);
+        // 
         int insertRes = 0;
         
+        // ¸®ºä°¡ ÀÖ´ÂÁö È®ÀÎ
         if(vo == null) {
         	
         	// ¸®ºä µî·Ï 
@@ -71,7 +73,7 @@ public class ReviewServiceImple implements ReviewService {
     		String reviewAvg = "0";
     				
     		// ¸®ºä º° ÃÑ ÇÕ
-    		res = productMapper.selectReviewStar(productId);
+    		res = reviewMapper.selectReviewStar(productId);
     		log.info("¸®ºä(º°) : " + res);
 
     		// ¸®ºä Æò±Õ °ª reviewStar
@@ -142,7 +144,7 @@ public class ReviewServiceImple implements ReviewService {
 	      
 	      if(updateRes == 1) {
 	    	    // ¸®ºä ÃÑ ÇÕ
-				res = productMapper.selectReviewStar(productId);
+				res = reviewMapper.selectReviewStar(productId);
 				log.info("¸®ºä(º°) : " + res);
 				
 				// ¸®ºä Æò±Õ °ª reviewStar
@@ -192,7 +194,7 @@ public class ReviewServiceImple implements ReviewService {
 			if (productVO.getReviewNum() != 0) { // 0 ÀÌÇÏÀÏ ¶§ ¹«ÇÑÀÇ ¿¡·¯°¡ ³ª¿Í¿Â´Ù.
 
 				// »èÁ¦ ÈÄ ÇØ´ç »óÇ°ÀÇ ¸®ºä ÃÑ ÇÕ
-				res = productMapper.selectReviewStar(productId);
+				res = reviewMapper.selectReviewStar(productId);
 				log.info("¸®ºä(º°) : " + res);
 
 				// ¸®ºä Æò±Õ °ª reviewStar

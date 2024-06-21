@@ -72,15 +72,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     	SELECT COUNT(*) AS PRODUCT FROM REVIEW 
     	WHERE PRODUCT_ID = #{productId}
    </select>
-
-	
-   <!-- PRODUCT_ID 해당하는 리뷰(별) 총 합 -->
-   <select id="selectReviewStar" resultType="Integer">
-   		SELECT SUM(REVIEW_STAR) AS TOTAL_STAR_RATINGS
-		FROM REVIEW
-		WHERE PRODUCT_ID = #{productId}
-   </select>
-   
    
    <!-- 상품 댓글 수 카운터 -->
    <update id="updateReviewNum">

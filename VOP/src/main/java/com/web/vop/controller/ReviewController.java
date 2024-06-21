@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,9 +47,9 @@ public class ReviewController {
 	@Autowired
 	private ProductService productService;
 	
-	// 댓글 알림을 보내기 위한 알람핸들러
-	@Autowired
-	public WebSocketHandler alarmHandler;
+//	// 댓글 알림을 보내기 위한 알람핸들러
+//	@Autowired
+//	public WebSocketHandler alarmHandler;
 	
 	// 댓글(리뷰) 등록 GET 이동
 	@GetMapping("/register")
@@ -57,9 +58,11 @@ public class ReviewController {
 
 	    log.info("productId : " + productId);
 	    log.info("imgId : " + imgId);
-
+	    
+	    // 해당 상품이 있는지 확인 하는 코드(상품이 삭제되어도 주문 목록에 남아 있기 때문에 제작 함)
 	    ProductVO productVO = productService.getProductById(productId);
-
+	    
+	    // 해당 상품이 있는지 확인
 	    if (productVO != null) {
 	        // imgId통해 이미지 조회
 	        ImageVO imageVO = imageService.getImageById(imgId);
@@ -69,8 +72,8 @@ public class ReviewController {
 
 	        log.info("imageVO : " + imageVO);
 
-	        // 댓글 알람 송신
-	        ((AlarmHandler)alarmHandler).sendReplyAlarm(productId);
+//	        // 댓글 알람 송신
+//	        ((AlarmHandler)alarmHandler).sendReplyAlarm(productId);
 
 	        model.addAttribute("imgRealName", imgRealName);
 	        model.addAttribute("productId", productId);
@@ -84,8 +87,8 @@ public class ReviewController {
 	    }
 	}
 	
-	
 	// 댓글(리뷰) 수정 GET 이동
+	@PreAuthorize("#memberDetails.username == authentication.principal.username")
 	@GetMapping("/modify")
 	public void updateReviewGET(Model model, Integer productId, Integer imgId, @AuthenticationPrincipal MemberDetails memberDetails) {
 		log.info("updateReviewGET()");
@@ -118,7 +121,8 @@ public class ReviewController {
 		model.addAttribute("imgExtension", imgExtension);
 	} // end loginGET
 	
-//	// 댓글(리뷰) 전체 검색 GET
+	// 댓글(리뷰) 마이 페이지 검색 GET
+	@PreAuthorize("#memberDetails.username == authentication.principal.username")
 	@GetMapping("/list") // GET : 댓글(리뷰) 선택(all)
 	public void readAllReviewMemberId(Model model, @AuthenticationPrincipal MemberDetails memberDetails){
 		log.info("readAllReviewMemberId()");
@@ -141,7 +145,7 @@ public class ReviewController {
 		}
 		
 		log.info("productList : " + productList);
-		log.info("reviewList" + reviewList);
+		log.info("reviewList : " + reviewList);
 		
 		// 회원이 리뷰 작성 한 리스트
 		model.addAttribute("productList", productList);
