@@ -7,7 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       id="LikesResultMap">
       
       <id property="likesId" column="LIKES_ID" /> 
-    <!--   <result property="productId" column="PRODUCT_ID" /> -->
+      <result property="productId" column="PRODUCT_ID" /> 
       <result property="memberId" column="MEMBER_ID" />
       <result property="reviewId" column="REVIEW_ID" />
       <result property="likesType" column="LIKES_TYPE" />
@@ -16,8 +16,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       
       <!-- 좋아요 or 싫어요 입력 -->
       <insert id="insertLikes">
-      	INSERT INTO LIKES (LIKES_ID, MEMBER_ID, REVIEW_ID, LIKES_TYPE, LIKES_DATE_CREATED)
-		VALUES (LIKES_SEQ.NEXTVAL, #{memberId}, #{reviewId},
+      	INSERT INTO LIKES (LIKES_ID, PRODUCT_ID, MEMBER_ID, REVIEW_ID, LIKES_TYPE, LIKES_DATE_CREATED)
+		VALUES (LIKES_SEQ.NEXTVAL, #{productId}, #{memberId}, #{reviewId},
 		#{likesType}, SYSDATE)
       </insert>
       
@@ -42,11 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
     <select id="selectByLikesPaging" resultMap="LikesResultMap">
     	SELECT * FROM LIKES
-    	WHERE MEMBER_ID = #{memberId}
-    	AND REVIEW_ID IN
-    	<foreach item="reviewId" collection="reviewIds" open="(" separator="," close=")">
-        	#{reviewId}
-    	</foreach>
+    	WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId} 
     </select>
 
 </mapper>

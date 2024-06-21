@@ -88,8 +88,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE PRODUCT_ID = #{productId}
     </select>
     
-    
+    <update id="updateReviewLikeUp">
+      UPDATE REVIEW
+      SET REVIEW_LIKE = REVIEW_LIKE + 1
+      WHERE REVIEW_ID = #{reviewId}
+   </update>
    
-    
-    
+   <update id="updateReviewLikeDown">
+      UPDATE REVIEW
+      SET REVIEW_LIKE = REVIEW_LIKE - 1
+      WHERE REVIEW_ID = #{reviewId}
+   </update>
+
 </mapper>

@@ -308,10 +308,9 @@ function createStars(reviewAvg) {
 
 $(document).ready(function() { 
 	loadImg(); // 이미지 불려오는 메소드
-    reviewMap.show(1); // 리뷰
+    reviewMap.show(1); //리뷰
     inquiryMap.show(1);
     createStars(reviewAvg); // 상품 평균 리뷰값 별 표시
-  /*   getAllComments(); // 문의  */
  
     // 장바구니
     $('#btnBasket').click(function(){
@@ -331,6 +330,7 @@ $(document).ready(function() {
            headers : { // 헤더 정보
               'Content-Type' : 'application/json', // json content-type 설정
               'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+
            }, //'Content-Type' : 'application/json' 헤더 정보가 안들어가면 4050에러가 나온다.
            data : JSON.stringify(obj), // JSON으로 변환
            success : function(result) { // 전송 성공 시 서버에서 result 값 전송
@@ -349,57 +349,146 @@ reviewMap.show = function(page) {
     
     let reviewUrl = '../review/all/' + productId + '/' + page;
     
-    // 여기 위치에 실험 중인 코드 넣기
     
-    // AJAX 요청을 보내 리뷰 데이터를 가져옵니다.
+    
+     let likesUrl = '../likes/list/' + productId + '/' + memberId;
+    // 실행중인 코드 
+    let reviewNUM = [];
+    let likesNUM = [];
+
+ 	// inquiry 데이터 가져오기
     $.ajax({
         method: 'GET',
         url: reviewUrl,
-        dataType: 'json',
         success: function(data) {
-            let form = '';
-            
-            // ReviewMap 초기화
+        	// ReviewMap 초기화
             reviewMap.list = data.list;
             reviewMap.pageMaker = data.pageMaker;
             
-            const list = reviewMap.list;
+            reviewNUM =  reviewMap.list;  // 성공적으로 데이터를 가져오면 inquiryNUM에 저장
            
-            for (let x in list) {
-            	let reviewStar = list[x].reviewStar;
-            	
-            	let starsHTML = ''; // 별 모양 HTML을 저장할 변수
-                star = parseInt(reviewStar); // 문자열을 정수로 변환
-				for (let i = 1; i <= 5; i++) {
-                    if (i <= star) {
-                        starsHTML += '&#9733;'; // 별 모양 HTML 코드 추가
-                    } else {
-                        starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
-                    }
-                } 
-                form += '<tr>' +
-                        '<td class="reviewId">' + list[x].reviewId + '</td>' +
-                        '<td class="memberId">' + list[x].memberId + '</td>' +
-                        '<td class="reviewStars">' + starsHTML + '</td>' + 
-                        '<td class="reviewContent">' + list[x].reviewContent + '</td>' + 
-                        '<td class="reviewDateCreated">' + toDate(list[x].reviewDateCreated) + '</td>' +
-                        '<td class="button-container">' +
-                        '<div class="button likeButton" data-value="1"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></div>' +
-                        '<div class="button dislikeButton" data-value="0"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></div>' +
-                        '</td>' +
-                        '</tr>';
-            }
-            // 페이지를 생성한 후 등록합니다.
-            $('#product_list_page').html(makePageForm(reviewMap));
+            console.log("reviewNUM : " + reviewNUM);
             
-            // 저장된 데이터를 review div에 표현합니다.
-            $('#review').html(form);
-        }
+            
+            reviewProcessComments();
+            
+         	// 페이지를 생성한 후 등록합니다.
+            $('#product_list_page').html(makePageForm(reviewMap));
+        },
+    });// end ajax
+    
+    
+    $.ajax({
+        method: 'GET',
+        url: likesUrl,
+        headers: {
+            'Content-Type': 'application/json' // json content-type 설정
+        }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 405 에러가 나온다.
+        success: function(data) {
+        likesNUM = data;
+        console.log("likesNUM : " + likesNUM);
+        reviewProcessComments();
+        },
     });
-}
+    
+ 	// 문의와 답변 데이터를 처리하는 함수
+    function reviewProcessComments() {// 여기 비동기 동작 어떻게 처리 하는지 잘모르겠음
+        
+        if (reviewNUM.length > 0) {
+            // 데이터를 비교하여 일치하는 요소들을 찾음
+            
+            let totalList = reviewPrintMatchingItems(reviewNUM, likesNUM);// 그럼 여기서 함수가 실행 된 다음 변수에 저장?
+            reviewPrint(totalList);  // 일치하는 요소들을 렌더링 함수로 전달하여 출력
+         
+            /* let matchingItems = printMatchingItems(inquiryNUM, answerNUM);// 그럼 여기서 함수가 실행 된 다음 변수에 저장?
+            renderComments(matchingItems);  // 일치하는 요소들을 렌더링 함수로 전달하여 출력 */
+        }
+    }
+ 	
+    function reviewPrintMatchingItems(reviewNUM, likesNUM) {
+        let result = [];
+
+        // 모든 문의와 답변 데이터를 비교하여 일치하는 경우를 찾음
+        for (let i = 0; i < reviewNUM.length; i++) {
+            let matchingLikes = []; // 현재 문의에 대한 일치하는 답변들을 저장할 배열
+
+            for (let j = 0; j < likesNUM.length; j++) {//
+                if (reviewNUM[i].reviewId === likesNUM[j].reviewId) {
+                    // 일치하는 경우 matchingAnswers 배열에 객체로 저장
+                    matchingLikes.push({
+                    	likesType: likesNUM[j].likesType
+                    });
+                }
+            }
+
+            // 문의와 해당하는 모든 답변들을 result 배열에 객체로 저장
+            result.push({
+            	reviewId: reviewNUM[i].reviewId,
+                memberId: reviewNUM[i].memberId,
+                reviewStar: reviewNUM[i].reviewStar,
+                reviewContent: reviewNUM[i].reviewContent,
+                reviewDateCreated: reviewNUM[i].reviewDateCreated,
+                reviewLike: reviewNUM[i].reviewLike,
+                likes: matchingLikes  // 일치하는 답변들 배열을 answers 필드로 저장
+            });
+        }
+
+        return result;  // 일치하는 요소들을 담은 배열 반환
+    }// end reviewPrintMatchingItems
+   
+    
+    function reviewPrint(comments) {
+    	  let form = '';  
+    	    for (let i = 0; i < comments.length; i++) {
+    	        let reviewStar = comments[i].reviewStar;
+    	        let starsHTML = ''; 
+    	        let star = parseInt(reviewStar); 
+    	        for (let k = 1; k <= 5; k++) {
+    	            if (k <= star) {
+    	                starsHTML += '&#9733;'; 
+    	            } else {
+    	                starsHTML += '&#9734;'; 
+    	            }
+    	        }
+
+    	        // 좋아요 및 싫어요 버튼 상태 결정
+    	        let likeClass = "";
+    	        let dislikeClass = "";
+    	        let likeIcon = "fa-thumbs-o-up";
+    	        let dislikeIcon = "fa-thumbs-o-down";
+
+    	        if (comments[i].likes && comments[i].likes.length > 0) {
+    	            for (let j = 0; j < comments[i].likes.length; j++) {
+    	                let likesType = comments[i].likes[j].likesType;
+    	                if (likesType === 1) {
+    	                    likeClass = "liked";
+    	                    likeIcon = "fa-thumbs-up";
+    	                } else if (likesType === 0) {
+    	                    dislikeClass = "disliked";
+    	                    dislikeIcon = "fa-thumbs-down";
+    	                }
+    	            }
+    	        }
+
+    	        // 리뷰 정보와 좋아요/싫어요 버튼을 같은 행에 추가
+    	        form += '<tr>' +
+    	                '<td class="reviewId">' + comments[i].reviewId + '</td>' +
+    	                '<td class="memberId">' + comments[i].memberId + '</td>' +
+    	                '<td class="reviewStars">' + starsHTML + '</td>' + 
+    	                '<td class="reviewContent">' + comments[i].reviewContent + '</td>' + 
+    	                '<td class="reviewDateCreated">' + toDate(comments[i].reviewDateCreated) + '</td>' +
+    	                '<td class="button-container">' +
+    	                '(' + comments[i].reviewLike + ')<div class="button likeButton ' + likeClass + '" data-value="1" data-page="' + page + '"><i class="fa ' + likeIcon + '" aria-hidden="true"></i></div>' +
+    	                '<div class="button dislikeButton ' + dislikeClass + '" data-value="0" data-page="' + page + '"><i class="fa ' + dislikeIcon + '" aria-hidden="true"></i></div>' +
+    	                '</td>' +
+    	                '</tr>';
+    	    }
+    	    $('#review').html(form);
+    	}
+    
+}// end reviewMap.show
 
 $(document).on('click', '.likeButton, .dislikeButton', function() {
-	console.log("memberId : " + memberId);
 	
 	if (memberId && memberId.trim() !== '') {
 	
@@ -415,17 +504,21 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
     
     // 현재 클릭된 행에서 reviewId를 가져옵니다.
     const reviewId = $(this).closest('tr').find('.reviewId').text();
-    console.log('Review ID:', reviewId);
+   
     
     // 현재 버튼의 data-value 값을 콘솔에 출력
     const likesType = $(this).attr('data-value');
-    console.log(isLikeButton ? 'likesType : ' : 'likesType : ', likesType);
+    
+    const page = $(this).attr('data-page'); // 페이지 정보 가져오기
 
     const $this = $(this); // `this`를 변수에 저장
+    
+    console.log("reviewId : " + reviewId);
 
     if (!isActive && isOtherActive) {
         let obj = {
             'reviewId': reviewId,
+            'productId': productId,
             'memberId': memberId,
             'likesType': likesType
         };
@@ -447,6 +540,8 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
                     otherButton.removeClass(isLikeButton ? 'disliked' : 'liked');
                     otherIcon.removeClass(isLikeButton ? 'fa-thumbs-down' : 'fa-thumbs-up').addClass(isLikeButton ? 'fa-thumbs-o-down' : 'fa-thumbs-o-up');
                     console.log(isLikeButton ? '좋아요 수정 성공' : '싫어요 수정 성공');
+                    console.log("page : " + page)
+                    reviewMap.show(page);
                 } else {
                 	console.log(isLikeButton ? '좋아요 수정 실패' : '싫어요 수정 실패');
                 }
@@ -456,6 +551,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
     } else if (!isActive) {
         let obj = {
             'reviewId': reviewId,
+            'productId': productId,
             'memberId': memberId,
             'likesType': likesType
         };
@@ -466,6 +562,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
             headers: {
                 'Content-Type': 'application/json', // json content-type 설정
                 'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+
             }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 405 에러가 나온다.
             data: JSON.stringify(obj), // JSON으로 변환
             success: function(result) { // 전송 성공 시 서버에서 result 값 전송
@@ -474,6 +571,8 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
                     $this.addClass(isLikeButton ? 'liked' : 'disliked');
                     icon.removeClass(isLikeButton ? 'fa-thumbs-o-up' : 'fa-thumbs-o-down').addClass(isLikeButton ? 'fa-thumbs-up' : 'fa-thumbs-down');
                     console.log(isLikeButton ? '좋아요 등록 성공' : '싫어요 등록 성공');
+                    console.log("page : " + page)
+                    reviewMap.show(page);
                 } else {
                 	console.log(isLikeButton ? '좋아요 등록 실패' : '싫어요 등록 실패');
                 }
@@ -483,7 +582,9 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
     } else {
         let obj = {
             'reviewId': reviewId,
-            'memberId': memberId
+            'productId': productId,
+            'memberId': memberId,
+            'likesType': likesType
         };
         // ajax 요청
         $.ajax({
@@ -492,6 +593,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
             headers: {
                 'Content-Type': 'application/json', // json content-type 설정
                 'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+
             }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 405 에러가 나온다.
             data: JSON.stringify(obj), // JSON으로 변환
             success: function(result) { // 전송 성공 시 서버에서 result 값 전송
@@ -499,6 +601,9 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
                     $this.removeClass(isLikeButton ? 'liked' : 'disliked');
                     icon.removeClass(isLikeButton ? 'fa-thumbs-up' : 'fa-thumbs-down').addClass(isLikeButton ? 'fa-thumbs-o-up' : 'fa-thumbs-o-down');
                     console.log(isLikeButton ? '좋아요 삭제 성공' : '싫어요 삭제 성공');
+                    console.log("likesType : " + likesType)
+                    console.log("page : " + page)
+                    reviewMap.show(page);
                 } else {
                 	console.log(isLikeButton ? '좋아요 삭제 실패' : '싫어요 삭제 실패');
                 }
@@ -584,6 +689,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
         // 문의와 답변 데이터를 처리하는 함수
         function processComments() {// 여기 비동기 동작 어떻게 처리 하는지 잘모르겠음
             // inquiryNUM과 answerNUM이 모두 데이터를 가져온 경우에만 처리
+            // 비동기로 리스트를 가져왔을때 두 데이터가 있는지 확인 하는 코드이다.
             /* if (inquiryNUM.length > 0 && answerNUM.length > 0) { */
             if (inquiryNUM.length > 0) {
                 // 데이터를 비교하여 일치하는 요소들을 찾음

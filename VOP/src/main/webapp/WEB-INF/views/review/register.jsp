@@ -139,7 +139,8 @@ $(document).ready(function(){
               type : 'POST', // 메서드 타입
               url : '../review/register', // url
               headers : { // 헤더 정보
-                 'Content-Type' : 'application/json' // json content-type 설정
+                 'Content-Type' : 'application/json', // json content-type 설정
+                 'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
               }, //'Content-Type' : 'application/json' 헤더 정보가 안들어가면 4050에러가 나온다.
               data : JSON.stringify(obj), // JSON으로 변환
               success : function(result) { // 전송 성공 시 서버에서 result 값 전송
