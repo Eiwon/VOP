@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authentication var="memberDetails" property="principal"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,8 +10,15 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <style type="text/css">
 	#readArea {
-		width: 300px;
-		height: 600px;
+		width: 500px;
+		height: 500px;
+		overflow: scroll;
+	}
+	.consultantChat {
+		text-align: left;
+	}
+	.myChat {
+		text-align: right;
 	}
 </style>
 <title>Insert title here</title>
@@ -36,14 +45,22 @@
 		let consultSocketUrl = "ws://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/consult";
 		let consultWebSocket = null;
 		let roomId = '${roomId }';
+		let memberId = '${memberId}';
 		let tagReadArea = $('#readArea');
 		let tagWriteChat = $('#writeChat');
 		let chatHandler = {};
 		
 		$(document).ready(function(){
+			tagWriteChat.keydown(function(event){
+				if(event.keyCode == 13){ // 엔터 키 입력시
+					sendChat();
+				}
+			});
+			
 			if(roomId != ''){
 				connectWebSocket();
 			}
+			
 		});
 		
 		function callConsultant() {
@@ -86,7 +103,7 @@
 		
 		chatHandler.joinSuccess = function(msg){
 			console.log('join success roomId : ' + msg.roomId);
-			tagReadArea.append(msg.senderId + ' 님이 입장했습니다.');
+			addToReadArea('System', msg.senderId + ' 님이 입장했습니다.');
 			if(roomId == undefined){
 				roomId = msg.roomId;			
 			}
@@ -98,25 +115,45 @@
 		}
 		
 		chatHandler.chatMessage = function(msg){
-			tagReadArea.append(msg.senderId + ' : ' + msg.content + '<br>');
+			addToReadArea(msg.senderId, msg.content);
 		}
 		
 		chatHandler.exitMessage = function(msg){
-			tagReadArea.append(msg.senderId + ' 님이 퇴장했습니다.');
+			addToReadArea('System', msg.senderId + ' 님이 퇴장했습니다.');
 		}
 		
 		function sendChat(){
 			let content = tagWriteChat.val();
 			console.log(content);
-			if(consultWebSocket != null){
+			if(content.length > 0 || consultWebSocket != null){
 				consultWebSocket.send(JSON.stringify({
 					'type' : 'chatMessage',
 					'roomId' : roomId,
 					'content' : content
 				}));
+				tagWriteChat.val('');
 			} 
 		}
 		
+		function addToReadArea(tellerId, content){
+			let chatBox = $('<div></div>');
+			if(tellerId == memberId){
+				chatBox.attr('class', 'myChat');
+			}else{
+				chatBox.attr('class', 'consultantChat');
+			}
+			chatBox.append(tellerId + '<br>');
+			
+			let contentStr = '';
+			let start = 0, end;
+			while(start < content.length){
+				end = Math.min((start + 30), content.length);
+				contentStr += content.substring(start, end) + '<br>';
+				start = end;
+			}
+			chatBox.append(contentStr);
+			tagReadArea.append(chatBox);
+		}
 		
 	</script>
 
