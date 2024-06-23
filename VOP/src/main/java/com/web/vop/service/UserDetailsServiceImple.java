@@ -33,6 +33,7 @@ public class UserDetailsServiceImple implements UserDetailsService{
         }
 		
 		MemberDetails memberDetails = new MemberDetails();
+		
 		memberDetails.setMemberVO(memberVO);
 		
 		return memberDetails;

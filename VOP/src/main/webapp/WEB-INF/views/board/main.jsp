@@ -147,6 +147,7 @@
 			}
 		} // end readBlockList */
 		
+		// 서버로부터 팝업 광고 불러오기
 		function showPopupAds(){
 			$.ajax({
 				method : 'GET',
@@ -160,6 +161,7 @@
 			}); // end ajax
 		} // end showPopupAds
 		
+		// 팝업 광고 출력
 		function showPopup(messageId){
 			let targetUrl = '../popupAds/popupAds?messageId=' + messageId;
 			

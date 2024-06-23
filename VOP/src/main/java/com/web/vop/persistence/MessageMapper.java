@@ -23,7 +23,7 @@ public interface MessageMapper {
 	public int deleteByReceiverId(String receiverId);
 
 	// 모든 공지 검색
-	public List<MessageVO> selectNotice();
+	public List<Integer> selectNotice();
 	
 	// messageId로 검색
 	public MessageVO selectById(int messageId);

@@ -39,8 +39,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </delete>
    
    <!-- 모든 팝업 광고 검색 -->
-   <select id="selectNotice" resultMap="messageResultMap">
-   		SELECT * FROM MESSAGE WHERE TYPE = 'notice'
+   <select id="selectNotice" resultType="Integer">
+   		SELECT MESSAGE_ID FROM MESSAGE WHERE TYPE = 'notice'
    </select>
    
    <!-- messageId로 검색 -->

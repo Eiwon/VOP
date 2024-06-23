@@ -169,7 +169,7 @@ public class PopupAdsController {
 			@AuthenticationPrincipal UserDetails memberDetails) {
 		log.info("팝업 광고 id 호출 요청");
 		
-		String memberId = (memberDetails == null) ? "" : memberDetails.getUsername();
+		String memberId = (memberDetails == null) ? null : memberDetails.getUsername();
 		List<Integer> blockList = null;
 		
 		if(cookie != null) { // 쿠키가 있으면 차단 목록 불러옴

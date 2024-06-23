@@ -52,12 +52,6 @@ public class MessageServiceImple implements MessageService{
 	} // end removeByReceiverId
 
 	@Override
-	public List<MessageVO> getNotice() {
-		log.info("getNotice");
-		return messageMapper.selectNotice();
-	} // end getNotice
-
-	@Override
 	public MessageVO getById(int messageId) {
 		log.info("getById");
 		return messageMapper.selectById(messageId);
@@ -80,7 +74,8 @@ public class MessageServiceImple implements MessageService{
 	@Override
 	public List<Integer> getMyPopupId(String memberId) {
 		log.info("모든 공지사항, 수령하지 않은 쿠폰 검색");
-		List<Integer> list = messageMapper.selectMyPopupId(memberId);
+		List<Integer> list = (memberId == null) ? 
+				messageMapper.selectNotice() : messageMapper.selectMyPopupId(memberId);
 		return list;
 	} // end getAllPopup
 }

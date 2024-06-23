@@ -110,9 +110,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.contentSecurityPolicy("img-src " + PERMIT_IMG_SRC);
 	
 		http.addFilterBefore(characterEncodingFilter(), CsrfFilter.class);
-			//.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		//http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-		//http.headers().cacheControl();
+			
+		http.sessionManagement()
+			.maximumSessions(1);
 		
 	} // end configure
 
