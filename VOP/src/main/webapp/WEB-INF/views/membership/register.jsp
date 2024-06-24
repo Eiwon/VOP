@@ -8,8 +8,8 @@
 	
 	<!-- EL을 사용하여 권한 정보를 확인 -->
     <c:set var="hasMembership" value="false"/>
-    <c:forEach var="authority" items="${memberDetails.getAuthorities()}">
-        <c:if test="${authority.authority == 'ROLE_멤버십'}">
+    <c:forEach var="authority" items="${memberDetails.authorities}">
+        <c:if test="${authority.authority eq 'ROLE_멤버십'}">
             <c:set var="hasMembership" value="true"/>
         </c:if>
     </c:forEach>
@@ -58,6 +58,7 @@
 	
 	 console.log(paymentWrapper);
 	 console.log(memberVO);
+	 console.log("멤버 권한 = ", memberVO.memberAuth);
 	 
 	 $(document).ready(function() {
 		console.log(paymentWrapper);
@@ -66,6 +67,18 @@
 		
          // 멤버십 신청
          $('#registerBtn').on('click', function() {
+        	 
+        	 //var hasMembership = "${hasMembership}"; // 변수 초기화
+             
+             //console.log("멤버 권한 = ", hasMembership);
+             
+        	  if (memberVO.memberAuth === '멤버십') {
+                  // 멤버십이 이미 등록된 경우 처리할 로직 추가
+                  alert('이미 멤버십이 등록되어 있습니다.');
+                  document.getElementById("registerBtn").disabled = true; //등록 버튼 비활성화
+                  return;
+              }
+              
         	 payment();
          });// end registerBtn.click
          
@@ -252,17 +265,14 @@
 
 <a id="membershipLink" href="success" style="display:none;">멤버십 페이지로 이동하기</a>   
 
-
 <script type="text/javascript">
-	var hasMembership = "${hasMembership}"; // 변수 초기화
-	
-	console.log("멤버 권한 = ", hasMembership);
-	
-    // JavaScript에서 권한 확인 후 링크 표시
-    if (hasMembership === 'true') {
-        document.getElementById("membershipLink").style.display = "block";
-    }
+       
+        if (memberVO.memberAuth === '멤버십') {
+            document.getElementById("membershipLink").style.display = "block";
+        }
+ 
 </script>
+
     
 
 </body>
