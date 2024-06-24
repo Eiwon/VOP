@@ -204,8 +204,8 @@ $(document).ready(function() {
 	// 수정 버튼 클릭 이벤트 핸들러 설정
 	$('#updateButton').click(function() {
 	    // 수정 동작 수행
-	    if (!$(this).prop('disabled')) {
-	        alert("수정이 가능합니다.");
+	    if (!$(this).prop('disabled')) { // 기본 배송지 설정이 되어있지 않을 때 
+	        alert("수정 되었습니다!");
 	        
 	    } else {
 	        alert("기본 배송지를 체크한 경우 수정할 수 없습니다.");
@@ -218,8 +218,7 @@ $(document).ready(function() {
     checkDefaultAddress().then(function(isExistingDefault) {
         
         if (isExistingDefault) {
-               alert("기본 배송지가 설정되어 있습니다.");
-               
+              
                // 기본 배송지가 있는 경우
                // 체크박스 상태에 따라 수정 버튼 활성화/비활성화 설정
                $('#isDefault').change(function() {
