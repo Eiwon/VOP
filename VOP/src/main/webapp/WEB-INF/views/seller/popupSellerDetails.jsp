@@ -85,6 +85,7 @@ tr {
 				url : 'revoke',
 				method : 'PUT',
 				headers : {
+					'Content-type' : 'application/json',
 					'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
 				},
 				data : JSON.stringify({

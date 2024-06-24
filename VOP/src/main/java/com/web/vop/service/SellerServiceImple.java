@@ -98,7 +98,6 @@ public class SellerServiceImple implements SellerService{
 	@Override
 	public int revokeAuth(SellerVO sellerVO) {
 		log.info("판매자 권한 취소");
-		
 		// 판매자 등록 정보의 상태를 거절로 변경
 		sellerVO.setRequestState(Constant.STATE_REJECTED);
 		sellerMapper.updateAdminContent(sellerVO);
@@ -108,6 +107,14 @@ public class SellerServiceImple implements SellerService{
 		
 		return res;
 	} // end revokeAuth
+
+	@Override
+	public int retrySellerRequest(SellerVO sellerVO) {
+		log.info("판매자 권한 재신청");
+		sellerVO.setRequestState(Constant.STATE_APPROVAL_WAIT);
+		sellerMapper.updateMemberContent(sellerVO);
+		return 0;
+	} // end retrySellerRequest
 	
 
 	

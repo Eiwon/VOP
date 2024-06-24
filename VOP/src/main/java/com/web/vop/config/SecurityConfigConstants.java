@@ -22,7 +22,7 @@ public interface SecurityConfigConstants {
 	public static final String[] ANONYMOUS_ONLY = { 
 			"/member/register", "/member/login", "/member/loginFail", "/member/findAccount**",
 			"/member/findPassword**", "/member/idDupChk", "/member/phoneDupChk", "/member/findByPhone", 
-			"/member/login", "/member/changePw", "/member/mailAuthentication"
+			"/member/login", "/member/changePw"
 			};
 
 	// 모두 접근 가능
@@ -31,6 +31,7 @@ public interface SecurityConfigConstants {
 			"/image/**",
 			"/inquiry/list",
 			"/inquiryRest/list",
+			"/member/mailAuthentication",
 			"/popupAds/popupAds", "/popupAds/blockPopup", "/popupAds/myPopupAds",
 			"/product/detail", "/product/search", "/product/bestReview", "/product/recent", 
 			"/review/all" };
@@ -51,8 +52,7 @@ public interface SecurityConfigConstants {
 			"/review/modify", "/review/register", "/review/list",
 			"/reviewRest/modify", "/reviewRest/register",
 			"inquiry/list", "inquiry/myList",
-			"/basket/**", 
-			"/seller/sellerRequest", 
+			"/seller/sellerRequest", "/seller/requestUpdate", 
 			"/membership/register", "/membership/getId", "/membershipRegister" };
 
 	// 판매자만 접근 가능

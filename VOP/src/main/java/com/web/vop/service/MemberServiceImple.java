@@ -68,6 +68,8 @@ public class MemberServiceImple implements MemberService{
 		log.info("변경 요청 비밀번호 : " + memberPw);
 		if(StringUtils.hasText(memberPw)) { // 비밀번호 변경 요청시, 비밀번호 암호화
 			memberVO.setMemberPw(passwordEncoder.encode(memberPw));
+		}else {
+			memberVO.setMemberPw(null);
 		}
 		int res = memberMapper.updateMember(memberVO);
 		log.info(res + "행 수정 성공");
@@ -100,10 +102,9 @@ public class MemberServiceImple implements MemberService{
 	} // end updatePw
 
 	@Override
-	public int deleteMember(String memberId, String memberPw) { // 회원 탈퇴
+	public int deleteMember(String memberId) { // 회원 탈퇴
 		log.info("Member Service deleteMember()");
-		String encryptPw = passwordEncoder.encode(memberPw);
-		int res = memberMapper.deleteMember(memberId, encryptPw);
+		int res = memberMapper.deleteMember(memberId);
 		log.info(res + "행 삭제 성공");
 		return res;
 	} // end deleteMember

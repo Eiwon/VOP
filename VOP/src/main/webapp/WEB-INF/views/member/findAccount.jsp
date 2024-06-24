@@ -58,7 +58,7 @@
 				method : 'GET',
 				url : 'mailAuthentication?email=' + memberEmail,
 				success : function(result){
-					tagAuthCode.next().text('인증 번호가 발송되었습니다.');
+					tagAuthCode.next().text('인증 번호가 발송되었습니다. 3분 이내에 입력해주세요.');
 					$('#btnAuthCode').attr('disabled', null);
 					tagAuthCode.val('');
 				}

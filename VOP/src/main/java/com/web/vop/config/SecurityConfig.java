@@ -85,12 +85,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.loginProcessingUrl("/member/login")
 			.successHandler(loginSuccessHandler)
 			.failureHandler(loginFailHandler);
-
+		
 		http.rememberMe() // 자동 로그인
 			.key("key") 
 			.rememberMeParameter("rememberMe")
 			.rememberMeCookieName("rememberMe") 
-			.tokenValiditySeconds(60*60*24)
+			.tokenValiditySeconds(60*60*24*3)
 			.tokenRepository(tokenRepository)
 			.userDetailsService(userDetailsServiceImple)
 			.authenticationSuccessHandler(loginSuccessHandler);
