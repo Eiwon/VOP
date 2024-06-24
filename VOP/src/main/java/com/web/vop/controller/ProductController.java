@@ -60,9 +60,6 @@ public class ProductController {
 	private ProductService productService;
 	
 	@Autowired
-	private ImageService imageService;
-	
-	@Autowired
 	private AWSS3Service awsS3Service;
 	
 	@Autowired
@@ -76,19 +73,47 @@ public class ProductController {
 	public void productDetailGET(Model model, Integer productId) {
 		log.info("productDetailGET()");
 		
-		// productId에 해당하는 상품 조회 
-		ProductVO productVO = productService.getProductById(productId);	
+		// 상품, 회원, 썸네일 이미지 정보 검색 해서 조인
+		ProductDetailsDTO productDetails = productService.getDetails(productId);
+		log.info("상세 정보 검색 결과 : " + productDetails);
 		
-		// 상세 이미지 조회
-		List<ImageVO> imageList = imageService.getByProductId(productId);
-		for(ImageVO image  : imageList) {
-			log.info(image);
+		// 썸네일 이미지의 경로와 변경된 이름을 이용하여 AWS S3의 URL을 생성하고 설정합니다.
+		productDetails.setThumbnailUrl(
+				awsS3Service.toImageUrl(productDetails.getThumbnail().getImgPath(), productDetails.getThumbnail().getImgChangeName())
+				);
+		// 상세 이미지 리스트를 가져옵니다.
+		List<ImageVO> list = productDetails.getDetails();
+		
+		// 상세 이미지 URL을 저장할 리스트를 초기화합니다.
+		productDetails.setDetailsUrl(new ArrayList<>());
+		
+		// 상세 이미지 리스트를 순회하면서 각 이미지의 경로와 변경된 이름을 이용하여 AWS S3의 URL을 생성하고 추가합니다.
+		for(ImageVO image : list) {
+			productDetails.getDetailsUrl().add(awsS3Service.toImageUrl(image.getImgPath(), image.getImgChangeName()));
 		}
-		// 상품 조회 정보
-		model.addAttribute("productVO", productVO);
-		// 상품 설명 이미지 조회 정보
-		model.addAttribute("imageList", imageList);
+		
+		// model 객체에 productDetails를 추가하여 뷰에서 사용할 수 있도록 합니다.
+		model.addAttribute("productDetails", productDetails);
 	} // end productDetail()
+	
+	// 상품 상세 정보 조회
+//		@GetMapping("/detail")
+//		public void productDetailGET(Model model, Integer productId) {
+//			log.info("productDetailGET()");
+//			
+//			// productId에 해당하는 상품 조회 
+//			ProductVO productVO = productService.getProductById(productId);	
+//			
+//			// 상세 이미지 조회
+//			List<ImageVO> imageList = imageService.getByProductId(productId);
+//			for(ImageVO image  : imageList) {
+//				log.info(image);
+//			}
+//			// 상품 조회 정보
+//			model.addAttribute("productVO", productVO);
+//			// 상품 설명 이미지 조회 정보
+//			model.addAttribute("imageList", imageList);
+//		} // end productDetail()
 	
 	@GetMapping("/register")
 	public void registerGET() {
