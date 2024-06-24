@@ -89,7 +89,7 @@
 <h1> 주문 목록 </h1>
 
 	<!-- 회원id -->
-	<h1>${memberDetails.getUsername() }</h1>
+	<h1>${memberDetails.getUsername()}</h1>
 
 	<div id="order-container">
     <c:forEach items="${orderList}" var="orderViewDTO">
@@ -237,23 +237,46 @@
     	addModalEventListener('.inquiryDelete', '.deleteModal');
 
     	// 모달 닫기 이벤트 리스너 추가
-    	let closeButtons = document.querySelectorAll('.modal .close');
-    	closeButtons.forEach(function(button) {
-    	    button.addEventListener('click', function() {
-    	        let modal = button.closest('.modal');
-    	        modal.style.display = 'none';
-    	    });
-    	});
+    	// 모달 닫기 이벤트 리스너 추가
+		let closeButtons = document.querySelectorAll('.modal .close');
+		closeButtons.forEach(function(button) {
+    		button.addEventListener('click', function() {
+        		// 버튼의 부모 모달 요소 찾기
+        		let modal = button.closest('.modal');
+        		// 모달 숨기기
+        		modal.style.display = 'none';
 
-    	// 모달 외부 클릭 시 닫기
-    	window.addEventListener('click', function(event) {
+        		// 모달이 닫힐 때 입력된 내용 초기화
+        		let contentField = modal.querySelector('.content');
+        		if (contentField) { // null 체크
+            		contentField.value = ''; // 내용 초기화
+        		}
+    		});
+		});
+		
+    	// 여기 코드 문제점은 내용을 작성 하고 있을때 실수로 모달 바같을 클릭 해서 다시 작성하는 경우가 있을 수 있다.
+    	// 모달 외부 클릭 시 닫기 이벤트 리스너를 추가합니다.
+    	/* window.addEventListener('click', function(event) {
+    	    // 모든 모달 요소를 가져옵니다.
     	    let modals = document.querySelectorAll('.modal');
+    	    
+    	    // 각 모달 요소에 대해 반복문을 실행합니다.
     	    modals.forEach(function(modal) {
+    	        // 클릭된 요소가 모달 요소인 경우 모달을 닫습니다.
     	        if (event.target === modal) {
     	            modal.style.display = 'none';
     	        }
+    	        
+    	        // 모달 내에 .content 클래스를 가진 요소를 찾습니다.
+    	        let contentElement = modal.querySelector('.content');
+    	        
+    	        // .content 요소가 존재하는지 확인합니다.
+    	        if (contentElement) {
+    	            // .content 요소의 값을 빈 문자열로 설정하여 초기화합니다.
+    	            contentElement.value = '';
+    	        }
     	    });
-    	});
+    	}); */
     // 판매자 문의 코드 
     // 폼 제출 시 데이터 출력
     let inquiryCreate = document.querySelectorAll('.createInquiry');
@@ -264,38 +287,48 @@
             /* button = form.querySelector('.sellerInquiry'); */
             // 입력된 내용 가져오기
             let inquiryContent = form.querySelector('.content').value;
-
+            console.log(inquiryContent);
             console.log(productId);
             console.log(memberId);
-            
-            // TODO: 서버로 데이터 전송
-            let obj = {	
-            	'productId' : productId,
-            	'memberId' : memberId,
-            	'inquiryContent' : inquiryContent
+            if(inquiryContent && inquiryContent.trim() !== ''){
+            	// TODO: 서버로 데이터 전송
+                let obj = {	
+                	'productId' : productId,
+                	'memberId' : memberId,
+                	'inquiryContent' : inquiryContent
+                }
+                console.log(obj);
+                
+             	// $.ajax로 송수신
+                $.ajax({
+                   type : 'POST', // 메서드 타입
+                   url : '../inquiryRest/register', // url
+                   headers : { // 헤더 정보
+                      'Content-Type' : 'application/json', // json content-type 설정
+                      'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+                   }, //'Content-Type' : 'application/json' 헤더 정보가 안들어가면 4050에러가 나온다.
+                   data : JSON.stringify(obj), // JSON으로 변환
+                   success : function(result) { // 전송 성공 시 서버에서 result 값 전송
+                      console.log(result);
+                      if(result == 1) {
+                         alert('문의 성공');
+                      } else if(result == 2){
+                    	  alert('삭제된 상품 입니다.');
+                      } else {
+                    	  alert('이미 작성 하신 문의 입니다.');
+                      }
+                   	  // 폼의 부모 모달 요소 찾기
+                      let modal = form.closest('.modal');
+                   	  // 모달 숨기기
+          	          modal.style.display = 'none';
+          	     	  // 모달 내의 .content 요소 값 초기화
+                      modal.querySelector('.content').value = '';
+                   } // end success 
+                }); // end ajax 
+            } else {
+            	alert('내용을 입력 해주세요.');
             }
-            console.log(obj);
             
-         	// $.ajax로 송수신
-            $.ajax({
-               type : 'POST', // 메서드 타입
-               url : '../inquiryRest/register', // url
-               headers : { // 헤더 정보
-                  'Content-Type' : 'application/json', // json content-type 설정
-                  'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
-               }, //'Content-Type' : 'application/json' 헤더 정보가 안들어가면 4050에러가 나온다.
-               data : JSON.stringify(obj), // JSON으로 변환
-               success : function(result) { // 전송 성공 시 서버에서 result 값 전송
-                  console.log(result);
-                  if(result == 1) {
-                     alert('문의 성공');
-                  } else if(result == 2){
-                	  alert('삭제된 상품 입니다.');
-                  } else{
-                	  alert('이미 작성 하신 문의 입니다.');
-                  }
-               } // end success 
-            }); // end ajax 
         });// end form()
     });// end inquiryCreate()
     
@@ -307,36 +340,46 @@
             /* button = form.querySelector('.inquiryUpdate'); */
             
             let inquiryContent = form.querySelector('.content').value;
-            
             console.log(productId);
             console.log(memberId);
             console.log(inquiryContent);
-
-            let obj = {
-            		'productId' : productId,
-                	'memberId' : memberId,
-                	'inquiryContent' : inquiryContent
-            }      
-            console.log(obj);
             
-            // ajax 요청
-            $.ajax({
-               type : 'PUT', // 메서드 타입
-               url : '../inquiryRest/modify',// 경로 
-               headers : {
-                  'Content-Type' : 'application/json', // json content-type 설정
-                  'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
-               }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 4050에러가 나온다.
-               data : JSON.stringify(obj), // JSON으로 변환
-               success : function(result) { // 전송 성공 시 서버에서 result 값 전송
-                  console.log(result);
-                  if(result == 1) {
-                    alert('문의 수정 성공!');
-                  } else {
-                  	alert('해당 문의가 없습니다.');
-                  }
-               }
-            }); // ajax 
+            if(inquiryContent && inquiryContent.trim() !== ''){
+            	let obj = {
+                		'productId' : productId,
+                    	'memberId' : memberId,
+                    	'inquiryContent' : inquiryContent
+                }      
+                console.log(obj);
+                
+                // ajax 요청
+                $.ajax({
+                   type : 'PUT', // 메서드 타입
+                   url : '../inquiryRest/modify',// 경로 
+                   headers : {
+                      'Content-Type' : 'application/json', // json content-type 설정
+                      'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+                   }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 4050에러가 나온다.
+                   data : JSON.stringify(obj), // JSON으로 변환
+                   success : function(result) { // 전송 성공 시 서버에서 result 값 전송
+                      console.log(result);
+                      if(result == 1) {
+                        alert('문의 수정 성공!');
+                        
+                      } else {
+                      	alert('해당 문의가 없습니다.');
+                      }
+                   	  // 폼의 부모 모달 요소 찾기
+                      let modal = form.closest('.modal');
+                   	  // 모달 숨기기
+          	          modal.style.display = 'none';
+          	     	  // 모달 내의 .content 요소 값 초기화
+                      modal.querySelector('.content').value = '';
+                   }// end success
+                }); // ajax 
+            } else {
+            	alert('내용을 입력 해주세요.');
+            }
         });// end form()
     });// end inquiryUpdate()deleteInquiry
  	// 삭제 버튼을 클릭하면 선택된 댓글 삭제
@@ -370,6 +413,10 @@
              } else {
             	alert('문의 삭제 실패!');
              }
+          	 // 폼의 부모 모달 요소 찾기
+             let modal = form.closest('.modal');
+          	  // 모달 숨기기
+ 	          modal.style.display = 'none';
           }
        }); 
     });// end form()

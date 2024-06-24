@@ -64,9 +64,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       ORDER BY REVIEW_ID
    </select>
    
-   <!-- 댓글(리뷰) 상세 검색(제작 예정) -->
-   
-   
    <!-- 댓글(리뷰) 수정 -->
    <update id="updateReview">
       UPDATE REVIEW
@@ -88,16 +85,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE PRODUCT_ID = #{productId}
     </select>
     
+    <!-- 좋아요 갯수 증가 -->
     <update id="updateReviewLikeUp">
       UPDATE REVIEW
       SET REVIEW_LIKE = REVIEW_LIKE + 1
       WHERE REVIEW_ID = #{reviewId}
    </update>
    
+   <!-- 좋아요 갯수 감소 -->
    <update id="updateReviewLikeDown">
       UPDATE REVIEW
       SET REVIEW_LIKE = REVIEW_LIKE - 1
       WHERE REVIEW_ID = #{reviewId}
    </update>
+  	
+  	<!-- 리뷰 평균값 구하는 코드 -->
+    <select id="selectReviewAgv" resultType="Float">
+   		SELECT ROUND(AVG(REVIEW_STAR), 1) AS AVG_REVIEW_STAR
+		FROM REVIEW
+		WHERE PRODUCT_ID = #{productId}
+    </select>
+   
 
 </mapper>

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ public class LikesRESTController {
 	private LikesService likesService;
 	
 	// 좋아요 or 싫어요 등록
+	@PreAuthorize("#likesVO.memberId == authentication.principal.username")
 	@PostMapping("/register") 
 	public ResponseEntity<Integer> createLikesPOST(
 			@RequestBody LikesVO likesVO) {
@@ -45,6 +47,7 @@ public class LikesRESTController {
 	}
 	
 	// 좋아요 or 싫어요 수정
+	@PreAuthorize("#likesVO.memberId == authentication.principal.username")
 	@PutMapping("/modify")
 	   public ResponseEntity<Integer> updateLikes(
 			   @RequestBody LikesVO likesVO){
@@ -55,6 +58,7 @@ public class LikesRESTController {
 	}
 	
 	// 좋아요 or 싫어요 삭제
+	 @PreAuthorize("#likesVO.memberId == authentication.principal.username")
 	 @DeleteMapping("/delete")
 	 public ResponseEntity<Integer> deleteLikes(
 			 @RequestBody LikesVO likesVO){
@@ -68,7 +72,8 @@ public class LikesRESTController {
 		 return new ResponseEntity<>(res, HttpStatus.OK);
 
 	 }
-	 
+	
+	@PreAuthorize("#memberId == authentication.principal.username")// 이런식으로 코드 작성 하는지 확인 하기
 	@GetMapping("/list/{productId}/{memberId}") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
 	public ResponseEntity<List<LikesVO>> readAllLikes(
 			@PathVariable("productId") int productId,

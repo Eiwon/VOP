@@ -148,6 +148,7 @@ td {
 	<!-- 상품 배송 정보 제작 해야함 -->
 	<div>
 		<p>판매자 : ${productVO.memberId}</p>
+		도착 일자 : <time id="current-date"></time>
 	</div>
 
 	<!-- 장바구니 버튼 -->
@@ -189,7 +190,7 @@ td {
 	<!-- 상품 설명 이미지 -->
 	<p>상품 이미지 설명</p>
 
-	<div id="kakaotalk-sharing-btn" href="javascript:;">
+	<div id="kakaotalk-sharing-btn"><!-- href="javascript:;" 있어는데 필요 없는것 같아서 빼났습니다. -->
 		<c:forEach items="${imageList}" var="image">
 			<img class="productImg" alt="${image.imgId}"
 				style="margin-right: 10px;">
@@ -262,6 +263,30 @@ td {
     	  });
      }/* end 카카오 공유 관련 api 코드 */
      
+     // 현재 날짜 보여주는 코드 (현재 사용자의 pc 시간을 기반으로 하기 때문에 문제가 있음)
+     function displayCurrentDate() {
+    // 현재 시간을 가져오기 위해 Date 객체를 생성합니다.
+    let now = new Date();
+	
+    // 현재 날짜에 2일을 더합니다.
+    now.setDate(now.getDate() + 2);
+    
+    // 연도를 가져옵니다.
+    let year = now.getFullYear();
+
+    // 월을 가져오고 1을 더하여 실제 월 값을 가져옵니다.
+    let month = (now.getMonth() + 1).toString().padStart(2, '0');
+
+    // 일을 가져옵니다.
+    let day = now.getDate().toString().padStart(2, '0');
+
+    // 연도, 월, 일을 문자열로 조합하여 YYYY-MM-DD 형식의 날짜를 생성합니다.
+    let currentDate = year + '-' + month + '-' + day ;
+
+    // HTML 문서에서 id가 'current-date'인 요소를 찾아서 날짜를 표시합니다.
+    document.getElementById('current-date').textContent = currentDate;
+}// end displayCurrentDate
+     
      /* 상품 수량 관련 코드 */
   	 // 수량 입력 필드 가져오기
     let quantityInput = document.getElementById("quantity");
@@ -307,6 +332,7 @@ function createStars(reviewAvg) {
 }
 
 $(document).ready(function() { 
+	displayCurrentDate();
 	loadImg(); // 이미지 불려오는 메소드
     reviewMap.show(1); //리뷰
     inquiryMap.show(1);
@@ -347,7 +373,7 @@ $(document).ready(function() {
 //ReviewMap 객체에 show 함수를 정의합니다.
 reviewMap.show = function(page) {
     
-    let reviewUrl = '../review/all/' + productId + '/' + page;
+    let reviewUrl = '../reviewRest/all/' + productId + '/' + page;
     
     
     

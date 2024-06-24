@@ -76,7 +76,11 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 			consultRoomList.get(roomId).remove(memberId);
 		}
 		consultConnMap.remove(memberId);
-		sendMsgToRoom(getExitMsg(roomId, memberId));
+		if(consultRoomList.get(roomId).size() == 0) {
+			consultRoomList.remove(roomId);
+		}else {
+			sendMsgToRoom(getExitMsg(roomId, memberId));
+		}
 	}
 	
 	@Override
@@ -118,10 +122,12 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 				roomId = senderId;
 				Map<String, WebSocketSession> roomMap = createRoom(roomId);
 				roomMap.put(senderId, session);
+				log.info(roomMap);
 				sendJoinSuccess(roomId, senderId);
 				callConsultant(roomId); // 관리자 초대 메시지 송신
 			}else {
 				Map<String, WebSocketSession> roomMap = consultRoomList.get(roomId);
+				log.info(roomMap);
 				if(roomMap == null) {
 					log.info("이미 종료된 상담입니다.");
 					sendJoinFail(session, "이미 종료된 상담입니다.");

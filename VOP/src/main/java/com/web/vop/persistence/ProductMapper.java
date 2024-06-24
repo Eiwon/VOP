@@ -26,8 +26,8 @@ public interface ProductMapper {
 	// ´ñ±Û ÃÑ °¹¼ö °¨¼Ò
 	int reviewNumDown(int productId);
 		
-	// »óÇ° ¸®ºä(º°) ÃÑÇÕ °Ë»ö
-	int selectReviewStar(int productId);
+	// »óÇ° ¸®ºä(º°) ÃÑÇÕ °Ë»ö // »ç¿ë¾ÈÇÔ
+//	int selectReviewStar(int productId);
 	
 	// »óÇ° ¸®ºä(º°) Æò±Õ°ª µî·Ï
 	int updateReviewAvg(@Param("productId")int productId, @Param("reviewAvg")String reviewAvg);

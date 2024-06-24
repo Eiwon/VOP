@@ -34,7 +34,7 @@ public interface SecurityConfigConstants {
 			"/popupAds/popupAds", "/popupAds/blockPopup", "/popupAds/myPopupAds",
 			"/product/detail", "/product/search", "/product/bestReview", "/product/recent", 
 			"/review/all" };
-	
+
 	// 로그인한 유저만 접근 가능
 	public static final String[] NORMAL_OVER = { 
 			"/member/check", "/member/modify", "/member/logout",
@@ -48,15 +48,16 @@ public interface SecurityConfigConstants {
 			"/likes/**",
 			"/order/**", 
 			"/payment/**", 
-			"/review/register", "/review/modify", "/review/list", 
+			"/review/modify", "/review/register", "/review/list",
+			"/reviewRest/modify", "/reviewRest/register",
+			"inquiry/list", "inquiry/myList",
+			"/basket/**", 
 			"/seller/sellerRequest", 
 			"/membership/register", "/membership/getId", "/membershipRegister" };
 
 	// 판매자만 접근 가능
 	public static final String[] SELLER_ONLY = {
 	};
-	
-	
 	
 	// 관리자만 접근 가능
 	public static final String[] ADMIN_ONLY = { 
@@ -66,7 +67,7 @@ public interface SecurityConfigConstants {
 			"/popupAds/main", "/popupAds/register", "/popupAds/update", "/popupAds/delete", "/popupAds/list",
 			"/product/popupDetails", "/product/delete", "/product/registerRequest", "/product/deleteRequest",
 			"/seller/admin", "/seller/approval", "/seller/delete", "/seller/wait", "/seller/approved", "/seller/revoke",
-			"/seller/popupSellerDetails", "/seller/popupRegisterNotice" };
+			"/seller/popupSellerDetails", "/seller/popupRegisterNotice" };	
 	
 	// 판매자 이상만 접근 가능
 	public static final String[] SELLER_OVER = { 

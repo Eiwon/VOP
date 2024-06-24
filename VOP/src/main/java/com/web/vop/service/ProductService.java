@@ -28,9 +28,6 @@ public interface ProductService {
 			
 	// ´ñ±Û ÃÑ °¹¼ö °¨¼Ò
 	int reviewNumDown(int productId);
-		
-	// »óÇ° ¸®ºä(º°) ÃÑÇÕ °Ë»ö
-	int selectReviewStar(int productId);
 	
 	// »óÇ° ¸®ºä(º°) Æò±Õ°ª ¼öÁ¤
 	int updateReviewAvg(int productId, String reviewAvg);

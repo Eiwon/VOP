@@ -11,6 +11,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <title>리뷰 작성</title>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <!-- 위에 창코드 -->
@@ -137,7 +138,7 @@ $(document).ready(function(){
            // $.ajax로 송수신
            $.ajax({
               type : 'POST', // 메서드 타입
-              url : '../review/register', // url
+              url : '../reviewRest/register', // url
               headers : { // 헤더 정보
                  'Content-Type' : 'application/json', // json content-type 설정
                  'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
@@ -148,10 +149,10 @@ $(document).ready(function(){
                  if(result == 1) {
                     alert('댓글 입력 성공');
                     // 댓글 입력 완료 하면 마이페이지로 이동
-                    //window.location.href = '../review/list?memberId=' + memberId;
+                    window.location.href = '../review/list?memberId=' + memberId;
                  } else {
                      alert('이미 등록하신 리뷰 입니다.');
-                     //window.location.href = '../review/list?memberId=' + memberId;
+                     window.location.href = '../review/list?memberId=' + memberId;
                  }
               } // end success 
            }); // end ajax

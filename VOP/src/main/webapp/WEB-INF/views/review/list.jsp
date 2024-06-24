@@ -12,6 +12,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <title>리뷰 전체 검색</title>
@@ -169,7 +170,7 @@
 		        // ajax 요청
 		        $.ajax({
 		           type : 'DELETE', // 메서드 타입
-		           url : '../review/delete',// 경로 
+		           url : '../reviewRest/delete',// 경로 
 		           headers : {
 		              'Content-Type' : 'application/json', // json content-type 설정
 		              'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
@@ -178,6 +179,7 @@
 		           success : function(result) { // 전송 성공 시 서버에서 result 값 전송
 		              if(result == 1) {
 		                alert('댓글 삭제 성공!');
+		                window.location.href = '../review/list?memberId=' + memberId;
 		              } else {
 		            	alert('댓글 삭제 실패!');
 		              }

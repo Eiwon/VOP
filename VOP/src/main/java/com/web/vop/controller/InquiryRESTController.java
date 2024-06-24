@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,6 +45,7 @@ public class InquiryRESTController {
 	@Autowired
 	private WebSocketHandler alarmHandler;
 	
+	@PreAuthorize("#inquiryVO.memberId == authentication.principal.username")
 	@PostMapping("/register") // POST : 댓글(문의) 입력
 	public ResponseEntity<Integer> createInquiry(@RequestBody InquiryVO inquiryVO){
 		log.info("createInquiry()");
@@ -99,7 +101,7 @@ public class InquiryRESTController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	}// end readAllInquiry()
 	
-
+	@PreAuthorize("#inquiryVO.memberId == authentication.principal.username")
 	@PutMapping("/modify") // PUT : 댓글(리뷰) 수정 // 나중에 데이터 받는 거에 따라 달라짐
 	   public ResponseEntity<Integer> updateInquiry(
 			 @RequestBody InquiryVO inquiryVO
@@ -115,6 +117,7 @@ public class InquiryRESTController {
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	   }// end updateInquiry()
 	
+	@PreAuthorize("#inquiryVO.memberId == authentication.principal.username")
 	@DeleteMapping("/delete") // DELETE : 댓글(리뷰) 삭제 // 나중에 데이터 받는 거에 따라 달라짐
 	   public ResponseEntity<Integer> deleteInquiry(
 			   @RequestBody InquiryVO inquiryVO) {

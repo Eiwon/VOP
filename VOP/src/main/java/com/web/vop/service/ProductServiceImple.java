@@ -73,13 +73,6 @@ public class ProductServiceImple implements ProductService{
 		return res;
 	}
 	
-	// productId ÇØ´çÇÏ´Â ¸®ºä ÃÑ ÇÕ 
-	@Override
-	public int selectReviewStar(int productId) {
-		log.info("selectReviewByStar()");
-		int res = productMapper.selectReviewStar(productId);
-		return res;
-	}
 	
 	// ´ñ±Û(¸®ºä) Ä«¿îÅÍ
 	@Override

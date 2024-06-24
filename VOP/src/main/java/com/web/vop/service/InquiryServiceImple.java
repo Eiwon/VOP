@@ -118,7 +118,7 @@ public class InquiryServiceImple implements InquiryService{
 			inquiryVO.setMemberId(memberId);
 			inquiryVO.setInquiryContent(inquiryContent);
 			updateRes = inquiryMapper.updateInquiry(inquiryVO);
-			log.info(updateRes + "행 댓글이 수정되었습니다.");
+			log.info(updateRes + "행 문의(댓글)이 수정되었습니다.");
 		}
 		
 		return updateRes;
