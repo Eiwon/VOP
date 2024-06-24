@@ -8,6 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="${_csrf.token }" content="${_csrf.token }">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>배송지 수정/삭제</title>
 <!-- 우편번호 API 스크립트 -->
@@ -84,27 +85,33 @@
     $(document).ready(function() {
         $("#deleteButton").click(function() {
             var deliveryId = $("#deliveryId").val();
-            const memberId = '${memberDetails.getUsername() }';
-
+         
             // 배송지 삭제를 위한 Ajax 요청
             $.ajax({
-                url: "delete"
+                url: "delete/" + deliveryId,
                 headers : {
-    				'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+                	'X-CSRF-TOKEN' : '${_csrf.token }' 
     			},
-                type: "POST",
-                data: { deliveryId: deliveryId },
-                success: function(data) {
-                    // 삭제 성공 시 페이지 새로고침 또는 다른 동작 수행
-                	window.location.href = "../Delivery/deliveryAddressList";
+                type: 'DELETE',
+                success: function(response) {
+                	
+                	if(response === 1){
+                    	// 삭제 성공 시 페이지 새로고침 또는 다른 동작 수행
+                		window.location.href = "../Delivery/deliveryAddressList";               		
+                	}else{
+                		// 삭제 실패 시 에러 메시지 출력
+                        console.error("배송지 삭제 실패");
+                        alert("배송지 삭제 실패");
+                	}
                 },
                 error: function(xhr, status, error) {
-                    // 삭제 실패 시 에러 처리
+                	// Ajax 요청 실패 시 에러 처리
                     console.error("배송지 삭제 실패:", error);
+                    alert("배송지 삭제 중 오류가 발생했습니다.");
                 }
-            });
-        });
-    });
+            });//end ajax
+        }); //end click event handler
+    }); //end document.ready function
 </script>
 
 <script>
@@ -153,8 +160,6 @@ const memberId = '${memberDetails.getUsername()}';
 console.log('member ID:', memberId);
 
 $(document).ready(function() {
-
-
 	
 	 // 페이지 로드 시 기본 배송지 여부 확인
     checkDefaultAddress().then(function(isExistingDefault) {
@@ -187,7 +192,8 @@ $(document).ready(function() {
     	        $('#updateButton').prop('disabled', false);
     	    }
     });
-});
+});// end document.ready()
+	
 	
 	// 수정 동작을 수행하는 함수 예제
 	function performUpdate() {
@@ -200,7 +206,7 @@ $(document).ready(function() {
 	    // 수정 동작 수행
 	    if (!$(this).prop('disabled')) {
 	        alert("수정이 가능합니다.");
-	        performUpdate();
+	        
 	    } else {
 	        alert("기본 배송지를 체크한 경우 수정할 수 없습니다.");
 	    }
@@ -239,24 +245,10 @@ $(document).ready(function() {
                $('#updateButton').prop('disabled', false);
            }
     });
-});
-   
-   // 수정 동작을 수행하는 함수 예제
-   function performUpdate() {
-       // 여기에 수정 동작을 수행하는 코드를 작성하세요.
-       console.log("수정 동작이 수행되었습니다.");
-   }
 
-   // 수정 버튼 클릭 이벤트 핸들러 설정
-   $('#updateButton').click(function() {
-       // 수정 동작 수행
-       if (!$(this).prop('disabled')) {
-           alert("수정이 가능합니다.");
-           performUpdate();
-       } else {
-           alert("기본 배송지를 체크한 경우 수정할 수 없습니다.");
-       }
-   });
+   
+
+
 
 
 
