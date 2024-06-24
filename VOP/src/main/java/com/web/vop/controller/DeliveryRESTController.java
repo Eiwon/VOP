@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -96,12 +97,18 @@ public class DeliveryRESTController {
 	
 	
 	// 배송지 수정 페이지에서 deliveryId로 삭제
-	@PostMapping("/delete")
-	public ResponseEntity<Integer>deleteDelivery(@Param("deliveryId")int deliveryId){
+	@DeleteMapping("delete/{deliveryId}")
+	public ResponseEntity<Integer>deleteDelivery(@PathVariable int deliveryId){
 		int res = deliveryService.deleteDelivery(deliveryId);
 		log.info(res + "행 삭제");
-		return new ResponseEntity<Integer>(res,HttpStatus.OK);
-	}
+		if(res == 1) {
+			log.info("배송지 삭제 성공");
+			return new ResponseEntity<>(res,HttpStatus.OK);
+		}else {
+			 log.error("배송지 삭제 실패");
+		     return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
+		}
+	}//end deleteDelivery()
 	
 
 	@GetMapping("/popupList")

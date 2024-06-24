@@ -8,8 +8,8 @@
 	
 	<!-- EL을 사용하여 권한 정보를 확인 -->
     <c:set var="hasMembership" value="false"/>
-    <c:forEach var="authority" items="${memberDetails.getAuthorities()}">
-        <c:if test="${authority.authority == 'ROLE_멤버십'}">
+    <c:forEach var="authority" items="${memberDetails.authorities}">
+        <c:if test="${authority.authority eq 'ROLE_멤버십'}">
             <c:set var="hasMembership" value="true"/>
         </c:if>
     </c:forEach>
@@ -251,7 +251,6 @@
    
 
 <a id="membershipLink" href="success" style="display:none;">멤버십 페이지로 이동하기</a>   
-
 
 <script type="text/javascript">
 	var hasMembership = "${hasMembership}"; // 변수 초기화

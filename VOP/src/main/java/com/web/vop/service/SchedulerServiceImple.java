@@ -49,7 +49,7 @@ public class SchedulerServiceImple {
 	        }// if()
 	}//end checkMembershipExpiry()
 
-	//@Scheduled(cron = "0 * * * * ?") // 1 분에 한 번 실행(TEST)
+	@Scheduled(cron = "0 0 11 * * ?") // 매일 11시에 한 번 실행(TEST)
 	public void checkDeliveryExpiry() {
 		
 		List<DeliveryExpectDTO> expectInfoList = orderMapper.selectDeliveryExpect();
