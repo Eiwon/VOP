@@ -66,7 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 계정 삭제 -->
 	<delete id="deleteMember">
-		DELETE MEMBER WHERE MEMBER_ID = #{memberId} AND MEMBER_PW = #{memberPw}
+		DELETE MEMBER WHERE MEMBER_ID = #{memberId}
 	</delete>	
 
 	<!-- 이름과 휴대폰 번호로 ID 찾기 -->
@@ -96,9 +96,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 판매자 권한 취소(권한을 일반으로 변경, 멤버십 등록된 유저라면 멤버십으로 변경 -->
 	<update id="revokeSellerAuth">
-		SET MEMBER_AUTH = NVL2(
+		UPDATE MEMBER SET MEMBER_AUTH = NVL2(
 			(SELECT MEMBER_ID FROM MEMBERSHIP WHERE MEMBER_ID = #{memberId}), '멤버십', '일반') 
-		WHERE MEMBER_ID = #{memberId};
+		WHERE MEMBER_ID = #{memberId}
 	</update>
 
 </mapper>

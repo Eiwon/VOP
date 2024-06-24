@@ -34,7 +34,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <select id="selectUsableByMemberId" resultMap="myCouponResultMap">
    		SELECT MY.COUPON_ID, COUPON.COUPON_NAME, COUPON.DISCOUNT, MY.EXPIRATION_DATE, MY.IS_USED 
    		FROM (
-   		SELECT * FROM COUPON_POCKET WHERE MEMBER_ID = #{memberId} AND IS_USED = 0
+   		SELECT * FROM COUPON_POCKET WHERE MEMBER_ID = #{memberId} AND IS_USED = 0 AND 
+            EXPIRATION_DATE >= SYSDATE
    		) MY LEFT JOIN COUPON 
    		ON MY.COUPON_ID = COUPON.COUPON_ID
    </select>

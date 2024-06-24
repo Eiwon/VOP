@@ -38,7 +38,7 @@ tr{
 				<input type="button" value="취소" onclick='location.href="../board/mypage"'>
 			</div>
 		</div>
-		
+		<div class="link_withdrawal"></div>
 		
 	</div>
 	
@@ -136,6 +136,9 @@ tr{
 				'</form>';
 			
 			$('#form').html(form);
+			$('.link_withdrawal').append(
+					$('<a href="withdrawal">회원 탈퇴</a>')
+					);
 			
 			$('#memberPwChk').blur(function(){
 				comparePw();

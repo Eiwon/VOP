@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,18 +74,42 @@ public class MemberController {
 		AlertVO alertVO = new AlertVO();
 		String returnPath = null;
 		List<String> memberIdList = null;
-		boolean res = mailAuthUtil.verifyAuthCode(memberEmail, authCode);
+		int resultCode = mailAuthUtil.verifyAuthCode(memberEmail, authCode);
 		
-		if(res) {
+		switch (resultCode) {
+		case 100:
 			memberIdList = memberService.getIdByEmail(memberEmail);
 			log.info("검색된 id : " + memberIdList);
 			model.addAttribute("memberIdList", memberIdList);
 			returnPath = "member/findAccountResult";
-		}else {
+			// 인증 코드 일치
+			break;
+		case 101 : 
+			// 유효기간 만료
+			alertVO.setAlertMsg("만료된 인증 번호 입니다.");
+			alertVO.setRedirectUri("member/findAccount");
+			model.addAttribute("alertVO", alertVO);
+			returnPath = Constant.ALERT_PATH;
+			break;
+		case 102 :
+			// 인증 코드 불일치
 			alertVO.setAlertMsg("인증코드 불일치");
 			alertVO.setRedirectUri("member/findAccount");
 			model.addAttribute("alertVO", alertVO);
 			returnPath = Constant.ALERT_PATH;
+			break;
+		case 103 :
+			alertVO.setAlertMsg("인증 번호 발송을 먼저 해주세요");
+			alertVO.setRedirectUri("member/findAccount");
+			model.addAttribute("alertVO", alertVO);
+			returnPath = Constant.ALERT_PATH;
+			// 인증 정보 없음
+		default:
+			alertVO.setAlertMsg("알 수 없는 오류.");
+			alertVO.setRedirectUri("member/findAccount");
+			model.addAttribute("alertVO", alertVO);
+			returnPath = Constant.ALERT_PATH;
+			break;
 		}
 		
 		return returnPath;
@@ -126,17 +151,33 @@ public class MemberController {
 		log.info("비밀번호 재설정");
 		AlertVO alertVO = new AlertVO();
 		String memberEmail = memberService.getEmailById(memberId);
-		boolean isCorrect = mailAuthUtil.verifyAuthCode(memberEmail, authCode);
+		int resultCode = mailAuthUtil.verifyAuthCode(memberEmail, authCode);
 		
-		if(isCorrect) {
+		switch (resultCode) {
+		case 100:
 			// 인증 코드 일치
 			memberService.updatePw(memberId, memberPw);
 			alertVO.setAlertMsg("비밀번호 변경 성공!");
 			alertVO.setRedirectUri("member/login");
-		}else {
+			break;
+		case 101 : 
+			// 유효기간 만료
+			alertVO.setAlertMsg("만료된 인증 번호 입니다.");
+			alertVO.setRedirectUri("member/findPassword");
+			break;
+		case 102 :
 			// 인증 코드 불일치
 			alertVO.setAlertMsg("인증 코드가 일치하지 않습니다.");
 			alertVO.setRedirectUri("member/findPassword");
+			break;
+		case 103 :
+			// 인증 정보 없음
+			alertVO.setAlertMsg("인증 번호 발송을 먼저 해주세요.");
+			alertVO.setRedirectUri("member/findPassword");
+		default:
+			alertVO.setAlertMsg("알 수 없는 오류.");
+			alertVO.setRedirectUri("member/findPassword");
+			break;
 		}
 		model.addAttribute("alertVO", alertVO);
 		
@@ -165,7 +206,7 @@ public class MemberController {
 	
 	
 	@GetMapping("/modify")
-	public void modifyGET(Model model, @AuthenticationPrincipal MemberDetails memberDetails) {
+	public void modifyGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
 		log.info("내 정보 수정 페이지 요청");
 		String memberId = memberDetails.getUsername();
 		model.addAttribute("memberVO", memberService.getMemberInfo(memberId));
@@ -177,9 +218,6 @@ public class MemberController {
 		log.info("회원 정보 수정 : " + memberVO);
 		AlertVO alertVO = new AlertVO();
 		String newPw = memberVO.getMemberPw();
-		if(newPw.length() == 0) {
-			newPw = null;
-		}
 		
 		int res = memberService.updateMember(memberVO);
 		
@@ -196,5 +234,53 @@ public class MemberController {
 		return Constant.ALERT_PATH;
 	} // end modifyPOST
 	
+	@GetMapping("/withdrawal")
+	public void withdrawGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
+		log.info("회원 탈퇴 페이지 이동");
+		// 이메일 검색
+		String memberEmail = memberService.getEmailById(memberDetails.getUsername());
+		model.addAttribute("memberEmail", memberEmail);
+		
+	} // end withdrawGET
+	
+	@PostMapping("/withdrawal")
+	public String withdrawPOST(Model model, String authCode, @AuthenticationPrincipal UserDetails memberDetails) {
+		log.info("회원 탈퇴 신청");
+		String memberEmail = memberService.getEmailById(memberDetails.getUsername());
+		AlertVO alertVO = new AlertVO();
+		int resultCode = mailAuthUtil.verifyAuthCode(memberEmail, authCode);
+		
+		switch (resultCode) {
+		case 100:
+			// 인증 코드 일치
+			memberService.deleteMember(memberDetails.getUsername());
+			alertVO.setAlertMsg("회원 탈퇴되었습니다.");
+			alertVO.setRedirectUri("member/logout");
+			break;
+		case 101 : 
+			// 유효기간 만료
+			alertVO.setAlertMsg("만료된 인증 번호 입니다.");
+			alertVO.setRedirectUri("member/withdrawal");
+			break;
+		case 102 :
+			// 인증 코드 불일치
+			alertVO.setAlertMsg("인증 코드가 일치하지 않습니다.");
+			alertVO.setRedirectUri("member/withdrawal");
+			break;
+		case 103 :
+			// 인증 정보 없음
+			alertVO.setAlertMsg("인증 번호 발송을 먼저 해주세요.");
+			alertVO.setRedirectUri("member/withdrawal");
+			break;
+		default:
+			alertVO.setAlertMsg("알 수 없는 오류.");
+			alertVO.setRedirectUri("member/withdrawal");
+			break;
+		}
+		
+		model.addAttribute("alertVO", alertVO);
+		
+		return Constant.ALERT_PATH;
+	} // end withdrawPOST
 	
 }
