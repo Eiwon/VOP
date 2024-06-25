@@ -17,6 +17,9 @@ public interface ProductMapper {
 	// 상품 상세 정보 검색
 	ProductVO selectProduct(int productId);
 	
+	// 상품 미리보기 검색
+	ProductPreviewDTO selectPreviewById(int productId);
+	
 	// 댓글 총 갯수 검색
 	int selectReviewCount(int productId);
 	
@@ -53,18 +56,17 @@ public interface ProductMapper {
 	
 	// 이름에 검색어가 포함된 상품 검색
 	List<ProductPreviewDTO> selectByName(
-			@Param("productName") String productName, @Param("pagination") Pagination pagination, @Param("productState") String productState);
+			@Param("pagination") Pagination pagination, @Param("productState") String productState);
 	
 	// 이름에 검색어가 포함된 상품 검색 결과 수량
-	int selectByNameCnt(@Param("productName") String productName, @Param("productState") String productState);
+	int selectByNameCnt(@Param("pagination") Pagination pagination, @Param("productState") String productState);
 	
 	// 카테고리 내에서, 이름에 검색어가 포함된 상품 검색
 	List<ProductPreviewDTO> selectByNameInCategory(
-			@Param("category") String category, @Param("productName") String productName,
 			@Param("pagination") Pagination pagination, @Param("productState") String productState);
 	
 	// 카테고리 내에서, 이름에 검색어가 포함된 상품 검색 결과 수량
-	int selectByNameInCategoryCnt(@Param("category") String category, @Param("productName") String productName, 
+	int selectByNameInCategoryCnt(@Param("pagination") Pagination pagination, 
 			@Param("productState") String productState);
 	
 	// memberId로 상품 조회

@@ -107,11 +107,13 @@ public class InquiryRESTController {
 			 @RequestBody InquiryVO inquiryVO
 	         ){	
 	      log.info("updateInquiry()");
-	      
 	      log.info("inquiryVO() : " + inquiryVO);
+	      int productId = inquiryVO.getProductId();
+	      String memberId = inquiryVO.getMemberId();
+	      String inquiryContent = inquiryVO.getInquiryContent();
 	      
 	      // reviewId에 해당하는 댓글(리뷰)의 reviewContent, reviewStar, imgId의 내용을 수정 할 수 있습니다.
-	      int result = inquiryService.updateInquiry(inquiryVO.getProductId(), inquiryVO.getMemberId(), inquiryVO.getInquiryContent());
+	      int result = inquiryService.updateInquiry(productId, memberId, inquiryContent);
 	      
 	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
@@ -123,11 +125,11 @@ public class InquiryRESTController {
 			   @RequestBody InquiryVO inquiryVO) {
 	      log.info("deleteInquiry()");
 	      
-	      log.info("productId : " + inquiryVO.getProductId());
-	      log.info("memberId : " + inquiryVO.getMemberId());
+	      int productId = inquiryVO.getProductId();
+	      String memberId = inquiryVO.getMemberId();
 	      
 	      // productId에 해당하는 reviewId의 댓글(리뷰)
-	      int result = inquiryService.deleteInquiry(inquiryVO.getProductId(), inquiryVO.getMemberId());
+	      int result = inquiryService.deleteInquiry(productId, memberId);
 	
 	      log.info(result + "행 댓글 삭제");
 	      

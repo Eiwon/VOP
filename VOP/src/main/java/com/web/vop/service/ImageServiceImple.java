@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.web.vop.domain.ImageVO;
 import com.web.vop.persistence.ImageMapper;
-import com.web.vop.util.FileUploadUtil;
+import com.web.vop.util.FileAnalyzerUtil;
 
 import lombok.extern.log4j.Log4j;
 

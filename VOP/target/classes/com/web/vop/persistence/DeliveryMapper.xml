@@ -17,7 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="isDefault" column="IS_DEFAULT"/>
    </resultMap>
    
-   <resultMap type="com.web.vop.domain.OrderVO"
+   <!-- <resultMap type="com.web.vop.domain.OrderVO"
       id="OrderResultMap">
       <id property="orderId" column="ORDER_ID" /> 
       <result property="paymentId" column="PAYMENT_ID" />
@@ -42,7 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="deliveryPrice" column="DELIVERY_PRICE"/>
       <result property="chargePrice" column="CHARGE_PRICE"/>
       <result property="membershipDiscount" column="MEMBERSHIP_DISCOUNT"/>
-	</resultMap>
+	</resultMap> -->
    
    <resultMap type="com.web.vop.domain.DeliveryListDTO" id="DeliveryListResultMap">
     <id property="paymentId" column="PAYMENT_ID"/> 

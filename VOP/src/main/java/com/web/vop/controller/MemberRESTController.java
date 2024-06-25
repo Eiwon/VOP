@@ -51,14 +51,14 @@ public class MemberRESTController {
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	} // end checkPhoneDup
 	
-	@PostMapping("/findByPhone")
-	public ResponseEntity<String> findByNameAndPhone( // 이름, 전화번호로 id 찾기
-			@RequestParam String memberName, @RequestParam String memberPhone){
-		log.info("이름, 전화번호로 id 찾기");
-		String checkedId = memberService.findByNameAndPhone(memberName, memberPhone);
-		
-		return new ResponseEntity<String>(checkedId, HttpStatus.OK);
-	} // end findByNameAndPhone
+//	@PostMapping("/findByPhone")
+//	public ResponseEntity<String> findByNameAndPhone( // 이름, 전화번호로 id 찾기
+//			@RequestParam String memberName, @RequestParam String memberPhone){
+//		log.info("이름, 전화번호로 id 찾기");
+//		String checkedId = memberService.findByNameAndPhone(memberName, memberPhone);
+//		
+//		return new ResponseEntity<String>(checkedId, HttpStatus.OK);
+//	} // end findByNameAndPhone
 	
 	@PostMapping("/check")
 	public ResponseEntity<Boolean> checkMember(@AuthenticationPrincipal MemberDetails memberDetails, String memberPw){

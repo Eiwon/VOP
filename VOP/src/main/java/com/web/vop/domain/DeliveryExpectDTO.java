@@ -14,5 +14,6 @@ public class DeliveryExpectDTO {
 	private int paymentId;
 	int productId;
 	private Date expectDeliveryDate;
+	private String memberEmail;
 	
 }//end DeliveryExpiryDTO 

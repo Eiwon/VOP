@@ -23,7 +23,7 @@ import com.web.vop.domain.OrderVO;
 import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.ImageService;
 import com.web.vop.service.OrderService;
-import com.web.vop.util.FileUploadUtil;
+import com.web.vop.util.FileAnalyzerUtil;
 
 import lombok.extern.log4j.Log4j;
 
@@ -31,12 +31,12 @@ import lombok.extern.log4j.Log4j;
 @RequestMapping("/order")
 @Log4j
 public class OrderRESTController {
-
-	@Autowired
-	OrderService orderService;
-	
-	@Autowired
-    AWSS3Service awsS3Service;
+//
+//	@Autowired
+//	OrderService orderService;
+//	
+//	@Autowired
+//    AWSS3Service awsS3Service;
 	
 //	// 주문 목록 요청
 //	@GetMapping("/myOrder")

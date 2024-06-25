@@ -11,5 +11,6 @@ public class MembershipExpiryDTO {
 
 	private String memberId;
 	private Date expiryDate;
+	private String memberEmail;
 	
 }// end MembershipExpiryDTO()

@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <!-- 시큐리티 코드 -->
 <%@ page import="javax.servlet.http.HttpSession" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
     <sec:authentication var="memberDetails" property="principal"/>
@@ -51,18 +51,18 @@
 
 </head>
 <body>
-    
+    <c:set var="productVO" value="${productPreviewDTO.productVO }"></c:set>
     <h1>리뷰 작성</h1>
     
     <h1>${memberDetails.getUsername() }</h1>
     
     <div>
-        <p>상품 번호 : ${productId}</p>
+        <p>상품 번호 : ${productVO.productId}</p>
     </div>
     
     <p>이미지 썸네일</p>
       <div>
-        <img alt="${imgId}">
+        <img src="${productPreviewDTO.imgUrl}">
       </div>
 
 <div id="myform">
@@ -76,7 +76,7 @@
         <input type="radio" name="reviewStar" value="1" id="rate5"><label for="rate5">★</label>
     </fieldset><br>
     <input type="hidden" id="memberId" value="${memberDetails.getUsername()}"><!-- 여기 부분 없어도 될뜻 -->
-    <input type="hidden" id="productId" value="${order.productId}"><!-- 여기 부분 없어도 될뜻 -->
+    <input type="hidden" id="productId" value="${productVO.productId}"><!-- 여기 부분 없어도 될뜻 -->
     <input type="text" id="reviewContent"><br>
     <button id="btnAdd">등록</button>
 </div>
@@ -89,10 +89,10 @@ $(document).ready(function(){
         
     let selectedStar; // 전역 변수로 selectedStar 선언
     let memberId = "${memberDetails.getUsername()}";
-    loadImg();
+    //loadImg();
     
     // 이미지 없을때 이름과 확장명 보여주는 코드
-    function loadImg(){
+    /* function loadImg(){
         $(document).find('img').each(function(){
             let target = $(this);
             let imgId = target.attr("alt");
@@ -104,7 +104,7 @@ $(document).ready(function(){
                 }
             }); // end ajax
         });
-    } // end loadImg
+    } // end loadImg */
     
     // 라디오 버튼 클릭 이벤트 핸들러
     $('#starFieldset input[type="radio"]').click(function() {
@@ -118,7 +118,7 @@ $(document).ready(function(){
 
    // 댓글 입력 코드
    $('#btnAdd').click(function(event){
-       let productId = "${productId}"; 
+       let productId = "${productVO.productId}"; 
        let reviewStar = selectedStar;// 리뷰(별)
        let reviewContent = $('#reviewContent').val(); // 댓글 내용
        

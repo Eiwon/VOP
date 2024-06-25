@@ -9,14 +9,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+
+import com.web.vop.domain.EmailAuthenticationToken;
 import com.web.vop.util.MailAuthenticationUtil;
 
 @Configuration
 public class MailAuthenticationConfig {
-	
-	// 이메일 인증용 아이디와 비밀번호
-		public static final String MAIL_AUTH_ID = "rtst606@gmail.com";
-		public static final String MAIL_AUTH_PW = "mslbwxavcqmhztas";
 	
 	@Bean
 	public JavaMailSender javaMailSender() {
@@ -38,9 +36,9 @@ public class MailAuthenticationConfig {
 	} // end javaMailSender
 	
 	@Bean
-	public Map<String, String> emailAuthMap(){
-		return new HashMap<>();
-	} // end emailAuthMap
+	public MailAuthenticationUtil mailAuthenticationUtil() {
+		return new MailAuthenticationUtil();
+	} // end mailAuthenticationUtil
 	
 	
 }

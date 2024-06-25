@@ -108,18 +108,23 @@ td {
 
 	<!-- 상품 상세 페이지 제작 중 -->
 	<h2>상품 상세 페이지</h2>
-
+	<c:set var="productVO" value="${productDetails.productVO }"/>
+	<c:set var="memberVO" value="${productDetails.memberVO }"/>
 	<!-- 카카오 공유 아이콘 -->
 	<div class="right-align">
-		<a id="kakaotalk-sharing-btn" href="javascript:;"> <img
-			src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" />
+		<a id="kakaotalk-sharing-btn" href="javascript:;"> 
+		<img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" />
 		</a>
 	</div>
 
 	<div>
 		<p>카테고리 : ${productVO.category }</p>
 		<!-- 썸네일 상품 이미지 -->
-		<img class="productImg" alt="${productVO.imgId}">
+		<c:choose>
+			<c:when test="${productDetails.thumbnailUrl != null }">
+				<img src="${productDetails.thumbnailUrl }">
+			</c:when>
+		</c:choose>
 		<p>상품 번호 : ${productVO.productId }</p>
 		<p>상품 이름 : ${productVO.productName }</p>
 	</div>
@@ -190,16 +195,13 @@ td {
 	<!-- 상품 설명 이미지 -->
 	<p>상품 이미지 설명</p>
 
-	<div id="kakaotalk-sharing-btn"><!-- href="javascript:;" 있어는데 필요 없는것 같아서 빼났습니다. -->
-		<c:forEach items="${imageList}" var="image">
-			<img class="productImg" alt="${image.imgId}"
-				style="margin-right: 10px;">
-			<!-- 이미지 간격 조정 -->
+	<div>
+		<c:forEach var="imgUrl" items="${productDetails.detailsUrl }">
+			<img src="${imgUrl }">
 		</c:forEach>
 	</div>
-
+	
 	<!-- 댓글 화면 코드 및 가운데 정렬 -->
-
 	<h3>리뷰</h3>
 	<div id="review"></div>
 	<!-- 리뷰 페징처리 내용 -->
@@ -238,6 +240,7 @@ td {
     	    	  'VOP 상품 + 카테고리 : "${productVO.category }" + 상품 이름 :"${productVO.productName }"' +
     	    	  '"상품 번호 : ${productVO.productId }" + 상품 가격 : "${productVO.productPrice}" + 리뷰 평균 : "${productVO.reviewAvg}"',
     	    	  // 공유시 제목 
+    	    	  
     	      imageUrl: imageUrl,// 썸네일 이미지 가져오는 기능(월래는 url를 통해 이미지 불려 옴)
     	      link: {
     	        // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
@@ -337,7 +340,7 @@ $(document).ready(function() {
     reviewMap.show(1); //리뷰
     inquiryMap.show(1);
     createStars(reviewAvg); // 상품 평균 리뷰값 별 표시
- 
+    
     // 장바구니
     $('#btnBasket').click(function(){
         let productNum = $('#quantity').val(); // 수량 

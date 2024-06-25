@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.web.vop.domain.ProductPreviewDTO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.domain.ReviewVO;
 import com.web.vop.persistence.ProductMapper;
@@ -224,5 +225,11 @@ public class ReviewServiceImple implements ReviewService {
 		log.info("totalCnt : " + totalCnt);
 		pageMaker.setTotalCount(totalCnt);
 		return reviewMapper.selectListByReviewPaging(productId, pageMaker.getPagination());
+	}
+
+	@Override
+	public ProductPreviewDTO getProductPreview(int productId) {
+		
+		return productMapper.selectPreviewById(productId);
 	}
 }
