@@ -59,6 +59,8 @@ public class ReviewController {
 	    log.info("productId : " + productId);
 	    log.info("imgId : " + imgId);
 	    
+	    
+	    
 	    // 해당 상품이 있는지 확인 하는 코드(상품이 삭제되어도 주문 목록에 남아 있기 때문에 제작 함)
 	    ProductVO productVO = productService.getProductById(productId);
 	    

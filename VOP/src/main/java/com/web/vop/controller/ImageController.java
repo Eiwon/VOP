@@ -46,10 +46,7 @@ public class ImageController {
 		
 	    return new ResponseEntity<String>(imgUrl, HttpStatus.OK);
 	} // end showImg
-	
-	
-	
-	
+
 }// end ImageController()
 	 
 	
