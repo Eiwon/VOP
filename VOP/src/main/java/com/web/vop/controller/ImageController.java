@@ -27,8 +27,6 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class ImageController {
 	
-	@Autowired
-	private ImageService imageService;
 	
 	@Autowired
 	private AWSS3Service awsS3Service;

@@ -104,7 +104,7 @@
 		chatHandler.joinSuccess = function(msg){
 			console.log('join success roomId : ' + msg.roomId);
 			addToReadArea('System', msg.senderId + ' 님이 입장했습니다.');
-			if(roomId == undefined){
+			if(roomId == ''){
 				roomId = msg.roomId;			
 			}
 		}
@@ -142,7 +142,7 @@
 			}else{
 				chatBox.attr('class', 'consultantChat');
 			}
-			chatBox.append(tellerId + '<br>');
+			chatBox.append(tellerId + ' : ');
 			
 			let contentStr = '';
 			let start = 0, end;
