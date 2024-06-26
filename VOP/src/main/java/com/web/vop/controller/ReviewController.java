@@ -24,8 +24,10 @@ import org.springframework.web.socket.WebSocketHandler;
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MessageVO;
+import com.web.vop.domain.ProductPreviewDTO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.domain.ReviewVO;
+import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.ImageService;
 import com.web.vop.service.ProductService;
 import com.web.vop.service.ReviewService;
@@ -38,11 +40,17 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class ReviewController {
 	
+	// 컨트롤러에 서비스 제발 하나만
+	// ImageService에 메소드 단 하나 있고, 그 메소드를 여기에서만 쓰고 있음 수정 후 삭제 바람
+	
 	@Autowired
 	private ImageService imageService;
 	
 	@Autowired
 	private ReviewService reviewService;
+	
+	@Autowired
+	private AWSS3Service awsS3Service;
 	
 	@Autowired
 	private ProductService productService;
@@ -59,28 +67,13 @@ public class ReviewController {
 	    log.info("productId : " + productId);
 	    log.info("imgId : " + imgId);
 
-	    // 해당 상품이 있는지 확인 하는 코드(상품이 삭제되어도 주문 목록에 남아 있기 때문에 제작 함)
-	    ProductVO productVO = productService.getProductById(productId);
-	    
-	    // 해당 상품이 있는지 확인
-	    if (productVO != null) {
-	        // imgId통해 이미지 조회
-	        ImageVO imageVO = imageService.getImageById(imgId);
-
-	        String imgRealName = imageVO.getImgRealName();
-	        String imgExtension = imageVO.getImgExtension();
-
-	        log.info("imageVO : " + imageVO);
-
-//	        // 댓글 알람 송신
-//	        ((AlarmHandler)alarmHandler).sendReplyAlarm(productId);
-
-	        model.addAttribute("imgRealName", imgRealName);
-	        model.addAttribute("productId", productId);
-	        model.addAttribute("imgId", imgId);
-	        model.addAttribute("imgExtension", imgExtension);
-	        
-	        return "/review/register"; // 경로 반환
+	    ProductPreviewDTO productPreviewDTO = reviewService.getProductPreview(productId);
+	    if(productPreviewDTO != null) {
+	    	productPreviewDTO.setImgUrl(
+	    	awsS3Service.toImageUrl(productPreviewDTO.getImgPath(), productPreviewDTO.getImgChangeName())
+	    	);
+	    	model.addAttribute("productPreviewDTO", productPreviewDTO);
+	    	return "/review/register"; // 경로 반환
 	    } else {	
 	    	log.info("삭제된 상품입니다.");
 	        return "/board/main"; // 이동할 경로 반환

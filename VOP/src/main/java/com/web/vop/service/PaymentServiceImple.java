@@ -102,6 +102,7 @@ public class PaymentServiceImple implements PaymentService {
 		// 멤버십 정보 등록
 		MembershipVO membershipVO = membershipMapper.selectByMemberId(memberId);
 		payment.setMembershipVO(membershipVO);
+		log.info(membershipVO);
 		
 		return payment;
 	} // end makePaymentForm

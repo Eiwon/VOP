@@ -76,7 +76,7 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 			consultRoomList.get(roomId).remove(memberId);
 		}
 		consultConnMap.remove(memberId);
-		if(consultRoomList.get(roomId).size() == 0) {
+		if(roomId != null && consultRoomList.get(roomId).size() == 0) {
 			consultRoomList.remove(roomId);
 		}else {
 			sendMsgToRoom(getExitMsg(roomId, memberId));

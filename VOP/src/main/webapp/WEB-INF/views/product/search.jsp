@@ -21,7 +21,8 @@
 <title>상품 검색</title>
 </head>
 <body>
-	
+	<c:set var="category" value="${pageMaker.pagination.category }"></c:set>
+	<c:set var="word" value="${pageMaker.pagination.word }"></c:set>
 	<c:if test="${productList.size() == 0 }">
 		<div>
 			검색 결과가 없습니다

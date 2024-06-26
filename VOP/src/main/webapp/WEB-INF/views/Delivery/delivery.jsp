@@ -54,6 +54,7 @@ $(document).ready(function() {
 			for(let i = 0; i < deliveryList.length; i++){
 				let item = deliveryList[i];
 				let paymentId = item.paymentId;
+				let productName = item.productName;
 				let receiverName = item.receiverName;
 				let deliveryAddress = item.deliveryAddress;
 				let requirement = item.requirement;
@@ -61,7 +62,7 @@ $(document).ready(function() {
 				
 				
 				// 각 item을 출력
-				console.log(paymentId, receiverName, deliveryAddress, requirement, expectDeliveryDate);
+				console.log(paymentId, productName, receiverName, deliveryAddress, requirement, expectDeliveryDate);
                
 				// 새로운 HTML 요소 생성 및 데이터 삽입
 	            let box = document.createElement('div');
@@ -69,6 +70,7 @@ $(document).ready(function() {
 	            
 	            box.innerHTML =
 	                '<p>송장 번호: ' + paymentId + '</p>' +
+	                '<p>상품명: ' + productName + '</p>' + 
 	                '<p>받는 사람: ' + receiverName + '</p>' + 
 	                '<p>받는 주소: ' + deliveryAddress + '</p>' + 
 	                '<p>배송 요청 사항: ' + requirement + '</p>' +

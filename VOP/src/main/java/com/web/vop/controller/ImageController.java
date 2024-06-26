@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.web.vop.domain.ImageVO;
 import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.ImageService;
-import com.web.vop.util.FileUploadUtil;
+import com.web.vop.util.FileAnalyzerUtil;
 
 import lombok.extern.log4j.Log4j;
 
@@ -27,8 +27,6 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class ImageController {
 	
-	@Autowired
-	private ImageService imageService;
 	
 	@Autowired
 	private AWSS3Service awsS3Service;

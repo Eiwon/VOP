@@ -64,7 +64,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 멤버십 만료일 조회 (스케줄링) -->
 	<select id="selectExpiryDateBySchedulling" resultMap="MembershipExpiryResultMap">
-		SELECT MEMBER_ID, EXPIRY_DATE FROM MEMBERSHIP
+		SELECT MS.MEMBER_ID, MS.EXPIRY_DATE, M.MEMBER_EMAIL 
+		FROM MEMBERSHIP MS JOIN MEMBER M 
+		ON MS.MEMBER_ID = M.MEMBER_ID
+		<!-- SELECT MEMBER_ID, EXPIRY_DATE FROM MEMBERSHIP -->
 	</select>
 	
 	

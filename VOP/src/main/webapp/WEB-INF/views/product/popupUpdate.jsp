@@ -253,7 +253,8 @@ img {
 		function checkFileValid(file){
 			 
             if (!file) { // file이 없는 경우
-               return true;
+               alert("파일을 하나 이상 등록해주세요");
+               return false;
             }
             
             if (!allowedExtensions.test(file.name)) { // 차단된 확장자인 경우

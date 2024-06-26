@@ -2,7 +2,7 @@ package com.web.vop.service;
 
 import java.util.List;
 
-
+import com.web.vop.domain.ProductPreviewDTO;
 import com.web.vop.domain.ReviewVO;
 import com.web.vop.util.PageMaker;
 
@@ -29,4 +29,7 @@ public interface ReviewService {
 	// 댓글(리뷰) 삭제
 	int deleteReview(int productId, String memberId);
 
+	// 댓글을 작성할 상품 정보 검색
+	ProductPreviewDTO getProductPreview(int productId);
+	
 } 

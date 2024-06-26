@@ -113,10 +113,15 @@
 						<td>멤버십 할인</td>
 						<td id="membership_discount">
 						<c:set var="membershipDiscount" value="0"/>
-						<c:if test="${membershipVO.membershipId != 0 }">
+						<c:choose>
+							<c:when test="${membershipVO != null }">
 							<c:set var="membershipDiscount" value="20"/>
 							${membershipDiscount }%
-						</c:if>
+							</c:when>
+							<c:otherwise>
+							0%
+							</c:otherwise>
+						</c:choose>
 						</td>
 					</tr>
 					<tr>

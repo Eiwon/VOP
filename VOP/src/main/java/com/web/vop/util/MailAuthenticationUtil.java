@@ -24,28 +24,37 @@ public class MailAuthenticationUtil {
 	
 	// 메일로 보낸 인증번호를 유저가 입력할 때까지 저장하기 위한 맵
 	// key : email, value : 발송된 인증 값
-	
 	private Map<String, EmailAuthenticationToken> emailAuthMap;
 	
-	public JavaMailSenderImpl javaMailSender;
+	@Autowired
+	public JavaMailSender javaMailSender;
 	
 	public MailAuthenticationUtil() {
 		
 		emailAuthMap = new HashMap<>();
 		
-		javaMailSender = new JavaMailSenderImpl();
-
-		javaMailSender.setUsername(ApiKey.MAIL_AUTH_ID);
-		javaMailSender.setPassword(ApiKey.MAIL_AUTH_PW);
-		javaMailSender.setHost("smtp.gmail.com");
-		Properties property = new Properties();
-		property.put("mail.smtp.auth", true);
-		property.put("mail.transport.protocol", "smtp");
-		property.put("mail.smtp.starttls.enable", true);
-		property.put("mail.smtp.starttls.required", true);
-		javaMailSender.setJavaMailProperties(property);
+//		javaMailSender = new JavaMailSenderImpl();
+//
+//		javaMailSender.setUsername(ApiKey.MAIL_AUTH_ID);
+//		javaMailSender.setPassword(ApiKey.MAIL_AUTH_PW);
+//		javaMailSender.setHost("smtp.gmail.com");
+//		Properties property = new Properties();
+//		property.put("mail.smtp.auth", true);
+//		property.put("mail.transport.protocol", "smtp");
+//		property.put("mail.smtp.starttls.enable", true);
+//		property.put("mail.smtp.starttls.required", true);
+//		javaMailSender.setJavaMailProperties(property);
 			
 	} // end MailAuthenticationUtil
+	
+	public void sendEmail(String email, String title, String content) {
+		log.info("일반 이메일 송신 to " + email);
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setSubject(title);
+		message.setText(content);
+		message.setTo(email);
+		javaMailSender.send(message);
+	}
 	
 	public void sendAuthEmail(String email) {
 		log.info("본인인증 이메일 송신 to " + email);

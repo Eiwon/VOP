@@ -43,7 +43,7 @@ import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.ImageService;
 import com.web.vop.service.ProductService;
 import com.web.vop.util.Constant;
-import com.web.vop.util.FileUploadUtil;
+import com.web.vop.util.FileAnalyzerUtil;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
@@ -141,11 +141,11 @@ public class ProductController {
 		
 		// 모든 파일을 imageVO로 변환
 		if (!thumbnail.isEmpty()) { // 파일이 있는 경우
-			imgThumbnail = FileUploadUtil.toImageVO(thumbnail, thumbnailUploadPath);
+			imgThumbnail = FileAnalyzerUtil.toImageVO(thumbnail, thumbnailUploadPath);
 		}
 		if(!details[0].isEmpty()) {
 			for (MultipartFile file : details) {
-				imgDetails.add(FileUploadUtil.toImageVO(file, uploadPath));
+				imgDetails.add(FileAnalyzerUtil.toImageVO(file, uploadPath));
 			}
 		}
 		
@@ -177,38 +177,39 @@ public class ProductController {
 	} // end registerPOST
 
 	@GetMapping("search")
-	public void search(Model model, String category, String word, Pagination pagination) {
-		log.info("search category : " + category + ", word : " + word);
+	public void search(Model model, Pagination pagination) {
+		log.info("search category : " + pagination.getCategory() + ", word : " + pagination.getWord());
 		List<ProductPreviewDTO> productList;
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
 		
-		if(category == null) {
-			category = "전체";
-		}
-		if(word == null) {
-			word = "";
-		}
+//		if(category == null) {
+//			category = "전체";
+//		}
+//		if(word == null) {
+//			word = "";
+//		}
 		
-		if(category.equals("전체")) { // 카테고리가 전체, 검색어가 있는 경우
-			log.info("검색어 검색");
-			productList = productService.searchByName(word, pageMaker);
-		}else {
-			if(word.length() > 0) { // 카테고리가 있고, 검색어도 있는 경우
-				log.info("카테고리 + 검색어 검색");
-				productList = productService.searchByNameInCategory(category, word, pageMaker);
-			}else { // 카테고리가 있고, 검색어는 없는 경우
-				log.info("카테고리 검색");
-				productList = productService.searchByCategory(category, pageMaker);
-			}
-		}
+//		if(category.equals("전체")) { // 카테고리가 전체, 검색어가 있는 경우
+//			log.info("검색어 검색");
+//			productList = productService.searchByName(word, pageMaker);
+//		}else {
+//			if(word.length() > 0) { // 카테고리가 있고, 검색어도 있는 경우
+//				log.info("카테고리 + 검색어 검색");
+				productList = productService.search(pageMaker);
+//			}else { // 카테고리가 있고, 검색어는 없는 경우
+//				log.info("카테고리 검색");
+//				productList = productService.searchByCategory(category, pageMaker);
+//			}
+//		}
 		// 카테고리가 전체, 검색어도 없는 경우 -- 클라이언트 측에서 실행 X
 		log.info("검색결과 = 총 " + pageMaker.getTotalCount() + "개 검색");
+		pageMaker.update();
 		awsS3Service.toImageUrl(productList);
 		model.addAttribute("productList", productList);
 		model.addAttribute("pageMaker", pageMaker);
-		model.addAttribute("category", category); // 검색결과 내에서 페이지 이동을 구현하기 위해, 기존 검색 조건 return
-		model.addAttribute("word", word);
+		//model.addAttribute("category", category); // 검색결과 내에서 페이지 이동을 구현하기 위해, 기존 검색 조건 return
+		//model.addAttribute("word", word);
 		
 	} // end search
 	
@@ -318,13 +319,13 @@ public class ProductController {
 		
 		// 변경할 이미지가 있다면 DB에 저장하기 위해 VO로 변환, 기존 이미지를 S3 서버에서 삭제하기 위해 이미지 정보를 불러옴
 		if (!thumbnail.isEmpty()) {
-			newThumbnail = FileUploadUtil.toImageVO(thumbnail, thumbnailUploadPath);
+			newThumbnail = FileAnalyzerUtil.toImageVO(thumbnail, thumbnailUploadPath);
 			oldThumbnail = productService.getProductThumbnail(productVO.getImgId());
 		}
 		if (!details[0].isEmpty()) {
 			oldDetails = productService.getProductDetails(productVO.getProductId());
 			for (MultipartFile detail : details) {
-				newDetails.add(FileUploadUtil.toImageVO(detail, uploadPath));
+				newDetails.add(FileAnalyzerUtil.toImageVO(detail, uploadPath));
 			}
 		}
 		

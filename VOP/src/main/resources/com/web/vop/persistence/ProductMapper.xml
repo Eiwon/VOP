@@ -65,7 +65,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		SELECT * FROM PRODUCT
    		WHERE PRODUCT_ID = #{productId}
    </select>
-    
+   
+   <!-- productId로 상품 미리보기 조회 -->
+   <select id="selectPreviewById" resultMap="productPreviewResultMap">
+   		SELECT PD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
+		SELECT *
+		FROM PRODUCT WHERE PRODUCT_ID = #{productId} AND PRODUCT_STATE = '판매중'
+		) PD INNER JOIN IMAGE ON PD.IMG_ID = IMAGE.IMG_ID
+   </select> 
+   
    <!-- 댓글 총 갯수 검색  -->
    <!-- resultType="java.lang.Integer" 단일 값때만 사용, 코드 추가해서 테스트 통과 -->
    <select id="selectReviewCount" resultType="Integer">
@@ -121,7 +129,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
    
 	<!-- 상품 카테고리로 검색 (페이징) -->
-	<select id="selectByCategory" resultMap="productPreviewResultMap">
+	<!-- <select id="selectByCategory" resultMap="productPreviewResultMap">
 		SELECT PD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
    		SELECT * FROM (
    		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
@@ -130,12 +138,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
    		) PD LEFT JOIN IMAGE ON PD.IMG_ID = IMAGE.IMG_ID
 	</select>
-
+ -->
 	<!-- 카테고리로 검색 결과 수량 -->
-	<select id="selectByCategoryCnt" resultType="Integer">
+	<!-- <select id="selectByCategoryCnt" resultType="Integer">
 		SELECT COUNT(PRODUCT_ID) FROM PRODUCT 
 		WHERE CATEGORY = #{category} AND PRODUCT_STATE = #{productState}
-	</select>
+	</select> -->
 
 	<!-- 상품 이름으로 검색 (페이징) -->
 	<select id="selectByName" resultMap="productPreviewResultMap">
@@ -143,7 +151,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		SELECT * FROM (
    		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
    		FROM PRODUCT
-   		WHERE PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = #{productState}
+   		WHERE PRODUCT_NAME LIKE #{pagination.word} AND PRODUCT_STATE = #{productState}
    		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
    		) PD LEFT JOIN IMAGE ON PD.IMG_ID = IMAGE.IMG_ID
    	</select>	
@@ -151,7 +159,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 이름으로 검색 결과 수량 -->
 	<select id="selectByNameCnt" resultType="Integer">
 		SELECT COUNT(PRODUCT_ID) FROM PRODUCT 
-		WHERE PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = #{productState}
+		WHERE PRODUCT_NAME LIKE #{pagination.word} AND PRODUCT_STATE = #{productState}
 	</select>
 
 	<!-- 카테고리를 선택하여 이름으로 검색 (페이징) -->
@@ -160,7 +168,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT * FROM (
    		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
    		FROM PRODUCT
- 		WHERE CATEGORY = #{category} AND PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = #{productState}
+ 		WHERE CATEGORY = #{pagination.category} AND PRODUCT_NAME LIKE #{pagination.word} AND PRODUCT_STATE = #{productState}
    		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
    		) PD LEFT JOIN IMAGE ON PD.IMG_ID = IMAGE.IMG_ID
 	</select>
@@ -168,7 +176,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 카테고리를 선택하여 이름으로 검색 결과 수량 -->
 	<select id="selectByNameInCategoryCnt" resultType="Integer">
 		SELECT COUNT(PRODUCT_ID) FROM PRODUCT 
-		WHERE CATEGORY = #{category} AND PRODUCT_NAME LIKE #{productName} AND PRODUCT_STATE = #{productState}
+		WHERE CATEGORY = #{pagination.category} AND PRODUCT_NAME LIKE #{pagination.word} AND PRODUCT_STATE = #{productState}
 	</select>
 	
 	<!-- memberId로 상품 조회 -->
