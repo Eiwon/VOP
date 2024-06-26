@@ -150,7 +150,7 @@ img {
 		let btnContinue = $('#btn_continue');
 		let btnUpdate = $('#btn_update');
 		let btnDelete = $('#btn_delete');
-		const allowedExtension = new RegExp("jpg|jpeg|png|bmp|tif|tiff|webp|svg");
+		const allowedExtensions = new RegExp("jpg|jpeg|png|bmp|tif|tiff|webp|svg");
 		
 		// 상태가 
 		
@@ -165,9 +165,6 @@ img {
 			}
 			btnContinue.click(function(){
 				toggleProductState();
-			});
-			btnUpdate.click(function(){
-				updateRequest();
 			});
 			btnDelete.click(function(){
 				deleteRequest();
@@ -230,7 +227,6 @@ img {
             	event.preventDefault();
             	return;
             }
-            
             let files = $('#inputDetails').prop('files');
             
             for(let x = 0; x < files.length; x++){
@@ -240,33 +236,31 @@ img {
                 	return;
             	}
             }
-			
 			if(!confirm("변경시 관리자의 승인 전까지 판매가 중지됩니다. 변경하시겠습니까?")){
 				 event.preventDefault();
 				 return;
 			}
-			
 			alert("변경 사항은 관리자의 승인 후 반영됩니다.");
+			
 		});
 		
 		
 		function checkFileValid(file){
-			 
             if (!file) { // file이 없는 경우
-               alert("파일을 하나 이상 등록해주세요");
-               return false;
+               return true;
             }
             
             if (!allowedExtensions.test(file.name)) { // 차단된 확장자인 경우
                alert("이미지 파일만 첨부해주세요\n(jpg, jpeg, png, bmp, tif, tiff, webp, svg)");
                return false;
             }
-
+            
             let maxSize = 10 * 1024 * 1024; // 10 MB 
             if (file.size > maxSize) {
                alert("파일 크기가 너무 큽니다. 최대 크기는 10MB입니다.");
                return false;
             }
+            return true;
         } // end checkFileValid
 		
         
@@ -292,6 +286,7 @@ img {
 						alert('삭제 요청 실패');
 					}else if(result == 101){
 						alert('삭제 성공');
+						window.close();
 					}else if(result == 100){
 						alert('삭제 실패');
 					}

@@ -445,10 +445,11 @@ public class ProductController {
 		
 		int res = 0;
 		if (productState.equals(Constant.STATE_SELL)) {
-			res = productService.setProductState(Constant.STATE_REMOVE_WAIT, productId) +200;
+			res = productService.setProductState(Constant.STATE_REMOVE_WAIT, productId) > 0 ? 201 : 200;
 		} else if (!productState.equals(Constant.STATE_REMOVE_WAIT)) {
-			res = productService.deleteProduct(productId) +100;
+			res = productService.deleteProduct(productId) > 0 ? 101 : 100;
 		}
+		// res 코드 100 = 삭제 실패, 101 = 삭제 성공, 201 = 삭제요청 성공, 200 = 삭제요청 실패
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end deleteRequestProduct
