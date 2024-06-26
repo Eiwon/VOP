@@ -235,19 +235,32 @@ public class MemberController {
 	} // end modifyPOST
 	
 	@GetMapping("/withdrawal")
-	public void withdrawGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
+	public String withdrawGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
 		log.info("회원 탈퇴 페이지 이동");
-		// 이메일 검색
-		String memberEmail = memberService.getEmailById(memberDetails.getUsername());
-		model.addAttribute("memberEmail", memberEmail);
+		String memberId = memberDetails.getUsername();
+		// 탈퇴 가능 여부 검사
+		int res = memberService.isWithdrawable(memberId);
 		
+		if(res > 0) {
+			AlertVO alertVO = new AlertVO();
+			alertVO.setAlertMsg("등록된 상품이 있으면 탈퇴할 수 없습니다.");
+			alertVO.setRedirectUri("product/myProduct");
+			model.addAttribute("alertVO", alertVO);
+			return Constant.ALERT_PATH;
+		}
+		
+		// 이메일 검색
+		String memberEmail = memberService.getEmailById(memberId);
+		model.addAttribute("memberEmail", memberEmail);
+		return "member/withdrawal";
 	} // end withdrawGET
 	
 	@PostMapping("/withdrawal")
 	public String withdrawPOST(Model model, String authCode, @AuthenticationPrincipal UserDetails memberDetails) {
 		log.info("회원 탈퇴 신청");
-		String memberEmail = memberService.getEmailById(memberDetails.getUsername());
+				
 		AlertVO alertVO = new AlertVO();
+		String memberEmail = memberService.getEmailById(memberDetails.getUsername());
 		int resultCode = mailAuthUtil.verifyAuthCode(memberEmail, authCode);
 		
 		switch (resultCode) {

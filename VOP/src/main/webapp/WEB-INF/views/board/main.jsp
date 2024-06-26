@@ -78,7 +78,7 @@
 						form += '<li class="product_box" onclick="toDetails(this)">' + 
 							'<img src="' + result[x].imgUrl + '">' + 
 							'<br><strong class="product_name">' + productVO.productName + '</strong><br>' +
-							'<strong class="product_price">' + productVO.productPrice + '</strong><br>' + 
+							'<strong class="product_price">' + productVO.productPrice + '원</strong><br>' + 
 							'<span class="reviewStars">' + starsHTML + '</span>' +
 							'<span class="review_num">(' + productVO.reviewNum + ')</span>' + 
 							'<input hidden="hidden" class="product_id" value="' + productVO.productId + '"/>' + 

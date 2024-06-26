@@ -288,7 +288,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 상품 상세 정보를 검색하여 OrderViewDTO로 반환 -->
 	<select id="selectToOrderById" resultMap="com.web.vop.persistence.OrderMapper.OrderViewDTOResultMap">
 		SELECT PD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
-		SELECT PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE, IMG_ID FROM PRODUCT WHERE PRODUCT_ID IN 
+		SELECT PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE, IMG_ID FROM PRODUCT WHERE PRODUCT_STATE = '판매중' 
+		AND PRODUCT_ID IN 
 		<foreach collection="array" index="index" item="productIds" open="(" separator="," close=")">
 			#{productIds}
 		</foreach>
