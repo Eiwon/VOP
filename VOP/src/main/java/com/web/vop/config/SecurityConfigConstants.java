@@ -22,15 +22,15 @@ public interface SecurityConfigConstants {
 	public static final String[] ANONYMOUS_ONLY = { 
 			"/member/register", "/member/login", "/member/loginFail", "/member/findAccount**",
 			"/member/findPassword**", "/member/idDupChk", "/member/phoneDupChk", "/member/findByPhone", 
-			"/member/login", "/member/changePw", "/member/mailAuthentication"
+			"/member/login", "/member/changePw"
 			};
 
 	// 모두 접근 가능
 	public static final String[] PERMIT_ALL = { 
 			"/board/main", "/board/popupNotice", 
 			"/image/**",
-			"/inquiry/list",
 			"/inquiryRest/list",
+			"/member/mailAuthentication",
 			"/popupAds/popupAds", "/popupAds/blockPopup", "/popupAds/myPopupAds",
 			"/product/detail", "/product/search", "/product/bestReview", "/product/recent", 
 			"/review/all" };
@@ -43,16 +43,16 @@ public interface SecurityConfigConstants {
 			"/board/delivery", "/board/consult",
 			"/coupon/**",
 			"/Delivery/**",
-			"/inquiry/myList", 
+			"/inquiry/list", "/inquiry/myList", "/basket/myBasketDate",
 			"/inquiryRest/register", "/inquiryRest/modify", "/inquiryRest/delete", "/inquiryRest/myList",
 			"/likes/**",
 			"/order/**", 
 			"/payment/**", 
 			"/review/modify", "/review/register", "/review/list",
-			"/reviewRest/modify", "/reviewRest/register",
-			"inquiry/list", "inquiry/myList",
+			"/reviewRest/modify", "/reviewRest/register", "/reviewRest/delete",
 			"/basket/**", 
-			"/seller/sellerRequest", 
+			"inquiry/list", "inquiry/myList",
+			"/seller/sellerRequest", "/seller/requestUpdate", 
 			"/membership/register", "/membership/getId", "/membershipRegister" };
 
 	// 판매자만 접근 가능

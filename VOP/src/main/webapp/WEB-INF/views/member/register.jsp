@@ -69,9 +69,9 @@
 					isValid : false
 				},
 				memberPw : {
-					exp : new RegExp("^[a-zA-Z0-9]{8,20}$"),
+					exp : new RegExp("^[a-zA-Z0-9!@#$%^&*()_+-\[={};'\"\|,.<>?]{8,20}$"),
 					success : "올바른 입력 형식 입니다.",
-					fail : "비밀번호는 8~20자의 알파벳, 숫자이여야 합니다.",
+					fail : "비밀번호는 8~20자의 알파벳, 숫자, 특수문자로 이루어져야 합니다.",
 					isValid : false
 				},
 				memberName : {

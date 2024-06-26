@@ -47,10 +47,18 @@ public class SellerController {
 	private WebSocketHandler alarmHandler;
 	
 	@GetMapping("/sellerRequest")
-	public void sellerRequestGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
+	public String sellerRequestGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
 		log.info("판매자 권한 신청 페이지로 이동");
 		SellerVO sellerRequest = sellerService.getMyRequest(memberDetails.getUsername());
-		model.addAttribute("sellerRequest", sellerRequest);
+		String returnPath  = null;
+		
+		if(sellerRequest == null) {
+			returnPath = "seller/sellerRequest";
+		}else {
+			model.addAttribute("sellerRequest", sellerRequest);
+			returnPath = "seller/requestUpdate";
+		}
+		return returnPath;
 	} // end sellerRequestGET
 	
 	@GetMapping("/main")
@@ -212,5 +220,14 @@ public class SellerController {
 	public void popupRegisterNoticeGET() {
 		log.info("공지사항 등록 팝업 요청");
 	} // end popupRegisterNotice
+	
+	// 판매자 권한 재요청
+	@PostMapping("/retry")
+	public String retrySellerRequest(SellerVO sellerVO, @AuthenticationPrincipal UserDetails memberDetails) {
+		sellerVO.setMemberId(memberDetails.getUsername());
+		sellerService.retrySellerRequest(sellerVO);
+		
+		return "redirect:seller/sellerRequest";
+	} // end retrySellerRequest
 	
 }

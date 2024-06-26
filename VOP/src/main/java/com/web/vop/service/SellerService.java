@@ -25,4 +25,7 @@ public interface SellerService {
 	
 	// 판매자 권한 취소
 	public int revokeAuth(SellerVO sellerVO);
+	
+	// 판매자 권한 재신청
+	public int retrySellerRequest(SellerVO sellerVO);
 }

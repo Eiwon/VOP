@@ -8,35 +8,60 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<style type="text/css">
+.form_container{
+	border: 1px solid black;
+	width: 500px;
+	height: 800px;
+	display: inline-block;
+}
+.input_tag {
+	width: 400px;
+	height: 40px;
+}
+.input_box {
+	height: 50px;
+	margin-top: 40px;
+}
+</style>
 <title>판매 신청</title>
 </head>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <body>
-	<div>
-		<h2>판매자 등록 신청</h2>
-		
-		<form action="sellerRequest" method="POST" id="sellerRequestForm">
-			<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
-			<table>
-				<tbody>
-					<tr>
-						<td>유저 ID</td>
-						<td>${memberDetails.getUsername() }</td>
-					</tr>
-					<tr>
-						<td>사업자 명</td>
-						<td><input type="text" name="businessName" onblur="validChk(this)"></td>
-						<td id="businessNameAlert"></td>
-					</tr>
-					<tr>
-						<td>세부 내용</td>
-						<td><input type="text" name="requestContent" onblur="validChk(this)"></td>
-						<td id="requestContentAlert"></td>
-					</tr>
-				</tbody>
-			</table>
-			<input type="hidden" name="memberId" value="${memberDetails.getUsername() }">
-			<input type="submit" value="신청하기">
+	<div style="text-align: center;">
+		<form action="retry" method="POST" class="form_container">
+		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
+			<h3>${memberDetails.getUsername() }회원님의 판매자 등록 신청 내역입니다.</h3>
+			<div class="input_box">
+				<div>사업체 이름</div>
+				<input type="text" id="businessName" class="input_tag" name="businessName" value="${sellerRequest.businessName }" onblur="validChk(this)">
+				<div></div>
+			</div>
+			<div class="input_box">
+				<div>신청 날짜</div>
+				<input type="text" class="input_tag" value="${sellerRequest.requestTime.toLocaleString() }" readonly>
+				<div></div>
+			</div>
+			<div class="input_box">
+				<div>신청 내용</div>
+				<input type="text" id="requestContent" class="input_tag" name="requestContent" value="${sellerRequest.requestContent }" onblur="validChk(this)">
+				<div></div>
+			</div>
+			<div class="input_box">
+				<div>상태</div>
+				<input type="text" class="input_tag" value="${sellerRequest.requestState }" readonly>
+				<div></div>
+			</div>
+			<div class="input_box">
+				<div>비고</div>
+				<input type="text" class="input_tag" value="${sellerRequest.refuseMsg }" readonly>
+				<div></div>
+			</div>
+			<c:if test="${sellerRequest.requestState eq '거절' }">
+				<div class="input_box">
+				<input type="submit" value="재요청">
+				</div>
+			</c:if>
 		</form>
 	</div>
 	
@@ -46,20 +71,20 @@
 				exp : new RegExp('^[a-zA-Z0-9가-힣 ]{1,50}$'),
 				successMsg : '',
 				failMsg : '1~50자의 한글, 영어, 숫자 조합만 가능합니다.',
-				isValid : false
+				isValid : true
 			},
 			requestContent : {
 				exp : new RegExp('^[a-zA-Z0-9가-힣 ]{0,100}$'),
 				successMsg : '',
 				failMsg : '한글, 영어, 숫자만 최대 100자까지 입력 가능합니다.',
-				isValid : false
+				isValid : true
 			}
 		};
 		
 		function validChk(input) {
 			let inputVal = $(input).val().trim();
 			let inputType = $(input).attr('name');
-			let tagAlert = $('#' + inputType + 'Alert');
+			let tagAlert = $(input).next();
 			
 			if(inputVal.length == 0){ 
 				checkMap[inputType].isValid = false;

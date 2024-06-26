@@ -20,6 +20,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductPreviewDTO;
+import com.web.vop.persistence.ImageMapper;
 import com.web.vop.util.Constant;
 
 import lombok.extern.log4j.Log4j;
@@ -33,7 +34,7 @@ public class AWSS3ServiceImple implements AWSS3Service {
 	private AmazonS3 awsS3Client;
 	
 	@Autowired
-	private ImageService imageService;
+	private ImageMapper imageMapper;
 	
 	private String bucketName = "vop-s3-bucket";
 	
@@ -79,7 +80,7 @@ public class AWSS3ServiceImple implements AWSS3Service {
 	@Override
 	public String getImageUrl(int imgId) {
 		log.info("이미지 불러오기");
-		ImageVO imageVO = imageService.getImageById(imgId);
+		ImageVO imageVO = imageMapper.selectByImgId(imgId);
 		
 		String fullPath = 
 				(imageVO == null) ? Constant.DEFAULT_IMG_PATH : imageVO.getImgPath() + imageVO.getImgChangeName();

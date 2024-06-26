@@ -38,15 +38,17 @@ public interface ProductService {
 	// 상품 등록
 	int registerProduct(ProductVO productVO, ImageVO thumbnail, List<ImageVO> details) throws IOException;
 	
-	// 카테고리로 상품 검색
-	List<ProductPreviewDTO> searchByCategory(String category, PageMaker pageMaker);
+	List<ProductPreviewDTO> search(PageMaker pageMaker);
 	
-	// 이름으로 상품 검색
-	List<ProductPreviewDTO> searchByName(String productName, PageMaker pageMaker);
-	
-	// 카테고리 안에서 이름으로 검색
-	List<ProductPreviewDTO> searchByNameInCategory(String category, String productName,
-			PageMaker pageMaker);
+//	// 카테고리로 상품 검색
+//	List<ProductPreviewDTO> searchByCategory(String category, PageMaker pageMaker);
+//	
+//	// 이름으로 상품 검색
+//	List<ProductPreviewDTO> searchByName(String productName, PageMaker pageMaker);
+//	
+//	// 카테고리 안에서 이름으로 검색
+//	List<ProductPreviewDTO> searchByNameInCategory(String category, String productName,
+//			PageMaker pageMaker);
 	
 	// memberId로 상품 조회
 	List<ProductPreviewDTO> searchByMemberId(String memberId, PageMaker pageMaker);

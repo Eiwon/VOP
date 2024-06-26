@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.web.vop.domain.ImageVO;
@@ -16,7 +17,7 @@ import com.web.vop.domain.ProductVO;
 import com.web.vop.persistence.ImageMapper;
 import com.web.vop.persistence.ProductMapper;
 import com.web.vop.util.Constant;
-import com.web.vop.util.FileUploadUtil;
+import com.web.vop.util.FileAnalyzerUtil;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
@@ -105,30 +106,55 @@ public class ProductServiceImple implements ProductService{
 	} // end registerProduct
 	
 	@Override
-	public List<ProductPreviewDTO> searchByCategory(String category, PageMaker pageMaker) {
-		log.info("searchByCategory()");
-		int totalCnt = productMapper.selectByCategoryCnt(category, Constant.STATE_SELL);
-		pageMaker.setTotalCount(totalCnt);
-		return productMapper.selectByCategory(category, pageMaker.getPagination(), Constant.STATE_SELL);
-	} // end selectByCategory
+	public List<ProductPreviewDTO> search(PageMaker pageMaker) {
+		log.info("search()");
+		Pagination pagination = pageMaker.getPagination();
+		String category = pagination.getCategory();
+		String word = pagination.getWord();
+		int totalCnt;
+		List<ProductPreviewDTO> result;
+		String searchWord = '%' + word + '%';
+		pagination.setWord(searchWord);
+		
+		if(category.equals("전체")) { // 선택된 카테고리가 없는 경우
+			totalCnt = productMapper.selectByNameCnt(pagination, Constant.STATE_SELL);
+			pageMaker.setTotalCount(totalCnt);
+			result = productMapper.selectByName(pagination, Constant.STATE_SELL);
+		}else { // 선택된 카테고리가 있는 경우
+			totalCnt = productMapper.selectByNameInCategoryCnt(pagination, Constant.STATE_SELL);
+			pageMaker.setTotalCount(totalCnt);
+			result = productMapper.selectByNameInCategory(pagination, Constant.STATE_SELL);
+		}
+		
+		pagination.setWord(word);
+		return result;
+	} // end search
 	
-	@Override
-	public List<ProductPreviewDTO> searchByName(String productName, PageMaker pageMaker) {
-		log.info("searchByName()");
-		String includeName = '%' + productName + '%';
-		int totalCnt = productMapper.selectByNameCnt(includeName, Constant.STATE_SELL);
-		pageMaker.setTotalCount(totalCnt);
-		return productMapper.selectByName(includeName, pageMaker.getPagination(), Constant.STATE_SELL);
-	} // end selectByName
-	
-	@Override
-	public List<ProductPreviewDTO> searchByNameInCategory(String category, String productName, PageMaker pageMaker) {
-		log.info("searchByNameInCategory()");
-		String includeName = '%' + productName + '%';
-		int totalCnt = productMapper.selectByNameInCategoryCnt(category, includeName, Constant.STATE_SELL);
-		pageMaker.setTotalCount(totalCnt);
-		return productMapper.selectByNameInCategory(category, includeName, pageMaker.getPagination(), Constant.STATE_SELL);
-	} // end selectByNameInCategory
+//	@Override
+//	public List<ProductPreviewDTO> searchByCategory(String category, PageMaker pageMaker) {
+//		log.info("searchByCategory()");
+//		int totalCnt = productMapper.selectByCategoryCnt(category, Constant.STATE_SELL);
+//		pageMaker.setTotalCount(totalCnt);
+//		return productMapper.selectByCategory(category, pageMaker.getPagination(), Constant.STATE_SELL);
+//	} // end selectByCategory
+//	
+//	@Override
+//	public List<ProductPreviewDTO> searchByName(String productName, PageMaker pageMaker) {
+//		log.info("searchByName()");
+//		String includeName = '%' + productName + '%';
+//		int totalCnt = productMapper.selectByNameCnt(includeName, Constant.STATE_SELL);
+//		pageMaker.setTotalCount(totalCnt);
+//		return productMapper.selectByName(includeName, pageMaker.getPagination(), Constant.STATE_SELL);
+//	} // end selectByName
+//	
+//	@Override
+//	public List<ProductPreviewDTO> searchByNameInCategory(String category, String productName, PageMaker pageMaker) {
+//		log.info("searchByNameInCategory()");
+//		String includeName = '%' + productName + '%';
+//		int totalCnt = productMapper.selectByNameInCategoryCnt(category, includeName, Constant.STATE_SELL);
+//		pageMaker.setTotalCount(totalCnt);
+//		return productMapper.selectByNameInCategory(category, includeName, pageMaker.getPagination(), Constant.STATE_SELL);
+//	} // end selectByNameInCategory
 	
 	@Override
 	public List<ProductPreviewDTO> searchByMemberId(String memberId, PageMaker pageMaker) {
@@ -264,6 +290,7 @@ public class ProductServiceImple implements ProductService{
 		log.info("상품의 세부 이미지 검색");
 		return imageMapper.selectByProductId(productId);
 	} // end getProductDetails
+
 
 	
 }

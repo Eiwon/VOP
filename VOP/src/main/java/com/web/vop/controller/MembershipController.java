@@ -28,9 +28,6 @@ public class MembershipController {
 	@Autowired
 	MembershipService membershipService;
 	
-
-	@Autowired
-	private PaymentAPIUtil paymentAPIUtil;
 	
 	@PreAuthorize("isAuthenticated()") // 사용자가 로그인 상태라면 true
 	@GetMapping("/register")

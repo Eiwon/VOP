@@ -13,10 +13,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="receiverName" column="RECEIVER_NAME"/>
       <result property="receiverPhone" column="RECEIVER_PHONE"/>
       <result property="requirement" column="REQUIREMENT"/>
+      <result property="membershipDiscount" column="MEMBERSHIP_DISCOUNT"/>
       <result property="couponDiscount" column="COUPON_DISCOUNT"/>
       <result property="deliveryPrice" column="DELIVERY_PRICE"/>
       <result property="chargePrice" column="CHARGE_PRICE"/>
-      <result property="membershipDiscount" column="MEMBERSHIP_DISCOUNT"/>
+      <result property="chargeId" column="CHARGE_ID"/>
 	</resultMap>
    
 	<!-- paymentId 생성 -->

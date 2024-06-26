@@ -15,8 +15,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 public class S3Config {
 	
 	// S3 접근 권한 인증을 위해 발급받은 key 값
-	private String accessKey = ApiKey.awsAccessKey;//ApiKey 파일에서 복붙해야 함;
-	private String secretKey = ApiKey.awsSecretKey;//;
+	private String accessKey = ApiKey.awsAccessKey;//
+	private String secretKey = ApiKey.awsSecretKey;//
 	
 	@Bean
 	public AmazonS3 awsS3Client() {

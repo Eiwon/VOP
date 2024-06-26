@@ -1,5 +1,7 @@
 package com.web.vop.util;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -13,6 +15,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import com.web.vop.config.ApiKey;
+import com.web.vop.domain.EmailAuthenticationToken;
 
 import lombok.extern.log4j.Log4j;
 
@@ -21,38 +24,58 @@ public class MailAuthenticationUtil {
 	
 	// 메일로 보낸 인증번호를 유저가 입력할 때까지 저장하기 위한 맵
 	// key : email, value : 발송된 인증 값
+	private Map<String, EmailAuthenticationToken> emailAuthMap;
 	
-	private Map<String, String> emailAuthMap;
-	
-	public JavaMailSenderImpl javaMailSender;
+	@Autowired
+	public JavaMailSender javaMailSender;
 	
 	public MailAuthenticationUtil() {
 		
 		emailAuthMap = new HashMap<>();
 		
-		javaMailSender = new JavaMailSenderImpl();
-
-		javaMailSender.setUsername(ApiKey.MAIL_AUTH_ID);
-		javaMailSender.setPassword(ApiKey.MAIL_AUTH_PW);
-		javaMailSender.setHost("smtp.gmail.com");
-		Properties property = new Properties();
-		property.put("mail.smtp.auth", true);
-		property.put("mail.transport.protocol", "smtp");
-		property.put("mail.smtp.starttls.enable", true);
-		property.put("mail.smtp.starttls.required", true);
-		javaMailSender.setJavaMailProperties(property);
+//		javaMailSender = new JavaMailSenderImpl();
+//
+//		javaMailSender.setUsername(ApiKey.MAIL_AUTH_ID);
+//		javaMailSender.setPassword(ApiKey.MAIL_AUTH_PW);
+//		javaMailSender.setHost("smtp.gmail.com");
+//		Properties property = new Properties();
+//		property.put("mail.smtp.auth", true);
+//		property.put("mail.transport.protocol", "smtp");
+//		property.put("mail.smtp.starttls.enable", true);
+//		property.put("mail.smtp.starttls.required", true);
+//		javaMailSender.setJavaMailProperties(property);
 			
 	} // end MailAuthenticationUtil
+	
+	public void sendEmail(String email, String title, String content) {
+		log.info("일반 이메일 송신 to " + email);
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setSubject(title);
+		message.setText(content);
+		message.setTo(email);
+		javaMailSender.send(message);
+	}
 	
 	public void sendAuthEmail(String email) {
 		log.info("본인인증 이메일 송신 to " + email);
 		SimpleMailMessage message = new SimpleMailMessage();
-		String authCode = generateCode();
-		message.setSubject("VOP 본인 인증 요청");
-		message.setText("비밀번호 확인 인증 번호 : " + authCode);
-		emailAuthMap.put(email, authCode);
-		message.setTo(email);
+		EmailAuthenticationToken token = new EmailAuthenticationToken();
+		token.setAuthCode(generateCode());
 		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		calendar.add(Calendar.MINUTE, 3);
+		Date expireTime = calendar.getTime();
+		
+		token.setExpireTime(expireTime);
+		
+		message.setSubject("VOP 본인 인증 요청");
+		message.setText("비밀번호 확인 인증 번호 : " + token.getAuthCode());
+		message.setTo(email);
+		emailAuthMap.put(email, token);
+		
+		log.info("본인인증 코드, 만료 시간 : " + token);
+		log.info("message : " + message);
 		javaMailSender.send(message);
 		
 	} // end sendAuthEmail
@@ -63,15 +86,30 @@ public class MailAuthenticationUtil {
 		return code;
 	} // end generateCode
 
-	public boolean verifyAuthCode (String email, String authCode) {
-		log.info("본인인증 이메일 검증");
-		String keyCode = emailAuthMap.get(email);
-		boolean res = keyCode.equals(authCode);
-		if(res) {
-			emailAuthMap.remove(email);
+	// 인증 성공 : return 100
+	// 만료된 인증 번호 : return 101
+	// 인증 번호 불일치 : return 102
+	// 인증 번호 미발급 유저 : return 103
+	public int verifyAuthCode (String email, String authCode) {
+		log.info("본인인증 이메일 검증 : " + email + ", " + authCode);
+		EmailAuthenticationToken token = emailAuthMap.get(email);
+		
+		if(token == null) {
+			return 103;
 		}
 		
-		return res;
+		if(new Date().after(token.getExpireTime())) {
+			emailAuthMap.remove(email);
+			return 101;
+		}
+
+		boolean res = token.getAuthCode().equals(authCode);
+		if(res) {
+			emailAuthMap.remove(email);
+			return 100;
+		}else {
+			return 102;
+		}
 	} // end verifyAuthNum
 	
 }
