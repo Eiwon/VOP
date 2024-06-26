@@ -32,6 +32,9 @@ public interface ProductMapper {
 	// 상품 리뷰(별) 평균값 등록
 	int updateReviewAvg(@Param("productId")int productId, @Param("reviewAvg")String reviewAvg);
 	
+	// 상품 리뷰(별) 평균값 수정
+	int updateReviewAvgNew(@Param("productId")int productId, @Param("reviewAvg")float reviewAvg);
+	
 	// 댓글(리뷰) 카운터
 	int updateReviewNum(@Param("productId")int productId, @Param("reviewNum")int reviewNum);
 	

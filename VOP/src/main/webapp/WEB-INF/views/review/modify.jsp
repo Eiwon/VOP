@@ -114,13 +114,11 @@
      $('#btnUpdate').click(function(){
         console.log(this);
 
-        let reviewId = ${reviewId};
         let reviewStar = selectedStar// 리뷰(별)
         let reviewContent = $('#reviewContent').val();
         let productId = ${productId};
         if(reviewStar !== null && reviewStar !== '' && reviewStar !== undefined && reviewContent !== null && reviewContent !== '') {
         let obj = {
-        		'reviewId' : reviewId,
         		'reviewStar' : reviewStar,
         		'reviewContent' : reviewContent,
         		'productId' : productId,

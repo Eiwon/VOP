@@ -96,7 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		UPDATE PRODUCT SET REVIEW_NUM = REVIEW_NUM - 1
 		WHERE PRODUCT_ID = #{productId}
 	</update>
-   
+
 	<!-- 상품 등록 -->
 	<insert id="insertProduct">
    		INSERT INTO PRODUCT VALUES (

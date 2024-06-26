@@ -102,7 +102,8 @@ public class ReviewRESTController {
 	         ){
 	      log.info("updateReview()");
 	      
-	      int reviewId = reviewVO.getReviewId();
+	      String memberId = reviewVO.getMemberId();
+	      log.info("memberId : " + memberId);
 	      	
 	      float reviewStar = reviewVO.getReviewStar();
 	      
@@ -113,7 +114,7 @@ public class ReviewRESTController {
 	      log.info("productId : " + productId);
 	      
 	      // reviewId에 해당하는 댓글(리뷰)의 reviewContent, reviewStar, imgId의 내용을 수정 할 수 있습니다.
-	      int result = reviewService.updateReview(reviewId, reviewContent, reviewStar, productId);
+	      int result = reviewService.updateReview(memberId, reviewContent, reviewStar, productId);
 
 	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 	      return new ResponseEntity<Integer>(result, HttpStatus.OK);
