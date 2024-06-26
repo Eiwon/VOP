@@ -131,6 +131,7 @@ public class DeliveryServiceImple implements DeliveryService{
 			
 			for (DeliveryListDTO dto : list) {
 				log.info("배송번호 : " + dto.getPaymentId());
+				log.info("상품이름 : " + dto.getProductName());
 				log.info("받는 사람 : " + dto.getReceiverName());
 				log.info("주소 : " + dto.getDeliveryAddress());
 				log.info("배송요구사항 : " + dto.getRequirement());

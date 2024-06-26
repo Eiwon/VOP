@@ -421,13 +421,10 @@
        }); 
     });// end form()
     });// end inquiryDelete()
+    
     }); // end document.ready()
 
-    
-    
     </script>
-	
-	
-	
+
 </body>
 </html>

@@ -10,6 +10,7 @@ import lombok.Setter;
 public class DeliveryListDTO {
 	
 	private int paymentId;
+	private String productName;
 	private String receiverName;
 	private String deliveryAddress;
 	private String requirement;

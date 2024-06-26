@@ -65,6 +65,7 @@ public class ReviewServiceImple implements ReviewService {
 
     		// 상품 댓글 카운터 수정
     		int updateRes = productMapper.updateReviewNum(productId, reviewNum);
+    		
 
     		// 리뷰 평균 관련 코드
     		// productId에 해당하는 상품 조회 // 업그레이드 된 상태
@@ -107,6 +108,7 @@ public class ReviewServiceImple implements ReviewService {
 	public List<ReviewVO> getAllReviewMemberId(String memberId) {
 		log.info("getAllReviewMemberId()");
 		List<ReviewVO> result = reviewMapper.selectListByReviewMemberId(memberId);
+		
 		return result;
 	}
 
@@ -123,7 +125,7 @@ public class ReviewServiceImple implements ReviewService {
 	// 댓글(리뷰) 수정
 	@Transactional(value = "transactionManager")// 댓글 수정 후 리뷰의 평균 점수 수정
 	@Override
-	public int updateReview(int reviewId, String reviewContent, float reviewStar, int productId) {
+	public int updateReview(String memberId, String reviewContent, float reviewStar, int productId) {
 		log.info("updateReview()");
 		
 		// 소수점 첫 째 자리까지만 출력
@@ -131,9 +133,10 @@ public class ReviewServiceImple implements ReviewService {
 				
 		ReviewVO reviewVO = new ReviewVO();
 		// reviewVO에 각 변경사항 변수들 저장
-		reviewVO.setReviewId(reviewId);
+		reviewVO.setMemberId(memberId);
 		reviewVO.setReviewContent(reviewContent);
 		reviewVO.setReviewStar(reviewStar);
+		reviewVO.setProductId(productId);
 		log.info("reviewContent: " + reviewContent);
 		int updateRes = reviewMapper.updateReview(reviewVO);
 

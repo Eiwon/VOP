@@ -196,7 +196,7 @@ td {
 	<p>상품 이미지 설명</p>
 
 	<div>
-		<c:forEach var="imgUrl" items="${productDetails.detailsUrl }">
+		<c:forEach var="imgUrl" items="${productDetails.detailsUrl}">
 			<img src="${imgUrl }">
 		</c:forEach>
 	</div>

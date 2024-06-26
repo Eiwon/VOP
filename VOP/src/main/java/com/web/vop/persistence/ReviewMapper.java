@@ -42,6 +42,6 @@ public interface ReviewMapper {
 	// 상품 리뷰(별) 총합 검색
 	int selectReviewStar(int productId);
 	
-	
+	// 상품의 리뷰 평균값 검색
 	float selectReviewAgv(int productId);
 }

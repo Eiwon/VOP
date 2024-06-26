@@ -83,13 +83,6 @@
 						<input type="hidden" name="memberId" value="${memberDetails.getUsername()}">
 						<button type="submit">리뷰 수정</button>
 					</form>
-					<!-- 리뷰 삭제 동기 코드 -->
-					<!--<form action="../review/delete" method="POST">
-						<input type="hidden" name="productId"
-							value="${ProductVO.productId}"> <input type="hidden"
-							name="memberId" value="${memberDetails.getUsername()}">
-						<button type="submit">리뷰 동기 삭제</button>
-					</form> -->
 					
 					<button class="btnDelete" data-productid="${ProductVO.productId}">리뷰 삭제</button>
 					

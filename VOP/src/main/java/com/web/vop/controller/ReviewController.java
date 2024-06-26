@@ -66,31 +66,12 @@ public class ReviewController {
 
 	    log.info("productId : " + productId);
 	    log.info("imgId : " + imgId);
-	    
+
 	    ProductPreviewDTO productPreviewDTO = reviewService.getProductPreview(productId);
 	    if(productPreviewDTO != null) {
 	    	productPreviewDTO.setImgUrl(
 	    	awsS3Service.toImageUrl(productPreviewDTO.getImgPath(), productPreviewDTO.getImgChangeName())
 	    	);
-	    
-	    // 해당 상품이 있는지 확인 하는 코드(상품이 삭제되어도 주문 목록에 남아 있기 때문에 제작 함)
-	    //ProductVO productVO = productService.getProductById(productId);
-	    
-	    // 해당 상품이 있는지 확인
-//	    if (productVO != null) {
-//	        // imgId통해 이미지 조회
-//	        ImageVO imageVO = imageService.getImageById(imgId);
-//
-//	        String imgRealName = imageVO.getImgRealName();
-//	        String imgExtension = imageVO.getImgExtension();
-//
-//	        log.info("imageVO : " + imageVO);
-
-//	        model.addAttribute("imgRealName", imgRealName);
-//	        model.addAttribute("productId", productId);
-//	        model.addAttribute("imgId", imgId);
-//	        model.addAttribute("imgExtension", imgExtension);
-	        
 	    	model.addAttribute("productPreviewDTO", productPreviewDTO);
 	    	return "/review/register"; // 경로 반환
 	    } else {	
@@ -111,24 +92,17 @@ public class ReviewController {
 		log.info("productId : " + productId);
 		log.info("imgId : " + imgId);
 		
-		// productId, memberId를 통행 reviewVO 조회
-		ReviewVO reviewVO = reviewService.selectByReview(productId, memberId);
-		int reviewId = ((ReviewVO) reviewVO).getReviewId();
-		
 		// imgId통해 이미지 조회
 		ImageVO imageVO = imageService.getImageById(imgId);
 		
 		String imgRealName = imageVO.getImgRealName();
 		String imgExtension = imageVO.getImgExtension();
 		
-		log.info("imageVO : " + imageVO);
-		
 		log.info("imgRealName : " + imgRealName);
 		log.info("imgExtension : " + imgExtension);
 		
 		model.addAttribute("productId", productId);
 		model.addAttribute("imgRealName", imgRealName);
-		model.addAttribute("reviewId", reviewId);
 		model.addAttribute("imgId", imgId);
 		model.addAttribute("imgExtension", imgExtension);
 	} // end loginGET
@@ -165,24 +139,5 @@ public class ReviewController {
 		// 회원이 작성한 리뷰
 		model.addAttribute("reviewList", reviewList);
 	}// end readAllReview()
-	
-//  동기 삭제 코드 왜 만들었는지 기억이 안나요~ 기능 되요
-//	@PostMapping("/delete") // DELETE : 댓글(리뷰) 삭제 
-//	   public String deleteReview(Integer productId, @AuthenticationPrincipal MemberDetails memberDetails){
-//	      log.info("deleteReview()");
-//	      
-//	      String memberId = memberDetails.getUsername();
-//			
-//		  // memberId 확인 로그
-//		  log.info("memberId = " + memberId);
-//	      
-//	      // productId와 memberId 해당하는 댓글(리뷰) 삭제
-//	      int result = reviewService.deleteReview(productId, memberId);
-//
-//	      log.info(result + "행 댓글 삭제");
-//	      
-//	      // result값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
-//	      return "redirect:../review/list";
-//	   }// end deleteReview()
 
 }
