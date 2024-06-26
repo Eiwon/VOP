@@ -138,7 +138,7 @@ td {
 
 	<div>
 		<p>리뷰 평균 : ${productVO.reviewAvg}</p>
-		<p>댓글 총 갯수 : ${productVO.reviewNum}</p>
+		<p>리뷰 총 개수 : ${productVO.reviewNum}</p>
 	</div>
 	
 	<div>
@@ -152,6 +152,9 @@ td {
 
 	<!-- 상품 배송 정보 제작 해야함 -->
 	<div>
+		<p>상품 현황 : ${productVO.productState}</p>
+		<p>상품 재고 : ${productVO.productRemains}</p>
+		<p>상품 보관 장소 : ${productVO.productPlace}</p>
 		<p>판매자 : ${productVO.memberId}</p>
 		도착 일자 : <time id="current-date"></time>
 	</div>
@@ -193,7 +196,7 @@ td {
 	<!-- end 바로구매 버튼 -->
 
 	<!-- 상품 설명 이미지 -->
-	<p>상품 이미지 설명</p>
+	<p>상품 상세 설명</p>
 
 	<div>
 		<c:forEach var="imgUrl" items="${productDetails.detailsUrl}">
@@ -847,7 +850,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
 				}// end success
 			}); // end ajax
 		});//end document
-	} // end loadImg
+	} // end loadImg 
 	
 	// 시간 변환 함수
 	function toDate(timestamp) {

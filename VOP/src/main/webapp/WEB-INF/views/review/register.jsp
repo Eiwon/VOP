@@ -89,22 +89,7 @@ $(document).ready(function(){
         
     let selectedStar; // 전역 변수로 selectedStar 선언
     let memberId = "${memberDetails.getUsername()}";
-    //loadImg();
-    
-    // 이미지 없을때 이름과 확장명 보여주는 코드
-    /* function loadImg(){
-        $(document).find('img').each(function(){
-            let target = $(this);
-            let imgId = target.attr("alt");
-            $.ajax({
-                method : 'GET',
-                url : '../image/' + imgId,
-                success : function(result){
-                    target.attr('src', result);
-                }
-            }); // end ajax
-        });
-    } // end loadImg */
+ 
     
     // 라디오 버튼 클릭 이벤트 핸들러
     $('#starFieldset input[type="radio"]').click(function() {
