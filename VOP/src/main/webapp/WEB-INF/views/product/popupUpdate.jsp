@@ -292,7 +292,6 @@ img {
 						alert('삭제 요청 실패');
 					}else if(result == 101){
 						alert('삭제 성공');
-						window.close();
 					}else if(result == 100){
 						alert('삭제 실패');
 					}

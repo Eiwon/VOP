@@ -137,12 +137,12 @@ public class SellerController {
 	@PutMapping("/approval")
 	@ResponseBody
 	public ResponseEntity<Integer> decideRequest(@RequestBody SellerVO sellerVO) {
-		log.info("요청 승인 / 거절 : " + sellerVO.getMemberId());
+		log.info("요청 승인 / 거절 : " + sellerVO);
 		int res = sellerService.approveRequest(sellerVO);
 		String alarmMsg = null;
 		
 		if(res == 1) { // 결과 알람 송신
-			alarmMsg = sellerVO.getRequestState().equals("approve") ? "판매자 등록 신청이 승인되었습니다." : "판매자 등록 신청이 거절되었습니다.";
+			alarmMsg = sellerVO.getRequestState().equals(Constant.STATE_APPROVED) ? "판매자 등록 신청이 승인되었습니다." : "판매자 등록 신청이 거절되었습니다.";
 			((AlarmHandler)alarmHandler).sendInstanceAlarm("판매자 등록 신청 결과", alarmMsg, sellerVO.getMemberId());
 		}
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
@@ -227,7 +227,7 @@ public class SellerController {
 		sellerVO.setMemberId(memberDetails.getUsername());
 		sellerService.retrySellerRequest(sellerVO);
 		
-		return "redirect:seller/sellerRequest";
+		return "redirect:sellerRequest";
 	} // end retrySellerRequest
 	
 }

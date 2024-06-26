@@ -39,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 계정 정보 수정 -->
 	<update id="updateMember">
-		UPDATE MEMBER SET MEMBER_PW = NVL(#{memberPw}, MEMBER_PW), MEMBER_NAME = #{memberName},
+		UPDATE MEMBER SET MEMBER_PW = NVL(#{memberPw, jdbcType=VARCHAR}, MEMBER_PW), MEMBER_NAME = #{memberName},
 			MEMBER_EMAIL = #{memberEmail}, MEMBER_PHONE = #{memberPhone}
 			WHERE MEMBER_ID = #{memberId}
 	</update>

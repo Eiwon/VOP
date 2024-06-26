@@ -90,12 +90,11 @@ tr {
 				</tr>
 			</c:if>
 			<c:if test="${productVO.productState eq '승인 대기중' }">
-			
+				<tr>
+					<td><button onclick="sendResult('판매중')">승인</button></td>
+					<td><button onclick="sendResult('판매 불가')">거부</button></td>
+				</tr>
 			</c:if>
-			<tr>
-				<td><button onclick="sendResult('판매중')">승인</button></td>
-				<td><button onclick="sendResult('판매 불가')">거부</button></td>
-			</tr>
 		</tfoot>
 	</table>
 

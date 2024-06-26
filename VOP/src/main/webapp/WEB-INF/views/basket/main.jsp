@@ -6,6 +6,29 @@
 <meta charset="UTF-8">
 <meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<style type="text/css">
+.col_check{
+	width: 50px;
+}
+.col_img{
+	width: 100px;
+}
+.col_name{
+	width: 150px;
+}
+.col_price{
+	width: 100px;
+}
+.col_remains{
+	width: 100px;
+}
+.col_total{
+	width: 100px;
+}
+.col_num{
+	width: 400px;
+}
+</style>
 <title>장바구니</title>
 </head>
 <jsp:include page="../include/header.jsp"></jsp:include>
@@ -18,6 +41,17 @@
 	<div id="product_container">
 		<button id="btn_clear">장바구니 비우기</button>
 		<table>
+			<thead>
+				<tr>
+					<td class="col_check">선택</td>
+					<td class="col_img">이미지</td>
+					<td class="col_name">상품명</td>
+					<td class="col_price">가격</td>
+					<td class="col_remains">남은 수량</td>
+					<td class="col_total">총액</td>
+					<td class="col_num">선택 수량</td>
+				</tr>
+			</thead>
 			<tbody id="basket_list"></tbody>
 		</table>
 		<input id="chk_select_all" type="checkbox">
@@ -71,14 +105,14 @@
 					for(x in basketMap){
 						const productVO = basketMap[x];
 						str += '<tr class="basket_item">' +
-							'<td><input type="checkbox" class="chk_product"></td>' +
-							'<td><img src="' + productVO.imgUrl + '"></td>' +
+							'<td class="col_check"><input type="checkbox" class="chk_product"></td>' +
+							'<td class="col_img"><img src="' + productVO.imgUrl + '"></td>' +
 							'<td class="product_id" hidden="hidden">' + productVO.productId + '</td>' +
-							'<td class="product_name">' + productVO.productName + '</td>' +
-							'<td class="product_price">' + productVO.productPrice + '</td>' +
-							'<td class="product_remains">' + productVO.productRemains + '</td>' +
-							'<td class="total_price">' + (productVO.productPrice * productVO.productNum) + '</td>' +
-							'<td>' +
+							'<td class="product_name col_name">' + productVO.productName + '</td>' +
+							'<td class="product_price col_price">' + productVO.productPrice + '원</td>' +
+							'<td class="product_remains col_remains">' + productVO.productRemains + '개</td>' +
+							'<td class="total_price col_total">' + (productVO.productPrice * productVO.productNum) + '원</td>' +
+							'<td class="col_num btn_num">' +
 								'<button class="btnMinus">-</button>' +
 								'<input class="product_num" type="number" value=' + productVO.productNum + '>' +
 								'<button class="btnPlus">+</button>' +

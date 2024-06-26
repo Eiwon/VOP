@@ -40,8 +40,6 @@ public class MembershipController {
 		String memberId = memberDetails.getUsername();
 		log.info("memberId : " + memberId);
 		
-		// getAuth() ªË¡¶!
-
 		PaymentWrapper payment = membershipService.makeMembershipForm(memberId);
 		log.info("paymentWrapper ∞¥√º : " + payment);
 		
