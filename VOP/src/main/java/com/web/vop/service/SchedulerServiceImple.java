@@ -17,7 +17,9 @@ import com.web.vop.persistence.OrderMapper;
 import com.web.vop.socket.AlarmHandler;
 import com.web.vop.util.MailAuthenticationUtil;
 
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 @Component
 public class SchedulerServiceImple {
 
@@ -35,7 +37,7 @@ public class SchedulerServiceImple {
 	public void checkMembershipExpiry() {
 			
 			List<MembershipExpiryDTO> expiryInfoList = membershipMapper.selectExpiryDateBySchedulling();
-	     
+	     log.info(expiryInfoList);
 	     // 조회된 만료일을 기반으로 처리 로직을 구현
 	        if (expiryInfoList != null && !expiryInfoList.isEmpty()) {
 	            Date today = new Date();
@@ -59,7 +61,7 @@ public class SchedulerServiceImple {
 	public void checkDeliveryExpiry() {
 		String title, content;
 		List<DeliveryExpectDTO> expectInfoList = orderMapper.selectDeliveryExpect();
-			Date today2 = new Date();
+		Date today2 = new Date();
 		if(expectInfoList != null && !expectInfoList.isEmpty()) {
 			for(DeliveryExpectDTO list : expectInfoList) {
 				Date expectDate = list.getExpectDeliveryDate();

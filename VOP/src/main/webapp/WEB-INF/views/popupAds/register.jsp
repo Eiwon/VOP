@@ -29,8 +29,7 @@
 		</div>
 		<div>
 			<span>내용</span>
-			<textarea rows="4" cols="25" name="content" class="content">
-			</textarea>
+			<textarea rows="4" cols="25" name="content" class="content"></textarea>
 		</div>
 		<div>
 			<select class="selectCoupon" name="callbackInfo" hidden="hidden">
