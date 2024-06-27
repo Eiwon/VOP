@@ -256,7 +256,8 @@ public class MemberController {
 	} // end withdrawGET
 	
 	@PostMapping("/withdrawal")
-	public String withdrawPOST(Model model, String authCode, @AuthenticationPrincipal UserDetails memberDetails) {
+	public String withdrawPOST(Model model, String authCode, @AuthenticationPrincipal UserDetails memberDetails,
+			HttpServletRequest request) {
 		log.info("회원 탈퇴 신청");
 				
 		AlertVO alertVO = new AlertVO();
@@ -268,7 +269,8 @@ public class MemberController {
 			// 인증 코드 일치
 			memberService.deleteMember(memberDetails.getUsername());
 			alertVO.setAlertMsg("회원 탈퇴되었습니다.");
-			alertVO.setRedirectUri("member/logout");
+			alertVO.setRedirectUri("board/main");
+			request.getSession().invalidate();
 			break;
 		case 101 : 
 			// 유효기간 만료

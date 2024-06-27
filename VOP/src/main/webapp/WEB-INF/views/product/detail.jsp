@@ -1,11 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!-- 세션 사용할수 있게하는 코드 -->
 <%@ page import="javax.servlet.http.HttpSession"%>
+
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+	
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal" />
 </sec:authorize>
@@ -13,10 +16,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+<!-- 한국어 인코딩 -->
 <meta charset="UTF-8">
 <meta name="${_csrf.parameterName }" content="${_csrf.token }">
+
 <!-- 모바일 관련 코드라서 없어도 동작 가능 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <!-- jquery 라이브러리 import -->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 
@@ -107,11 +113,11 @@ td {
 <body>
 	
 	<!-- 카카오 공유 아이콘 -->
-	<div class="right-align">
+	<!-- <div class="right-align">
 		<a id="kakaotalk-sharing-btn" href="javascript:;"> 
 		<img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" />
 		</a>
-	</div>
+	</div> -->
 	
 	<!-- 상품 상세 페이지 제작 중 -->
 	<h2>상품 상세 페이지</h2>
@@ -216,10 +222,10 @@ td {
 	<!-- 문의 페징처리 내용 -->
 	<div id="comments_list_page"></div>
 
-	<div>
+	<!-- <div>
 		<h3>배송/교환/반품 안내</h3>
 		<p>내용 작성 예정</p>
-	</div>
+	</div> -->
 
 	<!-- 좋아요 표시 제작 예정? -->
 
@@ -759,7 +765,6 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
                     answers: matchingAnswers  // 일치하는 답변들 배열을 answers 필드로 저장
                 });
             }
-
             return result;  // 일치하는 요소들을 담은 배열 반환
         }
 
