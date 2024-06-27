@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.socket.WebSocketHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,6 +43,7 @@ import com.web.vop.domain.SellerVO;
 import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.ImageService;
 import com.web.vop.service.ProductService;
+import com.web.vop.socket.AlarmHandler;
 import com.web.vop.util.Constant;
 import com.web.vop.util.FileAnalyzerUtil;
 import com.web.vop.util.PageMaker;
@@ -67,6 +69,9 @@ public class ProductController {
 	
 	@Autowired
 	private String uploadPath;
+	
+	@Autowired
+	private WebSocketHandler alarmHandler;
 	
 	// 상품 상세 정보 조회
 	@GetMapping("/detail")
@@ -407,6 +412,10 @@ public class ProductController {
 		log.info("상품 상태 변경 : " + productVO.getProductId() + ", " + productVO.getProductState());
 		int res = productService.setProductState(productVO.getProductState(), productVO.getProductId());
 		log.info(res + "행 수정 성공");
+		
+		//String msgContent = "";
+		
+		//((AlarmHandler)alarmHandler).sendInstanceAlarm(thumbnailUploadPath, uploadPath, thumbnailUploadPath);
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end updateProductState

@@ -110,8 +110,10 @@
 	msgHandler.instanceAlarm = function(msg){
 		console.log('알림 메시지 수신 : ' + msg);
 		alarmPermitRequest();
-		showSocketNotification(msg.title, msg.content);
-		
+		let notification = new Notification(msg.title, {
+			title : msg.title,
+			body : msg.content
+		});
 	} // 일반 알림 메시지 수신
 	
 	msgHandler.consultRequest = function(msg){
@@ -148,6 +150,7 @@
 		}
 		
 	} // end alarmPermitRequest
+	
 	
 	function showSocketNotification(title, content, onclickListener) {
 		let notification = new Notification(title, {
