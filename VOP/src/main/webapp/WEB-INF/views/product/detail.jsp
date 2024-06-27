@@ -105,17 +105,18 @@ td {
 
 </head>
 <body>
-
-	<!-- 상품 상세 페이지 제작 중 -->
-	<h2>상품 상세 페이지</h2>
-	<c:set var="productVO" value="${productDetails.productVO }"/>
-	<c:set var="memberVO" value="${productDetails.memberVO }"/>
+	
 	<!-- 카카오 공유 아이콘 -->
 	<div class="right-align">
 		<a id="kakaotalk-sharing-btn" href="javascript:;"> 
 		<img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" />
 		</a>
 	</div>
+	
+	<!-- 상품 상세 페이지 제작 중 -->
+	<h2>상품 상세 페이지</h2>
+	<c:set var="productVO" value="${productDetails.productVO }"/>
+	<c:set var="memberVO" value="${productDetails.memberVO }"/>
 
 	<div>
 		<p>카테고리 : ${productVO.category }</p>
@@ -205,12 +206,12 @@ td {
 	</div>
 	
 	<!-- 댓글 화면 코드 및 가운데 정렬 -->
-	<h3>리뷰</h3>
+	<h3>상품 리뷰</h3>
 	<div id="review"></div>
 	<!-- 리뷰 페징처리 내용 -->
 	<div id="product_list_page"></div>
 	
-	<h3>문의</h3>
+	<h3>상품 문의</h3>
 	<div id="comments"></div>
 	<!-- 문의 페징처리 내용 -->
 	<div id="comments_list_page"></div>
@@ -247,8 +248,8 @@ td {
     	      imageUrl: imageUrl,// 썸네일 이미지 가져오는 기능(월래는 url를 통해 이미지 불려 옴)
     	      link: {
     	        // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
-    	        mobileWebUrl: 'http://192.160.0.146:8080/vop/board/main', //카카오 api에 등록된 경로
-    	        webUrl: 'http://192.160.0.146:8080/vop/board/main',
+    	        mobileWebUrl: 'http://localhost:8080/vop/board/main', //카카오 api에 등록된 경로
+    	        webUrl: 'http://localhost:8080/vop/board/main',
     	      },
     	    },
     	    commerce: { // 상품 설명
@@ -261,8 +262,8 @@ td {
     	      {
     	        title: '상품 보러가기', // 공유 했을때 버튼
     	        link: { // 클릭시 이동하는 링크
-    	          mobileWebUrl: 'http://192.160.0.146:8080/vop/product/detail?productId=${productVO.productId }', // 앱 버전
-    	          webUrl: 'http://192.160.0.146:8080/vop/product/detail?productId=${productVO.productId }', // 웹 버전
+    	          mobileWebUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 앱 버전
+    	          webUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 웹 버전
     	        },
     	      },
     	    ],
@@ -771,7 +772,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
             for (let i = 0; i < comments.length; i++) {
                 // 문의 내용 행 추가
                 form += '<tr>' +
-                		'<td colspan="4">질문 내용</td>' +  
+                		'<td colspan="4">문의 내용</td>' +  
                 		'</tr>' +
                 		'<tr>' +
                         '<td class="inquiryId">' + comments[i].inquiryId + '</td>' +

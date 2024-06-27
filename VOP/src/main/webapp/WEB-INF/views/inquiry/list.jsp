@@ -26,6 +26,7 @@
 </style>
 </head>
 <body>
+	<h1>상품 문의 목록</h1>
 	<table>
 		<tbody>
 			<c:choose>
