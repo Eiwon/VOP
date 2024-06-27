@@ -78,7 +78,7 @@ public class ProductController {
 	public void productDetailGET(Model model, Integer productId) {
 		log.info("productDetailGET()");
 		
-		// 상품, 회원, 썸네일 이미지 정보 검색 해서 조인
+		// 상품, 이미지 테이블 정보 검색 일부 컬럼 조인 해서 조인
 		ProductDetailsDTO productDetails = productService.getDetails(productId);
 		log.info("상세 정보 검색 결과 : " + productDetails);
 		
@@ -101,24 +101,6 @@ public class ProductController {
 		model.addAttribute("productDetails", productDetails);
 	} // end productDetail()
 	
-	// 상품 상세 정보 조회
-//		@GetMapping("/detail")
-//		public void productDetailGET(Model model, Integer productId) {
-//			log.info("productDetailGET()");
-//			
-//			// productId에 해당하는 상품 조회 
-//			ProductVO productVO = productService.getProductById(productId);	
-//			
-//			// 상세 이미지 조회
-//			List<ImageVO> imageList = imageService.getByProductId(productId);
-//			for(ImageVO image  : imageList) {
-//				log.info(image);
-//			}
-//			// 상품 조회 정보
-//			model.addAttribute("productVO", productVO);
-//			// 상품 설명 이미지 조회 정보
-//			model.addAttribute("imageList", imageList);
-//		} // end productDetail()
 	
 	@GetMapping("/register")
 	public void registerGET() {

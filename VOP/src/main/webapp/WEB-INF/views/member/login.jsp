@@ -47,6 +47,7 @@ body {
 			</div>
 		</form>
 		<div class="linkMember">
+			<a href="../board/main">VOP</a>
 			<a href="register">회원 가입</a>
 			<a href="findAccount">아이디 찾기</a>
 			<a href="findPassword">비밀번호 찾기</a>
