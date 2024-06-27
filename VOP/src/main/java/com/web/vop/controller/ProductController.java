@@ -70,8 +70,8 @@ public class ProductController {
 	@Autowired
 	private String uploadPath;
 	
-	@Autowired
-	private WebSocketHandler alarmHandler;
+	//@Autowired
+	//private WebSocketHandler alarmHandler;
 	
 	// 상품 상세 정보 조회
 	@GetMapping("/detail")
