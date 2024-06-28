@@ -47,6 +47,8 @@ import lombok.extern.log4j.Log4j;
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter implements SecurityConfigConstants {
 	
+	@Autowired
+	UserDetailsService userDetailsService;
 	
 	@Autowired
 	PersistentTokenRepository tokenRepository;
@@ -84,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.rememberMeCookieName("rememberMe") 
 			.tokenValiditySeconds(60*60*24*3)
 			.tokenRepository(tokenRepository)
-			.userDetailsService(userDetailsServiceImple())
+			.userDetailsService(userDetailsService)
 			.authenticationSuccessHandler(loginSuccessHandler());
 		
 		http.logout()
@@ -111,9 +113,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		log.info("auth check " + auth);
-		auth.userDetailsService(userDetailsServiceImple()).passwordEncoder(passwordEncoder());
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	} // end configure
 
+	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	} // end passwordEncoder
@@ -137,15 +140,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 		return loginFailHandler;
 	} // end loginFailHandler
 	
-	public UserDetailsService userDetailsServiceImple() {
-		return new UserDetailsServiceImple();
-	}
+//	public UserDetailsService userDetailsServiceImple() {
+//		return new UserDetailsServiceImple();
+//	}
 	
 	public SimpleUrlLogoutSuccessHandler logoutSuccessHandler() {
 		return new LogoutSuccessHandler();
 	} // end logoutSuccessHandler
 	
-	@Bean
 	public AccessDeniedHandler securityAccessDeniedHandler() {
 		return new SecurityAccessDeniedHandler();
 	} // end securityAccessDeniedHandler

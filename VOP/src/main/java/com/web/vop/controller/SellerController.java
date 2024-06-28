@@ -143,7 +143,7 @@ public class SellerController {
 		
 		if(res == 1) { // 결과 알람 송신
 			alarmMsg = sellerVO.getRequestState().equals(Constant.STATE_APPROVED) ? "판매자 등록 신청이 승인되었습니다." : "판매자 등록 신청이 거절되었습니다.";
-			((AlarmHandler)alarmHandler).sendInstanceAlarm("판매자 등록 신청 결과", alarmMsg, sellerVO.getMemberId());
+			((AlarmHandler)alarmHandler).sendAuthUpdateAlarm(sellerVO.getMemberId(), alarmMsg);
 		}
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end refuseRequest
@@ -154,7 +154,7 @@ public class SellerController {
 	public ResponseEntity<Integer> revokeAuth(@RequestBody SellerVO sellerVO){
 		log.info("판매자 권한 회수");
 		int res = sellerService.revokeAuth(sellerVO);
-		
+		((AlarmHandler)alarmHandler).sendAuthUpdateAlarm(sellerVO.getMemberId(), "판매자 권한이 취소되었습니다.");
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end revokeAuth
 	

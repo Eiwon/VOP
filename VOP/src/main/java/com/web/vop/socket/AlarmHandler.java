@@ -35,6 +35,7 @@ public class AlarmHandler extends TextWebSocketHandler{
 	private static final String TYPE_INSTANCE = "instanceAlarm";
 	private static final String TYPE_REPLY = "replyAlarm";
 	private static final String TYPE_ALERT = "alert";
+	private static final String TYPE_AUTH_UPDATE = "authUpdateAlarm";
 	
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -178,6 +179,14 @@ public class AlarmHandler extends TextWebSocketHandler{
 		returnMsg.setCallbackInfo(redirectId);
 		unicast(returnMsg);
 	} // end sendReplyAlarm
+	
+	public void sendAuthUpdateAlarm(String memberId, String content) {
+		MessageVO returnMsg = new MessageVO();
+		returnMsg.setReceiverId(memberId);
+		returnMsg.setContent(content);
+		returnMsg.setType(TYPE_AUTH_UPDATE);
+		unicast(returnMsg);
+	} // end sendAuthUpdateAlarm
 	
 	public void sendInstanceAlarm(String title, String content, String receiverId) {
 		MessageVO returnMsg = new MessageVO();
