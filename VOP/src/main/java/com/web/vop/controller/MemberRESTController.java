@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.service.MemberService;
+import com.web.vop.service.UserDetailsServiceImple;
 import com.web.vop.util.MailAuthenticationUtil;
 
 import lombok.extern.log4j.Log4j;
@@ -33,6 +37,9 @@ public class MemberRESTController {
 	@Autowired
 	MailAuthenticationUtil mailAuthService;
 
+	@Autowired
+	UserDetailsService userDetailsService;
+	
 	@GetMapping("/idDupChk") // id 중복 체크
 	public ResponseEntity<Integer> checkIdDup(String memberId){
 		log.info("member id 중복 체크" + memberId);
@@ -61,7 +68,7 @@ public class MemberRESTController {
 //	} // end findByNameAndPhone
 	
 	@PostMapping("/check")
-	public ResponseEntity<Boolean> checkMember(@AuthenticationPrincipal MemberDetails memberDetails, String memberPw){
+	public ResponseEntity<Boolean> checkMember(@AuthenticationPrincipal UserDetails memberDetails, String memberPw){
 		log.info("비밀번호 확인");
 		boolean comp = memberService.checkLogin(memberDetails.getUsername(), memberPw);
 		
@@ -88,5 +95,15 @@ public class MemberRESTController {
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end mailAuthenticationGET
 	
+	@GetMapping("/reload")
+	public ResponseEntity<Integer> reloadAuth(@AuthenticationPrincipal UserDetails memberDetails){
+		log.info("권한 최신화");
+		int res = 1;
+		//실시간 권한 변경 가능하게 하기
+		//판매중이 아닌 상품에 일반유저가 url로 접근하는거 막기
+		memberDetails = userDetailsService.loadUserByUsername(memberDetails.getUsername());
+		
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+	} // end reloadAuth
 	
 }

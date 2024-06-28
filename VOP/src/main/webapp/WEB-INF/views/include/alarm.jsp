@@ -109,6 +109,7 @@
 	
 	msgHandler.instanceAlarm = function(msg){
 		console.log('알림 메시지 수신 : ' + msg);
+		alert(msg.content);
 		alarmPermitRequest();
 		let notification = new Notification(msg.title, {
 			title : msg.title,
@@ -120,6 +121,25 @@
 		console.log('consultRequest 메시지 수신 ' + msg);
 		
 		alarmPermitRequest();
+		
+		let req = confirm("1대1 상담 요청 수신. 수락하시겠습니까?");
+		
+		if(req){
+			let targetUrl = '../board/consult?roomId=' + msg.roomId;
+			console.log('onclick : ' + targetUrl);
+			const popupStat = {
+					'url' : targetUrl,
+					'name' : 'popupConsultAdmin',
+					'option' : 'width=800, height=800, top=50, left=400'
+			};
+				
+			// 팝업 창 띄우기
+			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
+			popup.onbeforeunload = function(){
+				// 팝업 닫힐 때 실행
+				console.log("팝업 닫힘");
+			} // end popup.onbeforeunload
+		}
 		
 		showSocketNotification("1대1 상담 요청", "1대1 상담 요청 수신. 수락하시겠습니까?", function(){
 			let targetUrl = '../board/consult?roomId=' + msg.roomId;
@@ -159,6 +179,7 @@
 		});
 		notification.onclick = onclickListener;
 		console.log(notification);
+		
 	} // end showSocketNotification
 	
 	function showSocketAlarm(msg, onclickListener){
