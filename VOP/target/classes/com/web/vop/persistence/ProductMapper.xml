@@ -122,11 +122,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		IMAGE_SEQ.CURRVAL, SYSDATE, 0 
    		)
 	</insert>
-	
-	<!-- 최근에 등록된 상품 ID 검색 -->
-	<select id="selectLastInsertId" resultType="Integer">
-		SELECT MAX(PRODUCT_ID) FROM PRODUCT
-	</select>
    
 	<!-- 상품 카테고리로 검색 (페이징) -->
 	<!-- <select id="selectByCategory" resultMap="productPreviewResultMap">
