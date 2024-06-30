@@ -170,9 +170,7 @@ public class ProductController {
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
 		
-//		
 		productList = productService.search(pageMaker);
-//		
 		pageMaker.update();
 		awsS3Service.toImageUrl(productList);
 		

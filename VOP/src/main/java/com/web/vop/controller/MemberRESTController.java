@@ -103,7 +103,6 @@ public class MemberRESTController {
 		Authentication authen = new UsernamePasswordAuthenticationToken(
 				updatedDetails.getUsername(), updatedDetails.getPassword(), updatedDetails.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(authen);
-		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end reloadAuth
 	

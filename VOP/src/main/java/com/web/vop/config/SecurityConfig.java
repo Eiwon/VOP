@@ -48,9 +48,6 @@ import lombok.extern.log4j.Log4j;
 public class SecurityConfig extends WebSecurityConfigurerAdapter implements SecurityConfigConstants {
 	
 	@Autowired
-	UserDetailsService userDetailsService;
-	
-	@Autowired
 	PersistentTokenRepository tokenRepository;
 	
 	@Override
@@ -86,7 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.rememberMeCookieName("rememberMe") 
 			.tokenValiditySeconds(60*60*24*3)
 			.tokenRepository(tokenRepository)
-			.userDetailsService(userDetailsService)
+			.userDetailsService(userDetailsServiceImple())
 			.authenticationSuccessHandler(loginSuccessHandler());
 		
 		http.logout()
@@ -113,7 +110,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		log.info("auth check " + auth);
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+		auth.userDetailsService(userDetailsServiceImple()).passwordEncoder(passwordEncoder());
 	} // end configure
 
 	@Bean
@@ -140,9 +137,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 		return loginFailHandler;
 	} // end loginFailHandler
 	
-//	public UserDetailsService userDetailsServiceImple() {
-//		return new UserDetailsServiceImple();
-//	}
+	@Bean
+	public UserDetailsService userDetailsServiceImple() {
+		return new UserDetailsServiceImple();
+	}
 	
 	public SimpleUrlLogoutSuccessHandler logoutSuccessHandler() {
 		return new LogoutSuccessHandler();
