@@ -176,8 +176,6 @@ public class ProductController {
 		
 		model.addAttribute("productList", productList);
 		model.addAttribute("pageMaker", pageMaker);
-		//model.addAttribute("category", category); // 검색결과 내에서 페이지 이동을 구현하기 위해, 기존 검색 조건 return
-		//model.addAttribute("word", word);
 		
 	} // end search
 	

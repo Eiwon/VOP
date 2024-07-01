@@ -47,30 +47,11 @@ public interface ProductMapper {
 	// 썸네일이 있는 상품 등록
 	int insertProductWithThumbnail(ProductVO productVO);
 	
-	// 방금 등록한 상품 id 검색
-	int selectLastInsertId();
+	// 검색어 또는 카테고리 검색 (페이징)
+	List<ProductPreviewDTO> selectByNameNCategory(Pagination pagination);
 	
-	// 카테고리로 검색
-	List<ProductPreviewDTO> selectByCategory(
-			@Param("category") String category, @Param("pagination") Pagination pagination, @Param("productState") String productState);
-	
-	// 카테고리로 검색 결과 수량
-	int selectByCategoryCnt(@Param("category") String category, @Param("productState") String productState);
-	
-	// 이름에 검색어가 포함된 상품 검색
-	List<ProductPreviewDTO> selectByName(
-			@Param("pagination") Pagination pagination, @Param("productState") String productState);
-	
-	// 이름에 검색어가 포함된 상품 검색 결과 수량
-	int selectByNameCnt(@Param("pagination") Pagination pagination, @Param("productState") String productState);
-	
-	// 카테고리 내에서, 이름에 검색어가 포함된 상품 검색
-	List<ProductPreviewDTO> selectByNameInCategory(
-			@Param("pagination") Pagination pagination, @Param("productState") String productState);
-	
-	// 카테고리 내에서, 이름에 검색어가 포함된 상품 검색 결과 수량
-	int selectByNameInCategoryCnt(@Param("pagination") Pagination pagination, 
-			@Param("productState") String productState);
+	// 검색어 또는 카테고리 검색 결과 수
+	int selectByNameNCategoryCnt(Pagination pagination);
 	
 	// memberId로 상품 조회
 	List<ProductPreviewDTO> selectByMemberId(@Param("memberId") String memberId, @Param("pagination") Pagination pagination);
