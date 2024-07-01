@@ -58,6 +58,9 @@
 	
 	<script type="text/javascript">
 		
+		$('.search-input').val('${word}');
+		$('#boxCategory').find('option[value="${category}"]').attr('selected', 'selected');
+		
 		function toDetails(input){
 			let productId = $(input).find('.productId').text();
 			location.href = 'detail?productId=' + productId;

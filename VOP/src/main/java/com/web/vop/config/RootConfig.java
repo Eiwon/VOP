@@ -68,10 +68,5 @@ public class RootConfig {
 	   return new ObjectMapper();
    } 
    
-//   // 이메일 인증용 클래스
-//   @Bean
-//   public MailAuthenticationUtil mailAuthenticationUtil() {
-//	   return new MailAuthenticationUtil();
-//   } // end mailAuthenticationUtil
    
 } // end RootConfig

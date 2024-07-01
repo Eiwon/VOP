@@ -107,17 +107,51 @@
 		});
 	}; // 타입이 replyAlarm인 메시지 수신시 호출될 함수
 	
+	msgHandler.authUpdateAlarm = function(msg){
+		console.log('권한 변경 메시지 수신 : ' + msg);
+		
+		$.ajax({
+			method : 'GET',
+			url : '../member/reload',
+			success : function(result){
+				console.log('권한 리로드 결과 : ' + result);
+			}
+		});
+		
+		alert(msg.content);
+		
+	} // end updateAuthAlarm
+	
 	msgHandler.instanceAlarm = function(msg){
 		console.log('알림 메시지 수신 : ' + msg);
-		alarmPermitRequest();
-		showSocketNotification(msg.title, msg.content);
-		
+		alert(msg.content);
+		let notification = new Notification(msg.title, {
+			title : msg.title,
+			body : msg.content
+		});
 	} // 일반 알림 메시지 수신
 	
 	msgHandler.consultRequest = function(msg){
 		console.log('consultRequest 메시지 수신 ' + msg);
 		
-		alarmPermitRequest();
+		let req = confirm("1대1 상담 요청 수신. 수락하시겠습니까?");
+		
+		if(req){
+			let targetUrl = '../board/consult?roomId=' + msg.roomId;
+			console.log('onclick : ' + targetUrl);
+			const popupStat = {
+					'url' : targetUrl,
+					'name' : 'popupConsultAdmin',
+					'option' : 'width=800, height=800, top=50, left=400'
+			};
+				
+			// 팝업 창 띄우기
+			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
+			popup.onbeforeunload = function(){
+				// 팝업 닫힐 때 실행
+				console.log("팝업 닫힘");
+			} // end popup.onbeforeunload
+		}
 		
 		showSocketNotification("1대1 상담 요청", "1대1 상담 요청 수신. 수락하시겠습니까?", function(){
 			let targetUrl = '../board/consult?roomId=' + msg.roomId;
@@ -149,6 +183,7 @@
 		
 	} // end alarmPermitRequest
 	
+	
 	function showSocketNotification(title, content, onclickListener) {
 		let notification = new Notification(title, {
 			title : title,
@@ -156,6 +191,7 @@
 		});
 		notification.onclick = onclickListener;
 		console.log(notification);
+		
 	} // end showSocketNotification
 	
 	function showSocketAlarm(msg, onclickListener){

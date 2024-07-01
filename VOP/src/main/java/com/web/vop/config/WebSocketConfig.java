@@ -27,7 +27,6 @@ public class WebSocketConfig implements WebSocketConfigurer{
 		registry.addHandler(consultHandler(), "/consult");
 	}
 	
-
 	@Bean
 	public ServletServerContainerFactoryBean createWebSocketContainer() {
 		// 메세지의 크기 제한 설정
