@@ -30,6 +30,7 @@
 	<table>
 		<tbody>
 			<c:choose>
+			<!-- 조건 문으로서  listInquiry값이 null 값인지 확인 하는 코드-->
 				<c:when test="${not empty listInquiry}">
 					<c:forEach var="InquiryVO" items="${listInquiry}">
 						<tr>
