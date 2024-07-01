@@ -96,8 +96,6 @@ public class MemberRESTController {
 	public ResponseEntity<Integer> reloadAuth(@AuthenticationPrincipal UserDetails memberDetails){
 		log.info("권한 최신화");
 		int res = 1;
-		//실시간 권한 변경 가능하게 하기
-		//판매중이 아닌 상품에 일반유저가 url로 접근하는거 막기
 		UserDetails updatedDetails = userDetailsService.loadUserByUsername(memberDetails.getUsername());
 		log.info(updatedDetails);
 		Authentication authen = new UsernamePasswordAuthenticationToken(

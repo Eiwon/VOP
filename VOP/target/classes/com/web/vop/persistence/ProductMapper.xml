@@ -166,12 +166,50 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		WHERE CATEGORY = #{pagination.category} AND PRODUCT_NAME LIKE #{pagination.word} AND PRODUCT_STATE = #{productState}
    		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
    		) PD LEFT JOIN IMAGE ON PD.IMG_ID = IMAGE.IMG_ID
+		<!-- <choose>
+			<when test="type == 'title'.toString()">
+				LIKE '%'||#{keyword}||'%'
+			</when>
+		</choose> -->
 	</select>
 	
 	<!-- 카테고리를 선택하여 이름으로 검색 결과 수량 -->
 	<select id="selectByNameInCategoryCnt" resultType="Integer">
 		SELECT COUNT(PRODUCT_ID) FROM PRODUCT 
 		WHERE CATEGORY = #{pagination.category} AND PRODUCT_NAME LIKE #{pagination.word} AND PRODUCT_STATE = #{productState}
+	</select>
+
+	<!-- 검색어 또는 카테고리 검색 (페이징) -->
+	<select id="selectByNameNCategory" resultMap="productPreviewResultMap">
+		SELECT PD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
+		SELECT * FROM (
+   		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID DESC) RN
+   		FROM PRODUCT
+   		<choose>
+   			<when test="pagination.category == '전체'.toString()">
+   				WHERE PRODUCT_NAME LIKE '%'||#{pagination.word}||'%' AND PRODUCT_STATE = '판매중'
+   			</when>
+   			<otherwise>
+   				WHERE CATEGORY = #{pagination.category} AND 
+   				PRODUCT_NAME LIKE '%'||#{pagination.word}||'%' AND PRODUCT_STATE = '판매중'
+   			</otherwise>
+   		</choose>
+ 		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+   		) PD LEFT JOIN IMAGE ON PD.IMG_ID = IMAGE.IMG_ID
+	</select>
+	
+	<!-- 검색어 또는 카테고리 검색결과 수 -->
+	<select id="selectByNameNCategoryCnt" resultMap="productPreviewResultMap">
+   		SELECT COUNT(*) FROM PRODUCT
+   		<choose>
+   			<when test="pagination.category == '전체'.toString()">
+   				WHERE PRODUCT_NAME LIKE '%'||#{pagination.word}||'%' AND PRODUCT_STATE = '판매중'
+   			</when>
+   			<otherwise>
+   				WHERE CATEGORY = #{pagination.category} AND 
+   				PRODUCT_NAME LIKE '%'||#{pagination.word}||'%' AND PRODUCT_STATE = '판매중'
+   			</otherwise>
+   		</choose>
 	</select>
 	
 	<!-- memberId로 상품 조회 -->

@@ -100,7 +100,7 @@ public class ProductController {
 		// model 객체에 productDetails를 추가하여 뷰에서 사용할 수 있도록 합니다.
 		model.addAttribute("productDetails", productDetails);
 	} // end productDetail()
-	
+
 	
 	@GetMapping("/register")
 	public void registerGET() {
