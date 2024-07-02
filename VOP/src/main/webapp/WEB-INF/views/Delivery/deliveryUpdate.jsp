@@ -23,7 +23,9 @@
 	<input type="hidden" id="deliveryId" name="deliveryId" value="${delivery.deliveryId}">
 	
     <label for="receiverName">받는 사람:</label>
-    <input type="text" id="receiverName" name="receiverName" value="${delivery.receiverName}" required><br><br>
+    <input type="text" id="receiverName" name="receiverName" onblur="checkValid(this)" value="${delivery.receiverName}" required>
+    <div></div> <!-- 유효성 메시지 출력을 위한 빈 div -->
+    <br><br>
 
     <!-- 우편번호 찾기 관련 코드 -->
     <input type="text" id="sample6_postcode" placeholder="우편번호">
@@ -32,7 +34,9 @@
     <input type="text" id="deliveryAddressDetails" name="deliveryAddressDetails" value="${delivery.deliveryAddressDetails}" placeholder="상세주소"><br><br>
 
     <label for="receiverPhone">휴대폰 번호:</label>
-    <input type="text" id="receiverPhone" name="receiverPhone" value="${delivery.receiverPhone}" placeholder="010-1234-5678" required><br><br>
+    <input type="text" id="receiverPhone" name="receiverPhone" onblur="checkValid(this)" value="${delivery.receiverPhone}" placeholder="010-1234-5678" required>
+    <div></div> <!-- 유효성 메시지 출력을 위한 빈 div -->
+    <br><br>
 
     <label for="requirement">배송 요청사항:</label><br>
     <textarea id="requirement" name="requirement" rows="4" cols="50">${delivery.requirement}</textarea><br><br>
@@ -152,6 +156,54 @@
     	
     });
     
+    let checkMap = {
+    		receiverName : {
+				exp : new RegExp("^[a-zA-Z가-힣]{2,20}$"),
+				success : "올바른 입력 형식 입니다.",
+				fail : "이름은 2~20자의 한글 또는 알파벳으로 입력하세요.",
+				isValid : false
+			},
+			
+			receiverPhone: {
+	            exp: new RegExp("^010-\\d{4}-\\d{4}$"),
+	            success: "올바른 입력 형식 입니다.",
+	            fail: "휴대폰 번호는 010-1234-5678 형식으로 입력하세요.",
+	            isValid: false
+	        }
+    };
+    
+ // 입력값의 유효성을 체크하는 함수
+    function checkValid(input){
+		let type = $(input).attr('id'); // 입력 요소의 id를 가져옴
+		let inputVal = $(input).val(); // 입력한 값
+		
+		console.log('Checking validity for:', type); // 디버깅을 위해 추가
+	    
+	    // checkMap에 type이 존재하는지 확인
+	    if (!checkMap.hasOwnProperty(type)) {
+	        console.error('checkMap에 존재하지 않는 type입니다:', type);
+	        return;
+	    }
+		
+		if(inputVal.length == 0){  // 입력값이 없을 경우
+			checkMap[type].isValid = false;
+			return;
+		}
+		
+		let isValid = checkMap[type].exp.test(inputVal); // 정규표현식을 이용해 유효성 검사
+		console.log(type + ' 유효성 확인 = ' + isValid);
+		
+		let msg = isValid ? checkMap[type].success : checkMap[type].fail; // 유효성에 따른 메시지 선택
+		
+		$(input).next().text(msg); // 입력 요소 다음에 메시지 출력
+		checkMap[type].isValid = isValid; // 유효성 상태 저장
+		
+		if(!isValid) {  // 유효하지 않으면 종료
+			return;
+		}
+			
+	} // end checkValid
+    
 </script>
 
 <script>
@@ -205,7 +257,7 @@ $(document).ready(function() {
 	$('#updateButton').click(function() {
 	    // 수정 동작 수행
 	    if (!$(this).prop('disabled')) { // 기본 배송지 설정이 되어있지 않을 때 
-	        alert("수정 되었습니다!");
+	        
 	        
 	    } else {
 	        alert("기본 배송지를 체크한 경우 수정할 수 없습니다.");
@@ -285,12 +337,6 @@ function checkDefaultAddress() {
             return;
         }
 
-        // 휴대폰 번호 형식 체크
-        if (!checkPhoneNumber(receiverPhone)) {
-            alert("올바른 휴대폰 번호 형식이 아닙니다. 국내 휴대번호만 입력 가능합니다.");
-            event.preventDefault(); // 폼 제출 막기
-            return;
-        }
 
         // 기본 배송지로 설정되었는지 확인
         var isDefault = $("#isDefault").prop("checked");
@@ -300,14 +346,17 @@ function checkDefaultAddress() {
             return;
         }
 
+        for (let x in checkMap) {
+            if (!checkMap[x].isValid) {
+                alert('유효하지 않은 입력 : ' + x);
+                event.preventDefault();
+                return;
+            }
+        }
         
     });
 
-    // 휴대폰 번호 형식 체크 함수
-    function checkPhoneNumber(receiverPhone) {
-        var phoneRegex = /^010-\d{4}-\d{4}$/;
-        return phoneRegex.test(receiverPhone);
-    }
+
 	
 	
 </script>

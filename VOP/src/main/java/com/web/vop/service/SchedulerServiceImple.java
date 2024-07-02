@@ -30,7 +30,7 @@ public class SchedulerServiceImple {
 	 @Autowired
 	 MailAuthenticationUtil mailAuthenticationUtil;
 	 
-	//@Scheduled(cron = "0 */10 * * * ?") // 10 분에 한 번 실행(TEST)
+	//@Scheduled(cron = "0 * * * * ?") // 1 분에 한 번 실행(TEST)
 	@Scheduled(cron = "0 0 12 * * ?") // 매일 12시에 실행
 	public void checkMembershipExpiry() {
 			
@@ -54,7 +54,8 @@ public class SchedulerServiceImple {
 	            }// end for()
 	        }// if()
 	}//end checkMembershipExpiry()
-
+	
+	//@Scheduled(cron = "0 * * * * ?") // 1 분에 한 번 실행(TEST)
 	@Scheduled(cron = "0 0 11 * * ?") // 매일 11시에 한 번 실행(TEST)
 	public void checkDeliveryExpiry() {
 		String title, content;

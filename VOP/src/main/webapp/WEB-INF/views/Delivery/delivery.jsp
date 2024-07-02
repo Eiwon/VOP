@@ -97,6 +97,5 @@ $(document).ready(function() {
 	
 	<div id="deliveryContainer"></div>
 
-	
 </body>
 </html>
