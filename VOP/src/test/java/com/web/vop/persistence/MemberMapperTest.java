@@ -1,8 +1,5 @@
 package com.web.vop.persistence;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,19 +20,35 @@ import com.web.vop.config.S3Config;
 import com.web.vop.config.SecurityConfig;
 import com.web.vop.config.ServletConfig;
 import com.web.vop.config.WebConfig;
+import com.web.vop.config.WebSocketConfig;
 import com.web.vop.domain.MemberVO;
 
 import lombok.extern.log4j.Log4j;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {WebConfig.class, RootConfig.class, SecurityConfig.class, S3Config.class, PaymentAPIConfig.class, ServletConfig.class})
+@ContextConfiguration(classes = {WebConfig.class, RootConfig.class, ServletConfig.class})
 @Log4j
 public class MemberMapperTest {
 
+	@Rule
+	public JUnitRestDocumentation restDocs = new JUnitRestDocumentation();
+    
+	private MockMvc mockMvc;
 	
 	@Autowired
-	MemberMapper memberMapper;
+	private MemberMapper memberMapper;
+	
+	@Autowired
+	private WebApplicationContext webApplicationContext;
+	
+	 @Before
+	 public void setUp() {
+	    mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+	                                   .apply(MockMvcRestDocumentation.documentationConfiguration(restDocs))
+	                                   .build();
+	 }
+	 
 	
 	
 	@Test
@@ -45,24 +58,26 @@ public class MemberMapperTest {
 		memberVO.setMemberPw("test1212");
 		memberVO.setMemberName("test");
 		memberVO.setMemberEmail("test@test.com");
-		memberVO.setMemberPhone("01012341234");
+		memberVO.setMemberPhone("01011111111");
 		memberVO.setMemberAuth("일반");
-		insertMember(memberVO);
-		selectByMemberId();
-		selectMemberIdById();
-		selectMemberIdWithPw();
-//		updateMember();
-//		updateMemberAuth();
-//		selectAuthById();
-//		selectByPhone();
-//		updateMemberPw();
-//		deleteMember();
-//		selectByNameAndPhone();
-//		selectIdByAuth();
-//		selectIdByNameAndEmail();
+		String memberId = memberVO.getMemberId();
+		String memberPw = memberVO.getMemberPw();
+//		insertMember(memberVO);
+//		selectByMemberId(memberVO.getMemberId());
+//		selectMemberIdById(memberVO.getMemberId());
+//		selectMemberIdWithPw(memberVO.getMemberId(), memberVO.getMemberPw());
+//		updateMember(memberVO);
+//		updateMemberAuth(memberVO.getMemberId(), memberVO.getMemberAuth());
+//		selectAuthById(memberVO.getMemberId());
+//		selectByPhone(memberVO.getMemberPhone());
+//		updateMemberPw(memberId, memberPw);
+//		deleteMember(memberId);
+//		selectByNameAndPhone(memberVO.getMemberName(), memberVO.getMemberEmail());
+//		selectIdByAuth("일반");
+//		selectIdByNameAndEmail("test12@test.com");
 //		selectEmailById();
 //		selectIdByIdAndEmail();
-//		revokeSellerAuth();
+		revokeSellerAuth();
 	}
 	
 	// 회원 등록
@@ -71,54 +86,54 @@ public class MemberMapperTest {
 	} // end insertMember
 
 	// memberId로 회원 조회
-	public void selectByMemberId() {
-		log.info(memberMapper.selectByMemberId("test1234"));
+	public void selectByMemberId(String memberId) {
+		log.info(memberMapper.selectByMemberId(memberId));
 	} // end selectByMemberId
 	
-	public void selectMemberIdById() {
-		log.info(memberMapper.selectMemberIdById("test1234"));
+	public void selectMemberIdById(String memberId) {
+		log.info(memberMapper.selectMemberIdById(memberId));
 	} // end selectMemberIdById
 	
-	public void selectMemberIdWithPw() {
-		log.info(memberMapper.selectMemberIdWithPw("test1234", "test1234"));
+	public void selectMemberIdWithPw(String memberId, String memberPw) {
+		log.info(memberMapper.selectMemberIdWithPw(memberId, memberPw));
 	} // end selectMemberIdWithPw
 	
-	public void updateMember(){
-		log.info(memberMapper.updateMember(new MemberVO()));
+	public void updateMember(MemberVO memberVO){
+		log.info(memberMapper.updateMember(memberVO));
 	} // end updateMember
 	
-	public void updateMemberAuth(){
-		log.info(memberMapper.updateMemberAuth("test1234", "관리자"));
+	public void updateMemberAuth(String memberId, String memberAuth){
+		log.info(memberMapper.updateMemberAuth(memberId, memberAuth));
 	} // end updateMemberAuth
 	
-	public void selectAuthById(){
-		log.info(memberMapper.selectAuthById("test1234"));
+	public void selectAuthById(String memberId){
+		log.info(memberMapper.selectAuthById(memberId));
 	} // end selectAuthById
 	
-	public void selectByPhone(){
-		log.info(memberMapper.selectByPhone("test1234"));
+	public void selectByPhone(String memberPhone){
+		log.info(memberMapper.selectByPhone(memberPhone));
 	} // end selectByPhone
 	
-	public void updateMemberPw(){
-		log.info(memberMapper.updateMemberPw("test1234", "test1234"));
+	public void updateMemberPw(String memberId, String memberPw){
+		log.info(memberMapper.updateMemberPw(memberId, memberPw));
 	} // end updateMemberPw
 	
-	public void deleteMember(){
-		log.info(memberMapper.deleteMember("test1234"));
+	public void deleteMember(String memberId){
+		log.info(memberMapper.deleteMember(memberId));
 	} // end deleteMember
 	
-	public void selectByNameAndPhone(){
-		log.info(memberMapper.selectByNameAndPhone("test", "01012345678"));
+	public void selectByNameAndPhone(String memberName, String memberPhone){
+		log.info(memberMapper.selectByNameAndPhone(memberName, memberName));
 	} // end selectByNameAndPhone
 
 	// 입력한 권한을 가진 모든 유저 id 검색
-	public void selectIdByAuth(){
-		log.info(memberMapper.selectIdByAuth("관리자"));
+	public void selectIdByAuth(String memberAuth){
+		log.info(memberMapper.selectIdByAuth(memberAuth));
 	} // end selectIdByAuth
 	
 	// 이메일로 ID 찾기
-	public void selectIdByNameAndEmail(){
-		log.info(memberMapper.selectIdByNameAndEmail("test@test.com"));
+	public void selectIdByNameAndEmail(String memberEmail){
+		log.info(memberMapper.selectIdByNameAndEmail(memberEmail));
 	} // end selectIdByNameAndEmail
 	
 	// ID로 이메일 찾기

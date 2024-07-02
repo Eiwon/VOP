@@ -54,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectOrderByPaymentId" resultMap="OrderViewDTOResultMap">
 		SELECT OD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
 		SELECT * FROM "ORDER" WHERE PAYMENT_ID = #{paymentId}
-		) OD JOIN IMAGE ON OD.IMG_ID = IMAGE.IMG_ID
+		) OD LEFT JOIN IMAGE ON OD.IMG_ID = IMAGE.IMG_ID
 	</select>
 	
 	
@@ -62,7 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectOrderListByMemberId" resultMap="OrderViewDTOResultMap">
 		SELECT OD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
 		SELECT * FROM "ORDER" WHERE MEMBER_ID = #{memberId} 
-		) OD JOIN IMAGE ON OD.IMG_ID = IMAGE.IMG_ID
+		) OD LEFT JOIN IMAGE ON OD.IMG_ID = IMAGE.IMG_ID
 		ORDER BY OD.EXPECT_DELIVERY_DATE DESC
 	</select>
 	

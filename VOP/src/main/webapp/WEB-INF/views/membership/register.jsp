@@ -257,7 +257,12 @@
 <h1>VOP 멤버십</h1>
     <p>월 1000원으로 멤버십 혜택을 누려보세요!</p>
     <button id="registerBtn">멤버십 신청하기</button>
-
+    <!-- 멤버십 권한이 있는 유저는 버튼 비활성화 -->
+    <sec:authorize access="hasAnyRole('멤버십', '판매자', '관리자')">
+		<script type="text/javascript">
+			$('#registerBtn').attr('disabled', 'disabled');
+		</script>
+	</sec:authorize>
     <h2>멤버십 혜택</h2>
 
     <p>무제한 20% 할인 혜택 제공</p><br><br>

@@ -20,6 +20,7 @@ import com.web.vop.config.S3Config;
 import com.web.vop.config.SecurityConfig;
 import com.web.vop.config.ServletConfig;
 import com.web.vop.config.WebConfig;
+import com.web.vop.config.WebSocketConfig;
 import com.web.vop.domain.ProductPreviewDTO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.util.Pagination;
@@ -28,7 +29,8 @@ import lombok.extern.log4j.Log4j;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {WebConfig.class, RootConfig.class, SecurityConfig.class, S3Config.class, PaymentAPIConfig.class, ServletConfig.class})
+@ContextConfiguration(classes = {WebConfig.class, RootConfig.class, SecurityConfig.class, S3Config.class, PaymentAPIConfig.class,
+		ServletConfig.class, WebSocketConfig.class})
 @Log4j
 public class ProductMapperTest {
 	
