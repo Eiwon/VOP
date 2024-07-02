@@ -99,7 +99,7 @@ public class MemberRESTController {
 		UserDetails updatedDetails = userDetailsService.loadUserByUsername(memberDetails.getUsername());
 		log.info(updatedDetails);
 		Authentication authen = new UsernamePasswordAuthenticationToken(
-				updatedDetails.getUsername(), updatedDetails.getPassword(), updatedDetails.getAuthorities());
+				updatedDetails, updatedDetails.getPassword(), updatedDetails.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(authen);
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end reloadAuth

@@ -33,17 +33,6 @@ public class MailAuthenticationUtil {
 		
 		emailAuthMap = new HashMap<>();
 		
-//		javaMailSender = new JavaMailSenderImpl();
-//
-//		javaMailSender.setUsername(ApiKey.MAIL_AUTH_ID);
-//		javaMailSender.setPassword(ApiKey.MAIL_AUTH_PW);
-//		javaMailSender.setHost("smtp.gmail.com");
-//		Properties property = new Properties();
-//		property.put("mail.smtp.auth", true);
-//		property.put("mail.transport.protocol", "smtp");
-//		property.put("mail.smtp.starttls.enable", true);
-//		property.put("mail.smtp.starttls.required", true);
-//		javaMailSender.setJavaMailProperties(property);
 			
 	} // end MailAuthenticationUtil
 	

@@ -77,6 +77,6 @@ public interface SecurityConfigConstants {
 
 	// 참조 허용 url
 	public static final String PERMIT_IMG_SRC = "blob: https://vop-s3-bucket.s3.ap-northeast-2.amazonaws.com https://developers.kakao.com";
-	public static final String PERMIT_SCRIPT_SRC = "'self' http://192.168.0.123:8080 https://code.jquery.com/jquery-3.7.1.js https://cdn.iamport.kr";
+	public static final String PERMIT_SCRIPT_SRC = "'self' https://code.jquery.com/jquery-3.7.1.js https://cdn.iamport.kr";
 	
 }
