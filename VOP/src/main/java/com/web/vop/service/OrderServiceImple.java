@@ -69,7 +69,19 @@ public class OrderServiceImple implements OrderService {
 		}
 		log.info("주문 조회 : " + orderList);
 		return orderList;
-	}
+	}//end getOrderListByMemberId()
+
+	
+	// 주문 목록 삭제
+	@Override
+	public int deleteOrderListByOrderId(int orderId) {
+		log.info("deleteOrderListByOrderId()");
+		log.info("orderId : " + orderId);
+		
+		int res = orderMapper.deleteOrderListByOrderId(orderId);
+		log.info("res - " + res);
+		return res;
+	}//end deleteOrderListByOrderId()
 
 	
 

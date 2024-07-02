@@ -26,6 +26,9 @@ public interface OrderService {
 	// paymentId로 주문 검색
 	public List<OrderViewDTO> getOrderByPaymentId(int paymentId);
 	
+	// 주문 목록 삭제
+	int deleteOrderListByOrderId(int orderId); 
+	
 	// 주문 목록 조회 
 	List<OrderViewDTO> getOrderListByMemberId(String memberId);
 }

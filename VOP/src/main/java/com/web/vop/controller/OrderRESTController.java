@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ import com.web.vop.domain.OrderVO;
 import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.ImageService;
 import com.web.vop.service.OrderService;
+import com.web.vop.socket.AlarmHandler;
 import com.web.vop.util.FileAnalyzerUtil;
 
 import lombok.extern.log4j.Log4j;
@@ -31,43 +33,21 @@ import lombok.extern.log4j.Log4j;
 @RequestMapping("/order")
 @Log4j
 public class OrderRESTController {
-//
-//	@Autowired
-//	OrderService orderService;
-//	
-//	@Autowired
-//    AWSS3Service awsS3Service;
+
+	@Autowired
+	OrderService orderService;
+
+	// 주문 목록 삭제
+	@DeleteMapping("deleteOrder/{orderId}")
+	public ResponseEntity<Integer> deleteOrderListByOrderId(@PathVariable int orderId){
+		log.info("OrderListDELETE() - orderId : " + orderId);
+		int res = orderService.deleteOrderListByOrderId(orderId);
+			
+		if(res == 1) {
+			return new ResponseEntity<>(res, HttpStatus.OK);
+		}else {
+			return ResponseEntity.status(500).body(res);
+		}
+	}//end membershipDELETE()
 	
-//	// 주문 목록 요청
-//	@GetMapping("/myOrder")
-//	public ResponseEntity<List<OrderVO>> getOrderList(@AuthenticationPrincipal MemberDetails memberDetails){
-//		log.info("getOrderList()"); 
-//		String memberId = memberDetails.getUsername();
-//		log.info("memberId :" + memberId); 
-//		List<OrderVO> orderList = orderService.getOrderListByMemberId(memberId);
-//		log.info("orderlist : " + orderList);
-//		
-//		if(orderList != null && !orderList.isEmpty()) {
-//			return new ResponseEntity<List<OrderVO>>(orderList, HttpStatus.OK);
-//		} else {
-//			return new ResponseEntity<List<OrderVO>>(Collections.emptyList(), HttpStatus.OK);		
-//		}
-//		
-//	}//end getOrderList()
-	
-	
-	
-//	// 주문목록 이미지 파일
-//	@GetMapping("/showImg/{imgId}")
-//	@ResponseBody
-//	public ResponseEntity<String> showOrderImg(@PathVariable("imgId") int imgId) {
-//		 log.info("showOrderImg() : " + imgId);
-//		 String imgUrl = awsS3Service.getImageUrl(imgId);
-//
-//	return new ResponseEntity<String>(imgUrl, HttpStatus.OK);
-//		}
-		
-	
-	
-	
-}
+}//end OrderRESTController()

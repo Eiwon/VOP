@@ -27,6 +27,9 @@ public interface OrderMapper {
 	// 주문 목록 조회 
 	public List<OrderViewDTO> selectOrderListByMemberId(String memberId);
 
+	// 주문 목록 삭제
+	public int deleteOrderListByOrderId(int orderId);
+	
 	// 배송 예정일 조회 스케줄링
 	List<DeliveryExpectDTO> selectDeliveryExpect();
 }

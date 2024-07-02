@@ -10,9 +10,7 @@
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal"/>
 </sec:authorize> 
-<%
-    OrderVO orderVO = new OrderVO(); // OrderVO 객체 생성
-%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -184,6 +182,9 @@
 					</div>
 	                
 				<!-- <a href=""><button>교환/반품 신청</button></a> -->
+				
+					<!-- 주문목록 삭제 -->
+					 <button class="deleteOrderBtn" data-order-id="${orderVO.orderId}">주문 목록 삭제</button>
             </div>
         </div>
     </c:forEach>
@@ -422,8 +423,37 @@
     });// end form()
     });// end inquiryDelete()
     
+    
+     // 주문 목록 삭제 ajax 요청
+    $('.deleteOrderBtn').on('click', function() {
+    	let orderId = $(this).data('order-id');
+        
+		console.log("orderId : " + orderId);
+		console.log(typeof orderId);
+		
+        if (confirm('정말로 이 주문을 삭제하시겠습니까?')) {
+            $.ajax({
+                type: 'DELETE',
+                url: 'deleteOrder/' + orderId,
+                headers: {
+                    'X-CSRF-TOKEN': '${_csrf.token}'
+                },
+                success: function(response) {
+                    console.log('주문 목록이 삭제되었습니다.');
+                  
+                },
+                error: function(error) {
+                    console.error('주문 목록 삭제 도중 오류 발생: ', error);
+                    alert('주문 목록 삭제 도중 오류가 발생했습니다. 다시 시도해 주세요.');
+                }
+            });//end ajax delete
+        }//end if
+    });// end $('.deleteOrderBtn')
+     
+     
     }); // end document.ready()
 
+    
     </script>
 
 </body>
