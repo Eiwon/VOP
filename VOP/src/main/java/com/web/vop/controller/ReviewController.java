@@ -91,7 +91,7 @@ public class ReviewController {
 		log.info("memberId = " + memberId);
 		log.info("productId : " + productId);
 		log.info("imgId : " + imgId);
-		
+
 		// imgId통해 이미지 조회
 		ImageVO imageVO = imageService.getImageById(imgId);
 		

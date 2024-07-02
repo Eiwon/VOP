@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
@@ -30,6 +32,7 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.web.vop.handler.LoginSuccessHandler;
+import com.web.vop.handler.LogoutSuccessHandler;
 import com.web.vop.handler.SecurityAccessDeniedHandler;
 import com.web.vop.service.UserDetailsServiceImple;
 import com.web.vop.util.Constant;
@@ -43,18 +46,6 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter implements SecurityConfigConstants {
-
-	@Autowired
-	UserDetailsServiceImple userDetailsServiceImple;
-	
-	@Autowired
-	SimpleUrlAuthenticationSuccessHandler loginSuccessHandler;
-	
-	@Autowired
-	SimpleUrlAuthenticationFailureHandler loginFailHandler;
-	
-	@Autowired
-	SimpleUrlLogoutSuccessHandler logoutSuccessHandler;
 	
 	@Autowired
 	PersistentTokenRepository tokenRepository;
@@ -83,8 +74,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.usernameParameter("memberId")
 			.passwordParameter("memberPw")
 			.loginProcessingUrl("/member/login")
-			.successHandler(loginSuccessHandler)
-			.failureHandler(loginFailHandler);
+			.successHandler(loginSuccessHandler())
+			.failureHandler(loginFailHandler());
 		
 		http.rememberMe() // 자동 로그인
 			.key("key") 
@@ -92,14 +83,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.rememberMeCookieName("rememberMe") 
 			.tokenValiditySeconds(60*60*24*3)
 			.tokenRepository(tokenRepository)
-			.userDetailsService(userDetailsServiceImple)
-			.authenticationSuccessHandler(loginSuccessHandler);
+			.userDetailsService(userDetailsServiceImple())
+			.authenticationSuccessHandler(loginSuccessHandler());
 		
 		http.logout()
 			.logoutUrl("/member/logout") // 로그아웃 처리 URL
 			.logoutSuccessUrl("/board/main")// 로그아웃 성공 후 이동 페이지
 			.deleteCookies("JSESSIONID", "rememberMe") // 로그아웃 후 쿠키 삭제
-			.logoutSuccessHandler(logoutSuccessHandler)
+			.logoutSuccessHandler(logoutSuccessHandler())
 			.invalidateHttpSession(true); // 세션 무효화 설정
 		
 		// header 정보에 xssProtection 기능 설정
@@ -119,7 +110,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		log.info("auth check " + auth);
-		auth.userDetailsService(userDetailsServiceImple).passwordEncoder(passwordEncoder());
+		auth.userDetailsService(userDetailsServiceImple()).passwordEncoder(passwordEncoder());
 	} // end configure
 
 	@Bean
@@ -127,7 +118,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 		return new BCryptPasswordEncoder();
 	} // end passwordEncoder
 	
-	@Bean
 	public CharacterEncodingFilter characterEncodingFilter() {
 		CharacterEncodingFilter filter = new CharacterEncodingFilter();
 		filter.setEncoding("UTF-8");
@@ -135,20 +125,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 		return filter;
 	} // end characterEncodingFilter
 	
-//	@Bean
-//	public JWTAuthenticationFilter jwtAuthenticationFilter() {
-//		return new JWTAuthenticationFilter();
-//	} // end jwtAuthenticationFilter
 	
-	@Bean
 	public SimpleUrlAuthenticationSuccessHandler loginSuccessHandler() {
 		SimpleUrlAuthenticationSuccessHandler loginSuccessHandler = new LoginSuccessHandler();
-		//loginSuccessHandler.setUseReferer(true);
-		//loginSuccessHandler.setDefaultTargetUrl("/board/main");
 		return loginSuccessHandler;
 	} // end loginSuccessHandler
 
-	@Bean
 	public SimpleUrlAuthenticationFailureHandler loginFailHandler() {
 		SimpleUrlAuthenticationFailureHandler loginFailHandler = new SimpleUrlAuthenticationFailureHandler();
 		loginFailHandler.setDefaultFailureUrl("/member/loginFail");
@@ -156,12 +138,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 	} // end loginFailHandler
 	
 	@Bean
+	public UserDetailsService userDetailsServiceImple() {
+		return new UserDetailsServiceImple();
+	}
+	
+	public SimpleUrlLogoutSuccessHandler logoutSuccessHandler() {
+		return new LogoutSuccessHandler();
+	} // end logoutSuccessHandler
+	
 	public AccessDeniedHandler securityAccessDeniedHandler() {
 		return new SecurityAccessDeniedHandler();
 	} // end securityAccessDeniedHandler
 	
 	// 권한에 계층 구조 설정 (상위 권한이 하위의 모든 권한을 포함)
-	@Bean
 	public SecurityExpressionHandler<FilterInvocation> expressionHandler() {
 		DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
 		RoleHierarchyImpl roleHierarchyImple = new RoleHierarchyImpl();

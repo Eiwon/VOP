@@ -60,6 +60,7 @@
 </style>
 </head>
 <body>
+
     <div>
         <strong>${memberDetails.getUsername()}님 문의 목록</strong>
     </div>

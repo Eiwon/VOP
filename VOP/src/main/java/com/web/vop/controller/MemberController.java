@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -235,19 +236,33 @@ public class MemberController {
 	} // end modifyPOST
 	
 	@GetMapping("/withdrawal")
-	public void withdrawGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
+	public String withdrawGET(Model model, @AuthenticationPrincipal UserDetails memberDetails) {
 		log.info("회원 탈퇴 페이지 이동");
-		// 이메일 검색
-		String memberEmail = memberService.getEmailById(memberDetails.getUsername());
-		model.addAttribute("memberEmail", memberEmail);
+		String memberId = memberDetails.getUsername();
+		// 탈퇴 가능 여부 검사
+		int res = memberService.isWithdrawable(memberId);
 		
+		if(res > 0) {
+			AlertVO alertVO = new AlertVO();
+			alertVO.setAlertMsg("등록된 상품이 있으면 탈퇴할 수 없습니다.");
+			alertVO.setRedirectUri("product/myProduct");
+			model.addAttribute("alertVO", alertVO);
+			return Constant.ALERT_PATH;
+		}
+		
+		// 이메일 검색
+		String memberEmail = memberService.getEmailById(memberId);
+		model.addAttribute("memberEmail", memberEmail);
+		return "member/withdrawal";
 	} // end withdrawGET
 	
 	@PostMapping("/withdrawal")
-	public String withdrawPOST(Model model, String authCode, @AuthenticationPrincipal UserDetails memberDetails) {
+	public String withdrawPOST(Model model, String authCode, @AuthenticationPrincipal UserDetails memberDetails,
+			HttpServletRequest request) {
 		log.info("회원 탈퇴 신청");
-		String memberEmail = memberService.getEmailById(memberDetails.getUsername());
+				
 		AlertVO alertVO = new AlertVO();
+		String memberEmail = memberService.getEmailById(memberDetails.getUsername());
 		int resultCode = mailAuthUtil.verifyAuthCode(memberEmail, authCode);
 		
 		switch (resultCode) {
@@ -255,7 +270,8 @@ public class MemberController {
 			// 인증 코드 일치
 			memberService.deleteMember(memberDetails.getUsername());
 			alertVO.setAlertMsg("회원 탈퇴되었습니다.");
-			alertVO.setRedirectUri("member/logout");
+			alertVO.setRedirectUri("board/main");
+			request.getSession().invalidate();
 			break;
 		case 101 : 
 			// 유효기간 만료

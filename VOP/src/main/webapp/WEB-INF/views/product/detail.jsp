@@ -1,11 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!-- 세션 사용할수 있게하는 코드 -->
 <%@ page import="javax.servlet.http.HttpSession"%>
+
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+	
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal" />
 </sec:authorize>
@@ -13,10 +16,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+<!-- 한국어 인코딩 -->
 <meta charset="UTF-8">
 <meta name="${_csrf.parameterName }" content="${_csrf.token }">
+
 <!-- 모바일 관련 코드라서 없어도 동작 가능 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <!-- jquery 라이브러리 import -->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 
@@ -105,17 +111,18 @@ td {
 
 </head>
 <body>
-
+	
+	<!-- 카카오 공유 아이콘 -->
+	<!-- <div class="right-align">
+		<a id="kakaotalk-sharing-btn" href="javascript:;"> 
+		<img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" />
+		</a>
+	</div> -->
+	
 	<!-- 상품 상세 페이지 제작 중 -->
 	<h2>상품 상세 페이지</h2>
 	<c:set var="productVO" value="${productDetails.productVO }"/>
 	<c:set var="memberVO" value="${productDetails.memberVO }"/>
-	<!-- 카카오 공유 아이콘 -->
-	<div class="right-align">
-		<a id="kakaotalk-sharing-btn" href="javascript:;"> 
-		<img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" />
-		</a>
-	</div>
 
 	<div>
 		<p>카테고리 : ${productVO.category }</p>
@@ -138,7 +145,7 @@ td {
 
 	<div>
 		<p>리뷰 평균 : ${productVO.reviewAvg}</p>
-		<p>댓글 총 갯수 : ${productVO.reviewNum}</p>
+		<p>리뷰 총 개수 : ${productVO.reviewNum}</p>
 	</div>
 	
 	<div>
@@ -152,6 +159,9 @@ td {
 
 	<!-- 상품 배송 정보 제작 해야함 -->
 	<div>
+		<p>상품 현황 : ${productVO.productState}</p>
+		<p>상품 재고 : ${productVO.productRemains}</p>
+		<p>상품 보관 장소 : ${productVO.productPlace}</p>
 		<p>판매자 : ${productVO.memberId}</p>
 		도착 일자 : <time id="current-date"></time>
 	</div>
@@ -193,7 +203,7 @@ td {
 	<!-- end 바로구매 버튼 -->
 
 	<!-- 상품 설명 이미지 -->
-	<p>상품 이미지 설명</p>
+	<p>상품 상세 설명</p>
 
 	<div>
 		<c:forEach var="imgUrl" items="${productDetails.detailsUrl}">
@@ -202,20 +212,20 @@ td {
 	</div>
 	
 	<!-- 댓글 화면 코드 및 가운데 정렬 -->
-	<h3>리뷰</h3>
+	<h3>상품 리뷰</h3>
 	<div id="review"></div>
 	<!-- 리뷰 페징처리 내용 -->
 	<div id="product_list_page"></div>
 	
-	<h3>문의</h3>
+	<h3>상품 문의</h3>
 	<div id="comments"></div>
 	<!-- 문의 페징처리 내용 -->
 	<div id="comments_list_page"></div>
 
-	<div>
+	<!-- <div>
 		<h3>배송/교환/반품 안내</h3>
 		<p>내용 작성 예정</p>
-	</div>
+	</div> -->
 
 	<!-- 좋아요 표시 제작 예정? -->
 
@@ -244,8 +254,8 @@ td {
     	      imageUrl: imageUrl,// 썸네일 이미지 가져오는 기능(월래는 url를 통해 이미지 불려 옴)
     	      link: {
     	        // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
-    	        mobileWebUrl: 'http://192.160.0.146:8080/vop/board/main', //카카오 api에 등록된 경로
-    	        webUrl: 'http://192.160.0.146:8080/vop/board/main',
+    	        mobileWebUrl: 'http://localhost:8080/vop/board/main', //카카오 api에 등록된 경로
+    	        webUrl: 'http://localhost:8080/vop/board/main',
     	      },
     	    },
     	    commerce: { // 상품 설명
@@ -258,8 +268,8 @@ td {
     	      {
     	        title: '상품 보러가기', // 공유 했을때 버튼
     	        link: { // 클릭시 이동하는 링크
-    	          mobileWebUrl: 'http://192.160.0.146:8080/vop/product/detail?productId=${productVO.productId }', // 앱 버전
-    	          webUrl: 'http://192.160.0.146:8080/vop/product/detail?productId=${productVO.productId }', // 웹 버전
+    	          mobileWebUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 앱 버전
+    	          webUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 웹 버전
     	        },
     	      },
     	    ],
@@ -755,7 +765,6 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
                     answers: matchingAnswers  // 일치하는 답변들 배열을 answers 필드로 저장
                 });
             }
-
             return result;  // 일치하는 요소들을 담은 배열 반환
         }
 
@@ -768,7 +777,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
             for (let i = 0; i < comments.length; i++) {
                 // 문의 내용 행 추가
                 form += '<tr>' +
-                		'<td colspan="4">질문 내용</td>' +  
+                		'<td colspan="4">문의 내용</td>' +  
                 		'</tr>' +
                 		'<tr>' +
                         '<td class="inquiryId">' + comments[i].inquiryId + '</td>' +
@@ -847,7 +856,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
 				}// end success
 			}); // end ajax
 		});//end document
-	} // end loadImg
+	} // end loadImg 
 	
 	// 시간 변환 함수
 	function toDate(timestamp) {

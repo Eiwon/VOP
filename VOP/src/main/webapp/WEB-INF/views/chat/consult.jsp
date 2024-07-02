@@ -153,6 +153,7 @@
 			}
 			chatBox.append(contentStr);
 			tagReadArea.append(chatBox);
+			tagReadArea.scrollTop = tagReadArea.scrollHeight; // 스크롤의 최상단 값을 최하단 값으로 변경 (스크롤 최대한 내리기)
 		}
 		
 	</script>

@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 
 import com.web.vop.domain.MemberVO;
 import com.web.vop.persistence.MemberMapper;
+import com.web.vop.persistence.ProductMapper;
 import com.web.vop.util.Constant;
 
 import lombok.extern.log4j.Log4j;
@@ -22,6 +23,9 @@ public class MemberServiceImple implements MemberService{
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	ProductMapper productMapper;
 	
 	@Override
 	public int registerMember(MemberVO memberVO) {	// 회원 등록
@@ -151,6 +155,15 @@ public class MemberServiceImple implements MemberService{
 		String resultId = memberMapper.selectIdByIdAndEmail(memberId, memberEmail);
 		return resultId;
 	} // end getIdByIdAndEmail
+
+	@Override
+	public int isWithdrawable(String memberId) {
+		log.info("isWithdrawable");
+		// 등록한 상품이 있는지 확인
+		int res = productMapper.selectByMemberIdCnt(memberId);
+		
+		return res;
+	} // end isWithdrawable
 
 	
 

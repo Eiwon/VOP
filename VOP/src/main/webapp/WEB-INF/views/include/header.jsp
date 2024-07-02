@@ -205,12 +205,16 @@
 </head>
 <body>
 <div class="container2">
-
     <div class="user-links2" id="box_login">
     	<sec:authorize access="isAuthenticated()">
+    		<div>
+    			${memberDetails.username } 님 환영합니다. <br>
+    			${memberDetails.username } 님의 현재 권한 : ${memberDetails.authorities[0].authority.substring(5) }
+    		</div>
     		<form action="../member/logout" method="POST">
     			<input type="submit" value="로그아웃">
-    			<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
+    			<sec:csrfInput/>
+    			<%-- <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }"> --%>
     		</form>
     	</sec:authorize>
     	<sec:authorize access="isAnonymous()">

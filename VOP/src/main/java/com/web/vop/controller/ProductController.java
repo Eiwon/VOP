@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.socket.WebSocketHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,6 +43,7 @@ import com.web.vop.domain.SellerVO;
 import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.ImageService;
 import com.web.vop.service.ProductService;
+import com.web.vop.socket.AlarmHandler;
 import com.web.vop.util.Constant;
 import com.web.vop.util.FileAnalyzerUtil;
 import com.web.vop.util.PageMaker;
@@ -68,12 +70,15 @@ public class ProductController {
 	@Autowired
 	private String uploadPath;
 	
+	//@Autowired
+	//private WebSocketHandler alarmHandler;
+	
 	// 상품 상세 정보 조회
 	@GetMapping("/detail")
 	public void productDetailGET(Model model, Integer productId) {
 		log.info("productDetailGET()");
 		
-		// 상품, 회원, 썸네일 이미지 정보 검색 해서 조인
+		// 상품, 이미지 테이블 정보 검색 일부 컬럼 조인 해서 조인
 		ProductDetailsDTO productDetails = productService.getDetails(productId);
 		log.info("상세 정보 검색 결과 : " + productDetails);
 		
@@ -95,25 +100,7 @@ public class ProductController {
 		// model 객체에 productDetails를 추가하여 뷰에서 사용할 수 있도록 합니다.
 		model.addAttribute("productDetails", productDetails);
 	} // end productDetail()
-	
-	// 상품 상세 정보 조회
-//		@GetMapping("/detail")
-//		public void productDetailGET(Model model, Integer productId) {
-//			log.info("productDetailGET()");
-//			
-//			// productId에 해당하는 상품 조회 
-//			ProductVO productVO = productService.getProductById(productId);	
-//			
-//			// 상세 이미지 조회
-//			List<ImageVO> imageList = imageService.getByProductId(productId);
-//			for(ImageVO image  : imageList) {
-//				log.info(image);
-//			}
-//			// 상품 조회 정보
-//			model.addAttribute("productVO", productVO);
-//			// 상품 설명 이미지 조회 정보
-//			model.addAttribute("imageList", imageList);
-//		} // end productDetail()
+
 	
 	@GetMapping("/register")
 	public void registerGET() {
@@ -183,33 +170,12 @@ public class ProductController {
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
 		
-//		if(category == null) {
-//			category = "전체";
-//		}
-//		if(word == null) {
-//			word = "";
-//		}
-		
-//		if(category.equals("전체")) { // 카테고리가 전체, 검색어가 있는 경우
-//			log.info("검색어 검색");
-//			productList = productService.searchByName(word, pageMaker);
-//		}else {
-//			if(word.length() > 0) { // 카테고리가 있고, 검색어도 있는 경우
-//				log.info("카테고리 + 검색어 검색");
-				productList = productService.search(pageMaker);
-//			}else { // 카테고리가 있고, 검색어는 없는 경우
-//				log.info("카테고리 검색");
-//				productList = productService.searchByCategory(category, pageMaker);
-//			}
-//		}
-		// 카테고리가 전체, 검색어도 없는 경우 -- 클라이언트 측에서 실행 X
-		log.info("검색결과 = 총 " + pageMaker.getTotalCount() + "개 검색");
+		productList = productService.search(pageMaker);
 		pageMaker.update();
 		awsS3Service.toImageUrl(productList);
+		
 		model.addAttribute("productList", productList);
 		model.addAttribute("pageMaker", pageMaker);
-		//model.addAttribute("category", category); // 검색결과 내에서 페이지 이동을 구현하기 위해, 기존 검색 조건 return
-		//model.addAttribute("word", word);
 		
 	} // end search
 	
@@ -236,25 +202,6 @@ public class ProductController {
 		return new ResponseEntity<PagingListDTO<ProductPreviewDTO>>(pagingList, HttpStatus.OK);
 	} // end productList
 	
-//	// 썸네일 이미지 파일 요청
-//	@GetMapping(value = "/showImg", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-//	@ResponseBody
-//	public ResponseEntity<Resource> showImg(int imgId){
-//		log.info("showImg() : " + imgId);
-//		ImageVO imageVO = imageService.getImageById(imgId);
-//		if(imageVO == null) {
-//			return new ResponseEntity<Resource>(null, null, HttpStatus.OK);
-//		}
-//		String fullPath = imageVO.getImgPath() + File.separator + imageVO.getImgChangeName();
-//		HttpHeaders headers = new HttpHeaders();
-//		// 다운로드할 파일 이름을 헤더에 설정
-//		headers.add(HttpHeaders.CONTENT_DISPOSITION,
-//				"attachment; filename=" + fullPath + "." + imageVO.getImgExtension());
-//
-//		Resource resource = FileUploadUtil.getFile(fullPath, imageVO.getImgExtension());
-//       
-//        return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
-//	} // end showImg
   
 	
 	@GetMapping("/bestReview")
@@ -290,20 +237,6 @@ public class ProductController {
 		return new ResponseEntity<List<ProductPreviewDTO>>(list, HttpStatus.OK);
 	} // end getRecent5
 	
-
-//	@GetMapping("/searchProduct")
-//	@ResponseBody
-//	public ResponseEntity<?> searchProduct(@RequestParam("category") String category, @RequestParam("word") String word) {
-//        log.info("searchProduct()");
-//        
-//     // 검색 결과를 JSON 형태로 가공
-//        Map<String, Object> result = new HashMap<>();
-//        result.put("카테고리 : ", category);
-//        result.put("입력한 단어 : ", word);
-//        
-//        // ResponseEntity에 JSON 데이터를 담아서 반환
-//        return ResponseEntity.ok(result);
-//    }// end searchProduct()
 
 	// 상품 정보 수정
 	@PreAuthorize("#productVO.memberId == authentication.principal.username")
@@ -390,11 +323,6 @@ public class ProductController {
 			productDetails.getDetailsUrl().add(awsS3Service.toImageUrl(image.getImgPath(), image.getImgChangeName()));
 		}
 		
-//		try { // 자바스크립트에서 사용하기 위해 JSON으로 변환 후 전송
-//			model.addAttribute("productDetails", new ObjectMapper().writeValueAsString(productDetails));
-//		} catch (JsonProcessingException e) {
-//			e.printStackTrace();
-//		}
 		model.addAttribute("productDetailsDTO", productDetails);
 	} // end popupProductUpdateGET
 	
@@ -445,10 +373,11 @@ public class ProductController {
 		
 		int res = 0;
 		if (productState.equals(Constant.STATE_SELL)) {
-			res = productService.setProductState(Constant.STATE_REMOVE_WAIT, productId) +200;
+			res = productService.setProductState(Constant.STATE_REMOVE_WAIT, productId) > 0 ? 201 : 200;
 		} else if (!productState.equals(Constant.STATE_REMOVE_WAIT)) {
-			res = productService.deleteProduct(productId) +100;
+			res = productService.deleteProduct(productId) > 0 ? 101 : 100;
 		}
+		// res 코드 100 = 삭제 실패, 101 = 삭제 성공, 201 = 삭제요청 성공, 200 = 삭제요청 실패
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end deleteRequestProduct

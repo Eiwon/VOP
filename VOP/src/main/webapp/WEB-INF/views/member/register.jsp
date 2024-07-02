@@ -119,9 +119,9 @@
 			
 			if(type == 'memberId'){
 				isValidId(inputVal);
-			}else if(type == 'memberPhone'){
+			}/* else if(type == 'memberPhone'){
 				isValidPhone(inputVal);
-			}else if(type == 'memberPw'){
+			} */else if(type == 'memberPw'){
 				comparePw();
 			}
 		} // end checkValid

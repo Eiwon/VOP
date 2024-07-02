@@ -13,7 +13,7 @@
 
 
 .request_container {
-	height: 400px;
+	height: 800px;
 }
 
 .page_list {
@@ -182,7 +182,7 @@
 						'<td><img src="' + list[x].imgUrl + '"></td>' +
 						'<td class="category">' + productVO.category +'</td>' +
 						'<td class="productName">' + productVO.productName + '</td>' + 
-						'<td class="productPrice">' + productVO.productPrice +'</td>' +
+						'<td class="productPrice">' + productVO.productPrice +'원</td>' +
 						'<td class="memberId">' + productVO.memberId + '</td>' + 
 						'<td class="productDateCreated">' + toDate(productVO.productDateCreated) + '</td>' +
 						'</tr>';
@@ -216,7 +216,7 @@
 						'<td><img src="' + list[x].imgUrl + '"></td>' +
 						'<td class="category">' + productVO.category +'</td>' +
 						'<td class="productName">' + productVO.productName + '</td>' + 
-						'<td class="productPrice">' + productVO.productPrice +'</td>' +
+						'<td class="productPrice">' + productVO.productPrice +'원</td>' +
 						'<td class="memberId">' + productVO.memberId + '</td>' + 
 						'<td class="productDateCreated">' + toDate(productVO.productDateCreated) + '</td>' +
 						'</tr>';

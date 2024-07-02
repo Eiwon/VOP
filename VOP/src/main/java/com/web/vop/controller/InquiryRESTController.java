@@ -85,8 +85,10 @@ public class InquiryRESTController {
 		
 		pagination.setPageNum(page);
 		log.info("pagination : " + pagination);
+		// 문자열 형태와 오브젝트 형태를 저장 하기 위해서 사용
 		Map<String, Object> resultMap = new HashMap<>();
 		PageMaker pageMaker = new PageMaker();
+		// 설정 된 기본 페이지 적용
 		pageMaker.setPagination(pagination);	
 		log.info("쪽수 기본값 : " + pageMaker.getPagination());
 		

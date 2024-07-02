@@ -53,4 +53,7 @@ public interface MemberService {
 	// ID와 이메일로 ID 찾기
 	public String getIdByIdAndEmail(String memberId, String memberEmail);
 	
+	// 탈퇴 가능한 유저인지 검사
+	public int isWithdrawable(String memberId);
+	
 }

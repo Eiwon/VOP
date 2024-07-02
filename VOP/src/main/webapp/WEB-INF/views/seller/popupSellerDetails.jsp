@@ -47,7 +47,7 @@ tr {
 			
 			<tr>
 				<td>요청 시간</td>
-				<td>${sellerVO.requestTime }</td>
+				<td>${sellerVO.requestTime.toLocaleString() }</td>
 			</tr>
 			<tr>
 				<td>요청 메시지</td>
@@ -55,9 +55,9 @@ tr {
 			</tr>
 			<tr>
 				<td>결과 메시지</td>
-				<c:if test="${sellerVO.refuseMsg != null }">
-					<td><textarea id="refuseMsg">최대 50자 입력</textarea></td>
-				</c:if>
+				<td>
+				<textarea id="refuseMsg" placeholder="최대 50자 입력">${sellerVO.refuseMsg }</textarea>
+				</td>
 			</tr>
 		</tbody>
 		<tfoot>
@@ -79,7 +79,7 @@ tr {
 	<script type="text/javascript">
 		
 		function revokeSellerAuth(){
-			let refuseMsg = $('#refuseMsg').text();
+			let refuseMsg = $('#refuseMsg').val();
 			
 			$.ajax({
 				url : 'revoke',
@@ -112,7 +112,7 @@ tr {
 		}
 		
 		function sendResult(requestState){
-			let refuseMsg = $('#refuseMsg').text();
+			let refuseMsg = $('#refuseMsg').val();
 			
 			$.ajax({
 				url : 'approval',

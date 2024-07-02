@@ -40,7 +40,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 모든 팝업 광고 검색 -->
    <select id="selectNotice" resultType="Integer">
-   		SELECT MESSAGE_ID FROM MESSAGE WHERE TYPE = 'notice'
+   		SELECT MESSAGE_ID FROM MESSAGE WHERE TYPE = 'notice' ORDER BY MESSAGE_ID DESC
    </select>
    
    <!-- messageId로 검색 -->

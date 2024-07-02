@@ -26,9 +26,11 @@
 </style>
 </head>
 <body>
+	<h1>상품 문의 목록</h1>
 	<table>
 		<tbody>
 			<c:choose>
+			<!-- 조건 문으로서  listInquiry값이 null 값인지 확인 하는 코드-->
 				<c:when test="${not empty listInquiry}">
 					<c:forEach var="InquiryVO" items="${listInquiry}">
 						<tr>
@@ -232,7 +234,7 @@
 								if (result == 1) {
 									alert('답변 삭제 성공!');
 								} else {
-									alert('답변이 삭제 실패!');
+									alert('삭제할 답변이 없습니다.');
 								}
 							}
 						});
