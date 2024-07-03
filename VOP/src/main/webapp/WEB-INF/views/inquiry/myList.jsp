@@ -78,14 +78,15 @@
 
     <script type="text/javascript">
         let inquiryMap = {}; // 상품 목록과 페이지 정보를 저장할 객체 선언
-
+        let memberId = '${memberDetails.getUsername()}';
+       
         $(document).ready(function(){
             inquiryMap.show(1); // 상품 목록 출력
         });
 
         inquiryMap.show = function(page) {
+        	
             let form = '';
-            let memberId = '${memberDetails.getUsername()}';
 
             $.ajax({
                 method: 'GET',
@@ -112,7 +113,57 @@
                     $('#inquiry_list_page').html(makePageForm(inquiryMap));
                 } // end success
             }); // end ajax
-        } // end show
+        } // end show 
+        
+        /* inquiryMap.show = function(page) {
+        	 $.ajax({
+                 method: 'GET',
+                 url: inquiryUrl,
+                 success: function(data) {
+                  	// reviewMap 초기화
+                     inquiryMap.inquiryDTOList = data.listInquiry || [];
+                     inquiryMap.pageMaker = data.pageMaker || null;
+                     console.log("inquiryDTOList : " + inquiryDTOList);
+                     console.log("inquiryNUM : " + inquiryNUM);
+
+                     inquiryNUM = inquiryMap.inquiryDTOList;  // 성공적으로 데이터를 가져오면 inquiryNUM에 저장
+                     console.log("inquiryNUM : " + inquiryNUM);
+                     let matchingItems = printMatchingItems(inquiryNUM);// 그럼 여기서 함수가 실행 된 다음 변수에 저장?
+                     $('#comments_list_page').html(inquiryMakePageForm(inquiryMap));
+                 },
+             }); // ajax
+        }// end inquiryMap.show()
+        
+        // 문의와 답변 데이터를 비교하여 일치하는 요소들을 반환하는 함수
+        function printMatchingItems(inquiryNUM) {
+            let result = [];
+            // 모든 문의와 답변 데이터를 비교하여 일치하는 경우를 찾음
+            for (let i = 0; i < inquiryNUM.length; i++) {
+            	
+                let matchingAnswers = []; // 현재 문의에 대한 일치하는 답변들을 저장할 배열
+
+                        // 일치하는 경우 matchingAnswers 배열에 객체로 저장
+                        matchingAnswers.push({
+                            answerId: inquiryNUM[i].answerId,
+                            memberId: inquiryNUM[i].memberId,
+                            answerContent: inquiryNUM[i].answerContent,
+                            answerDateCreated: inquiryNUM[i].answerDateCreated
+                        });
+            
+                // 문의와 해당하는 모든 답변들을 result 배열에 객체로 저장
+                result.push({
+                    inquiryId: inquiryNUM[i].inquiryId,
+                    memberId: inquiryNUM[i].memberId,
+                    inquiryContent: inquiryNUM[i].inquiryContent,
+                    inquiryDateCreated: inquiryNUM[i].inquiryDateCreated,
+                    answers: matchingAnswers  // 일치하는 답변들 배열을 answers 필드로 저장
+                });
+            }
+            
+            console.log("result : " + result);
+            return result;  // 일치하는 요소들을 담은 배열 반환
+        }  */
+
 
 
         function makePageForm(inquiryMap) {

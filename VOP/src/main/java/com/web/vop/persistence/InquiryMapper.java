@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.web.vop.domain.InquiryDTO;
 import com.web.vop.domain.InquiryVO;
 import com.web.vop.util.Pagination;
 
@@ -19,6 +20,9 @@ public interface InquiryMapper {
 	 
 	 // 댓글(문의) 전체 검색
 	 List<InquiryVO> selectListByInquiry(int productId);
+	 
+	 // memberId로 문의 검색 페이징
+	 List<InquiryDTO> selectListByInquiryMemberIdPagingNew(@Param("memberId")String memberId, @Param("pagination") Pagination pagination);
 	 
 	 // memberId로 문의 검색 페이징
 	 List<InquiryVO> selectListByInquiryMemberIdPaging(@Param("memberId")String memberId, @Param("pagination") Pagination pagination);
