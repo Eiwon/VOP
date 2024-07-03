@@ -103,7 +103,7 @@
 						<p>예상 배송일 : ${orderViewDTO.formattedExpectedDeliveryDate}</p>
 					</c:if>
 					<c:if test= "${now > orderViewDTO.formattedExpectedDeliveryDate}">
-						<p>예상 배송일 : 배송 완료 !</p>
+						<p>배송 완료 ( ${orderViewDTO.formattedExpectedDeliveryDate} 일에 배송이 완료되었습니다!)</p>
 					</c:if>
                     <p>상품명 : ${orderVO.productName}</p>
                     <p>상품 가격 : ${orderVO.productPrice} 원</p>
@@ -449,7 +449,7 @@
                 },
                 success: function(response) {
                     console.log('주문 목록이 삭제되었습니다.');
-                  
+                    window.location.href = "../order/orderlist"; 
                 },
                 error: function(error) {
                     console.error('주문 목록 삭제 도중 오류 발생: ', error);
