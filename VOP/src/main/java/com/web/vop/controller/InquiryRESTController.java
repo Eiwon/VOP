@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.WebSocketHandler;
 
-
+import com.web.vop.domain.InquiryDTO;
 import com.web.vop.domain.InquiryVO;
 import com.web.vop.domain.MemberDetails;
 
@@ -153,7 +153,8 @@ public class InquiryRESTController {
 		pageMaker.setPagination(pagination);
 		log.info("쪽수 기본값 : " + pageMaker.getPagination());
 		
-		List<InquiryVO> listInquiry = inquiryService.getAllInquiryMemberIdPaging(memberId, pageMaker);
+//		List<InquiryVO> listInquiry = inquiryService.getAllInquiryMemberIdPaging(memberId, pageMaker);
+		List<InquiryDTO> listInquiry = inquiryService.getAllMyInquiryDTO(memberId, pageMaker);
 		
 		log.info("listInquiry : " + listInquiry);
 		log.info("pageMaker : " + pageMaker);

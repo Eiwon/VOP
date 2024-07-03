@@ -21,7 +21,7 @@ public class MailAuthenticationConfig {
 		
 		JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
 
-		javaMailSender.setUsername(ApiKey.MAIL_AUTH_ID);
+		javaMailSender.setUsername(ApiKey.MAIL_AUTH_ID); 
 		javaMailSender.setPassword(ApiKey.MAIL_AUTH_PW);
 
 		javaMailSender.setHost("smtp.gmail.com");

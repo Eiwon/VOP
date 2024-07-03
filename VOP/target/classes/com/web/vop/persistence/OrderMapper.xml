@@ -16,6 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="imgId" column="IMG_ID"/>
       <result property="memberId" column="MEMBER_ID"/>
    </resultMap>
+   
    <resultMap type="com.web.vop.domain.OrderViewDTO" id="OrderViewDTOResultMap">
    		<id property="orderId" column="ORDER_ID"/>
    		<result property="imgPath" column="IMG_PATH"/>
@@ -23,6 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		<result property="formattedExpectedDeliveryDate" column="FORMATTED_EXPECT_DELIVERY_DATE"/> 
    		<association property="orderVO" javaType="com.web.vop.domain.OrderVO" resultMap="OrderResultMap"/>
    </resultMap>
+   
    <resultMap type="com.web.vop.domain.DeliveryExpectDTO" id="DeliveryExpectResultMap">
    		<id property="memberId" column="MEMBER_ID"/> 
       	<result property="orderId" column="ORDER_ID"/>

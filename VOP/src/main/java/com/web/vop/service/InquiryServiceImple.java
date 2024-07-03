@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.web.vop.domain.InquiryDTO;
 import com.web.vop.domain.InquiryVO;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.persistence.AnswerMapper;
@@ -95,6 +96,16 @@ public class InquiryServiceImple implements InquiryService{
 		return inquiryMapper.selectListByInquiryMemberIdPaging(memberId, pageMaker.getPagination());
 	}
 	
+	// 댓글(문의) 회원 기준 전체 검색 new 버전
+	@Override
+	public List<InquiryDTO> getAllMyInquiryDTO(String memberId, PageMaker pageMaker) {
+		log.info("getAllInquiryPaging()");
+		int totalCnt = inquiryMapper.selectListByInquiryMemberIdCnt(memberId);
+		log.info("totalCnt : " + totalCnt);
+		pageMaker.setTotalCount(totalCnt);
+		return inquiryMapper.selectListByInquiryMemberIdPagingNew(memberId, pageMaker.getPagination());
+	}
+	
 	// 댓글(문의) 검색
 	@Override
 	public InquiryVO selectByInquiry(int productId, String memberId) {
@@ -138,10 +149,5 @@ public class InquiryServiceImple implements InquiryService{
 		return deleteRes;
 	}
 
-	
-
-	
-	
-	
 
 }
