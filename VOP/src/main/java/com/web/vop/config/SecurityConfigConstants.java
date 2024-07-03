@@ -62,7 +62,7 @@ public interface SecurityConfigConstants {
 	// 관리자만 접근 가능
 	public static final String[] ADMIN_ONLY = { 
 			"/member/auth", 
-			"/board/admin", 
+			"/board/admin", "/board/consultAccept",
 			"/coupon/list", "/coupon/register", "/coupon/delete", "/coupon/publish**",
 			"/popupAds/main", "/popupAds/register", "/popupAds/update", "/popupAds/delete", "/popupAds/list",
 			"/product/popupDetails", "/product/delete", "/product/registerRequest", "/product/deleteRequest",
@@ -76,7 +76,7 @@ public interface SecurityConfigConstants {
 			"/seller/main", "/seller/registerProduct", "/seller/myProduct"  };
 
 	// 참조 허용 url
-	public static final String PERMIT_IMG_SRC = "blob: https://vop-s3-bucket.s3.ap-northeast-2.amazonaws.com https://developers.kakao.com";
+	public static final String PERMIT_IMG_SRC = "blob: https://d2j7x0t84z88uc.cloudfront.net https://developers.kakao.com";
 	public static final String PERMIT_SCRIPT_SRC = "'self' https://code.jquery.com/jquery-3.7.1.js https://cdn.iamport.kr";
 	
 }

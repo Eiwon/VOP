@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -111,17 +112,12 @@
 					</tr>
 					<tr>
 						<td>멤버십 할인</td>
-						<td id="membership_discount">
 						<c:set var="membershipDiscount" value="0"/>
-						<c:choose>
-							<c:when test="${membershipVO != null }">
+						<sec:authorize access="hasAnyRole('판매자', '관리자') || ( hasRole('멤버십') && ${not empty membershipVO })">
 							<c:set var="membershipDiscount" value="20"/>
+						</sec:authorize>
+						<td id="membership_discount">
 							${membershipDiscount }%
-							</c:when>
-							<c:otherwise>
-							0%
-							</c:otherwise>
-						</c:choose>
 						</td>
 					</tr>
 					<tr>
@@ -217,7 +213,12 @@
 				method : 'GET',
 				url : '../coupon/myList',
 				success : function(result){
-					console.log(result);
+					console.log('불러온 쿠폰들 : ' + result);
+					if(result.length == 0){
+						alert('사용할 수 있는 쿠폰이 없습니다.');
+						return;
+					}
+					
 					myCouponList = result;
 					
 					let form = '';
@@ -229,6 +230,7 @@
 					}
 			
 					tagCouponList.html(form);
+					
 				} // end success
 			}); // end ajax
 			
@@ -324,7 +326,6 @@
 			paymentVO.paymentId = paymentResult.merchant_uid;
 			paymentVO.memberId = paymentResult.buyer_name;
 			paymentVO.chargeId = paymentResult.imp_uid;
-			
 			let orderList = [];
 			<c:forEach var="orderDTO" items="${orderList }">
 			<c:set var="orderVO" value="${orderDTO.orderVO }"/>
@@ -339,6 +340,11 @@
 				});
 			</c:forEach>
 			
+			let membershipVO = {
+					'membershipId' : '${membershipVO.membershipId}',
+					'expiryDate' : '${membershipVO.expiryDate}'
+			};
+			
 			console.log(paymentVO);
 			
 			$.ajax({
@@ -351,16 +357,21 @@
 				data : JSON.stringify({
 					'paymentVO' : paymentVO,
 					'orderList' : orderList,
-					'myCouponVO' : myCouponVO
+					'myCouponVO' : myCouponVO,
+					'membershipVO' : membershipVO
 				}),
 				success : function(result){
 					console.log('결제 내역 전송 결과 : ' + result);
-					if(result > 0){
+					if(result == 100){
 						location.href = 'paymentResult?paymentId=' + paymentVO.paymentId;
-					}else if(result == 0){
-						alert('결제 내역 전송 실패');		
-					}else if(result == -1){
-						alert('매진된 상품입니다.');
+					}else if(result == 201 || result == 202){
+						alert('결제 정보가 일치하지 않습니다.');
+					}else if(result == 203){
+						alert('만료된 멤버십입니다.');
+					}else if(result == 205){
+						alert('상품의 남은 수량이 부족합니다.');
+					}else {
+						alert('알 수 없는 문제 발생');
 					}
 				}
 			}); // end ajax
