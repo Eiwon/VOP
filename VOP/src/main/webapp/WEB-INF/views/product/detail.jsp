@@ -25,6 +25,7 @@
 
 <!-- jquery 라이브러리 import -->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<jsp:include page="../include/header.jsp"></jsp:include>
 
 <!-- 카카오 공유 api 관련 코드 -->
 <!-- 위에 있는 이유는 밑에 있는 코드들이 적용 되야해서 -->
@@ -38,7 +39,7 @@
 Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaScript 키 입력
 </script>
 
-<jsp:include page="../include/header.jsp"></jsp:include>
+
 
 <title>상품 상세 조회</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -113,11 +114,11 @@ td {
 <body>
 	
 	<!-- 카카오 공유 아이콘 -->
-	<!-- <div class="right-align">
+<!-- <div class="right-align"> -->
 		<a id="kakaotalk-sharing-btn" href="javascript:;"> 
-		<img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" />
+		<img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" alt="카카오톡 공유 보내기 버튼"/>
 		</a>
-	</div> -->
+	<!-- </div>  -->
 	
 	<!-- 상품 상세 페이지 제작 중 -->
 	<h2>상품 상세 페이지</h2>
@@ -240,42 +241,6 @@ td {
   	 // 썸네일 이미지 ID 변수 정의 (이 ID가 맞는지 확인해야 합니다)
      const thumbnailImgId = '${productVO.imgId}';
      
-     /* 카카오 공유 관련 api 코드 */
-     function initKakaoShare(imageUrl) {
-     Kakao.Share.createDefaultButton({
-    	    container: '#kakaotalk-sharing-btn',// 버튼 id
-    	    objectType: 'commerce',
-    	    content: {
-    	      title: 
-    	    	  'VOP 상품 + 카테고리 : "${productVO.category }" + 상품 이름 :"${productVO.productName }"' +
-    	    	  '"상품 번호 : ${productVO.productId }" + 상품 가격 : "${productVO.productPrice}" + 리뷰 평균 : "${productVO.reviewAvg}"',
-    	    	  // 공유시 제목 
-    	    	  
-    	      imageUrl: imageUrl,// 썸네일 이미지 가져오는 기능(월래는 url를 통해 이미지 불려 옴)
-    	      link: {
-    	        // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
-    	        mobileWebUrl: 'http://localhost:8080/vop/board/main', //카카오 api에 등록된 경로
-    	        webUrl: 'http://localhost:8080/vop/board/main',
-    	      },
-    	    },
-    	    commerce: { // 상품 설명
-    	      productName: 'VOP 상품 : "${productVO.productName}"', // 상품 이름
-    	      regularPrice: ${productVO.productPrice}, // 상품 가격
-    	      discountRate: 10, // 상품 할인율
-    	      discountPrice: ${productVO.productPrice} * 0.9, // 상품 할인 후 가격
-    	    },
-    	    buttons: [
-    	      {
-    	        title: '상품 보러가기', // 공유 했을때 버튼
-    	        link: { // 클릭시 이동하는 링크
-    	          mobileWebUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 앱 버전
-    	          webUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 웹 버전
-    	        },
-    	      },
-    	    ],
-    	  });
-     }/* end 카카오 공유 관련 api 코드 */
-     
      // 현재 날짜 보여주는 코드 (현재 사용자의 pc 시간을 기반으로 하기 때문에 문제가 있음)
      function displayCurrentDate() {
     // 현재 시간을 가져오기 위해 Date 객체를 생성합니다.
@@ -382,6 +347,42 @@ $(document).ready(function() {
      }); // end btnAdd.click()
 
 }); // end document
+
+/* 카카오 공유 관련 api 코드 */
+function initKakaoShare(imageUrl) { 
+Kakao.Share.createDefaultButton({
+	    container: '#kakaotalk-sharing-btn',// 버튼 id
+	    objectType: 'commerce',
+	    content: {
+	      title: 
+	    	  'VOP 상품 + 카테고리 : "${productVO.category }" + 상품 이름 :"${productVO.productName }"' +
+	    	  '"상품 번호 : ${productVO.productId }" + 상품 가격 : "${productVO.productPrice}" + 리뷰 평균 : "${productVO.reviewAvg}"',
+	    	  // 공유시 제목 
+	      description: '#케익 #딸기 #삼평동 #카페 #분위기 #소개팅 #test',
+	      imageUrl: imageUrl,// 썸네일 이미지 가져오는 기능(월래는 url를 통해 이미지 불려 옴)
+	      link: {
+	        // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
+	        mobileWebUrl: 'http://localhost:8080/vop/board/main', //카카오 api에 등록된 경로
+	        webUrl: 'http://localhost:8080/vop/board/main',
+	      },
+	    },
+	    commerce: { // 상품 설명
+	      productName: 'VOP 상품 : "${productVO.productName}"', // 상품 이름
+	      regularPrice: ${productVO.productPrice}, // 상품 가격
+	      discountRate: 10, // 상품 할인율
+	      discountPrice: ${productVO.productPrice} * 0.9, // 상품 할인 후 가격
+	    },
+	    buttons: [
+	      {
+	        title: '상품 보러가기', // 공유 했을때 버튼
+	        link: { // 클릭시 이동하는 링크
+	          mobileWebUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 앱 버전
+	          webUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 웹 버전
+	        },
+	      },
+	    ],
+	  });// end Kakao.Share.createDefaultButton()
+}/* end 카카오 공유 관련 api 코드 */
 
 //ReviewMap 객체에 show 함수를 정의합니다.
 reviewMap.show = function(page) {
@@ -741,11 +742,11 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
         function printMatchingItems(inquiryNUM, answerNUM) {
             let result = [];
             // 모든 문의와 답변 데이터를 비교하여 일치하는 경우를 찾음
-            for (let i = 0; i < inquiryNUM.length; i++) {
+            for (let i = 0; i < inquiryNUM.length; i++) {// 모든 데이터를 꺼내는 작업
                 let matchingAnswers = []; // 현재 문의에 대한 일치하는 답변들을 저장할 배열
 
-                for (let j = 0; j < answerNUM.length; j++) {
-                    if (inquiryNUM[i].inquiryId === answerNUM[j].inquiryId) {
+                for (let j = 0; j < answerNUM.length; j++) {// 모든 데이터를 꺼내는 작업
+                    if (inquiryNUM[i].inquiryId === answerNUM[j].inquiryId) {// 여기서 페이징 한 정보에 맞는 정보만 불려온다. 
                         // 일치하는 경우 matchingAnswers 배열에 객체로 저장
                         matchingAnswers.push({
                             answerId: answerNUM[j].answerId,
@@ -757,7 +758,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
                 }
 
                 // 문의와 해당하는 모든 답변들을 result 배열에 객체로 저장
-                result.push({
+                result.push({//그냥 페이지 정보 저장
                     inquiryId: inquiryNUM[i].inquiryId,
                     memberId: inquiryNUM[i].memberId,
                     inquiryContent: inquiryNUM[i].inquiryContent,
