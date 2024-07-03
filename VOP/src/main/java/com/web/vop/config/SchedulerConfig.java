@@ -12,8 +12,8 @@ public class SchedulerConfig {
 
 	@Bean
 	public TaskScheduler scheduler() {
-		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-		scheduler.setPoolSize(4);
+		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler(); // Thread Pool 기반의 스케줄러
+		scheduler.setPoolSize(4); // 스레드 풀 내의 스레드 4개 생성
 		return scheduler;
 	}
 	

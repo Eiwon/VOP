@@ -22,8 +22,10 @@
 <form id="deliveryForm" action="register" method="post">
 	<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
     <label for="receiverName">받는 사람:</label>
-    <input type="text" id="receiverName" name="receiverName" required><br><br>
-
+    <input type="text" id="receiverName" name="receiverName" onblur="checkValid(this)" required >
+	<div></div> <!-- 유효성 메시지 출력을 위한 빈 div -->
+	<br><br>
+	
     <!-- 우편번호 찾기 관련 코드 -->
     <input type="text" id="sample6_postcode" placeholder="우편번호">
     <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
@@ -31,7 +33,9 @@
     <input type="text" id="deliveryAddressDetails" name="deliveryAddressDetails" placeholder="상세주소"><br><br>
 
     <label for="receiverPhone">휴대폰 번호:</label>
-    <input type="text" id="receiverPhone" name="receiverPhone" placeholder="010-1234-5678" required><br><br>
+    <input type="text" id="receiverPhone" name="receiverPhone" placeholder="010-1234-5678 형식으로 입력하세요." onblur="checkValid(this)" required>
+    <div></div> <!-- 유효성 메시지 출력을 위한 빈 div -->
+    <br><br>
 
     <label for="requirement">배송 요청사항:</label><br>
     <textarea id="requirement" name="requirement" rows="4" cols="50">일반 : 문앞</textarea><br><br>
@@ -74,7 +78,8 @@
 <script>
     const memberId = '${memberDetails.getUsername()}';
     console.log('member ID:', memberId);
-        
+    
+			
     // 페이지 로드 시 실행되는 코드
     $(document).ready(function() {
 
@@ -88,12 +93,58 @@
                 console.log("기본 배송지가 없습니다.");
             }
         });
-    });
+    });//end document.ready()
 
     
-
+    let checkMap = {
+    		receiverName : {
+				exp : new RegExp("^[a-zA-Z가-힣]{2,20}$"),
+				success : "올바른 입력 형식 입니다.",
+				fail : "이름은 2~20자의 한글 또는 알파벳으로 입력하세요.",
+				isValid : false
+			},
+			
+			receiverPhone: {
+	            exp: new RegExp("^010-\\d{4}-\\d{4}$"),
+	            success: "올바른 입력 형식 입니다.",
+	            fail: "휴대폰 번호는 010-1234-5678 형식으로 입력하세요.",
+	            isValid: false
+	        }
+    };
  	
-
+ 	// 입력값의 유효성을 체크하는 함수
+    function checkValid(input){
+		let type = $(input).attr('id'); // 입력 요소의 id를 가져옴
+		let inputVal = $(input).val(); // 입력한 값
+		
+		console.log('Checking validity for:', type); // 디버깅을 위해 추가
+	    
+	    // checkMap에 type이 존재하는지 확인
+	    if (!checkMap.hasOwnProperty(type)) {
+	        console.error('checkMap에 존재하지 않는 type입니다:', type);
+	        return;
+	    }
+		
+		if(inputVal.length == 0){  // 입력값이 없을 경우
+			checkMap[type].isValid = false;
+			return;
+		}
+		
+		let isValid = checkMap[type].exp.test(inputVal); // 정규표현식을 이용해 유효성 검사
+		console.log(type + ' 유효성 확인 = ' + isValid);
+		
+		let msg = isValid ? checkMap[type].success : checkMap[type].fail; // 유효성에 따른 메시지 선택
+		
+		$(input).next().text(msg); // 입력 요소 다음에 메시지 출력
+		checkMap[type].isValid = isValid; // 유효성 상태 저장
+		
+		if(!isValid) {  // 유효하지 않으면 종료
+			return;
+		}
+			
+	} // end checkValid
+    
+    
     // 기본 배송지 있는지 조회 
     function checkDefaultAddress() {
         return new Promise(function(resolve, reject) {
@@ -126,35 +177,21 @@
         }
     });
     
- // 휴대폰 번호 형식 체크 함수
-    function checkPhoneNumber(receiverPhone) {
-        var phoneRegex = /^010-\d{4}-\d{4}$/;
-        return phoneRegex.test(receiverPhone);
-    }
+
  
  // 제출 버튼 클릭 시 실행되는 코드
     $('#deliveryForm').submit(function(event) {
-        // 기본 제출 동작을 중지
-        event.preventDefault();
 
-        // 폼에서 휴대폰 번호 값을 가져옴
-        var receiverPhone = $('#receiverPhone').val();
-
-        // 휴대폰 번호 형식을 체크
-        var isPhoneNumberValid = checkPhoneNumber(receiverPhone);
-
-        // 휴대폰 번호 형식이 올바르지 않은 경우
-        if (!isPhoneNumberValid) {
-            // 사용자에게 알림
-            alert('휴대폰 번호 형식이 올바르지 않습니다. (예: 010-1234-5678)');
-            // 폼 제출을 중지
-            return false;
+        for (let x in checkMap) {
+            if (!checkMap[x].isValid) {
+                alert('유효하지 않은 입력 : ' + x);
+                event.preventDefault();
+                return;
+            }
         }
-
-        // 휴대폰 번호 형식이 올바른 경우 폼을 제출
-        this.submit();
-    });
+    });//end deliveryForm
  
+	
 </script>
 
 </body>

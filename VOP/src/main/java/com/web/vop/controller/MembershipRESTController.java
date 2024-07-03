@@ -100,6 +100,11 @@ public class MembershipRESTController {
 		log.info("멤버십 전체 조회 = " + vo);
 		
 		if (result == 1) {
+			// 권한이 변경되면 유저에게 알람을 보냅니다.
+            // 알람을 받은 클라이언트는 자동으로 서버에 다음의 요청을 보냅니다.
+            // - 자신의 userDetails(=principal) 정보를 다시 로드
+            // 재로그인하지 않아도 변경된 권한이 적용됩니다.
+            ((AlarmHandler)alarmHandler).sendAuthUpdateAlarm(memberId, "멤버십이 등록되었습니다.");
 			return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return ResponseEntity.status(500).body(result);
@@ -113,11 +118,6 @@ public class MembershipRESTController {
 		log.info("멤버십 권한 변경(멤버십) " + memberId);
 		 try {
 	            membershipService.updateMemberAuth(memberId);
-	            // 권한이 변경되면 유저에게 알람을 보냅니다.
-	            // 알람을 받은 클라이언트는 자동으로 서버에 다음의 요청을 보냅니다.
-	            // - 자신의 userDetails(=principal) 정보를 다시 로드
-	            // 재로그인하지 않아도 변경된 권한이 적용됩니다.
-	            ((AlarmHandler)alarmHandler).sendAuthUpdateAlarm(memberId, "멤버십이 등록되었습니다.");
 	            return ResponseEntity.noContent().build();  // 204 No Content 반환
 	        } catch (Exception e) {
 	            log.error("멤버십 권한 업데이트 실패: " + e.getMessage());

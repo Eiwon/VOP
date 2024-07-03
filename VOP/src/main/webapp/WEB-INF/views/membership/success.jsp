@@ -14,6 +14,7 @@
 <title>멤버십</title>
 <!-- jquery 라이브러리 import -->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<jsp:include page="../include/header.jsp"></jsp:include>
 <meta name="${_csrf.token }" content="${_csrf.token }">
 </head>
 <body>
@@ -22,11 +23,9 @@
 <script>
 		
 $(document).ready(function() {
-		
-	
 		let memberId = "${memberDetails.getUsername()}";
 		console.log("memberId : ", memberId);
-		
+	
 		//회원 정보 조회
 	    $.ajax({
 	        type: 'GET',
@@ -47,8 +46,9 @@ $(document).ready(function() {
 	        error: function() {
 	            $('#expirydate').text('멤버십 정보를 조회하는 데 오류가 발생했습니다.');
 	        }
-	    });
+	    });//end ajax
 		
+	    
 	    // 멤버십 신청
 		$('#cancelMembershipBtn').on('click', function() {
 			
@@ -65,7 +65,7 @@ $(document).ready(function() {
 				error: function(){
 					console.error('멤버십 삭제 도중 오류 발생 . ',error);
 				}
-			});
+			}); //end ajax
 			
 			
 			// 멤버십 권한(일반) 수정
@@ -83,12 +83,11 @@ $(document).ready(function() {
                 error: function() {
                     console.error('멤버십 권한 업데이트 실패', error);
                 }
-            });
+            }); //end ajax
 	
-		});
+		});// end cancelMembershipBtn.click 
 		
-	});
-	
+});//end document.ready()
 	
 </script>
 
