@@ -67,6 +67,7 @@ public class OrderServiceImple implements OrderService {
 			log.info("주문 내역이 없습니다.");
 			return new ArrayList<>(); // 주문 내역이 없으면 빈 리스트 반환
 		}
+		
 		log.info("주문 조회 : " + orderList);
 		return orderList;
 	}//end getOrderListByMemberId()

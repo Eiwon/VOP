@@ -99,7 +99,12 @@
                     <img src="${orderViewDTO.imgUrl }" />
 				</div>	
                 <div>
-                	<p>예상 배송일 : ${orderVO.expectDeliveryDate.toLocaleString()}</p>
+                	<c:if test= "${now <= orderViewDTO.formattedExpectedDeliveryDate}">
+						<p>예상 배송일 : ${orderViewDTO.formattedExpectedDeliveryDate}</p>
+					</c:if>
+					<c:if test= "${now > orderViewDTO.formattedExpectedDeliveryDate}">
+						<p>예상 배송일 : 배송 완료 !</p>
+					</c:if>
                     <p>상품명 : ${orderVO.productName}</p>
                     <p>상품 가격 : ${orderVO.productPrice} 원</p>
                     <p>상품 수량 : ${orderVO.purchaseNum} 개</p>
@@ -184,7 +189,10 @@
 				<!-- <a href=""><button>교환/반품 신청</button></a> -->
 				
 					<!-- 주문목록 삭제 -->
-					 <button class="deleteOrderBtn" data-order-id="${orderVO.orderId}">주문 목록 삭제</button>
+					<c:if test= "${now > orderViewDTO.formattedExpectedDeliveryDate}">
+						<button class="deleteOrderBtn" data-order-id="${orderVO.orderId}">주문 목록 삭제</button>
+					</c:if>
+					
             </div>
         </div>
     </c:forEach>
@@ -430,6 +438,7 @@
         
 		console.log("orderId : " + orderId);
 		console.log(typeof orderId);
+		
 		
         if (confirm('정말로 이 주문을 삭제하시겠습니까?')) {
             $.ajax({
