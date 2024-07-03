@@ -802,7 +802,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
             }
             // 결과를 id가 'comments'인 요소에 HTML로 출력
             $('#comments').html(form);
-        }
+        }// end renderComments()
     }// end getAllComments()
 	
 	

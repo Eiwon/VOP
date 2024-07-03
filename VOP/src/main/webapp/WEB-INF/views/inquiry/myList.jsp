@@ -129,7 +129,7 @@
                      inquiryNUM = inquiryMap.inquiryDTOList;  // 성공적으로 데이터를 가져오면 inquiryNUM에 저장
                      console.log("inquiryNUM : " + inquiryNUM);
                      let matchingItems = printMatchingItems(inquiryNUM);// 그럼 여기서 함수가 실행 된 다음 변수에 저장?
-                     $('#comments_list_page').html(inquiryMakePageForm(inquiryMap));
+                     $('#inquiry_list_page').html(makePageForm(inquiryMap));
                  },
              }); // ajax
         }// end inquiryMap.show()
@@ -145,7 +145,7 @@
                         // 일치하는 경우 matchingAnswers 배열에 객체로 저장
                         matchingAnswers.push({
                             answerId: inquiryNUM[i].answerId,
-                            memberId: inquiryNUM[i].memberId,
+                            answerMemberId: inquiryNUM[i].answerMemberId,
                             answerContent: inquiryNUM[i].answerContent,
                             answerDateCreated: inquiryNUM[i].answerDateCreated
                         });
@@ -153,7 +153,7 @@
                 // 문의와 해당하는 모든 답변들을 result 배열에 객체로 저장
                 result.push({
                     inquiryId: inquiryNUM[i].inquiryId,
-                    memberId: inquiryNUM[i].memberId,
+                    inquiryMemberId: inquiryNUM[i].inquiryMemberId,
                     inquiryContent: inquiryNUM[i].inquiryContent,
                     inquiryDateCreated: inquiryNUM[i].inquiryDateCreated,
                     answers: matchingAnswers  // 일치하는 답변들 배열을 answers 필드로 저장
@@ -162,8 +162,43 @@
             
             console.log("result : " + result);
             return result;  // 일치하는 요소들을 담은 배열 반환
-        }  */
+        }  
+		
+        
+     // 일치하는 요소들을 HTML 테이블 형식으로 렌더링하여 출력하는 함수
+        function renderComments(comments) {// comments변수 값은 따로 선언 하는것이 아니라 그 어떤값이 들어 가도 상관이없다.
+        	// comments의 변수 값은 printMatchingItems함수를 통해 조건문에 맞게 정렬된 배열 형태의 값이다.
+            let form = '';  // 출력할 HTML 문자열을 저장할 변수
 
+            // 모든 일치하는 요소들을 테이블의 각 행으로 변환하여 form에 추가
+            for (let i = 0; i < comments.length; i++) {
+                // 문의 내용 행 추가
+                form += '<tr>' +
+                		'<td colspan="4">문의 내용</td>' +  
+                		'</tr>' +
+                		'<tr>' +
+                        '<td class="inquiryId">' + comments[i].inquiryId + '</td>' +
+                        '<td class="memberId">' + comments[i].memberId + '</td>' +
+                        '<td class="inquiryContent">' + comments[i].inquiryContent + '</td>' + 
+                        '<td class="inquiryDateCreated">' + toDate(comments[i].inquiryDateCreated) + '</td>' +
+                        '</tr>';
+
+                // 모든 일치하는 답변들에 대해 행 추가
+                for (let j = 0; j < comments[i].answers.length; j++) {
+                    form += '<tr>' +
+                            '<td colspan="3">ㄴ답변 내용</td>' +  // 답변 내용 표시
+                            '</tr>' +
+                            '<tr>' +
+                            '<td class="answerId">' + comments[i].answers[j].answerId + '</td>' +
+                            '<td class="answerMemberId">' + comments[i].answers[j].memberId + '</td>' +
+                            '<td class="answerContent">' + comments[i].answers[j].answerContent + '</td>' + 
+                            '<td class="answerDateCreated">' + toDate(comments[i].answers[j].answerDateCreated) + '</td>' +
+                            '</tr>';
+                }
+            }
+            // 결과를 id가 'comments'인 요소에 HTML로 출력
+            $('#comments').html(form);
+        }// end renderComments() */
 
 
         function makePageForm(inquiryMap) {
