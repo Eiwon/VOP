@@ -13,6 +13,7 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
+import com.web.vop.domain.ChatRoom;
 import com.web.vop.socket.AlarmHandler;
 import com.web.vop.socket.ConsultHandler;
 
@@ -52,10 +53,8 @@ public class WebSocketConfig implements WebSocketConfigurer{
 		return new HashMap<>();
 	} // end alarmConnMap
 	
-	// { 방에 있는 멤버들을 <key : memberId, value : Session(연결 정보)> 쌍으로 관리하는 Map }
-	// 을 <key : roomId, value : 방에 속한 멤버의 연결정보 > 쌍으로 관리하는 roomList 
 	@Bean
-	public Map<String, Map<String, WebSocketSession>> consultRoomList(){
+	public Map<String, ChatRoom> consultRoomList(){
 		return new HashMap<>();
 	} // end consultRoomList
 		

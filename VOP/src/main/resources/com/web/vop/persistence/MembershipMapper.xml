@@ -47,6 +47,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT * FROM MEMBERSHIP WHERE MEMBER_ID = #{memberId}
 	</select>
 	
+	<!-- memberId로 만료되지 않은 멤버십만 조회 -->
+	<select id="selectValidByMemberId" resultMap="MembershipResultMap">
+		SELECT * FROM MEMBERSHIP WHERE MEMBER_ID = #{memberId} AND EXPIRY_DATE &gt; SYSDATE
+	</select>
+	
 	<!-- 멤버십 만료 기간 조회 -->
 	<select id="selectExpiryDate" resultType="Date">
 		SELECT EXPIRY_DATE FROM MEMBERSHIP WHERE MEMBER_ID = #{memberId}

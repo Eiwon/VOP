@@ -37,26 +37,7 @@
             width: 200px;
         }
 
-        /* 좋아요 or 싫어요 css 코드 */
-        .button-container {
-            display: flex;
-            gap: 20px;
-        }
-
-        .button {
-            font-size: 24px;
-            color: grey;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-
-        .button.liked {
-            color: blue;
-        }
-
-        .button.disliked {
-            color: red;
-        }
+        
 </style>
 </head>
 <body>
@@ -67,7 +48,9 @@
     <table>
         <thead>
             <tr>
+                <th>문의 번호</th>
                 <th>상품 번호</th>
+                <th>작성자 ID</th>
                 <th>문의 내용</th>
                 <th>작성 일자</th>
             </tr>
@@ -84,7 +67,7 @@
             inquiryMap.show(1); // 상품 목록 출력
         });
 
-        inquiryMap.show = function(page) {
+        /* inquiryMap.show = function(page) {
         	
             let form = '';
 
@@ -113,22 +96,24 @@
                     $('#inquiry_list_page').html(makePageForm(inquiryMap));
                 } // end success
             }); // end ajax
-        } // end show 
+        } // end show  */
         
-        /* inquiryMap.show = function(page) {
+        inquiryMap.show = function(page) {
         	 $.ajax({
                  method: 'GET',
-                 url: inquiryUrl,
+                 url: '../inquiryRest/myList?pageNum=' + page,
                  success: function(data) {
                   	// reviewMap 초기화
-                     inquiryMap.inquiryDTOList = data.listInquiry || [];
+                  	 console.log("로그 : " );
+                     inquiryMap.listInquiry = data.listInquiry || [];
                      inquiryMap.pageMaker = data.pageMaker || null;
-                     console.log("inquiryDTOList : " + inquiryDTOList);
-                     console.log("inquiryNUM : " + inquiryNUM);
+                     console.log("inquiryMap.listInquiry : " + inquiryMap.listInquiry);
+                     console.log("inquiryMap.pageMaker : " + inquiryMap.pageMaker);
 
-                     inquiryNUM = inquiryMap.inquiryDTOList;  // 성공적으로 데이터를 가져오면 inquiryNUM에 저장
+                     inquiryNUM = inquiryMap.listInquiry;  // 성공적으로 데이터를 가져오면 inquiryNUM에 저장
                      console.log("inquiryNUM : " + inquiryNUM);
                      let matchingItems = printMatchingItems(inquiryNUM);// 그럼 여기서 함수가 실행 된 다음 변수에 저장?
+                     renderComments(matchingItems);
                      $('#inquiry_list_page').html(makePageForm(inquiryMap));
                  },
              }); // ajax
@@ -154,6 +139,7 @@
                 result.push({
                     inquiryId: inquiryNUM[i].inquiryId,
                     inquiryMemberId: inquiryNUM[i].inquiryMemberId,
+                    productId: inquiryNUM[i].productId,
                     inquiryContent: inquiryNUM[i].inquiryContent,
                     inquiryDateCreated: inquiryNUM[i].inquiryDateCreated,
                     answers: matchingAnswers  // 일치하는 답변들 배열을 answers 필드로 저장
@@ -169,16 +155,17 @@
         function renderComments(comments) {// comments변수 값은 따로 선언 하는것이 아니라 그 어떤값이 들어 가도 상관이없다.
         	// comments의 변수 값은 printMatchingItems함수를 통해 조건문에 맞게 정렬된 배열 형태의 값이다.
             let form = '';  // 출력할 HTML 문자열을 저장할 변수
-
+            console.log("로그3 : ");
             // 모든 일치하는 요소들을 테이블의 각 행으로 변환하여 form에 추가
             for (let i = 0; i < comments.length; i++) {
                 // 문의 내용 행 추가
                 form += '<tr>' +
-                		'<td colspan="4">문의 내용</td>' +  
+                		'<td colspan="4">내가 작성한 문의 내용</td>' +  
                 		'</tr>' +
                 		'<tr>' +
                         '<td class="inquiryId">' + comments[i].inquiryId + '</td>' +
-                        '<td class="memberId">' + comments[i].memberId + '</td>' +
+                        '<td class="productId">' + comments[i].productId + '</td>' +
+                        '<td class="inquiryMemberId">' + comments[i].inquiryMemberId + '</td>' +
                         '<td class="inquiryContent">' + comments[i].inquiryContent + '</td>' + 
                         '<td class="inquiryDateCreated">' + toDate(comments[i].inquiryDateCreated) + '</td>' +
                         '</tr>';
@@ -190,15 +177,17 @@
                             '</tr>' +
                             '<tr>' +
                             '<td class="answerId">' + comments[i].answers[j].answerId + '</td>' +
-                            '<td class="answerMemberId">' + comments[i].answers[j].memberId + '</td>' +
+                            '<td class="productId">' + comments[i].productId + '</td>' +
+                            '<td class="answerMemberId">' + comments[i].answers[j].answerMemberId + '</td>' +
                             '<td class="answerContent">' + comments[i].answers[j].answerContent + '</td>' + 
                             '<td class="answerDateCreated">' + toDate(comments[i].answers[j].answerDateCreated) + '</td>' +
                             '</tr>';
                 }
             }
+            console.log("로그2 : ");
             // 결과를 id가 'comments'인 요소에 HTML로 출력
-            $('#comments').html(form);
-        }// end renderComments() */
+            $('#inquiry_list').html(form);
+        }// end renderComments() 
 
 
         function makePageForm(inquiryMap) {

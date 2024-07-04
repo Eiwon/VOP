@@ -67,13 +67,19 @@ public class BoardController {// 메인 페이지 구현 컨트롤러
 	} // end deliveryGET
 	
 	@GetMapping("/consult")
-	public String consultGET(Model model, String roomId) {
+	public String consultGET() {
 		log.info("consultGET");
+		
+		return "chat/consult";
+	} // end consultGET
+	
+	@GetMapping("/consultAccept")
+	public String consultAcceptGET(Model model, String roomId){
 		log.info("request room Id : " + roomId);
 		
 		model.addAttribute("roomId", roomId);
 		
 		return "chat/consult";
-	} // end consultGET
+	} // end consultAcceptGET
 	
 }//end MainController

@@ -1,5 +1,7 @@
 package com.web.vop.controller;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -87,13 +89,42 @@ public class PaymentController {
 		log.info("결제 내역 : " + paymentResult.getPaymentVO());
 		log.info("주문 목록 : " + paymentResult.getOrderList());
 		log.info("쿠폰 사용 내역 : " + paymentResult.getMyCouponVO());
-		
+		log.info("멤버십 정보 : " + paymentResult.getMembershipVO());
 		PaymentVO paymentVO = paymentResult.getPaymentVO();
 		String impUid = paymentVO.getChargeId();
 		String memberId = memberDetails.getUsername();
+
+		int resultCode = checkPaymentValid(paymentResult, memberId);
+		
+		if(resultCode != 100) {
+			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
+			return new ResponseEntity<Integer>(resultCode, HttpStatus.OK);
+		}
+		
+		paymentResult.getPaymentVO().setMemberId(memberId);
+		try {
+			paymentService.registerPayment(paymentResult); // 결제 결과 등록
+		}catch(DataIntegrityViolationException e) {
+			log.error("DB 저장 실패 : 재고 부족");
+			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
+			resultCode = 205;
+		}
+		
+		return new ResponseEntity<Integer>(resultCode, HttpStatus.OK);
+	} // end savePaymentResult
+	
+	@GetMapping("/popupDeliverySelect")
+	public String popupDeliverySelect() {
+		log.info("배송지 선택 팝업 호출");
+		return "redirect:../Delivery/popupSelect";
+	} // end popupDeliverySelect
+	
+	private int checkPaymentValid(PaymentWrapper paymentResult, String memberId) {
+		log.info("결제 결과 유효성 검사");
+		PaymentVO paymentVO = paymentResult.getPaymentVO();
+		String impUid = paymentVO.getChargeId();
 		int chargePrice = paymentVO.getChargePrice();
-		int res = 0;
-		// 결제 정보가 유효한지 검사
+		
 		// 주문 목록 총액이 결제금액과 일치하는지 확인
 		int total = 0;
 		for(OrderViewDTO orderDTO : paymentResult.getOrderList()) {
@@ -103,10 +134,17 @@ public class PaymentController {
 		total = (totalDiscount >= 100) ? 0 : (total + paymentVO.getDeliveryPrice()) * (100 - totalDiscount) / 100;
 		
 		if(total != chargePrice) {
-			// 결제 에러
 			log.error("구매물품 총액 " + total + "원 vs " + chargePrice + "원 : 결제액 불일치");
-			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
-			return new ResponseEntity<Integer>(res, HttpStatus.OK);
+			return 201;
+		}
+		
+		Date now = new Date();
+		log.info(paymentResult.getMembershipVO());
+		if(paymentResult.getMembershipVO().getExpiryDate() != null) {
+			if(paymentResult.getMembershipVO().getExpiryDate().before(now)) {
+				log.error("만료된 멤버십 정보");
+				return 203;
+			}
 		}
 		
 		// 서버로 전달된 금액이 실제 결제 금액과 같은지 확인
@@ -114,26 +152,8 @@ public class PaymentController {
 		if(realChargePrice != chargePrice) {
 			// 결제 에러
 			log.error("실결제액 : 서버 전송 결제액 불일치");
-			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
-			return new ResponseEntity<Integer>(res, HttpStatus.OK);
+			return 202;
 		}
-		paymentResult.getPaymentVO().setMemberId(memberId);
-		try {
-			res = paymentService.registerPayment(paymentResult); // 결제 결과 등록
-		}catch(DataIntegrityViolationException e) {
-			log.error("DB 저장 실패 : 재고 부족");
-			paymentAPIUtil.cancelPayment(impUid); // 결제 취소
-			res = -1;
-		}
-		
-		return new ResponseEntity<Integer>(res, HttpStatus.OK);
-	} // end savePaymentResult
-	
-	@GetMapping("/popupDeliverySelect")
-	public String popupDeliverySelect() {
-		log.info("배송지 선택 팝업 호출");
-		return "redirect:../Delivery/popupSelect";
-	} // end popupDeliverySelect
-	
-	
+		return 100;
+	} // end checkPaymentValid
 }

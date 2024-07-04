@@ -31,6 +31,9 @@ public interface MembershipMapper {
 	// 멤버십 전체 조회
 	MembershipVO selectByMemberId(@Param("memberId")String memberId);
 	
+	// memberId로 만료되지 않은 멤버십만 조회
+	MembershipVO selectValidByMemberId(String memberId);
+	
 	// 멤버십 만료일 조회
 	Date selectExpiryDate(@Param("memberId") String memberId);
 	

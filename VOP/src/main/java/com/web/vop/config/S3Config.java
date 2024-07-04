@@ -36,4 +36,10 @@ public class S3Config {
 		return "https://vop-s3-bucket.s3.ap-northeast-2.amazonaws.com/";
 	} // end s3Url
 	
+	// AWS Cloud Front URL
+	@Bean
+	public String cloudFrontUrl() {
+		return "https://d2j7x0t84z88uc.cloudfront.net/";
+	} // end cloudFrontUrl
+	
 }

@@ -311,7 +311,7 @@ function createStars(reviewAvg) {
 
 $(document).ready(function() { 
 	displayCurrentDate();
-	loadImg(); // 이미지 불려오는 메소드
+	//loadImg();
     reviewMap.show(1); //리뷰
     inquiryMap.show(1);
     createStars(reviewAvg); // 상품 평균 리뷰값 별 표시
@@ -349,17 +349,14 @@ $(document).ready(function() {
 }); // end document
 
 /* 카카오 공유 관련 api 코드 */
-function initKakaoShare(imageUrl) { 
 Kakao.Share.createDefaultButton({
 	    container: '#kakaotalk-sharing-btn',// 버튼 id
 	    objectType: 'commerce',
 	    content: {
 	      title: 
-	    	  'VOP 상품 + 카테고리 : "${productVO.category }" + 상품 이름 :"${productVO.productName }"' +
-	    	  '"상품 번호 : ${productVO.productId }" + 상품 가격 : "${productVO.productPrice}" + 리뷰 평균 : "${productVO.reviewAvg}"',
+	    	  'VOP사이트 다양한 상품들도 있습니다. 많은 관심 부탁 드립니다.',
 	    	  // 공유시 제목 
-	      description: '#케익 #딸기 #삼평동 #카페 #분위기 #소개팅 #test',
-	      imageUrl: imageUrl,// 썸네일 이미지 가져오는 기능(월래는 url를 통해 이미지 불려 옴)
+	      imageUrl: '${productDetails.thumbnailUrl}',// 썸네일 이미지 가져오는 기능(월래는 url를 통해 이미지 불려 옴)
 	      link: {
 	        // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
 	        mobileWebUrl: 'http://localhost:8080/vop/board/main', //카카오 api에 등록된 경로
@@ -367,10 +364,10 @@ Kakao.Share.createDefaultButton({
 	      },
 	    },
 	    commerce: { // 상품 설명
-	      productName: 'VOP 상품 : "${productVO.productName}"', // 상품 이름
+	      productName: 'VOP 상품 : ${productVO.productName}', // 상품 이름
 	      regularPrice: ${productVO.productPrice}, // 상품 가격
-	      discountRate: 10, // 상품 할인율
-	      discountPrice: ${productVO.productPrice} * 0.9, // 상품 할인 후 가격
+	      //discountRate: 10, // 상품 할인율
+	      //discountPrice: ${productVO.productPrice} * 0.9, // 상품 할인 후 가격
 	    },
 	    buttons: [
 	      {
@@ -380,18 +377,24 @@ Kakao.Share.createDefaultButton({
 	          webUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 웹 버전
 	        },
 	      },
+	      {
+		    title: '메인 페이지', // 공유 했을때 버튼
+		    link: { // 클릭시 이동하는 링크
+		      mobileWebUrl: 'http://localhost:8080/vop/board/main', // 앱 버전
+		      webUrl: 'http://localhost:8080/vop/board/main', // 웹 버전
+		     },
+		   },
 	    ],
 	  });// end Kakao.Share.createDefaultButton()
-}/* end 카카오 공유 관련 api 코드 */
+	  /* end 카카오 공유 관련 api 코드 */
+
 
 //ReviewMap 객체에 show 함수를 정의합니다.
 reviewMap.show = function(page) {
     
     let reviewUrl = '../reviewRest/all/' + productId + '/' + page;
     
-    
-    
-     let likesUrl = '../likes/list/' + productId + '/' + memberId;
+    let likesUrl = '../likes/list/' + productId + '/' + memberId;
     // 실행중인 코드 
     let reviewNUM = [];
     let likesNUM = [];
@@ -839,7 +842,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
 		return pageForm;
 	} // end inquiryMakePageForm
 	
-	// 이미지가 없을때 대체하는 코드
+	/* // 이미지가 없을때 대체하는 코드
 	function loadImg(){
 		$(document).find('.productImg').each(function(){
 			let target = $(this);
@@ -857,7 +860,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
 				}// end success
 			}); // end ajax
 		});//end document
-	} // end loadImg 
+	} // end loadImg  */
 	
 	// 시간 변환 함수
 	function toDate(timestamp) {

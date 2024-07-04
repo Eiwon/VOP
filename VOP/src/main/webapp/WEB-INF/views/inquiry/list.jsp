@@ -30,7 +30,7 @@
 	<table>
 		<tbody>
 			<c:choose>
-			<!-- 조건 문으로서  listInquiry값이 null 값인지 확인 하는 코드-->
+			<%-- 조건 문으로서 listInquiry값이 null 값인지 확인 하는 코드 --%>
 				<c:when test="${not empty listInquiry}">
 					<c:forEach var="InquiryVO" items="${listInquiry}">
 						<tr>
@@ -42,29 +42,32 @@
 									pattern="yyyy-MM-dd HH:mm:ss" var="inquiryDateCreated" />
 								${inquiryDateCreated}</td>
 							<td>
-								<!-- 수정: 클래스 이름을 btnAdd로 변경 -->
+								<%-- 수정: 클래스 이름을 btnAdd로 변경 --%>
 								<button class="btnAdd" data-inquiryid="${InquiryVO.inquiryId}"
-									data-productid="${InquiryVO.productId}">답글 작성</button> <!-- 수정: 클래스 이름을 btnModify로 변경 -->
+									data-productid="${InquiryVO.productId}">답글 작성</button> 
+									<%-- 수정: 클래스 이름을 btnModify로 변경 --%>
 								<button class="btnModify"
 									data-inquiryid="${InquiryVO.inquiryId}">답글 수정</button>
-								<!-- style="display:none;" 화면에서 감추는 코드 --> <!-- 수정: 클래스 이름을 btnDelete로 변경 -->
+								<%-- style="display:none;" 화면에서 감추는 코드 --%>
+                    			<%-- 수정: 클래스 이름을 btnDelete로 변경 --%>
 								<button class="btnDelete"
 									data-inquiryid="${InquiryVO.inquiryId}">답글 삭제</button>
 							</td>
 						</tr>
 						<tr>
 							<td colspan="5">
-								<!-- 답글 작성 -->
+								<%-- 답글 작성 --%>
 								<div id="inputContainer_${InquiryVO.inquiryId}"
 									class="inputContainer"
 									style="text-align: center; margin-top: 10px; display: none;">
-									<!-- 입력 필드와 제출 버튼이 추가될 위치 -->
+									<%--입력 필드와 제출 버튼이 추가될 위치 --%>
 									<input type="text" id="replyAnswer_${InquiryVO.inquiryId}"
 										placeholder="답글 작성">
 									<button class="btnSubmit"
 										data-inquiryid="${InquiryVO.inquiryId}"
 										data-productid="${InquiryVO.productId}">작성</button>
-								</div> <!-- 답글 수정 -->
+								</div> 
+								<%-- 답글 수정 --%>
 								<div id="modifyContainer_${InquiryVO.inquiryId}"
 									class="modifyContainer"
 									style="text-align: center; margin-top: 10px; display: none;">
