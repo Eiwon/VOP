@@ -14,7 +14,7 @@
 		height: 500px;
 		overflow: scroll;
 	}
-	.consultantChat {
+	.yourChat {
 		text-align: left;
 	}
 	.myChat {
@@ -80,9 +80,9 @@
 			if(tellerId == memberId){
 				chatBox.attr('class', 'myChat');
 			}else{
-				chatBox.attr('class', 'consultantChat');
+				chatBox.attr('class', 'yourChat');
 			}
-			chatBox.append(tellerId + ' : ');
+			chatBox.append(tellerId + ' <br> ');
 			
 			let contentStr = '';
 			let start = 0, end;
