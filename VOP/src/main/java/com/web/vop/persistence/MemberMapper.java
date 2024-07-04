@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 
 @Mapper
@@ -13,6 +15,9 @@ public interface MemberMapper {
 	public int insertMember(MemberVO memberVo);
 
 	public MemberVO selectByMemberId(String memberId);
+	
+	// 유저 ID로 조회 login
+	public UserDetails selectAllByMemberId(String memberId);
 	
 	public String selectMemberIdById(String memberId);
 	

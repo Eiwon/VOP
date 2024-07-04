@@ -1,29 +1,42 @@
 package com.web.vop.controller;
 
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+<<<<<<< HEAD
 import org.springframework.security.core.context.SecurityContextHolder;
+=======
+>>>>>>> 9ce9447fdb6d5fedf7e31a482fd14c9909b0c2d0
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.web.vop.domain.AlertVO;
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.service.MemberService;
+import com.web.vop.service.TokenAuthenticationService;
 import com.web.vop.service.UserDetailsServiceImple;
 import com.web.vop.util.Constant;
 import com.web.vop.util.MailAuthenticationUtil;
@@ -36,10 +49,16 @@ import lombok.extern.log4j.Log4j;
 public class MemberController {
 
 	@Autowired
-	MemberService memberService;
+	public MemberService memberService;
 	
 	@Autowired
-	MailAuthenticationUtil mailAuthUtil;
+	public UserDetailsServiceImple UserDetailsService;
+	
+	@Autowired
+	public MailAuthenticationService mailAuthService;
+	
+	@Autowired
+	public TokenAuthenticationService tokenAuthenticationService;
 	
 	@GetMapping("/register")
 	public void registerGET() {
@@ -53,6 +72,54 @@ public class MemberController {
 		request.getSession().setAttribute("prevPage", prevPage);
 	} // end loginGET
 	
+	@PostMapping("/login")
+	public String loginPOST(Model model, HttpServletResponse response, MemberVO memberVO) {
+		AlertVO alertVO = new AlertVO();
+		UserDetails memberDetails = memberService.authentication(memberVO.getMemberId(), memberVO.getMemberPw());
+		String token = null;
+		log.info(memberDetails);
+		if(memberDetails != null) {
+			token = tokenAuthenticationService.createToken(memberDetails);
+			log.info(token);
+			
+			try {
+				token = URLEncoder.encode("Bearer " + token, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			Cookie accessCookie = new Cookie("access_token", token);
+			accessCookie.setHttpOnly(true);
+			accessCookie.setDomain("localhost");
+			accessCookie.setPath("/");
+			accessCookie.setMaxAge(60 * 1000);
+			accessCookie.setSecure(true);
+			response.addCookie(accessCookie);
+			alertVO.setAlertMsg("로그인 성공");
+			alertVO.setRedirectUri("board/main");
+		}else {
+			alertVO.setAlertMsg("잘못된 아이디 또는 비밀번호입니다");
+			alertVO.setRedirectUri("member/login");
+		}
+		model.addAttribute("alertVO", alertVO);
+		return Constant.ALERT_PATH;
+	}
+	
+	@PostMapping("/logout")
+	public String logoutPOST(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		
+		for(Cookie cookie : cookies) {
+			if(cookie.getName().equals("access_token")) {
+				cookie.setMaxAge(1);
+			}
+		}
+		return "redirect:../board/main";
+	}
+	
+	@GetMapping("/loginSuccess")
+	public void loginSuccessGET() {
+		log.info("login success get");
+	}
 	
 	@GetMapping("/loginFail")
 	public String loginFailGET(Model model) {

@@ -1,5 +1,8 @@
 package com.web.vop.config;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.Bean;
@@ -26,6 +29,9 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import org.springframework.security.web.csrf.CsrfFilter;
 
@@ -69,41 +75,78 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 		// hasRole("권한") : 특정 권한이 있는지 체크 (권한 계층 적용)
 		// hasAnyRole("권한1", "권한2", ...) : 목록 중 하나의 권한이라도 있는지 체크
 		// hasAuthority("ROLE_권한") : 특정 권한이 있는지 체크(권한 계층 미적용)
-		http.formLogin()
-			.loginPage("/member/login")
-			.usernameParameter("memberId")
-			.passwordParameter("memberPw")
-			.loginProcessingUrl("/member/login")
-			.successHandler(loginSuccessHandler())
-			.failureHandler(loginFailHandler());
+
+//		http.formLogin()
+//			.loginPage("/member/login")
+//			.usernameParameter("memberId")
+//			.passwordParameter("memberPw")
+//			.loginProcessingUrl("/member/login")
+//			.successHandler(loginSuccessHandler())
+//			.failureHandler(loginFailHandler());
+//		
+//		http.rememberMe() // 자동 로그인
+//			.key("key") 
+//			.rememberMeParameter("rememberMe")
+//			.rememberMeCookieName("rememberMe") 
+//			.tokenValiditySeconds(60*60*24*3)
+//			.tokenRepository(tokenRepository)
+//			.userDetailsService(userDetailsServiceImple())
+//			.authenticationSuccessHandler(loginSuccessHandler());
+//		
+//		http.logout()
+//			.logoutUrl("/member/logout") // 로그아웃 처리 URL
+//			.logoutSuccessUrl("/board/main")// 로그아웃 성공 후 이동 페이지
+//			.deleteCookies("JSESSIONID", "rememberMe") // 로그아웃 후 쿠키 삭제
+//			.logoutSuccessHandler(logoutSuccessHandler())
+//			.invalidateHttpSession(true); // 세션 무효화 설정
+//		
+//		// header 정보에 xssProtection 기능 설정
+//		http.headers().xssProtection().block(true);
+//		http.headers()
+//			.contentSecurityPolicy("script-src " + PERMIT_SCRIPT_SRC)
+//			.and()
+//			.contentSecurityPolicy("img-src " + PERMIT_IMG_SRC);
+//	
+//		http.addFilterBefore(characterEncodingFilter(), CsrfFilter.class);
+//			
+//		http.sessionManagement()
+//			.maximumSessions(1);
 		
-		http.rememberMe() // 자동 로그인
-			.key("key") 
-			.rememberMeParameter("rememberMe")
-			.rememberMeCookieName("rememberMe") 
-			.tokenValiditySeconds(60*60*24*3)
-			.tokenRepository(tokenRepository)
-			.userDetailsService(userDetailsServiceImple())
-			.authenticationSuccessHandler(loginSuccessHandler());
+//		http.formLogin()
+//			.loginPage("/member/login")
+//			.usernameParameter("memberId")
+//			.passwordParameter("memberPw")
+//			.loginProcessingUrl("/member/login")
+//			.successHandler(loginSuccessHandler)
+//			.failureHandler(loginFailHandler);
+//
+//		http.rememberMe() // 자동 로그인
+//			.key("key") 
+//			.rememberMeParameter("rememberMe")
+//			.rememberMeCookieName("rememberMe") 
+//			.tokenValiditySeconds(60*60*24)
+//			.tokenRepository(tokenRepository)
+//			.userDetailsService(userDetailsServiceImple)
+//			.authenticationSuccessHandler(loginSuccessHandler);
+//		
+//		http.logout()
+//			.logoutUrl("/member/logout") // 로그아웃 처리 URL
+//			.logoutSuccessUrl("/board/main")// 로그아웃 성공 후 이동 페이지
+//			.deleteCookies("JSESSIONID", "rememberMe") // 로그아웃 후 쿠키 삭제
+//			.logoutSuccessHandler(logoutSuccessHandler)
+//			.invalidateHttpSession(true); // 세션 무효화 설정
 		
-		http.logout()
-			.logoutUrl("/member/logout") // 로그아웃 처리 URL
-			.logoutSuccessUrl("/board/main")// 로그아웃 성공 후 이동 페이지
-			.deleteCookies("JSESSIONID", "rememberMe") // 로그아웃 후 쿠키 삭제
-			.logoutSuccessHandler(logoutSuccessHandler())
-			.invalidateHttpSession(true); // 세션 무효화 설정
-		
-		// header 정보에 xssProtection 기능 설정
-		http.headers().xssProtection().block(true);
-		http.headers()
-			.contentSecurityPolicy("script-src " + PERMIT_SCRIPT_SRC)
+		http.exceptionHandling()
+			.accessDeniedPage("/access/denied");
+
+		http.csrf().disable()
+			.cors().configurationSource(corsConfigurationSource())
 			.and()
-			.contentSecurityPolicy("img-src " + PERMIT_IMG_SRC);
-	
-		http.addFilterBefore(characterEncodingFilter(), CsrfFilter.class);
-			
-		http.sessionManagement()
-			.maximumSessions(1);
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.headers().cacheControl()
+			.and()
+			.frameOptions().sameOrigin();
 		
 	} // end configure
 
@@ -158,5 +201,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 		expressionHandler.setRoleHierarchy(roleHierarchyImple);
 		return expressionHandler;
 	} // end roleVoter
+	
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(List.of("*"));
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
+		configuration.setAllowCredentials(true);
+		configuration.addAllowedHeader("access_token");
+		configuration.addAllowedHeader("refresh_token");
+		configuration.addAllowedHeader("*");
+		configuration.setMaxAge(3600L);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
 	
 }

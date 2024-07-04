@@ -3,7 +3,9 @@ package com.web.vop.service;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 
 public interface MemberService {
@@ -19,6 +21,9 @@ public interface MemberService {
 	
 	// 로그인
 	public boolean checkLogin(String memberId, String memberPw);
+	
+	// 로그인
+	public UserDetails authentication(String memberId, String memberPw);
 	
 	// 회원 정보 수정
 	public int updateMember(MemberVO memberVO);

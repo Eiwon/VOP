@@ -3,10 +3,12 @@ package com.web.vop.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.persistence.MemberMapper;
 import com.web.vop.persistence.ProductMapper;
@@ -59,12 +61,28 @@ public class MemberServiceImple implements MemberService{
 	public boolean checkLogin(String memberId, String memberPw) {
 		log.info("Member Service checkLogin()");
 		MemberVO memberVO = memberMapper.selectByMemberId(memberId);
+		if(memberVO == null) {
+			return false;
+		}
 		boolean comp = passwordEncoder.matches(memberPw, memberVO.getMemberPw());
 		log.info("비교 결과 : " + comp);
 		
 		return comp;
 	} // end checkLogin
 
+	@Override
+	public UserDetails authentication(String memberId, String memberPw) {
+		log.info("Member Service checkLogin()");
+		UserDetails memberDetails = memberMapper.selectAllByMemberId(memberId);
+		if(memberDetails == null) {
+			return null;
+		}
+		if(!passwordEncoder.matches(memberPw, memberDetails.getPassword())) {
+			return null;
+		}
+		return memberDetails;
+	} // end authentication
+	
 	@Override
 	public int updateMember(MemberVO memberVO) { // 회원 정보 수정
 		log.info("Member Service updateMember()");
@@ -164,6 +182,8 @@ public class MemberServiceImple implements MemberService{
 		
 		return res;
 	} // end isWithdrawable
+
+	
 
 	
 

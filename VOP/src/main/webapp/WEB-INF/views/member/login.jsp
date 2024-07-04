@@ -4,6 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<<<<<<< HEAD
 <style type="text/css">
 body {
         display: flex;
@@ -25,6 +26,7 @@ body {
 	height: 50px;
 }
 </style>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>로그인</title>
 </head>
 <body>
@@ -54,5 +56,33 @@ body {
 		</div>
 		
 	</div>
+	
+	<script type="text/javascript">
+		
+		/* $('#btnLogin').click(function(){
+			let memberId = $('#memberId').val();
+			let memberPw = $('#memberPw').val();
+			
+			$.ajax({
+				method : 'POST',
+				url : 'login',
+				headers : {
+					'Content-type' : 'application/json'
+				},
+				data : JSON.stringify({
+					memberId : memberId,
+					memberPw : memberPw
+				}),
+				success : function(result){
+					alert("로그인 성공");
+					location.href = '../board/main';
+				} // end success
+				
+			}); // end ajax
+			
+		}); */
+		
+	
+	</script>
 </body>
 </html>
