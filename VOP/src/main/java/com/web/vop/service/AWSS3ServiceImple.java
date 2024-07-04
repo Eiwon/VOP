@@ -38,6 +38,9 @@ public class AWSS3ServiceImple implements AWSS3Service {
 	
 	private String bucketName = "vop-s3-bucket";
 	
+	@Autowired
+	private String cloudFrontUrl;
+	
 	@Override
 	public String uploadImage(MultipartFile file, ImageVO imageVO) throws IOException {
 		log.info("s3에 이미지 저장");
@@ -57,10 +60,15 @@ public class AWSS3ServiceImple implements AWSS3Service {
 	@Override
 	public String uploadResizedImage(MultipartFile file, ImageVO imageVO, int width, int height) throws IOException {
 		log.info("s3에 이미지 크기를 재설정하여 저장");
-		
+		BufferedImage icon = null;
 		BufferedImage bi = ImageIO.read(file.getInputStream()); // 저장된 파일을 읽어온다
-		BufferedImage icon = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR); // icon 저장할 공간 생성
-		icon.createGraphics().drawImage(bi, 0, 0, width, height, null); // icon 그리기
+		if(bi.getWidth() > width && bi.getHeight() > height) {
+			icon = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR); // icon 저장할 공간 생성
+			icon.createGraphics().drawImage(bi, 0, 0, width, height, null); // icon 그리기
+		}else {
+			icon = bi;
+		}
+		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ImageIO.write(icon, imageVO.getImgExtension(), baos); // 그린 icon 저장
 		
@@ -103,7 +111,8 @@ public class AWSS3ServiceImple implements AWSS3Service {
 		String fullPath = 
 				(imgChangeName == null) ? Constant.DEFAULT_IMG_PATH : imgPath + imgChangeName;
 		
-		return awsS3Client.getUrl(bucketName, fullPath).toString();
+		return cloudFrontUrl + fullPath;
+		//return awsS3Client.getUrl(bucketName, fullPath).toString();
 	} // end toImageUrl
 
 	@Override
@@ -111,7 +120,8 @@ public class AWSS3ServiceImple implements AWSS3Service {
 		String fullPath;
 		for(ProductPreviewDTO item : list) {
 			fullPath = (item.getImgChangeName() == null) ? Constant.DEFAULT_IMG_PATH : item.getImgPath() + item.getImgChangeName();
-			item.setImgUrl(awsS3Client.getUrl(bucketName, fullPath).toString());
+			item.setImgUrl(cloudFrontUrl + fullPath);
+			//item.setImgUrl(awsS3Client.getUrl(bucketName, fullPath).toString());
 		}
 		
 	} // end toImageUrl

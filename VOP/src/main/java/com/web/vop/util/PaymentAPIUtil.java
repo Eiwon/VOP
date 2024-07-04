@@ -84,7 +84,7 @@ public class PaymentAPIUtil {
 		HttpEntity<String> entity = new HttpEntity<String>(headers);
 		
 		ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
-		log.info(response);
+		log.info("실결제 결과 : " + response);
 		int chargePrice = Integer.parseInt(((Map<String, Object>)response.getBody().get("response")).get("amount").toString());
 		
 		return chargePrice;

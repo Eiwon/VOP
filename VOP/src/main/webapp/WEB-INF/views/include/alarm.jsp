@@ -137,7 +137,7 @@
 		let req = confirm("1대1 상담 요청 수신. 수락하시겠습니까?");
 		
 		if(req){
-			let targetUrl = '../board/consult?roomId=' + msg.roomId;
+			let targetUrl = '../board/consultAccept?roomId=' + msg.roomId;
 			console.log('onclick : ' + targetUrl);
 			const popupStat = {
 					'url' : targetUrl,
@@ -154,7 +154,7 @@
 		}
 		
 		showSocketNotification("1대1 상담 요청", "1대1 상담 요청 수신. 수락하시겠습니까?", function(){
-			let targetUrl = '../board/consult?roomId=' + msg.roomId;
+			let targetUrl = '../board/consultAccept?roomId=' + msg.roomId;
 			console.log('onclick : ' + targetUrl);
 			const popupStat = {
 					'url' : targetUrl,

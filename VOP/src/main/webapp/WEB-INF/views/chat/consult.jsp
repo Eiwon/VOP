@@ -14,7 +14,7 @@
 		height: 500px;
 		overflow: scroll;
 	}
-	.consultantChat {
+	.yourChat {
 		text-align: left;
 	}
 	.myChat {
@@ -24,9 +24,11 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+	<c:set var="role" value="consultant"></c:set>
 	<c:if test="${roomId == null }">
+		<c:set var="role" value="client"></c:set>
 		<button onclick="callConsultant()">상담사 연결</button>
+		<button onclick="finishConsult()">상담 종료</button>
 	</c:if>
 	<div class="chat_container">
 		<div id="readArea">
@@ -38,14 +40,15 @@
 			<button onclick="sendChat()">전송</button>
 		</div>
 	</div>
-
+	
 
 	<script type="text/javascript">
-	
+		
 		let consultSocketUrl = "ws://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/consult";
 		let consultWebSocket = null;
 		let roomId = '${roomId }';
-		let memberId = '${memberId}';
+		const role = '${role }';
+		const memberId = '${memberDetails.username }';
 		let tagReadArea = $('#readArea');
 		let tagWriteChat = $('#writeChat');
 		let chatHandler = {};
@@ -56,18 +59,43 @@
 					sendChat();
 				}
 			});
-			
-			if(roomId != ''){
-				connectWebSocket();
-			}
-			
+			connectWebSocket();
 		});
 		
-		function callConsultant() {
-			//if(consultWebSocket == null){
-				connectWebSocket();
-			//}
+		function sendChat(){
+			let content = tagWriteChat.val();
+			console.log(content);
+			if(content.length > 0 || consultWebSocket != null){
+				consultWebSocket.send(JSON.stringify({
+					'type' : 'chatMessage',
+					'roomId' : roomId,
+					'content' : content
+				}));
+				tagWriteChat.val('');
+			} 
 		}
+		
+		function addToReadArea(tellerId, content){
+			let chatBox = $('<div></div>');
+			if(tellerId == memberId){
+				chatBox.attr('class', 'myChat');
+			}else{
+				chatBox.attr('class', 'yourChat');
+			}
+			chatBox.append(tellerId + ' <br> ');
+			
+			let contentStr = '';
+			let start = 0, end;
+			while(start < content.length){
+				end = Math.min((start + 30), content.length);
+				contentStr += content.substring(start, end) + '<br>';
+				start = end;
+			}
+			chatBox.append(contentStr);
+			tagReadArea.append(chatBox);
+			tagReadArea.scrollTop = tagReadArea.scrollHeight; // 스크롤의 최상단 값을 최하단 값으로 변경 (스크롤 최대한 내리기)
+		}
+		
 		
 		function connectWebSocket() {
 			consultWebSocket = new WebSocket(consultSocketUrl);	
@@ -82,11 +110,12 @@
 			// 웹소켓 연결 성공시 호출
 			consultWebSocket.onopen = function(e) {
 				console.log("webSocket open");
-				consultWebSocket.send(JSON.stringify({
-					type : 'joinRequest',
-					roomId : roomId
-				}));
-				
+				if(role == 'consultant'){ // 상담사라면 상담 수락 메시지
+					consultWebSocket.send(JSON.stringify({
+						type : 'consultAccept',
+						roomId : roomId
+					}));
+				}
 			}; // end webSocket.onopen
 
 			// 웹소켓 연결 종료시 호출
@@ -107,7 +136,7 @@
 			if(roomId == ''){
 				roomId = msg.roomId;			
 			}
-		}
+		} // end joinSuccess
 		
 		chatHandler.joinFail = function(msg){
 			alert('연결 실패 : ' + msg.content);
@@ -118,43 +147,32 @@
 			addToReadArea(msg.senderId, msg.content);
 		}
 		
-		chatHandler.exitMessage = function(msg){
+		chatHandler.clientExit = function(msg){
 			addToReadArea('System', msg.senderId + ' 님이 퇴장했습니다.');
 		}
 		
-		function sendChat(){
-			let content = tagWriteChat.val();
-			console.log(content);
-			if(content.length > 0 || consultWebSocket != null){
-				consultWebSocket.send(JSON.stringify({
-					'type' : 'chatMessage',
-					'roomId' : roomId,
-					'content' : content
-				}));
-				tagWriteChat.val('');
-			} 
-		}
+		chatHandler.consultantExit = function(msg){
+			addToReadArea('System', '상담사가 퇴장했습니다.');
+		} // end consultantExit
 		
-		function addToReadArea(tellerId, content){
-			let chatBox = $('<div></div>');
-			if(tellerId == memberId){
-				chatBox.attr('class', 'myChat');
-			}else{
-				chatBox.attr('class', 'consultantChat');
-			}
-			chatBox.append(tellerId + ' : ');
-			
-			let contentStr = '';
-			let start = 0, end;
-			while(start < content.length){
-				end = Math.min((start + 30), content.length);
-				contentStr += content.substring(start, end) + '<br>';
-				start = end;
-			}
-			chatBox.append(contentStr);
-			tagReadArea.append(chatBox);
-			tagReadArea.scrollTop = tagReadArea.scrollHeight; // 스크롤의 최상단 값을 최하단 값으로 변경 (스크롤 최대한 내리기)
-		}
+		
+		function callConsultant(){
+			consultWebSocket.send(JSON.stringify({
+				type : 'consultRequest'
+			}));	
+		} // end callConsultant
+		
+		function exitRoom(){
+			consultWebSocket.send(JSON.stringify({
+				type : (role == 'client') ? 'clientExit' : 'consultantExit',
+				roomId : roomId
+			}));
+		} // end exitRoom
+		
+		function finishConsult(){
+			exitRoom();
+			roomId = '';
+		} // end finishConsult
 		
 	</script>
 
