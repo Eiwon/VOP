@@ -54,6 +54,10 @@ public class ReviewServiceImple implements ReviewService {
         	// 리뷰 등록 
     		insertRes = reviewMapper.insertReview(reviewVO);
         	
+//    		// 상품에서 리뷰 총 개수 증가
+//    		int update = productMapper.reviewNumUP(productId);
+//    		log.info(update + "행 개수 증가");
+    		
         	// 소수점 첫 째 자리까지만 출력
     		DecimalFormat df = new DecimalFormat("#.#");
     		
@@ -83,15 +87,24 @@ public class ReviewServiceImple implements ReviewService {
 
     		log.info("res : " + res);
     		log.info("reviewAvg : " + reviewAvg);
-
+    		
+//    		// 리뷰 평균값 구하기
+//    		float reviewAvg = reviewMapper.selectReviewAgv(productId);
+//    		
+//    		log.info("평균 값 :" + reviewAvg);
+    		
+//    		// 리뷰 평균값 업데이트
+//    		int updateResNew = productMapper.updateReviewAvgNew(productId, reviewAvg);
+//    		log.info("updateResNew : " + updateResNew);
+    		
     		// 리뷰 평균값 업데이트
     		updateRes = productMapper.updateReviewAvg(productId, reviewAvg);
     		log.info("updateRes : " + updateRes);
-
+    		
         } else {
             log.info(memberId + "님은 " + productId + "상품 번호에 이미 댓글(리뷰)를 등록 하였습니다.");
         }
-		
+        log.info("insertRes :" + insertRes);
 		return insertRes;
 	}
 

@@ -21,6 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		<id property="orderId" column="ORDER_ID"/>
    		<result property="imgPath" column="IMG_PATH"/>
    		<result property="imgChangeName" column="IMG_CHANGE_NAME"/>
+   		<result property="formattedExpectedDeliveryDate" column="FORMATTED_EXPECT_DELIVERY_DATE"/> 
    		<association property="orderVO" javaType="com.web.vop.domain.OrderVO" resultMap="OrderResultMap"/>
    </resultMap>
    
@@ -62,7 +63,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 주문 목록 조회 -->
 	<select id="selectOrderListByMemberId" resultMap="OrderViewDTOResultMap">
-		SELECT OD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME FROM (
+		SELECT OD.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME,
+		TO_CHAR(OD.EXPECT_DELIVERY_DATE, 'YYYY-MM-DD') AS FORMATTED_EXPECT_DELIVERY_DATE FROM (
 		SELECT * FROM "ORDER" WHERE MEMBER_ID = #{memberId} 
 		) OD LEFT JOIN IMAGE ON OD.IMG_ID = IMAGE.IMG_ID
 		ORDER BY OD.EXPECT_DELIVERY_DATE DESC

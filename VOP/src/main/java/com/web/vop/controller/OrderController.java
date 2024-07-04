@@ -1,5 +1,7 @@
 package com.web.vop.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,14 @@ public class OrderController {
 	        );
 	    }
 	    log.info(orderList);
+	    
+	    Date now = new Date(); // 주문목록에서 현재날짜와 예상배송일을 비교하기 위해 생성
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // 비교룰 위해 변환해줌
+	    String formattedNow = dateFormat.format(now);
+	    log.info("formattedNow : " + formattedNow); //현재날짜
+	    
+	    model.addAttribute("now", formattedNow);
+	    
 	    model.addAttribute("orderList", orderList);
 	    
 	}//end orderlistGET

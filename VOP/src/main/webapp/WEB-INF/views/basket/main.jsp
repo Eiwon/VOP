@@ -197,9 +197,9 @@
 			console.log("minusProductNum() - 클릭된 상품 id : " + targetId);
 			
 			if(targetProductNum == 1) return;
-			
-			setProductNum(basketItem, targetId, targetProductNum - 1);
-		} // end downProductNum
+			basketMap[targetId].updateNum(basketItem, targetId, targetProductNum -1);
+			//setProductNum(basketItem, targetId, targetProductNum - 1);
+		} // end minusProductNum
 		
 		// productNum +1이 가능한지 체크 후 update 요청 함수 호출
 		function plusProductNum(input){
@@ -208,11 +208,12 @@
 			let targetProductNum = basketMap[targetId].productNum;
 			let maxNum = basketMap[targetId].productRemains;
 			
-			console.log("downProductNum() - 클릭된 상품 id : " + targetId);
+			console.log("plusProductNum() - 클릭된 상품 id : " + targetId);
 			
 			if(maxNum == targetProductNum)	return;
 			
-			setProductNum(basketItem, targetId, targetProductNum + 1);
+			basketMap[targetId].updateNum(basketItem, targetId, targetProductNum +1);
+			//setProductNum(basketItem, targetId, targetProductNum + 1);
 		} // end downProductNum
 		
 		// productNum 직접 수정시, 가능한 수인지 체크 후 update 요청 함수 호출
@@ -227,7 +228,8 @@
 			}else if(targetProductNum > maxNum){
 				targetProductNum = maxNum;
 			}
-			setProductNum(basketItem, targetId, targetProductNum);
+			basketMap[targetId].updateNum(basketItem, targetId, targetProductNum);
+			//setProductNum(basketItem, targetId, targetProductNum);
 		} // end changeProductNum
 		
 		// 클릭한 삭제 버튼이 속해있는 상품 삭제
@@ -296,7 +298,7 @@
 		function setProductNum(basketItem, productId, productNum){
 			const obj = {
 				'productId' : productId,
-				'productNum' : productNum
+				'productNum' : basketItem.find('.product_num').val()
 			};
 			
 			$.ajax({
@@ -308,10 +310,11 @@
 	            }, 
 				data : JSON.stringify(obj),
 				success : function(result){
-					basketMap[productId].productNum = productNum;
+					console.log('수량 변경 요청 완료');
+					/* basketMap[productId].productNum = productNum;
 					basketItem.find('.product_num').val(basketMap[productId].productNum);
 					basketItem.find('.total_price').text(basketMap[productId].productNum * basketMap[productId].productPrice);
-					calcTotalExpense();
+					calcTotalExpense(); */
 				} // end success
 			});  // end ajax
 		}// end setProductNum
@@ -339,9 +342,23 @@
 			basketMap = {};
 			for(x in basketList){
 				const productVO = basketList[x].productPreviewDTO.productVO;
-				basketMap[productVO.productId] = productVO;
-				basketMap[productVO.productId].imgUrl = basketList[x].productPreviewDTO.imgUrl;
-				basketMap[productVO.productId].productNum = basketList[x].productNum;
+				const productId = productVO.productId;
+				basketMap[productId] = productVO;
+				basketMap[productId].imgUrl = basketList[x].productPreviewDTO.imgUrl;
+				basketMap[productId].productNum = basketList[x].productNum;
+				basketMap[productId].updateId = null;
+				basketMap[productId].updateNum = function(basketItem, productId, productNum){
+					basketMap[productId].productNum = productNum;
+					basketItem.find('.product_num').val(basketMap[productId].productNum);
+					basketItem.find('.total_price').text(basketMap[productId].productNum * basketMap[productId].productPrice);
+					calcTotalExpense();
+					if(basketMap[productId].updateId != null){
+						clearTimeout(basketMap[productId].updateId);
+					}
+					basketMap[productId].updateId = setTimeout(function() {
+						setProductNum(basketItem, productId, productNum);
+					}, 500);
+				}
 			}
 		} // end setBasketMap
 		
@@ -349,6 +366,8 @@
 		function getTargetId(input){
 			return $(input).parents('.basket_item').find('.product_id').text();
 		} // end getTargetId
+		
+		
 		
 	</script>
 	

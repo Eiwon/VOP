@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="javax.servlet.http.HttpSession" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!-- 시큐리티 사용하는 코드 -->
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
@@ -49,16 +50,16 @@
 </style>
 </head>
 <body>
-
+	<c:set var="productVO" value="${productPreviewDTO.productVO }"></c:set>
 	<h1>리뷰 수정</h1>
 	
 	<div>
-		<p>상품 번호 "${productId}"</p>
+		<p>상품 번호 "${productVO.productId}"</p>
 	</div>
 	
 	<p>이미지 썸네일</p>
       <div>
-        <img alt="${imgId}">
+        <img src="${productPreviewDTO.imgUrl}">
       </div>
 	
  	<div id="myform">
@@ -81,11 +82,11 @@
      
      $(document).ready(function(){
     	 	
-    	 	loadImg();
+    	 	//loadImg();
     	 	
     		let selectedStar; // 전역 변수로 selectedStar 선언
   
-    	    // 이미지 없을때 이름과 확장명 보여주는 코드
+    	    /* // 이미지 없을때 이름과 확장명 보여주는 코드
     	    function loadImg(){
     	        $(document).find('img').each(function(){
     	            let target = $(this);
@@ -98,7 +99,7 @@
     	                }
     	            }); // end ajax
     	        });
-    	    } // end loadImg
+    	    } // end loadImg */
     		
     	    // 라디오 버튼 클릭 이벤트 핸들러
     	    $('#starFieldset input[type="radio"]').click(function() {
@@ -116,7 +117,7 @@
 
         let reviewStar = selectedStar// 리뷰(별)
         let reviewContent = $('#reviewContent').val();
-        let productId = ${productId};
+        let productId = ${productVO.productId};
         if(reviewStar !== null && reviewStar !== '' && reviewStar !== undefined && reviewContent !== null && reviewContent !== '') {
         let obj = {
         		'reviewStar' : reviewStar,

@@ -15,4 +15,5 @@ public class OrderViewDTO {
 	private String imgPath;
 	private String imgChangeName;
 	private String imgUrl; 
+	private String formattedExpectedDeliveryDate;
 }

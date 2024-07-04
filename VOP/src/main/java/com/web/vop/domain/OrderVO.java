@@ -23,4 +23,5 @@ public class OrderVO {
 	private Date expectDeliveryDate;
 	private int imgId;
 	private String memberId;
+	private String formattedExpectedDeliveryDate; // 새로운 필드 추가
 }

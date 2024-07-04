@@ -23,10 +23,10 @@ public interface ProductMapper {
 	// ´ñ±Û ÃÑ °¹¼ö °Ë»ö
 	int selectReviewCount(int productId);
 	
-	// ´ñ±Û ÃÑ °¹¼ö Áõ°¡
+	// ´ñ±Û ÃÑ °¹¼ö 1 Áõ°¡
 	int reviewNumUP(int productId);
 			
-	// ´ñ±Û ÃÑ °¹¼ö °¨¼Ò
+	// ´ñ±Û ÃÑ °¹¼ö 1 °¨¼Ò
 	int reviewNumDown(int productId);
 		
 	// »óÇ° ¸®ºä(º°) ÃÑÇÕ °Ë»ö // »ç¿ë¾ÈÇÔ

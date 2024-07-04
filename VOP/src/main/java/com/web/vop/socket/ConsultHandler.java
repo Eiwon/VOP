@@ -79,19 +79,7 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 	// 연결 종료시 실행
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-//		String memberId = session.getPrincipal().getName();
-//		log.info("연결 종료 : memberId : " + memberId + ", status : " + status);
-//		String roomId = consultConnMap.get(memberId);
-//		if(roomId != null) {
-//			consultRoomList.get(roomId).remove(memberId);
-//		}
-//		consultConnMap.remove(memberId);
-//		if(roomId != null && consultRoomList.get(roomId).size() == 0) {
-//			consultRoomList.remove(roomId);
-//		}else {
-//			sendMsgToRoom(getExitMsg(roomId, memberId));
-//		}
-	}
+	} // end afterConnectionClosed
 	
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
@@ -105,7 +93,6 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 		
 		ChatMessageVO chatMessageVO = convertMsg(message.getPayload());
 		String senderId = session.getPrincipal().getName();
-		//String roomId = chatMessageVO.getRoomId();
 		String type = chatMessageVO.getType();
 		chatMessageVO.setSenderId(senderId);
 		ChatRoom chatRoom = null;
@@ -153,32 +140,6 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 			sendJoinSuccess(roomId, senderId);
 		}
 		break;
-//		case TYPE_JOIN_REQ : { // 입장 요청
-//			if(!StringUtils.hasText(roomId)) { // roomId가 없다면 방 생성, 입장성공 메시지 송신
-//				roomId = senderId;
-//				Map<String, WebSocketSession> roomMap = createRoom(roomId);
-//				roomMap.put(senderId, session);
-//				log.info(roomMap);
-//				sendJoinSuccess(roomId, senderId);
-//				callConsultant(roomId); // 관리자 초대 메시지 송신
-//			}else {
-//				Map<String, WebSocketSession> roomMap = consultRoomList.get(roomId);
-//				log.info(roomMap);
-//				if(roomMap == null) {
-//					log.info("이미 종료된 상담입니다.");
-//					sendJoinFail(session, "이미 종료된 상담입니다.");
-//				}else if(roomMap.size() == 1) {
-//					log.info("채팅방 입장");
-//					roomMap.put(senderId, session);
-//					sendJoinSuccess(roomId, senderId);
-//					consultConnMap.put(senderId, roomId);
-//				}else {
-//					log.info("다른 상담사가 먼저 수락");
-//					sendJoinFail(session, "다른 상담사가 먼저 수락");
-//				}
-//			}
-//			break;
-//		} // end case joinRequest
 		case TYPE_CHAT_MSG : {
 			sendMsgToRoom(chatMessageVO);
 			break;
@@ -192,6 +153,7 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 				consultRoomList.remove(roomId);
 			}else {
 				chatRoom.setState(ROOM_STATE_STOP);
+				sendConsultantExit(roomId, senderId);
 			}
 			break;
 		}
@@ -204,6 +166,7 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 				consultRoomList.remove(roomId);
 			}else {
 				chatRoom.setState(ROOM_STATE_TERMINATE);
+				sendClientExit(roomId, senderId);
 			}
 			break;
 		}
@@ -211,20 +174,7 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 		
 	} // end handleTextMessage
 	
-//	private Map<String, WebSocketSession> createRoom(String roomId){
-//		Map<String, WebSocketSession> roomMap = null;
-//		
-//		if(consultRoomList.containsKey(roomId)) {
-//			log.info("이미 존재하는 방 : " + roomId);
-//			roomMap = consultRoomList.get(roomId);
-//		}else {
-//			log.info("방 생성 : " + roomId);
-//			roomMap = new HashMap<>();
-//			consultRoomList.put(roomId, roomMap);
-//		}
-//		return roomMap;
-//	} // end createRoom
-	
+
 	private void callConsultant(String roomId) throws IOException {
 		// db에서 관리자 목록 검색
 		log.info("callConsultant");
@@ -265,11 +215,32 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 		
 	} // end sendJoinFail
 	
+	private void sendConsultantExit(String roomId, String senderId) throws IOException {
+		log.info("상담사 퇴장 메시지");
+		ChatMessageVO chatMessageVO = new ChatMessageVO();
+		chatMessageVO.setType(TYPE_CONSULTANT_EXIT);
+		chatMessageVO.setContent("상담사가 퇴장했습니다.");
+		chatMessageVO.setSenderId(senderId);
+		chatMessageVO.setRoomId(roomId);
+		
+		sendMsgToRoom(chatMessageVO);
+	} // end sendConsultantExit
+	
+	private void sendClientExit(String roomId, String senderId) throws IOException {
+		log.info("클라이언트 퇴장 메시지");
+		ChatMessageVO chatMessageVO = new ChatMessageVO();
+		chatMessageVO.setType(TYPE_CLIENT_EXIT);
+		chatMessageVO.setContent(senderId + "님이 퇴장했습니다.");
+		chatMessageVO.setSenderId(senderId);
+		chatMessageVO.setRoomId(roomId);
+		
+		sendMsgToRoom(chatMessageVO);
+	} // end sendConsultantExit
+	
 	// 해당 방의 인원 전체에게 메시지 송신
 	private void sendMsgToRoom(ChatMessageVO chatMessageVO) throws IOException {
 		log.info("일반 채팅 송신");
 		
-		// Map<String, WebSocketSession> targetRoom = consultRoomList.get(chatMessageVO.getRoomId());
 		ChatRoom targetRoom = consultRoomList.get(chatMessageVO.getRoomId());
 		
 		if(targetRoom == null) {
@@ -288,6 +259,8 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 			}
 		}
 	} // end sendChatMessage
+	
+	
 	
 	private ChatMessageVO convertMsg(String jsonMsg) {
 		ChatMessageVO message = null;
