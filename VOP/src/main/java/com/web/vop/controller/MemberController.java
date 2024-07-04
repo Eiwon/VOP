@@ -3,37 +3,24 @@ package com.web.vop.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-<<<<<<< HEAD
-import org.springframework.security.core.context.SecurityContextHolder;
-=======
->>>>>>> 9ce9447fdb6d5fedf7e31a482fd14c9909b0c2d0
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.web.vop.domain.AlertVO;
-import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.service.MemberService;
 import com.web.vop.service.TokenAuthenticationService;
@@ -55,7 +42,7 @@ public class MemberController {
 	public UserDetailsServiceImple UserDetailsService;
 	
 	@Autowired
-	public MailAuthenticationService mailAuthService;
+	public MailAuthenticationUtil mailAuthenticationUtil;
 	
 	@Autowired
 	public TokenAuthenticationService tokenAuthenticationService;
@@ -142,7 +129,7 @@ public class MemberController {
 		AlertVO alertVO = new AlertVO();
 		String returnPath = null;
 		List<String> memberIdList = null;
-		int resultCode = mailAuthUtil.verifyAuthCode(memberEmail, authCode);
+		int resultCode = mailAuthenticationUtil.verifyAuthCode(memberEmail, authCode);
 		
 		switch (resultCode) {
 		case 100:
@@ -198,7 +185,7 @@ public class MemberController {
 		if(memberVO != null) {
 			// 유효하면 해당 아이디의 email로 인증번호 전송
 			memberEmail = memberVO.getMemberEmail();
-			mailAuthUtil.sendAuthEmail(memberEmail);
+			mailAuthenticationUtil.sendAuthEmail(memberEmail);
 			
 			String secretEmail = ""; // 이메일 일부를 *로 가리기
 			secretEmail += memberEmail.charAt(0);
@@ -219,7 +206,7 @@ public class MemberController {
 		log.info("비밀번호 재설정");
 		AlertVO alertVO = new AlertVO();
 		String memberEmail = memberService.getEmailById(memberId);
-		int resultCode = mailAuthUtil.verifyAuthCode(memberEmail, authCode);
+		int resultCode = mailAuthenticationUtil.verifyAuthCode(memberEmail, authCode);
 		
 		switch (resultCode) {
 		case 100:
@@ -330,7 +317,7 @@ public class MemberController {
 				
 		AlertVO alertVO = new AlertVO();
 		String memberEmail = memberService.getEmailById(memberDetails.getUsername());
-		int resultCode = mailAuthUtil.verifyAuthCode(memberEmail, authCode);
+		int resultCode = mailAuthenticationUtil.verifyAuthCode(memberEmail, authCode);
 		
 		switch (resultCode) {
 		case 100:

@@ -143,7 +143,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 			.cors().configurationSource(corsConfigurationSource())
 			.and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.headers().cacheControl()
 			.and()
 			.frameOptions().sameOrigin();

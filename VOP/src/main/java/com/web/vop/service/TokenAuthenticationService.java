@@ -18,9 +18,11 @@ public interface TokenAuthenticationService {
 	
 	UserDetails getUserFromToken(String token);
 	
-	boolean isValidToken(String token, HttpServletResponse response);
+	boolean isValidToken(String token);
 	
 	String extractAccessToken(HttpServletRequest request);
 	
 	String extractRefreshToken(HttpServletRequest request);
+	
+	String getAuthFromToken(String token);
 }

@@ -16,11 +16,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.log4j.Log4j;
 
-@Service
+@Log4j
 public class TokenAuthenticationServiceImple implements TokenAuthenticationService{
 
 	private String signingKey = "testSignKey";
@@ -47,7 +50,7 @@ public class TokenAuthenticationServiceImple implements TokenAuthenticationServi
 				.setSubject(memberDetails.getUsername())
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + (30*60*1000)))
-				.signWith(SignatureAlgorithm.HS512, signingKey)
+				.signWith(SignatureAlgorithm.HS256, signingKey)
 				.compact();
 	}
 
@@ -64,7 +67,8 @@ public class TokenAuthenticationServiceImple implements TokenAuthenticationServi
 				 .setSubject(memberDetails.getUsername())
 				 .setIssuedAt(new Date())
 				 .setExpiration(new Date(System.currentTimeMillis() + (5*60*1000)))
-				 .signWith(SignatureAlgorithm.HS512, signingKey)
+				 .claim("role", memberDetails.getAuthorities())
+				 .signWith(SignatureAlgorithm.HS256, signingKey)
 				 .compact();
 		return accessToken;
 	}
@@ -74,14 +78,19 @@ public class TokenAuthenticationServiceImple implements TokenAuthenticationServi
 		String refreshToken = Jwts.builder()
 				  .setSubject(memberDetails.getUsername())
 				  .setIssuedAt(new Date())
-				  .setExpiration(new Date(System.currentTimeMillis() + (10*60*1000)))
+				  .setExpiration(new Date(System.currentTimeMillis() + (60*60*24*7*1000)))
 				  .compact();
 		return refreshToken;
 	}
 
 	@Override
-	public boolean isValidToken(String token, HttpServletResponse response) {
+	public boolean isValidToken(String token) {
+		Jws<Claims> claims = Jwts.parser().setSigningKey(signingKey).parseClaimsJws(token);
+		Date now = new Date();
 		
+		if(claims.getBody().getExpiration().after(now)) {
+			return true;
+		}
 		return false;
 	}
 
@@ -129,6 +138,14 @@ public class TokenAuthenticationServiceImple implements TokenAuthenticationServi
 		}
 		
 		return token;
+	}
+
+	@Override
+	public String getAuthFromToken(String token) {
+		Jws<Claims> claims = Jwts.parser().setSigningKey(signingKey).parseClaimsJws(token);
+		String role = (String)claims.getBody().get("role");
+		log.info("토큰에서 권한 추출 : " + role);
+		return role;
 	}
 
 }
