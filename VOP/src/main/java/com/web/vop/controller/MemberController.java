@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.web.vop.domain.AlertVO;
 import com.web.vop.domain.MemberVO;
+import com.web.vop.service.JwtTokenProvider;
 import com.web.vop.service.MemberService;
-import com.web.vop.service.TokenAuthenticationService;
 import com.web.vop.service.UserDetailsServiceImple;
 import com.web.vop.util.Constant;
 import com.web.vop.util.MailAuthenticationUtil;
@@ -45,7 +45,7 @@ public class MemberController {
 	public MailAuthenticationUtil mailAuthenticationUtil;
 	
 	@Autowired
-	public TokenAuthenticationService tokenAuthenticationService;
+	public JwtTokenProvider jwtTokenProvider;
 	
 	@GetMapping("/register")
 	public void registerGET() {
@@ -59,37 +59,37 @@ public class MemberController {
 		request.getSession().setAttribute("prevPage", prevPage);
 	} // end loginGET
 	
-	@PostMapping("/login")
-	public String loginPOST(Model model, HttpServletResponse response, MemberVO memberVO) {
-		AlertVO alertVO = new AlertVO();
-		UserDetails memberDetails = memberService.authentication(memberVO.getMemberId(), memberVO.getMemberPw());
-		String token = null;
-		log.info(memberDetails);
-		if(memberDetails != null) {
-			token = tokenAuthenticationService.createToken(memberDetails);
-			log.info(token);
-			
-			try {
-				token = URLEncoder.encode("Bearer " + token, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-			Cookie accessCookie = new Cookie("access_token", token);
-			accessCookie.setHttpOnly(true);
-			accessCookie.setDomain("localhost");
-			accessCookie.setPath("/");
-			accessCookie.setMaxAge(60 * 1000);
-			accessCookie.setSecure(true);
-			response.addCookie(accessCookie);
-			alertVO.setAlertMsg("로그인 성공");
-			alertVO.setRedirectUri("board/main");
-		}else {
-			alertVO.setAlertMsg("잘못된 아이디 또는 비밀번호입니다");
-			alertVO.setRedirectUri("member/login");
-		}
-		model.addAttribute("alertVO", alertVO);
-		return Constant.ALERT_PATH;
-	}
+//	@PostMapping("/login")
+//	public String loginPOST(Model model, HttpServletResponse response, MemberVO memberVO) {
+//		AlertVO alertVO = new AlertVO();
+//		UserDetails memberDetails = memberService.authentication(memberVO.getMemberId(), memberVO.getMemberPw());
+//		String token = null;
+//		log.info(memberDetails);
+//		if(memberDetails != null) {
+//			token = jwtTokenProvider.createToken(memberDetails);
+//			log.info(token);
+//			
+//			try {
+//				token = URLEncoder.encode("Bearer " + token, "UTF-8");
+//			} catch (UnsupportedEncodingException e) {
+//				e.printStackTrace();
+//			}
+//			Cookie accessCookie = new Cookie("access_token", token);
+//			accessCookie.setHttpOnly(true);
+//			accessCookie.setDomain("localhost");
+//			accessCookie.setPath("/");
+//			accessCookie.setMaxAge(60 * 60* 1000);
+//			accessCookie.setSecure(true);
+//			response.addCookie(accessCookie);
+//			alertVO.setAlertMsg("로그인 성공");
+//			alertVO.setRedirectUri("board/main");
+//		}else {
+//			alertVO.setAlertMsg("잘못된 아이디 또는 비밀번호입니다");
+//			alertVO.setRedirectUri("member/login");
+//		}
+//		model.addAttribute("alertVO", alertVO);
+//		return Constant.ALERT_PATH;
+//	}
 	
 	@PostMapping("/logout")
 	public String logoutPOST(HttpServletRequest request) {

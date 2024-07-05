@@ -23,7 +23,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.amazonaws.services.guardduty.model.SecurityContext;
-import com.web.vop.service.TokenAuthenticationService;
+import com.web.vop.service.JwtTokenProvider;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.log4j.Log4j;
@@ -31,18 +31,18 @@ import lombok.extern.log4j.Log4j;
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	
 	@Autowired
-	private TokenAuthenticationService tokenAuthenticationService;
+	private JwtTokenProvider jwtTokenProvider;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		
-		String token = tokenAuthenticationService.extractAccessToken(request);
+		String token = jwtTokenProvider.extractAccessToken(request);
 		try {
 		if(StringUtils.hasText(token)) {
-			UserDetails memberDetails = tokenAuthenticationService.getUserFromToken(token);
-			log.info("UserDetails name : " + memberDetails.getUsername());
+			UserDetails memberDetails = jwtTokenProvider.getUserFromToken(token);
 			if(memberDetails != null) {
+				log.info("UserDetails name : " + memberDetails.getUsername());
 				UsernamePasswordAuthenticationToken authenticationToken
 					= new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
 				SecurityContextHolder.getContext().setAuthentication(authenticationToken);
@@ -53,6 +53,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 			log.error(e.toString());
 		}
 		filterChain.doFilter(request, response);
+		// 할거 다 했으니 유저 정보 삭제
 		SecurityContextHolder.getContext().setAuthentication(null);
 	}
 

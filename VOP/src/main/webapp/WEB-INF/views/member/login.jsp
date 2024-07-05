@@ -4,7 +4,6 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<<<<<<< HEAD
 <style type="text/css">
 body {
         display: flex;
@@ -45,7 +44,7 @@ body {
 				</div>
 			</div>
 			<div class="loginInput">
-				<input type="submit" value="로그인" class="btnSubmit">
+				<input class="btnLogin" type="submit" value="로그인"></button>
 			</div>
 		</form>
 		<div class="linkMember">
@@ -59,7 +58,7 @@ body {
 	
 	<script type="text/javascript">
 		
-		/* $('#btnLogin').click(function(){
+		/* $('.btnLogin').click(function(){
 			let memberId = $('#memberId').val();
 			let memberPw = $('#memberPw').val();
 			
@@ -75,8 +74,12 @@ body {
 				}),
 				success : function(result){
 					alert("로그인 성공");
-					location.href = '../board/main';
-				} // end success
+					console.log(result);
+					
+				},
+				error : function(statusCode, textStatus){
+					console.log(statusCode + " : " + textStatus);
+				}
 				
 			}); // end ajax
 			

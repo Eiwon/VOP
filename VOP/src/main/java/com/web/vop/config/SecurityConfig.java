@@ -40,6 +40,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import com.web.vop.handler.LoginSuccessHandler;
 import com.web.vop.handler.LogoutSuccessHandler;
 import com.web.vop.handler.SecurityAccessDeniedHandler;
+import com.web.vop.service.JwtTokenProvider;
 import com.web.vop.service.UserDetailsServiceImple;
 import com.web.vop.util.Constant;
 
@@ -76,13 +77,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 		// hasAnyRole("권한1", "권한2", ...) : 목록 중 하나의 권한이라도 있는지 체크
 		// hasAuthority("ROLE_권한") : 특정 권한이 있는지 체크(권한 계층 미적용)
 
-//		http.formLogin()
-//			.loginPage("/member/login")
-//			.usernameParameter("memberId")
-//			.passwordParameter("memberPw")
-//			.loginProcessingUrl("/member/login")
-//			.successHandler(loginSuccessHandler())
-//			.failureHandler(loginFailHandler());
+		http.formLogin()
+			.loginPage("/member/login")
+			.usernameParameter("memberId")
+			.passwordParameter("memberPw")
+			.loginProcessingUrl("/member/login")
+			.successHandler(loginSuccessHandler())
+			.failureHandler(loginFailHandler());
 //		
 //		http.rememberMe() // 자동 로그인
 //			.key("key") 
@@ -100,45 +101,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 //			.logoutSuccessHandler(logoutSuccessHandler())
 //			.invalidateHttpSession(true); // 세션 무효화 설정
 //		
-//		// header 정보에 xssProtection 기능 설정
-//		http.headers().xssProtection().block(true);
-//		http.headers()
-//			.contentSecurityPolicy("script-src " + PERMIT_SCRIPT_SRC)
-//			.and()
-//			.contentSecurityPolicy("img-src " + PERMIT_IMG_SRC);
-//	
+		// header 정보에 xssProtection 기능 설정
+		http.headers().xssProtection().block(true);
+		http.headers()
+			.contentSecurityPolicy("script-src " + PERMIT_SCRIPT_SRC)
+			.and()
+			.contentSecurityPolicy("img-src " + PERMIT_IMG_SRC);
+	
 //		http.addFilterBefore(characterEncodingFilter(), CsrfFilter.class);
 //			
 //		http.sessionManagement()
-//			.maximumSessions(1);
-		
-//		http.formLogin()
-//			.loginPage("/member/login")
-//			.usernameParameter("memberId")
-//			.passwordParameter("memberPw")
-//			.loginProcessingUrl("/member/login")
-//			.successHandler(loginSuccessHandler)
-//			.failureHandler(loginFailHandler);
-//
-//		http.rememberMe() // 자동 로그인
-//			.key("key") 
-//			.rememberMeParameter("rememberMe")
-//			.rememberMeCookieName("rememberMe") 
-//			.tokenValiditySeconds(60*60*24)
-//			.tokenRepository(tokenRepository)
-//			.userDetailsService(userDetailsServiceImple)
-//			.authenticationSuccessHandler(loginSuccessHandler);
-//		
-//		http.logout()
-//			.logoutUrl("/member/logout") // 로그아웃 처리 URL
-//			.logoutSuccessUrl("/board/main")// 로그아웃 성공 후 이동 페이지
-//			.deleteCookies("JSESSIONID", "rememberMe") // 로그아웃 후 쿠키 삭제
-//			.logoutSuccessHandler(logoutSuccessHandler)
-//			.invalidateHttpSession(true); // 세션 무효화 설정
+//			.maximumSessions(1);		
 		
 		http.exceptionHandling()
 			.accessDeniedPage("/access/denied");
-
+		
 		http.csrf().disable()
 			.cors().configurationSource(corsConfigurationSource())
 			.and()
@@ -153,7 +130,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		log.info("auth check " + auth);
-		auth.userDetailsService(userDetailsServiceImple()).passwordEncoder(passwordEncoder());
+		auth.userDetailsService(userDetailsServiceImple())
+			.passwordEncoder(passwordEncoder());
 	} // end configure
 
 	@Bean
@@ -216,6 +194,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
+	}
+	
+	@Bean
+	public JwtTokenProvider jwtTokenProvider() {
+		return new JwtTokenProvider();
 	}
 	
 }

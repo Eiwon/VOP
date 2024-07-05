@@ -1,8 +1,15 @@
 package com.web.vop.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.web.vop.domain.MemberVO;
+import com.web.vop.service.JwtTokenProvider;
 import com.web.vop.service.MemberService;
 import com.web.vop.util.MailAuthenticationUtil;
 
@@ -32,10 +42,38 @@ public class MemberRESTController {
 	MemberService memberService;
 	
 	@Autowired
-	MailAuthenticationUtil mailAuthService;
+	MailAuthenticationUtil mailAuthenticationUtil;
 
 	@Autowired
 	UserDetailsService userDetailsService;
+	
+	@Autowired
+	public JwtTokenProvider jwtTokenProvider;
+	
+	@PostMapping("/login")
+	public ResponseEntity<Integer> loginPOST(MemberVO memberVO, HttpServletResponse response){
+		log.info("로그인 요청");
+		UserDetails memberDetails = memberService.authentication(memberVO.getMemberId(), memberVO.getMemberPw());
+		if(memberDetails == null) {
+			// 로그인 실패
+			return new ResponseEntity<Integer>(HttpStatus.UNAUTHORIZED);
+		}
+		String accessToken = jwtTokenProvider.createAccessToken(memberDetails);
+		try {
+			accessToken = URLEncoder.encode("Bearer " + accessToken, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		Cookie accessCookie = new Cookie("access_token", accessToken);
+		accessCookie.setHttpOnly(true);
+		accessCookie.setSecure(true);
+		accessCookie.setDomain("localhost");
+		accessCookie.setPath("/");
+		accessCookie.setMaxAge(60 * 60* 1000);
+		response.addCookie(accessCookie);
+		
+		return new ResponseEntity<Integer>(1, HttpStatus.OK);
+	}
 	
 	@GetMapping("/idDupChk") // id 중복 체크
 	public ResponseEntity<Integer> checkIdDup(String memberId){
@@ -87,7 +125,7 @@ public class MemberRESTController {
 		log.info("이메일 인증 요청 : " + email);
 		int res = 0;
 		
-		mailAuthService.sendAuthEmail(email);
+		mailAuthenticationUtil.sendAuthEmail(email);
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end mailAuthenticationGET

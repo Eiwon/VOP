@@ -16,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.web.vop.domain.MemberDetails;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -24,15 +26,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
-public class TokenAuthenticationServiceImple implements TokenAuthenticationService{
+public class JwtTokenProvider {
 
 	private String signingKey = "testSignKey";
 	private static final String ACCESS_TOKEN_HEADER = "access_token";
 	private static final String REFRESH_TOKEN_HEADER = "refresh_token";
-	@Autowired
-	private UserDetailsService UserDetailsService;
 	
-	@Override
 	public String getUsernameFromToken(String token) throws ExpiredJwtException{
 		
 		return Jwts.parser()
@@ -42,10 +41,8 @@ public class TokenAuthenticationServiceImple implements TokenAuthenticationServi
 				  .getSubject();
 	}
 
-	@Override
 	public String createToken(UserDetails memberDetails) {
-		
-		
+
 		return Jwts.builder()
 				.setSubject(memberDetails.getUsername())
 				.setIssuedAt(new Date())
@@ -54,14 +51,24 @@ public class TokenAuthenticationServiceImple implements TokenAuthenticationServi
 				.compact();
 	}
 
-	@Override
+	// 토큰에서 userDetails를 추출하여 반환
 	public UserDetails getUserFromToken(String token) throws ExpiredJwtException{
-		String memberName = getUsernameFromToken(token);
-		UserDetails memberDetails = UserDetailsService.loadUserByUsername(memberName);
+		Claims claims = Jwts.parser()
+			.setSigningKey(signingKey)
+			.parseClaimsJws(token)
+			.getBody();
+		String memberId = claims.getSubject();
+		String memberAuth = (String)claims.get("role");
+		
+		MemberDetails memberDetails = new MemberDetails();
+		memberDetails.getMemberVO().setMemberId(memberId);
+		memberDetails.getMemberVO().setMemberAuth(memberAuth);
+		
+		log.info("유저 id : " + memberDetails.getUsername());
+		log.info("유저 권한 : " + memberDetails.getAuthorities().iterator().next().getAuthority());
 		return memberDetails;
 	}
 
-	@Override
 	public String createAccessToken(UserDetails memberDetails) {
 		String accessToken = Jwts.builder()
 				 .setSubject(memberDetails.getUsername())
@@ -73,7 +80,6 @@ public class TokenAuthenticationServiceImple implements TokenAuthenticationServi
 		return accessToken;
 	}
 
-	@Override
 	public String createRefreshToken(UserDetails memberDetails) {
 		String refreshToken = Jwts.builder()
 				  .setSubject(memberDetails.getUsername())
@@ -83,7 +89,6 @@ public class TokenAuthenticationServiceImple implements TokenAuthenticationServi
 		return refreshToken;
 	}
 
-	@Override
 	public boolean isValidToken(String token) {
 		Jws<Claims> claims = Jwts.parser().setSigningKey(signingKey).parseClaimsJws(token);
 		Date now = new Date();
@@ -94,7 +99,6 @@ public class TokenAuthenticationServiceImple implements TokenAuthenticationServi
 		return false;
 	}
 
-	@Override
 	public String extractAccessToken(HttpServletRequest request) {
 		String bearerToken = null;
 		Cookie[] cookies = request.getCookies();
@@ -118,7 +122,6 @@ public class TokenAuthenticationServiceImple implements TokenAuthenticationServi
 		return token;
 	}
 
-	@Override
 	public String extractRefreshToken(HttpServletRequest request) {
 		String bearerToken = request.getHeader(REFRESH_TOKEN_HEADER);
 		String token = null;
@@ -140,7 +143,6 @@ public class TokenAuthenticationServiceImple implements TokenAuthenticationServi
 		return token;
 	}
 
-	@Override
 	public String getAuthFromToken(String token) {
 		Jws<Claims> claims = Jwts.parser().setSigningKey(signingKey).parseClaimsJws(token);
 		String role = (String)claims.getBody().get("role");
