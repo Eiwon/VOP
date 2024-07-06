@@ -23,7 +23,7 @@ import com.web.vop.domain.PaymentVO;
 import com.web.vop.domain.PaymentWrapper;
 import com.web.vop.domain.ProductVO;
 import com.web.vop.persistence.BasketMapper;
-import com.web.vop.persistence.CouponMapper;
+import com.web.vop.persistence.CouponMapperTest;
 import com.web.vop.persistence.CouponPocketMapper;
 import com.web.vop.persistence.DeliveryMapper;
 import com.web.vop.persistence.MemberMapper;
@@ -58,7 +58,7 @@ public class PaymentServiceImple implements PaymentService {
 	BasketMapper basketMapper;
 	
 	@Autowired
-	CouponMapper couponMapper;
+	CouponMapperTest couponMapper;
 	
 	@Autowired
 	CouponPocketMapper couponPocketMapper;

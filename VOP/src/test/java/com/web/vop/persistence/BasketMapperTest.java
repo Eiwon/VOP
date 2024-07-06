@@ -34,6 +34,15 @@ public class BasketMapperTest {
 		basketVO.setProductId(productId);
 		basketVO.setProductNum(productNum);
 		
+		selectByMemberId(memberId);
+	    selectByMemberIdList(productId, memberId);
+	    selectByMemberIdCnt(memberId);
+	    insertToBasket(basketVO);
+//	    updateProductNum(basketVO);
+//	    deleteFromBasket(productId, memberId);
+//	    deleteAll(memberId);
+//	    updateExistProductNum(basketVO);
+		
 	} // end test
 	
 	//내 장바구니 물품 목록 조회

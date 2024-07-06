@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.web.vop.domain.CouponPocketVO;
 import com.web.vop.domain.CouponVO;
 import com.web.vop.domain.MyCouponVO;
-import com.web.vop.persistence.CouponMapper;
+import com.web.vop.persistence.CouponMapperTest;
 import com.web.vop.persistence.CouponPocketMapper;
 import com.web.vop.util.Constant;
 import com.web.vop.util.PageMaker;
@@ -24,7 +24,7 @@ import lombok.extern.log4j.Log4j;
 public class CouponServiceImple implements CouponService{
 
 	@Autowired
-	CouponMapper couponMapper; 
+	CouponMapperTest couponMapper; 
 	
 	@Autowired
 	CouponPocketMapper couponPocketMapper;
