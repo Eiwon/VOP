@@ -1,16 +1,27 @@
 package com.web.vop.persistence;
 
 
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
+import com.web.vop.config.PaymentAPIConfig;
 import com.web.vop.config.RootConfig;
+import com.web.vop.config.S3Config;
+import com.web.vop.config.SecurityConfig;
 import com.web.vop.config.ServletConfig;
 import com.web.vop.config.WebConfig;
+import com.web.vop.config.WebSocketConfig;
 import com.web.vop.domain.BasketVO;
 
 import lombok.extern.log4j.Log4j;
@@ -23,17 +34,25 @@ public class BasketMapperTest {
 
 	@Autowired
 	private BasketMapper basketMapper;
-	
+	 
 	@Test
 	public void test() {
 		String memberId = "test1234";
-		int productId = 1;
+		int productId = 33;
 		int productNum = 1;
 		BasketVO basketVO = new BasketVO();
 		basketVO.setMemberId(memberId);
 		basketVO.setProductId(productId);
 		basketVO.setProductNum(productNum);
 		
+//		selectByMemberId(memberId);
+//	    selectByMemberIdList(productId, memberId);
+//	    selectByMemberIdCnt(memberId);
+//	    insertToBasket(basketVO);
+//	    updateProductNum(basketVO);
+//	    deleteFromBasket(productId, memberId);
+//	    deleteAll(memberId);
+	    updateExistProductNum(basketVO);
 	} // end test
 	
 	//내 장바구니 물품 목록 조회

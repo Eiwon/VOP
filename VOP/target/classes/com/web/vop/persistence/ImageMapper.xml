@@ -38,7 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 최근에 등록한 이미지 id 검색 -->    
    <select id="selectRecentImgId" resultType="Integer">
-   		SELECT MAX(IMG_ID) FROM IMAGE 
+   		SELECT IMAGE_SEQ.CURRVAL FROM DUAL
    </select>
    
    <!-- productId로 이미지 검색 -->

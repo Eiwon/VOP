@@ -44,7 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 배포 중이지만 보유하지 않은 쿠폰 검색 -->
    <select id="selectNotHadCoupon" resultMap="couponResultMap">
-   		SELECT * FROM COUPON WHERE COUPON_ID != (
+   		SELECT * FROM COUPON WHERE COUPON_ID NOT IN (
    		SELECT COUPON_ID FROM COUPON_POCKET WHERE MEMBER_ID = #{memberId}
 		) AND PUBLISHING = 1
    </select>
