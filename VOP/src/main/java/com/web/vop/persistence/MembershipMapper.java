@@ -26,7 +26,7 @@ public interface MembershipMapper {
 	int insertMembership(MembershipVO membershipVO) throws DataIntegrityViolationException;
 	
 	// 멤버십 권한 업데이트 
-	void updateMemberAuthOnInsert(@Param("memberId") String memberId);
+	int updateMemberAuthOnInsert(@Param("memberId") String memberId);
 	
 	// 멤버십 전체 조회
 	MembershipVO selectByMemberId(@Param("memberId")String memberId);
@@ -41,7 +41,7 @@ public interface MembershipMapper {
 	int deleteMembership(@Param("memberId") String memberId);
 
 	// 멤버십 삭제 시 권한 업데이트
-	void updateMemberAuthOnDelete(@Param("memberId") String memberId);
+	int updateMemberAuthOnDelete(@Param("memberId") String memberId);
 	
 	// 멤버십 만료일 조회 (스케줄링)
 	List<MembershipExpiryDTO> selectExpiryDateBySchedulling();
