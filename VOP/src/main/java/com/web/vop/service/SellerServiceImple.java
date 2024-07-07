@@ -89,7 +89,7 @@ public class SellerServiceImple implements SellerService{
 	@Override
 	public SellerRequestDTO getSellerRequestDetails(String memberId) {
 		log.info("판매자 등록 요청 상세정보 조회");
-		SellerRequestDTO sellerRequestDTO = sellerMapper.selectSellerRequestDeteails(memberId);
+		SellerRequestDTO sellerRequestDTO = sellerMapper.selectSellerRequestDetails(memberId);
 		log.info("검색 결과 : " + sellerRequestDTO);
 		return sellerRequestDTO;
 	} // end getSellerRequestDetails
