@@ -15,6 +15,7 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -149,11 +150,11 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 			chatRoom = consultRoomList.get(roomId);
 			chatRoom.getMemberList().remove(senderId);
 			// 남은 인원이 없으면 방 폭파, 있으면 상담 중단 상태로 변경
+			sendConsultantExit(roomId, senderId);
 			if(chatRoom.getMemberList().size() == 0) {
 				consultRoomList.remove(roomId);
 			}else {
 				chatRoom.setState(ROOM_STATE_STOP);
-				sendConsultantExit(roomId, senderId);
 			}
 			break;
 		}
@@ -162,11 +163,11 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 			chatRoom = consultRoomList.get(roomId);
 			chatRoom.getMemberList().remove(senderId);
 			// 남은 인원이 없으면 방 폭파, 있으면 상담 종료 상태로 변경
+			sendClientExit(roomId, senderId);
 			if(chatRoom.getMemberList().size() == 0) {
 				consultRoomList.remove(roomId);
 			}else {
 				chatRoom.setState(ROOM_STATE_TERMINATE);
-				sendClientExit(roomId, senderId);
 			}
 			break;
 		}

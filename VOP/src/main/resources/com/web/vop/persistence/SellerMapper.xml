@@ -63,7 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </delete>
    
    <!-- 판매자 권한 요청 상세정보 조회 -->
-   <select id="selectSellerRequestDeteails" resultMap="sellerRequestResultMap">
+   <select id="selectSellerRequestDetails" resultMap="sellerRequestResultMap">
    		SELECT SL.*, MEMBER.MEMBER_NAME, MEMBER.MEMBER_EMAIL, MEMBER.MEMBER_PHONE, MEMBER.MEMBER_AUTH 
    		FROM(
 			SELECT * FROM SELLER WHERE MEMBER_ID = #{memberId}

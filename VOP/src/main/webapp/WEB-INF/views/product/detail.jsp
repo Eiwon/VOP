@@ -231,8 +231,8 @@ td {
 	<!-- 좋아요 표시 제작 예정? -->
 	<script type="text/javascript">
 	
-	 const vopUrl = "http://3.36.204.47:8080/vop-1.0.0-BUILD-SNAPSHOT";
-	 // let vopUrl = "http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}";
+	 //const vopUrl = "http://3.36.204.47:8080/vop";
+	 const vopUrl = "http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}";
 	 // 현재 시험 용으로는 사용하면 안되는데 나중에 완성 되면는 사용해도 될것 같다. 우선는 주소는 하드 코딩으로 작성 하기
 	 // ${pageContext.request.serverName} ip 주소 현재 pc ip 주소(로컬 호스트)
 	 // ${pageContext.request.serverPort} 포트 번호 현재 pc 포트 번호
