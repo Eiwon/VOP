@@ -80,20 +80,6 @@ public class MembershipServiceImple implements MembershipService{
 		return res;
 	}//end registerMembership()
 	
-	
-	
-	/*
-	@Override
-	public int registerMembership(MembershipVO membershipVO) {
-		log.info("registerMembership() :" + membershipVO);
-		int res = membershipMapper.insertMembership(membershipVO);
-		if(res == 1) {
-			log.info("멤버십 등록 성공!");
-		}else {
-			log.info("멤버십 등록 실패!");
-		}
-		return res;
-	}*/
 
 	
 	@Override
@@ -110,7 +96,7 @@ public class MembershipServiceImple implements MembershipService{
 		MembershipVO result = membershipMapper.selectByMemberId(memberId);
 		log.info("멤버십 전체 조회 : " + result.toString());
 		return result;
-	}
+	}//end selectByMemberId()
 
 	
 	@Override
@@ -119,7 +105,7 @@ public class MembershipServiceImple implements MembershipService{
 		Date date = membershipMapper.selectExpiryDate(memberId);
 		log.info("멤버십 만료 기간 : " + date);
 		return date;
-	}
+	}//end getExpiryDate()
 	
 	
 	@Override
@@ -132,7 +118,7 @@ public class MembershipServiceImple implements MembershipService{
 			log.info("멤버십 삭제 실패");
 		}
 		return res;
-	}
+	}//end deleteMembership()
 
 
 	@Override
@@ -140,7 +126,16 @@ public class MembershipServiceImple implements MembershipService{
 		log.info("updateMemberAuthOnDelete : " + memberId);
 		membershipMapper.updateMemberAuthOnDelete(memberId);
 		log.info("멤버십 권한 업데이트(일반유저)가 성공했습니다. " + memberId);
-	}
+	}//end updateMemberAuthOnDelete()
+
+
+	@Override
+	public String getChargeIdByMemberId(String memberId) { // 멤버십 환불아이디(chargeId) 조회
+		log.info("getChargeIdByMemberId : " + memberId);
+		String chargeId = membershipMapper.selectChargeIdByMemberId(memberId);
+		log.info("환불아이디 : " + chargeId);
+		return chargeId;
+	}//end getChargeIdByMemberId()
 
 
 	
