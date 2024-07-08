@@ -242,7 +242,7 @@
 	<dependency>
 			<groupId>javax.websocket</groupId>
 			<artifactId>javax.websocket-api</artifactId>
-			<version>1.1</version>
+			<version>1.0</version>
 			<scope>provided</scope>
 	</dependency>
 	
@@ -320,31 +320,6 @@
                   <failOnMissingWebXml>false</failOnMissingWebXml>
                </configuration>
             </plugin>
-            <plugin> 
-			<groupId>org.asciidoctor</groupId>
-			<artifactId>asciidoctor-maven-plugin</artifactId>
-			<version>2.2.1</version>
-			<executions>
-				<execution>
-					<id>generate-docs</id>
-					<phase>prepare-package</phase> 
-					<goals>
-						<goal>process-asciidoc</goal>
-					</goals>
-					<configuration>
-						<backend>html</backend>
-						<doctype>book</doctype>
-					</configuration>
-				</execution>
-			</executions>
-			<dependencies>
-				<dependency> 
-					<groupId>org.springframework.restdocs</groupId>
-					<artifactId>spring-restdocs-asciidoctor</artifactId>
-					<version>{project-version}</version>
-				</dependency>
-			</dependencies>
-		</plugin>
         </plugins>
     </build>
 </project>

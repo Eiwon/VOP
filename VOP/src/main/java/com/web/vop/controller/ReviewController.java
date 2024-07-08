@@ -83,7 +83,7 @@ public class ReviewController {
 	// 댓글(리뷰) 수정 GET 이동
 	@PreAuthorize("#memberDetails.username == authentication.principal.username")
 	@GetMapping("/modify")
-	public void updateReviewGET(Model model, Integer productId, Integer imgId, @AuthenticationPrincipal MemberDetails memberDetails) {
+	public String updateReviewGET(Model model, Integer productId, Integer imgId, @AuthenticationPrincipal MemberDetails memberDetails) {
 		log.info("updateReviewGET()");
 		
 		String memberId = memberDetails.getUsername();
@@ -92,19 +92,17 @@ public class ReviewController {
 		log.info("productId : " + productId);
 		log.info("imgId : " + imgId);
 
-		// imgId통해 이미지 조회
-		ImageVO imageVO = imageService.getImageById(imgId);
-		
-		String imgRealName = imageVO.getImgRealName();
-		String imgExtension = imageVO.getImgExtension();
-		
-		log.info("imgRealName : " + imgRealName);
-		log.info("imgExtension : " + imgExtension);
-		
-		model.addAttribute("productId", productId);
-		model.addAttribute("imgRealName", imgRealName);
-		model.addAttribute("imgId", imgId);
-		model.addAttribute("imgExtension", imgExtension);
+		ProductPreviewDTO productPreviewDTO = reviewService.getProductPreview(productId);
+	    if(productPreviewDTO != null) {
+	    	productPreviewDTO.setImgUrl(
+	    	awsS3Service.toImageUrl(productPreviewDTO.getImgPath(), productPreviewDTO.getImgChangeName())
+	    	);
+	    	model.addAttribute("productPreviewDTO", productPreviewDTO);
+	    	return "/review/modify"; // 경로 반환
+	    } else {	
+	    	log.info("삭제된 상품입니다.");
+	        return "/board/main"; // 이동할 경로 반환
+	    }
 	} // end loginGET
 	
 	// 댓글(리뷰) 마이 페이지 검색 GET

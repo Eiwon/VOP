@@ -27,5 +27,5 @@ public interface SellerMapper {
 	public int deleteRequest(String memberId);
 	
 	// 판매자 권한 요청 상세정보 조회
-	public SellerRequestDTO selectSellerRequestDeteails(String memberId);
+	public SellerRequestDTO selectSellerRequestDetails(String memberId);
 }

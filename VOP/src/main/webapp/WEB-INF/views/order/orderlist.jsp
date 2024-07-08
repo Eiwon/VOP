@@ -216,25 +216,29 @@
     	// 해당 버튼의 부모 요소로부터 productId 가져오기
         let productId;
         // 세션에서 memberId 가져오기
-        /* let memberId; */ // JSP 코드를 사용하여 세션 데이터 가져오기
         let buttons;
         console.log('${orderList}');
-    	// 공통 함수로 이벤트 리스너 추가
-    	function addModalEventListener(buttonClass, modalClass) {
-    	    buttons = document.querySelectorAll(buttonClass);
-    	    buttons.forEach(function(button) {
-    	        button.addEventListener('click', function() {
-    	            let modal = document.querySelector(modalClass);
-    	            modal.style.display = 'block';
-    	            // 해당 버튼의 부모 요소로부터 productId 가져오기
-    	            productId = button.closest('.order-box').querySelector('[name="productId"]').value;
-    	            // 세션에서 memberId 가져오기
-    	            /* memberId = '${memberId}'; */ // JSP 코드를 사용하여 세션 데이터 가져오기
-    	            console.log(productId);
-    	            console.log(memberId);
-    	        });
-    	    });
-    	}
+     	// 공통 함수로 이벤트 리스너 추가
+        function addModalEventListener(buttonClass, modalClass) {
+            // 지정된 클래스 이름을 가진 모든 버튼 요소를 선택
+            buttons = document.querySelectorAll(buttonClass);
+
+            // 각 버튼에 대해 반복
+            buttons.forEach(function(button) {
+                // 버튼에 클릭 이벤트 리스너 추가
+                button.addEventListener('click', function() {
+                    // 지정된 클래스 이름을 가진 모달 요소를 선택
+                    let modal = document.querySelector(modalClass);
+                    // 모달을 보이도록 설정
+                    modal.style.display = 'block';
+                    // 클릭된 버튼의 부모 요소에서 productId 값을 가져옴
+                    productId = button.closest('.order-box').querySelector('[name="productId"]').value;
+                    console.log(productId);
+                    console.log(memberId);
+                });
+            });// end buttons
+        }// end addModalEventListener
+
 
     	// 각 판매자 문의 버튼에 대한 이벤트 리스너 추가
     	addModalEventListener('.sellerInquiry', '.createModal');
@@ -242,10 +246,10 @@
     	// 각 판매자 문의 수정 버튼에 대한 이벤트 리스너 추가
     	addModalEventListener('.inquiryUpdate', '.updateModal');
     	
-    	// 각 판매자 문의 수정 버튼에 대한 이벤트 리스너 추가
+    	// 각 판매자 문의 삭제 버튼에 대한 이벤트 리스너 추가
     	addModalEventListener('.inquiryDelete', '.deleteModal');
 
-    	// 모달 닫기 이벤트 리스너 추가
+    	
     	// 모달 닫기 이벤트 리스너 추가
 		let closeButtons = document.querySelectorAll('.modal .close');
 		closeButtons.forEach(function(button) {
