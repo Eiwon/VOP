@@ -28,8 +28,8 @@
 	<c:if test="${roomId == null }">
 		<c:set var="role" value="client"></c:set>
 		<button onclick="callConsultant()">상담사 연결</button>
-		<button onclick="finishConsult()">상담 종료</button>
 	</c:if>
+	<button onclick="finishConsult()">상담 종료</button>
 	<div class="chat_container">
 		<div id="readArea">
 			
@@ -149,10 +149,14 @@
 		
 		chatHandler.clientExit = function(msg){
 			addToReadArea('System', msg.senderId + ' 님이 퇴장했습니다.');
+			addToReadArea('System', '상담이 종료되었습니다.');
+			consultWebSocket.close();
 		}
 		
 		chatHandler.consultantExit = function(msg){
 			addToReadArea('System', '상담사가 퇴장했습니다.');
+			addToReadArea('System', '상담이 종료되었습니다.');
+			consultWebSocket.close();
 		} // end consultantExit
 		
 		

@@ -5,7 +5,9 @@ import java.util.Map;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,7 +26,8 @@ import org.springframework.web.socket.WebSocketSession;
 // servlet-context.xml과 동일 
 @Configuration // Spring Container에서 관리하는 설정 클래스
 @EnableWebMvc // Spring MVC 기능 사용
-@ComponentScan(basePackages = { "com.web.vop"}) // component scan 설정
+@ComponentScan(basePackages = { "com.web.vop", "com.web.vop.socket"}) // component scan 설정
+
 public class ServletConfig implements WebMvcConfigurer {
 
    // ViewResolver 설정 메서드

@@ -38,7 +38,7 @@ public class ImageMapperTest {
 
 //	    selectByImgIdTest(imgId);
 //	    insertImgTest(imageVO);
-	    insertProductDetailsImgTest(imageVO);
+//	    insertProductDetailsImgTest(imageVO);
 //	    selectByProductIdTest(productId);
 //	    selectImgPathByImgIdTest(imgId);
 //	    selectImgIdByProductIdTest(productId);

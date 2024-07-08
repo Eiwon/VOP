@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.web.vop.persistence.LikesMapper">
+	<resultMap type="com.web.vop.domain.LikesVO"
+      id="LikesResultMap">
+      
+      <id property="likesId" column="LIKES_ID" /> 
+      <result property="productId" column="PRODUCT_ID" /> 
+      <result property="memberId" column="MEMBER_ID" />
+      <result property="reviewId" column="REVIEW_ID" />
+      <result property="likesType" column="LIKES_TYPE" />
+      <result property="likesDateCreated" column="LIKES_DATE_CREATED" />
+      </resultMap>
+      
+      <!-- 좋아요 or 싫어요 입력 -->
+      <insert id="insertLikes">
+      	INSERT INTO LIKES (LIKES_ID, PRODUCT_ID, MEMBER_ID, REVIEW_ID, LIKES_TYPE, LIKES_DATE_CREATED)
+		VALUES (LIKES_SEQ.NEXTVAL, #{productId}, #{memberId}, #{reviewId},
+		#{likesType}, SYSDATE)
+      </insert>
+      
+      <!-- 좋아요 or 싫어요 수정 -->
+      <update id="updateLikes">
+      	UPDATE LIKES
+      	SET LIKES_TYPE = #{likesType}
+      	WHERE MEMBER_ID = #{memberId} AND REVIEW_ID = #{reviewId}
+      </update>
+      
+     <!-- 좋아요 or 싫어요 삭제 -->
+   	<delete id="deleteLikes">
+      DELETE FROM LIKES 
+      WHERE REVIEW_ID = #{reviewId} AND MEMBER_ID = #{memberId}
+   	</delete>
+   	
+   	<!-- 좋아요 or 싫어요 productId 그리고 memberId통해 검색 -->
+   <select id="selectByLikes" resultMap="LikesResultMap">
+   		SELECT * FROM LIKES
+	 	WHERE REVIEW_ID = #{reviewId} AND MEMBER_ID = #{memberId}
+   </select>
+   
+    <select id="selectByLikesPaging" resultMap="LikesResultMap">
+    	SELECT * FROM LIKES
+    	WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId} 
+    </select>
+
+</mapper>

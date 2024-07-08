@@ -1,18 +1,10 @@
 package com.web.vop.controller;
 
-
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.socket.WebSocketHandler;
 
-import com.web.vop.socket.AlarmHandler;
 
 import lombok.extern.log4j.Log4j;
 
