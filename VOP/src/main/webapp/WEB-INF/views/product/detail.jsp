@@ -227,10 +227,16 @@ td {
 		<h3>배송/교환/반품 안내</h3>
 		<p>내용 작성 예정</p>
 	</div> -->
-
+	
 	<!-- 좋아요 표시 제작 예정? -->
-
 	<script type="text/javascript">
+	
+	 const vopUrl = "http://3.36.204.47:8080/vop-1.0.0-BUILD-SNAPSHOT";
+	 // let vopUrl = "http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}";
+	 // 현재 시험 용으로는 사용하면 안되는데 나중에 완성 되면는 사용해도 될것 같다. 우선는 주소는 하드 코딩으로 작성 하기
+	 // ${pageContext.request.serverName} ip 주소 현재 pc ip 주소(로컬 호스트)
+	 // ${pageContext.request.serverPort} 포트 번호 현재 pc 포트 번호
+	 // ${pageContext.request.contextPath} 프로젝트 명 현재 pc의 서버 명
      
      let reviewMap = {};
      let inquiryMap = {};
@@ -354,13 +360,13 @@ Kakao.Share.createDefaultButton({
 	    objectType: 'commerce',
 	    content: {
 	      title: 
-	    	  'VOP사이트 다양한 상품들도 있습니다. 많은 관심 부탁 드립니다.',
+	    	  'VOP 사이트는 PC로 이용해 주세요.',
 	    	  // 공유시 제목 
 	      imageUrl: '${productDetails.thumbnailUrl}',// 썸네일 이미지 가져오는 기능(월래는 url를 통해 이미지 불려 옴)
 	      link: {
 	        // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
-	        mobileWebUrl: 'http://localhost:8080/vop/board/main', //카카오 api에 등록된 경로
-	        webUrl: 'http://localhost:8080/vop/board/main',
+	        mobileWebUrl: vopUrl + '/board/main', //카카오 api에 등록된 경로
+	        webUrl: vopUrl + '/board/main',
 	      },
 	    },
 	    commerce: { // 상품 설명
@@ -373,15 +379,15 @@ Kakao.Share.createDefaultButton({
 	      {
 	        title: '상품 보러가기', // 공유 했을때 버튼
 	        link: { // 클릭시 이동하는 링크
-	          mobileWebUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 앱 버전
-	          webUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 웹 버전
+	          mobileWebUrl: vopUrl + '/product/detail?productId=${productVO.productId }', // 앱 버전
+	          webUrl: vopUrl + '/product/detail?productId=${productVO.productId }', // 웹 버전
 	        },
 	      },
 	      {
 		    title: '메인 페이지', // 공유 했을때 버튼
 		    link: { // 클릭시 이동하는 링크
-		      mobileWebUrl: 'http://localhost:8080/vop/board/main', // 앱 버전
-		      webUrl: 'http://localhost:8080/vop/board/main', // 웹 버전
+		      mobileWebUrl: vopUrl + '/board/main', // 앱 버전
+		      webUrl: vopUrl + '/board/main', // 웹 버전
 		     },
 		   },
 	    ],
@@ -697,7 +703,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
 	// 문의(대댓글) 
     inquiryMap.show = function(page) {
         let inquiryUrl = '../inquiryRest/list/' + productId + '/' + page;// 문의 데이터 API 엔드포인트
-        let answerUrl = '../answer/list/' + productId;      // 답변 데이터 API 엔드포인트
+        let answerUrl = '../answer/list/' + productId; // 답변 데이터 API 엔드포인트
         
         let inquiryNUM = []; // 문의 데이터 배열
         let answerNUM = []; // 답변 데이터 배열

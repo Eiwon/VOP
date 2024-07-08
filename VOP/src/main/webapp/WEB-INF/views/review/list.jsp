@@ -72,43 +72,43 @@
 
 	<p>댓글 리스트</p>
 
-	<c:forEach var="ProductVO" items="${productList}">
-		<div class="product-box">
-			<div class="product-header">
-				<div class="product-info">
-					<!-- 리뷰 수정 코드 -->
-					<form action="../review/modify" method="get">
-						<input type="hidden" name="productId" value="${ProductVO.productId}"> 
-						<input type="hidden" name="imgId" value="${ProductVO.imgId}"> 
-						<input type="hidden" name="memberId" value="${memberDetails.getUsername()}">
-						<button type="submit">리뷰 수정</button>
-					</form>
-					
-					<button class="btnDelete" data-productid="${ProductVO.productId}">리뷰 삭제</button>
-					
-					<h2>상품 이름 : ${ProductVO.productName}</h2>
-				</div>
-				<img alt="${ProductVO.imgId}">
-			</div>
-			<div class="review-content">
-				<c:forEach var="ReviewVO" items="${reviewList}">
-					<c:if test="${ReviewVO.productId == ProductVO.productId}">
-						<p>리뷰 : ${ReviewVO.reviewStar}</p>
-						<!-- 리뷰 별점 표시 -->
-						
-						<div class="stars" data-reviewavg="${ReviewVO.reviewStar}">
-							<fieldset>
-								<label for="star5">&#9733;</label> <label for="star4">&#9733;</label>
-								<label for="star3">&#9733;</label> <label for="star2">&#9733;</label>
-								<label for="star1">&#9733;</label>
-							</fieldset>
-						</div>
-						<p>리뷰 내용 : ${ReviewVO.reviewContent}</p>
-					</c:if>
-				</c:forEach>
-			</div>
-		</div>
-	</c:forEach>
+	<c:forEach var="product" items="${productList}">
+    <div class="product-box">
+        <div class="product-header">
+            <div class="product-info">
+                <!-- 리뷰 수정 코드 -->
+                <form action="../review/modify" method="get">
+                    <input type="hidden" name="productId" value="${product.productVO.productId}">
+                    <input type="hidden" name="imgId" value="${product.productVO.imgId}">
+                    <input type="hidden" name="memberId" value="${memberDetails.getUsername()}">
+                    <button type="submit">리뷰 수정</button>
+                </form>
+                
+                <button class="btnDelete" data-productid="${product.productVO.productId}">리뷰 삭제</button>
+                
+                <h2>상품 이름 : ${product.productVO.productName}</h2>
+            </div>
+            <img src="${product.imgUrl}">
+        </div>
+        <div class="review-content">
+            <c:forEach var="review" items="${reviewList}">
+                <c:if test="${review.productId == product.productVO.productId}">
+                    <p>리뷰 : ${review.reviewStar}</p>
+                    <!-- 리뷰 별점 표시 -->
+                    <div class="stars" data-reviewavg="${review.reviewStar}">
+                        <fieldset>
+                            <label for="star5">&#9733;</label> <label for="star4">&#9733;</label>
+                            <label for="star3">&#9733;</label> <label for="star2">&#9733;</label>
+                            <label for="star1">&#9733;</label>
+                        </fieldset>
+                    </div>
+                    <p>리뷰 내용 : ${review.reviewContent}</p>
+                </c:if>
+            </c:forEach>
+        </div>
+    </div>
+</c:forEach>
+
 
 	<script type="text/javascript">
 	
@@ -116,7 +116,7 @@
 	
 		$(document).ready(function() {
 			// 이미지 로드 함수 호출
-			loadImg();
+			//loadImg();
 
 			// 별표시를 업데이트하는 함수 호출
 			displayStars();

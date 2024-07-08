@@ -120,11 +120,16 @@ public class ReviewController {
 		List<ReviewVO> reviewList = reviewService.getAllReviewMemberId(memberId);
 		
 		// 상품 리스트 정의
-		List<ProductVO> productList = new ArrayList<>(); // productList 초기화
+		List<ProductPreviewDTO> productList = new ArrayList<>(); // productList 초기화
 		
 		// 회원이 작성 한 댓글 리스트에서 해당 상품 조회
 		for (ReviewVO vo : reviewList) {
-		    ProductVO product = productService.getProductById(vo.getProductId()); // 단일 ProductVO 반환
+			ProductPreviewDTO product = reviewService.getProductPreview(vo.getProductId()); // 단일 ProductVO 반환
+			 if(product != null) {
+				product.setImgUrl(
+			    awsS3Service.toImageUrl(product.getImgPath(), product.getImgChangeName())
+			    );
+			 }
 		    productList.add(product); // productList에 product 추가
 		}
 		
@@ -136,6 +141,7 @@ public class ReviewController {
 		
 		// 회원이 작성한 리뷰
 		model.addAttribute("reviewList", reviewList);
+
 	}// end readAllReview()
 
 }
