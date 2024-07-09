@@ -44,16 +44,11 @@ public class ReviewController {
 	// ImageService에 메소드 단 하나 있고, 그 메소드를 여기에서만 쓰고 있음 수정 후 삭제 바람
 	
 	@Autowired
-	private ImageService imageService;
-	
-	@Autowired
 	private ReviewService reviewService;
 	
 	@Autowired
 	private AWSS3Service awsS3Service;
 	
-	@Autowired
-	private ProductService productService;
 	
 //	// 댓글 알림을 보내기 위한 알람핸들러
 //	@Autowired
@@ -120,11 +115,16 @@ public class ReviewController {
 		List<ReviewVO> reviewList = reviewService.getAllReviewMemberId(memberId);
 		
 		// 상품 리스트 정의
-		List<ProductVO> productList = new ArrayList<>(); // productList 초기화
+		List<ProductPreviewDTO> productList = new ArrayList<>(); // productList 초기화
 		
 		// 회원이 작성 한 댓글 리스트에서 해당 상품 조회
 		for (ReviewVO vo : reviewList) {
-		    ProductVO product = productService.getProductById(vo.getProductId()); // 단일 ProductVO 반환
+			ProductPreviewDTO product = reviewService.getProductPreview(vo.getProductId()); // 단일 ProductVO 반환
+			 if(product != null) {
+				product.setImgUrl(
+			    awsS3Service.toImageUrl(product.getImgPath(), product.getImgChangeName())
+			    );
+			 }
 		    productList.add(product); // productList에 product 추가
 		}
 		
@@ -136,6 +136,7 @@ public class ReviewController {
 		
 		// 회원이 작성한 리뷰
 		model.addAttribute("reviewList", reviewList);
+
 	}// end readAllReview()
 
 }

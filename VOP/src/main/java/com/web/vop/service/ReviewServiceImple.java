@@ -70,7 +70,6 @@ public class ReviewServiceImple implements ReviewService {
     		// 상품 댓글 카운터 수정
     		int updateRes = productMapper.updateReviewNum(productId, reviewNum);
     		
-
     		// 리뷰 평균 관련 코드
     		// productId에 해당하는 상품 조회 // 업그레이드 된 상태
     		ProductVO productVO = productMapper.selectProduct(productId);

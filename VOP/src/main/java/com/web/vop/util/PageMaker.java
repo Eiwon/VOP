@@ -73,6 +73,10 @@ public class PageMaker {
 		}
 	} // end isNext()
 	
+	public int getCurPage() {
+		return pagination.getPageNum();
+	} // end getCurPage
+	
 	public void update() { 
 		// 자바스크립트로 전송하면 자바스크립트에서 자바 객체 메소드를 호출 못해서 미리 계산했습니다.
 		this.isPrev = isPrev();

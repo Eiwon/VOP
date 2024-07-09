@@ -65,7 +65,7 @@
 		function sendChat(){
 			let content = tagWriteChat.val();
 			console.log(content);
-			if(content.length > 0 || consultWebSocket != null){
+			if(content.length > 0 && consultWebSocket.readyState != 3){
 				consultWebSocket.send(JSON.stringify({
 					'type' : 'chatMessage',
 					'roomId' : roomId,
@@ -121,6 +121,7 @@
 			// 웹소켓 연결 종료시 호출
 			consultWebSocket.onclose = function(e) {
 				console.log("webSocket close : " + e);
+				connectWebSocket();
 			}; // end webSocket.onclose
 
 			// 웹소켓 에러 발생시 호출
@@ -161,12 +162,20 @@
 		
 		
 		function callConsultant(){
-			consultWebSocket.send(JSON.stringify({
-				type : 'consultRequest'
-			}));	
+			if(consultWebSocket.readyState == 1){ // readyState == OPEN
+				consultWebSocket.send(JSON.stringify({
+					type : 'consultRequest'
+				}));
+			}else {
+				alert('잠시 후 다시 시도해주세요');
+			}
+			
 		} // end callConsultant
 		
 		function exitRoom(){
+			if(consultWebSocket.readyState > 1){
+				return;
+			}
 			consultWebSocket.send(JSON.stringify({
 				type : (role == 'client') ? 'clientExit' : 'consultantExit',
 				roomId : roomId

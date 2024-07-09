@@ -9,12 +9,13 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <meta charset="UTF-8">
 <style>
 	/* 로그인 , 회원가입 링크 -> 우측 정렬 안됨. */
 		.container2 {
 		    background-color: #f0f0f0;
-		    width: 1800px;
+		    /* width: 1800px; */
 		    padding: 30px;
 		    margin: 5px;
 		    
@@ -33,56 +34,13 @@
 		    margin-left: 320px; /* 왼쪽 여백 추가 */
 		}
 		
+		/* .container2.user-links2 클래스에 속한 <a> 태그가 호버될 때 글자 색상을 검은색으로 변경 */
 		.container2.user-links2 a:hover {
 		    color: black;
 		}
 		.container {
             text-align: center; /* 중앙 정렬 */
         }
-	
-        /*카테고리*/
-        .maincategory {
-            position: relative;
-            display: inline-block;
-            border: 1px solid black; /*박스 추가*/
-            width: 70px; /* 박스 너비 */
-    		height: 20px; /* 박스 높이 */
-            padding: 10px; /*박스 내부 padding 추가*/
-            background-color: lightgreen; /*박스 색상 추가*/
-            margin-top: 80px; /* 상단 여백 추가*/
-            margin-bottom: 20px; /* 위 아래 여백 추가 */
-            margin-right: 50px; /* 오른쪽 여백 추가 */
-            margin-left: 320px; /* 왼쪽 여백 추가 */
-        }
-        
-        .maincategory:hover .subcategory {
-            display: block; /* 부모 요소에 마우스를 올리면 서브 카테고리 표시 */
-        }
-        
-        .subcategory {
-           	display: none; /* 마우스 up 아닐땐 숨김 */
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 10;
-            background-color: #f9f9f9;
-            padding: 10px;
-            border: 1px solid #ccc;
-            z-index: 1;
-            font-size: 14px; 
-        }
-        
-        .subcategory a {
-            display: block;
-            color: #333;
-            text-decoration: none;
-            padding: 5px 0;
-        }
-        
-        .subcategory a:hover {
-            background-color: #ddd;
-        }
-        
         
          /* VOP 링크 스타일링 */
         .vop-link {
@@ -200,11 +158,16 @@
 		.submenu a:hover {
 		    background-color: #f0f0f0; /* 호버 시 배경색 변경 */
 		}
-		
+		.line_search {
+			width: 65%;
+			margin: auto;
+		}
     </style>
 </head>
 <body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <div class="container2">
+
     <div class="user-links2" id="box_login">
     	<sec:authorize access="isAuthenticated()">
     		<div>
@@ -214,7 +177,6 @@
     		<form action="../member/logout" method="POST">
     			<input type="submit" value="로그아웃">
     			<sec:csrfInput/>
-    			<%-- <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }"> --%>
     		</form>
     	</sec:authorize>
     	<sec:authorize access="isAnonymous()">
@@ -222,30 +184,32 @@
         	<a href="../member/register">회원가입</a>
     	</sec:authorize>
     </div>
-	
-	<div class="maincategory">
-        <span>카테고리</span>
-        <div class="subcategory">
-            <a href="">여성패션</a>
-            <a href="">남성패션</a>
-            <a href="">남녀 공용 의류</a>
-            <a href="">유아동 패션</a>
-            <a href="">뷰티</a>
-            <a href="">출산/유아동</a>
-            <a href="">식품</a>
-            <a href="">주방용품</a>
-            <a href="">생활용품</a>
-            <a href="">홈인테리어</a>
-            <a href="">가전디지털</a>
-            <a href="">스포츠/레저</a>
-            <a href="">자동차 용품</a>
-            <a href="">도서/음반/DVD</a>
-            <a href="">완구/취미</a>
-            <a href="">문구/오피스</a>
-            <a href="">반려동물용품</a>
-            <a href="">헬스/건강식품</a>
-        </div>
-	</div>
+	<div class="line_search">
+	<div class="btn-group maincategory" role="group">
+    	<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+      		카테고리
+   	 	</button>
+    	<ul class="subcategory dropdown-menu">
+     	 	<li><a class="dropdown-item" href="">여성패션</a></li>
+            <li><a class="dropdown-item" href="">남성패션</a></li>
+            <li><a class="dropdown-item" href="">남녀 공용 의류</a></li>
+            <li><a class="dropdown-item" href="">유아동 패션</a></li>
+            <li><a class="dropdown-item" href="">뷰티</a></li>
+            <li><a class="dropdown-item" href="">출산/유아동</a></li>
+            <li><a class="dropdown-item" href="">식품</a></li>
+            <li><a class="dropdown-item" href="">주방용품</a></li>
+            <li><a class="dropdown-item" href="">생활용품</a></li>
+            <li><a class="dropdown-item" href="">홈인테리어</a></li>
+            <li><a class="dropdown-item" href="">가전디지털</a></li>
+            <li><a class="dropdown-item" href="">스포츠/레저</a></li>
+            <li><a class="dropdown-item" href="">자동차 용품</a></li>
+            <li><a class="dropdown-item" href="">도서/음반/DVD</a></li>
+            <li><a class="dropdown-item" href="">완구/취미</a></li>
+            <li><a class="dropdown-item" href="">문구/오피스</a></li>
+            <li><a class="dropdown-item" href="">반려동물용품</a></li>
+            <li><a class="dropdown-item" href="">헬스/건강식품</a></li>
+   	 	</ul>
+    </div>
 	
 	<!-- VOP 링크 추가 -->
     <a href="../board/main" class="vop-link">VOP</a>
@@ -297,6 +261,7 @@
         	</div>	
         	<a href="../board/basket">장바구니</a>
     </div>
+    </div>
 </div>
 
 <script>
@@ -321,23 +286,22 @@
 				search();
 			}
 		}); // end search.keydown
-        
-		function search(){
-			let category = $('#boxCategory').val();
-			let word = $('.search-input').val();
-			if(category == '전체' && word.length == 0){
-				return;
-			}
-			location.href = "../product/search?category=" + category + "&word=" + word;
-		} // end search
 		
-		$('.subcategory').children().each(function(){
+		$('.subcategory').find('.dropdown-item').each(function(){
 			let link = "../product/search?category=" + $(this).text() + "&word=";
 			$(this).attr('href', link);
 		});
 		
     }); // end document.ready
     
+    function search(){
+		let category = $('#boxCategory').val();
+		let word = $('.search-input').val();
+		if(category == '전체' && word.length == 0){
+			return;
+		}
+		location.href = "../product/search?category=" + category + "&word=" + word;
+	} // end search
 </script>
 </body>
 </html>

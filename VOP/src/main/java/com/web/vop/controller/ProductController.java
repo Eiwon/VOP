@@ -167,7 +167,9 @@ public class ProductController {
 	public void search(Model model, Pagination pagination) {
 		log.info("search category : " + pagination.getCategory() + ", word : " + pagination.getWord());
 		List<ProductPreviewDTO> productList;
+		int pageSize = 8;
 		PageMaker pageMaker = new PageMaker();
+		pagination.setPageSize(pageSize);
 		pageMaker.setPagination(pagination);
 		
 		productList = productService.search(pageMaker);
@@ -186,8 +188,9 @@ public class ProductController {
 			Pagination pagination, @AuthenticationPrincipal MemberDetails memberDetails) {
 		String memberId = memberDetails.getUsername();
 		log.info(memberId + "가 등록한 상품 검색");
-
+		int pageSize = 8;
 		PageMaker pageMaker = new PageMaker();
+		pagination.setPageSize(pageSize);
 		pageMaker.setPagination(pagination);
 		
 		List<ProductPreviewDTO> productPreviewList = productService.searchByMemberId(memberId, pageMaker);

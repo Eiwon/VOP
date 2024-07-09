@@ -87,7 +87,7 @@
 		
 		
 		validCheckMap.productName = {
-			exp : new RegExp('^[가-힣a-zA-Z0-9 !@#$%^&*()-+,.<>?]{2,30}$'),
+			exp : new RegExp('^[가-힣a-zA-Z0-9 !@#$%^&*()+,.<>?-]{2,30}$'),
 			failMsg : '상품명은 한글, 알파벳, 숫자, 일부 특수문자만 사용 가능합니다',
 		};
 		validCheckMap.productPrice = {
@@ -99,7 +99,7 @@
 			failMsg : '올바른 숫자를 입력해주세요'
 		};
 		validCheckMap.productPlace = {
-			exp : new RegExp('^[가-힣a-zA-Z0-9 !@#$%^&*()-+,.<>?]{10,65}$'),
+			exp : new RegExp('^[가-힣a-zA-Z0-9 !@#$%^&*()+,.<>?-]{10,65}$'),
 			failMsg : '형식에 맞지 않는 주소입니다'
 		};
 		

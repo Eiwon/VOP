@@ -14,14 +14,6 @@
 	height: 800px;
 	display: inline-block;
 }
-.input_tag {
-	width: 400px;
-	height: 40px;
-}
-.input_box {
-	height: 50px;
-	margin-top: 40px;
-}
 </style>
 <meta charset="UTF-8">
 <title>회원 가입</title>
@@ -30,29 +22,35 @@
 	<div style="text-align: center;">
 		<form class="form_container" action="register" method="POST">
 			<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
-			<div class="input_box">
-				<input type="text" id="memberId" class="input_tag" name="memberId" placeholder="아이디" onblur="checkValid(this)">
+			<div class="form-floating mb-3">
+				<input type="text" id="memberId" class="form-control" name="memberId" placeholder="아이디" onblur="checkValid(this)">
 				<div></div>
+				<label for="memberId">아이디</label>
 			</div>
-			<div class="input_box">
-				<input type="password" id="memberPw" class="input_tag" name="memberPw" placeholder="비밀번호" onblur="checkValid(this)">
+			<div class="form-floating">
+				<input type="password" id="memberPw" class="form-control" name="memberPw" placeholder="비밀번호" onblur="checkValid(this)">
 				<div></div>
+				<label for="memberPw">비밀번호</label>
 			</div>
-			<div class="input_box">
-				<input type="password" id="checkPw" class="input_tag" placeholder="비밀번호 확인" onblur="comparePw()">
+			<div class="form-floating">
+				<input type="password" id="checkPw" class="form-control" placeholder="비밀번호 확인" onblur="comparePw()">
 				<div></div>
+				<label for="checkPw">비밀번호 확인</label>
 			</div>
-			<div class="input_box">
-				<input type="text" id="memberName" class="input_tag" name="memberName" placeholder="이름" onblur="checkValid(this)">
+			<div class="form-floating">
+				<input type="text" id="memberName" class="form-control" name="memberName" placeholder="이름" onblur="checkValid(this)">
 				<div></div>
+				<label for="memberName">이름</label>
 			</div>
-			<div class="input_box">
-				<input type="text" id="memberEmail" class="input_tag" name="memberEmail" placeholder="이메일" onblur="checkValid(this)">
+			<div class="form-floating">
+				<input type="text" id="memberEmail" class="form-control" name="memberEmail" placeholder="이메일" onblur="checkValid(this)">
 				<div></div>
+				<label for="memberEmail">이메일</label>
 			</div>
-			<div class="input_box">
-				<input type="text" id="memberPhone" class="input_tag" name="memberPhone" placeholder="전화번호" onblur="checkValid(this)">
+			<div class="form-floating">
+				<input type="text" id="memberPhone" class="form-control" name="memberPhone" placeholder="전화번호" onblur="checkValid(this)">
 				<div></div>
+				<label for="memberPhone">전화번호</label>
 			</div>
 			<div style="margin-top: 30px;">
 				<input type="submit" value="회원 가입">
@@ -114,7 +112,10 @@
 			$(input).next().text(msg);
 			checkMap[type].isValid = isValid;
 			if(!isValid) {
+				$(input).addClass('is-invalid');
 				return;
+			}else{
+				$(input).removeClass('is-invalid');
 			}
 			
 			if(type == 'memberId'){
