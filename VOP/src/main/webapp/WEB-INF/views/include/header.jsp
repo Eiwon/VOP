@@ -14,7 +14,7 @@
 	/* 로그인 , 회원가입 링크 -> 우측 정렬 안됨. */
 		.container2 {
 		    background-color: #f0f0f0;
-		    width: 1800px;
+		    /* width: 1800px; */
 		    padding: 30px;
 		    margin: 5px;
 		    
@@ -33,6 +33,7 @@
 		    margin-left: 320px; /* 왼쪽 여백 추가 */
 		}
 		
+		/* .container2.user-links2 클래스에 속한 <a> 태그가 호버될 때 글자 색상을 검은색으로 변경 */
 		.container2.user-links2 a:hover {
 		    color: black;
 		}
@@ -42,8 +43,8 @@
 	
         /*카테고리*/
         .maincategory {
-            position: relative;
-            display: inline-block;
+            position: relative;/* 속성을 설정하여 상대적인 위치 지정 */
+            display: inline-block;/* 인라인 요소처럼 배치하면서도 블록 요소의 성질을 가짐 */
             border: 1px solid black; /*박스 추가*/
             width: 70px; /* 박스 너비 */
     		height: 20px; /* 박스 높이 */

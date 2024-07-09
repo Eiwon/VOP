@@ -395,6 +395,7 @@
             }
         });// end form()
     });// end inquiryUpdate()deleteInquiry
+    
  	// 삭제 버튼을 클릭하면 선택된 댓글 삭제
     let inquiryDelete = document.querySelectorAll('.deleteInquiry');
     inquiryDelete.forEach(function(form) {// inquiryForms에 있는 각 요소에 대해 반복문을 실행합니다.

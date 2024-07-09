@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.socket.WebSocketHandler;
 
-
+import com.web.vop.domain.MemberIdRequest;
 import com.web.vop.domain.MembershipVO;
 
 import com.web.vop.domain.PaymentWrapper;
@@ -67,9 +67,6 @@ public class MembershipRESTController {
 		// 멤버십 정보 전체 조회
 		MembershipVO membershipVO = membershipService.selectByMemberId(memberId);
 		log.info("멤버십 전체 조회 = " + membershipVO);
-			
-		//Date expirydate = membershipService.getExpiryDate(memberId);
-		//log.info("멤버십 만료일 : " + expirydate);
 			
 		if (membershipVO == null) {
 		     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -135,8 +132,27 @@ public class MembershipRESTController {
 	}//end membershipPOST()
 	
 	
-	
+	// 멤버십 해지 (결제취소)
+	//@PreAuthorize("#request.memberId == authentication.principal.username")
+	@PostMapping("/cancelPayment")
+	public ResponseEntity<Integer> cancelPayment(@RequestBody MemberIdRequest request) {
+			log.info("cancelPayment : " + request.getMemberId());
+		try {
+	        // memberId로 chargeId 조회
+	        String impUid = membershipService.getChargeIdByMemberId(request.getMemberId());
+	        log.info("환불아이디 : " + impUid);
+	        
+	        // 실제 결제 취소 로직을 호출하는 부분
+	        paymentAPIUtil.cancelPayment(impUid);
 
+	        // 성공적으로 결제 취소되었다고 가정하고 클라이언트에게 성공 응답을 보냄
+	        return ResponseEntity.ok().body(HttpStatus.OK.value());
+	    } catch (Exception e) {
+	        // 결제 취소 중 예외 발생 시, 클라이언트에게 실패 응답을 보냄
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	    }
+	}//end cancelPayment()
+	
 	
 	
 	@PreAuthorize("#memberId == authentication.principal.username")

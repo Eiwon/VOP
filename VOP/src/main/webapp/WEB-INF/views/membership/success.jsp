@@ -20,14 +20,53 @@
 <body>
 	
 
+		<h2>VOP 멤버십 가입을 환영합니다!</h2>
+	
+ 		<div id="expirydate"></div><br>
+	
+		<button id="cancelMembershipBtn" style="display: none;">멤버십 해지하기</button><br><br>
+	 	
+	 	<a href="../board/mypage">마이페이지로 이동</a>
+	
 <script>
 		
-$(document).ready(function() {
-		let memberId = "${memberDetails.getUsername()}";
-		console.log("memberId : ", memberId);
+	let memberId = "${memberDetails.getUsername()}";
+	console.log("memberId : ", memberId);
 	
+	$(document).ready(function() {
+		
 		//회원 정보 조회
-	    $.ajax({
+		getMembershipInfo(memberId);
+	  
+		// 멤버십 해지 버튼 클릭 시 이벤트
+	    $('#cancelMembershipBtn').on('click', async function() {
+	        
+	        if (confirm('멤버십을 정말 해지하시겠습니까? * 멤버십 해지 시 즉시 환불됩니다! *')) {
+	            
+	            try {
+	                // 결제 취소를 진행
+	                await cancelPayment(memberId);
+
+	                // 결제 취소가 성공했을 경우, 멤버십 삭제와 권한 수정을 진행
+	                await deleteMembership(memberId);
+	                await updateMembershipAuth(memberId);
+
+	               
+	                window.location.href = "../membership/register"; // 멤버십 등록 페이지로 이동
+	            } catch (error) {
+	                console.error('오류 발생:', error);
+	                alert('처리 중 오류가 발생했습니다.');
+	            }
+	        }//end if
+	    }); // end cancelMembershipBtn.click
+		
+		
+	});//end document.ready()		
+	    
+	
+	
+	function getMembershipInfo(memberId){
+	 $.ajax({
 	        type: 'GET',
 	        url: 'getMembership/' + memberId,
 	        success: function(membershipVO) {
@@ -37,85 +76,70 @@ $(document).ready(function() {
 	       	 console.log('expiryDate : ', expiryDate);
 	       	 
 	       	 $('#expirydate').text('멤버십 가입을 환영합니다!');
-             $('#cancelMembershipBtn').show(); // 해지하기 버튼을 보이도록 함
-             
+          $('#cancelMembershipBtn').show(); // 해지하기 버튼을 보이도록 함
+          
 	       	// 받아온 만료 날짜를 표시
 	         $('#expirydate').text('다음 결제 일은 ' + expiryDate.toLocaleDateString() + '입니다.');
-             
-	        // 저장된 결제 정보 사용
-	           $('#cancelMembershipBtn').data('paymentId', membershipVO.chargeId); // 버튼 요소에 데이터 속성 추가
-	           $('#cancelMembershipBtn').data('membershipFee', membershipVO.membershipFee);
 	           
 	        },
 	        error: function() {
 	            $('#expirydate').text('멤버십 정보를 조회하는 데 오류가 발생했습니다.');
 	        }
 	    });//end ajax
-		
-	    
-	   
-		$('#cancelMembershipBtn').on('click', function() {
-			
-			if(confirm('멤버십을 정말 해지하시겠습니까? * 멤버십 해지 시 즉시 환불됩니다! *')){
-				//아까 버튼으로 보낸 데이터 꺼낼거임
-				let paymentId = $(this).data('paymentId'); // 저장된 결제 고유 번호 사용
-			    let membershipFee = $(this).data('membershipFee'); // 저장된 결제 금액 사용
+	}//end getMembershipInfo()
+	
 
-			    //결제 취소를 진행하는 함수
-			    cancelPayment(paymentId, membershipFee);
+			
+	function cancelPayment(memberId) {
+			console.log("cancelPayment(memberId) : ", memberId);
 		
-			}
-		});// end cancelMembershipBtn.click 
-			
-		 function cancelPayment(paymentId, membershipFee) {
-		      	let cancelData = {
-		        	cid: 'kakaopay.TC0ONETIME', // 가맹점 코드
-		            tid: paymentId, // 결제 고유 번호
-		            cancel_amount: membershipFee, // 취소 금액
-		            cancel_tax_free_amount: 0 // 취소 비과세 금액
-		           };
-		      	
-		      	$.ajax({
-		      	    method: 'POST',
-		      	    url: 'cancelPayment', // 실제 서버에서 결제 취소를 처리하는 URL
-		      	    headers: {
-		      	        'Content-Type': 'application/json',
-		      	        'X-CSRF-TOKEN': $('meta[name="${_csrf.parameterName}"]').attr('content')
-		      	    },
-		      	    data: JSON.stringify(cancelData), // 취소 데이터를 JSON 형식으로 변환하여 전송
-		      	    success: function(response) {
-		      	        if (response.success) {
-		      	            alert('결제가 성공적으로 취소되었습니다.');
-		      	            window.location.href = "../membership/cancelSuccess"; // 취소 성공 페이지로 이동
-		      	        } else {
-		      	            alert('결제 취소에 실패했습니다.');
-		      	        }
-		      	    },
-		      	    error: function(xhr, status, error) {
-		      	        console.error('서버 요청 중 오류 발생:', error);
-		      	        alert('결제 취소 요청 중 오류가 발생했습니다.');
-		      	    }
-		      	    
-		      	 });//end ajax POST
-		   }//end function cancelPayment()
+	   $.ajax({
+	      	    method: 'POST',
+	      	    url: 'cancelPayment', // 실제 서버에서 결제 취소를 처리하는 URL
+	      	    headers: {
+	      	        'Content-Type': 'application/json',
+	      	        'X-CSRF-TOKEN': $('meta[name="${_csrf.token }"]').attr('content')
+	      	    },
+	      	    data: JSON.stringify({
+	      	    		'memberId' : memberId 	      	    	
+	      	    }), 
+	      	    success: function(response, textStatus, xhr) {
+	      	        console.log('서버 응답 코드:', xhr.status);
+	      	        if (xhr.status === 200) {
+	      	            alert('결제가 성공적으로 취소되었습니다.');
+	      	           
+	      	        } else {
+	      	            alert('결제 취소에 실패했습니다.');
+	      	        }
+	      	    },
+	      	    error: function(xhr, status, error) {
+	      	        console.error('서버 요청 중 오류 발생:', error);
+	      	        alert('결제 취소 요청 중 오류가 발생했습니다.');
+	      	    }
+	      	 });//end ajax POST
+	      	 
+   		}//end function cancelPayment()
 		      	
 			
-				// 멤버십 삭제(해지)
-				$.ajax({
-					type : 'DELETE',
-					url : 'deleteMembership/' + memberId,
-					headers : {
-						'X-CSRF-TOKEN' : '${_csrf.token }' 
-					},
-					success: function(response) {
-						console.log('멤버십 정보가 삭제되었습니다.');
-					},
-					error: function(){
-						console.error('멤버십 삭제 도중 오류 발생 . ',error);
-					}
+   		function deleteMembership(memberId){
+			// 멤버십 삭제(해지)
+			$.ajax({
+				type : 'DELETE',
+				url : 'deleteMembership/' + memberId,
+				headers : {
+					'X-CSRF-TOKEN' : '${_csrf.token }' 
+				},
+				success: function(response) {
+					console.log('멤버십 정보가 삭제되었습니다.');
+				},
+				error: function(){
+					console.error('멤버십 삭제 도중 오류 발생 . ',error);
+				}
 			}); //end ajax
+   		}//end deleteMembership()
 			
-			
+   		
+   		function updateMembershipAuth(memberId){
 			// 멤버십 권한(일반) 수정
 			$.ajax({
                 type: 'PUT',
@@ -126,29 +150,17 @@ $(document).ready(function() {
                 success: function() {
                     console.log('멤버십 권한 업데이트 성공');
                  // 일반 유저로 권한까지 수정 하면 다시 등록 페이지로 이동한다. 
-        			window.location.href = "../membership/register";
+        			//window.location.href = "../membership/register";
                 },
                 error: function() {
                     console.error('멤버십 권한 업데이트 실패', error);
                 }
-            }); //end ajax
-            
-			}//end if
-	
-		
-		
-});//end document.ready()
+            }); //end ajax		
+   		}//end updateMembershipAuth()
+
 	
 </script>
 
-	
-		<h2>VOP 멤버십 가입을 환영합니다!</h2>
-	
- 		<div id="expirydate"></div><br>
-	
-		<button id="cancelMembershipBtn" style="display: none;">멤버십 해지하기</button><br>
-	 	
-	 	<a href="../board/mypage">마이페이지로 이동</a>
 	
 
 </body>

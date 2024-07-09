@@ -53,7 +53,7 @@ public interface SecurityConfigConstants {
 			"/basket/**", 
 			"inquiry/list", "inquiry/myList",
 			"/seller/sellerRequest", "/seller/requestUpdate", 
-			"/membership/register", "/membership/getId", "/membershipRegister" };
+			"/membership/register", "/membership/getId", "/membershipRegister", "/membership/cancelPayment" };
 
 	// 판매자만 접근 가능
 	public static final String[] SELLER_ONLY = {

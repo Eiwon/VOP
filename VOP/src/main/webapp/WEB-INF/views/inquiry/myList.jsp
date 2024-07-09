@@ -126,7 +126,8 @@
             for (let i = 0; i < inquiryNUM.length; i++) {
             	
                 let matchingAnswers = []; // 현재 문의에 대한 일치하는 답변들을 저장할 배열
-
+					
+                if (inquiryNUM[i].inquiryId === inquiryNUM[i].answerInquiryId) {
                         // 일치하는 경우 matchingAnswers 배열에 객체로 저장
                         matchingAnswers.push({
                             answerId: inquiryNUM[i].answerId,
@@ -134,7 +135,7 @@
                             answerContent: inquiryNUM[i].answerContent,
                             answerDateCreated: inquiryNUM[i].answerDateCreated
                         });
-            
+                }
                 // 문의와 해당하는 모든 답변들을 result 배열에 객체로 저장
                 result.push({
                     inquiryId: inquiryNUM[i].inquiryId,

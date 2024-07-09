@@ -44,16 +44,11 @@ public class ReviewController {
 	// ImageService에 메소드 단 하나 있고, 그 메소드를 여기에서만 쓰고 있음 수정 후 삭제 바람
 	
 	@Autowired
-	private ImageService imageService;
-	
-	@Autowired
 	private ReviewService reviewService;
 	
 	@Autowired
 	private AWSS3Service awsS3Service;
 	
-	@Autowired
-	private ProductService productService;
 	
 //	// 댓글 알림을 보내기 위한 알람핸들러
 //	@Autowired

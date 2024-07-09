@@ -1,248 +1,346 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<!-- 시큐리티 회원id 관련 코드 -->
-<%@ taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <sec:authorize access="isAuthenticated()">
-	<sec:authentication var="memberDetails" property="principal" />
+    <sec:authentication var="memberDetails" property="principal" />
 </sec:authorize>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="${_csrf.parameterName }" content="${_csrf.token }">
-<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<jsp:include page="../include/header.jsp"></jsp:include>
+<meta name="${_csrf.parameterName}" content="${_csrf.token}">
 <title>문의 리스트</title>
+<jsp:include page="../include/header.jsp"></jsp:include>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <style type="text/css">
-#pageSelector {
-		list-style: none;
-		flex-direction: row;
-		display: flex;
-	}
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 28px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: #ffffff;
+        border: 1px solid #dddddd;
+        border-radius: 8px;
+        box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 12px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        font-size: 16px;
+    }
+
+    .btn-container {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+        margin-bottom: 5px;
+        width: 100%; /* 각 버튼이 너비 100%를 차지하도록 설정 */
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: #ffffff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #ffffff;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: #ffffff;
+    }
+
+    .btn-danger:hover {
+        background-color: #bd2130;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        color: #ffffff;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+    }
+
+    .btn-link {
+        background-color: transparent;
+        color: #007bff;
+        padding: 0;
+        width: auto;
+    }
+
+    .btn-link:hover {
+        color: #0056b3;
+        text-decoration: none;
+    }
+
+    .btn-icon {
+        margin-right: 8px;
+    }
 </style>
 </head>
 <body>
-	<h1>상품 문의 목록</h1>
-	<table>
-		<tbody>
-			<c:choose>
-			<%-- 조건 문으로서 listInquiry값이 null 값인지 확인 하는 코드 --%>
-				<c:when test="${not empty listInquiry}">
-					<c:forEach var="InquiryVO" items="${listInquiry}">
-						<tr>
-							<td>문의ID : ${InquiryVO.inquiryId}</td>
-							<td>회원ID : ${InquiryVO.memberId}</td>
-							<td>상품ID : ${InquiryVO.productId}</td>
-							<td>문의 내용 : ${InquiryVO.inquiryContent}</td>
-							<td><fmt:formatDate value="${InquiryVO.inquiryDateCreated}"
-									pattern="yyyy-MM-dd HH:mm:ss" var="inquiryDateCreated" />
-								${inquiryDateCreated}</td>
-							<td>
-								<%-- 수정: 클래스 이름을 btnAdd로 변경 --%>
-								<button class="btnAdd" data-inquiryid="${InquiryVO.inquiryId}"
-									data-productid="${InquiryVO.productId}">답글 작성</button> 
-									<%-- 수정: 클래스 이름을 btnModify로 변경 --%>
-								<button class="btnModify"
-									data-inquiryid="${InquiryVO.inquiryId}">답글 수정</button>
-								<%-- style="display:none;" 화면에서 감추는 코드 --%>
-                    			<%-- 수정: 클래스 이름을 btnDelete로 변경 --%>
-								<button class="btnDelete"
-									data-inquiryid="${InquiryVO.inquiryId}">답글 삭제</button>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="5">
-								<%-- 답글 작성 --%>
-								<div id="inputContainer_${InquiryVO.inquiryId}"
-									class="inputContainer"
-									style="text-align: center; margin-top: 10px; display: none;">
-									<%--입력 필드와 제출 버튼이 추가될 위치 --%>
-									<input type="text" id="replyAnswer_${InquiryVO.inquiryId}"
-										placeholder="답글 작성">
-									<button class="btnSubmit"
-										data-inquiryid="${InquiryVO.inquiryId}"
-										data-productid="${InquiryVO.productId}">작성</button>
-								</div> 
-								<%-- 답글 수정 --%>
-								<div id="modifyContainer_${InquiryVO.inquiryId}"
-									class="modifyContainer"
-									style="text-align: center; margin-top: 10px; display: none;">
-									<!-- 수정 필드와 제출 버튼이 추가될 위치 -->
-									<input type="text" id="modifyAnswer_${InquiryVO.inquiryId}"
-										placeholder="답글 수정">
-									<button class="btnModifySubmit"
-										data-inquiryid="${InquiryVO.inquiryId}">수정</button>
-								</div>
-							</td>
-						</tr>
-					</c:forEach>
-				</c:when>
-				<c:otherwise>
-					<tr>
-						<td colspan="5"><p>문의 사항이 없습니다.</p></td>
-					</tr>
-				</c:otherwise>
-			</c:choose>
-		</tbody>
-	</table>
-	
-	<!-- 페이징 처리 코드 -->
-	<div id="pageSelector">
-		<c:if test="${pageMaker.isPrev() }">
-			<li><a
-				href="../inquiry/list?productId=${productId }&pageNum=${pageMaker.startNum - 1}">이전</a></li>
-		</c:if>
-		<c:forEach begin="${pageMaker.startNum }" end="${pageMaker.endNum }"
-			var="num">
-			<li><a
-				href="../inquiry/list?productId=${productId }&pageNum=${num }">${num }</a></li>
-		</c:forEach>
-		<c:if test="${pageMaker.isNext() }">
-			<li><a
-				href="../inquiry/list?productId=${productId }&pageNum=${pageMaker.endNum + 1}">다음</a></li>
-		</c:if>
-	</div>
+    <div class="container">
+        <h1>상품 문의 목록</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="width: 10%;">문의 ID</th>
+                    <th style="width: 15%;">회원 ID</th>
+                    <th style="width: 15%;">상품 ID</th>
+                    <th style="width: 40%;">문의 내용</th>
+                    <th style="width: 20%;">작성 일자</th>
+                    <th style="width: 20%;">버튼</th>
+                </tr>
+            </thead>
+            <tbody>
+                <c:choose>
+                    <c:when test="${not empty listInquiry}">
+                        <c:forEach var="InquiryVO" items="${listInquiry}">
+                            <tr>
+                                <td>${InquiryVO.inquiryId}</td>
+                                <td>${InquiryVO.memberId}</td>
+                                <td>${InquiryVO.productId}</td>
+                                <td>${InquiryVO.inquiryContent}</td>
+                                <td><fmt:formatDate value="${InquiryVO.inquiryDateCreated}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+                                <td class="btn-container">
+                                    <div>
+                                        <button class="btn btn-primary btn-icon btnAdd" data-inquiryid="${InquiryVO.inquiryId}" data-productid="${InquiryVO.productId}">
+                                            <i class="fas fa-reply"></i> 답글 작성
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-secondary btn-icon btnModify" data-inquiryid="${InquiryVO.inquiryId}">
+                                            <i class="fas fa-edit"></i> 답글 수정
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-danger btn-icon btnDelete" data-inquiryid="${InquiryVO.inquiryId}">
+                                            <i class="fas fa-trash-alt"></i> 답글 삭제
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">
+                                    <div id="inputContainer_${InquiryVO.inquiryId}" class="inputContainer" style="text-align: center; margin-top: 10px; display: none;">
+                                        <input type="text" id="replyAnswer_${InquiryVO.inquiryId}" placeholder="답글 작성">
+                                        <button class="btn btn-info btnSubmit" data-inquiryid="${InquiryVO.inquiryId}" data-productid="${InquiryVO.productId}">
+                                            작성
+                                        </button>
+                                    </div>
+                                    <div id="modifyContainer_${InquiryVO.inquiryId}" class="modifyContainer" style="text-align: center; margin-top: 10px; display: none;">
+                                        <input type="text" id="modifyAnswer_${InquiryVO.inquiryId}" placeholder="답글 수정">
+                                        <button class="btn btn-info btnModifySubmit" data-inquiryid="${InquiryVO.inquiryId}">
+                                            수정
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <tr>
+                            <td colspan="6">
+                                <p>문의 사항이 없습니다.</p>
+                            </td>
+                        </tr>
+                    </c:otherwise>
+                </c:choose>
+            </tbody>
+        </table>
 
-	<script type="text/javascript">
-		// 코드 작성 예정
-		$(document).ready(
-				
-				function() {
-					
-					let productId = ${productId};
+        <div id="pageSelector" class="mt-3 d-flex justify-content-center">
+            <c:if test="${pageMaker.isPrev()}">
+                <a href="../inquiry/list?productId=${productId}&pageNum=${pageMaker.startNum - 1}" class="btn btn-link">이전</a>
+            </c:if>
+            <c:forEach begin="${pageMaker.startNum}" end="${pageMaker.endNum}" var="num">
+                <a href="../inquiry/list?productId=${productId}&pageNum=${num}" class="btn btn-link">${num}</a>
+            </c:forEach>
+            <c:if test="${pageMaker.isNext()}">
+                <a href="../inquiry/list?productId=${productId}&pageNum=${pageMaker.endNum + 1}" class="btn btn-link">다음</a>
+            </c:if>
+        </div>
+    </div>
 
-					const memberId = '${memberDetails.getUsername()}';
-					
-					// 답글 작성 클릭 했을 때 화면띄어주는 역할(등록)
-					$('.btnAdd').click(function() {
-						let inquiryId = $(this).data('inquiryid');
+    <script src="https://code.jquery.com/jquery-3.7.1.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const memberId = '${memberDetails.getUsername()}';
 
-						// 해당 inquiryId에 대한 inputContainer를 toggle합니다.
-						$('#inputContainer_' + inquiryId).toggle();
-						// 해당 inquiryId에 대한 modifyContainer와 deleteContainer는 숨깁니다.
-						$('#modifyContainer_' + inquiryId).hide();
-						
-						 // 답글 작성 필드 초기화
-				        $('#replyAnswer_' + inquiryId).val('');
-					});
+        // Add button event listeners
+        var btnAdds = document.querySelectorAll('.btnAdd');
+        for (var i = 0; i < btnAdds.length; i++) {
+            btnAdds[i].addEventListener('click', function() {
+                var inquiryId = this.getAttribute('data-inquiryid');
+                document.getElementById('inputContainer_' + inquiryId).style.display = 'block';
+                document.getElementById('modifyContainer_' + inquiryId).style.display = 'none';
+                document.getElementById('replyAnswer_' + inquiryId).value = '';
+                document.getElementById('modifyAnswer_' + inquiryId).value = ''; // 답글 수정 입력 필드 초기화
+            });
+        }
 
-					// 답글 작성 클릭 했을 때 화면띄어주는 역할(수정)
-					$('.btnModify').click(function() {
-						let inquiryId = $(this).data('inquiryid');
+        var btnModifies = document.querySelectorAll('.btnModify');
+        for (var i = 0; i < btnModifies.length; i++) {
+            btnModifies[i].addEventListener('click', function() {
+                var inquiryId = this.getAttribute('data-inquiryid');
+                document.getElementById('modifyContainer_' + inquiryId).style.display = 'block';
+                document.getElementById('inputContainer_' + inquiryId).style.display = 'none';
+                document.getElementById('modifyAnswer_' + inquiryId).value = '';
+                document.getElementById('replyAnswer_' + inquiryId).value = ''; // 답글 작성 입력 필드 초기화
+            });
+        }
 
-						// 해당 inquiryId에 대한 inputContainer를 toggle합니다.
-						$('#modifyContainer_' + inquiryId).toggle();
-						$('#inputContainer_' + inquiryId).hide();
-						
-						// 답글 수정 필드 초기화
-				        $('#modifyAnswer_' + inquiryId).val('');
-					});
+        var btnSubmits = document.querySelectorAll('.btnSubmit');
+        for (var i = 0; i < btnSubmits.length; i++) {
+            btnSubmits[i].addEventListener('click', function() {
+                var answerContent = document.getElementById('replyAnswer_' + this.getAttribute('data-inquiryid')).value;
+                var inquiryId = this.getAttribute('data-inquiryid');
+                var productId = this.getAttribute('data-productid');
 
-					// 답글 작성 비동기 코드
-					$('.btnSubmit').click(
-							function() {
-								let answerContent = $(
-										'#replyAnswer_'
-												+ $(this).data('inquiryid'))
-										.val();
-								let inquiryId = $(this).data('inquiryid');
-								let productId = $(this).data('productid');
+                var obj = {
+                    'inquiryId': inquiryId,
+                    'productId': productId,
+                    'memberId': memberId,
+                    'answerContent': answerContent
+                };
 
-								console.log("productId : " + productId);
+                fetch('../answer/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="${_csrf.parameterName}"]').content
+                    },
+                    body: JSON.stringify(obj)
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(result) {
+                    if (result === 1) {
+                        alert('답변 성공');
+                    } else {
+                        alert('답변을 이미 작성 하셨습니다.');
+                    }
+                    document.getElementById('replyAnswer_' + inquiryId).value = ''; // 입력 필드 초기화
+                })
+                .catch(function(error) {
+                    console.error('Error:', error);
+                });
+            });
+        }
 
-								let obj = {
-									'inquiryId' : inquiryId,
-									'productId' : productId,
-									'memberId' : memberId,
-									'answerContent' : answerContent
-								}
-								console.log(obj);
+        var btnModifySubmits = document.querySelectorAll('.btnModifySubmit');
+        for (var i = 0; i < btnModifySubmits.length; i++) {
+            btnModifySubmits[i].addEventListener('click', function() {
+                var answerContent = document.getElementById('modifyAnswer_' + this.getAttribute('data-inquiryid')).value;
+                var inquiryId = this.getAttribute('data-inquiryid');
 
-								// ajax 요청
-								$.ajax({
-									type : 'POST',
-									url : '../answer/register',
-									headers : {
-										'Content-Type' : 'application/json',
-										'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
-									},
-									data : JSON.stringify(obj),
-									success : function(result) {
-										if (result == 1) {
-											alert('답변 성공');
-										} else {
-											alert('답변을 이미 작성 하셨습니다.');
-										}
-									}
-								});
-							});
+                var obj = {
+                    'inquiryId': inquiryId,
+                    'memberId': memberId,
+                    'answerContent': answerContent
+                };
 
-					// 답변 수정 비동기 코드
-					$('.btnModifySubmit').click(
-							function() {
-								let answerContent = $(
-										'#modifyAnswer_'
-												+ $(this).data('inquiryid'))
-										.val();
-								let inquiryId = $(this).data('inquiryid');
+                fetch('../answer/modify', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="${_csrf.parameterName}"]').content
+                    },
+                    body: JSON.stringify(obj)
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(result) {
+                    if (result === 1) {
+                        alert('답변 수정 성공!');
+                    } else {
+                        alert('답변이 작성 되어 있지 않습니다.');
+                    }
+                    document.getElementById('modifyAnswer_' + inquiryId).value = ''; // 입력 필드 초기화
+                })
+                .catch(function(error) {
+                    console.error('Error:', error);
+                });
+            });
+        }
 
-								let obj = {
-									'inquiryId' : inquiryId,
-									'memberId' : memberId,
-									'answerContent' : answerContent
-								}
-								console.log(obj);
+        var btnDeletes = document.querySelectorAll('.btnDelete');
+        for (var i = 0; i < btnDeletes.length; i++) {
+            btnDeletes[i].addEventListener('click', function() {
+                var inquiryId = this.getAttribute('data-inquiryid');
 
-								// ajax 요청
-								$.ajax({
-									type : 'PUT',
-									url : '../answer/modify',
-									headers : {
-										'Content-Type' : 'application/json',
-										'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
-									},
-									data : JSON.stringify(obj),
-									success : function(result) {
-										if (result == 1) {
-											alert('답변 수정 성공!');
-										} else {
-											alert('답변이 작성 되어 있지 않습니다.');
-										}
-									}
-								});
-							});
+                var obj = {
+                    'inquiryId': inquiryId,
+                    'memberId': memberId
+                };
 
-					// 답글 삭제 비동기 코드
-					$('.btnDelete').click(function() {
-						let inquiryId = $(this).data('inquiryid');
-						let obj = {
-							'inquiryId' : inquiryId,
-							'memberId' : memberId
-						}
+                fetch('../answer/delete', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="${_csrf.parameterName}"]').content
+                    },
+                    body: JSON.stringify(obj)
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(result) {
+                    if (result === 1) {
+                        alert('답변 삭제 성공!');
+                    } else {
+                        alert('삭제할 답변이 없습니다.');
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Error:', error);
+                });
+            });
+        }
+    });
 
-						// ajax 요청
-						$.ajax({
-							type : 'DELETE',
-							url : '../answer/delete',
-							headers : {
-								'Content-Type' : 'application/json',
-								'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
-							},
-							data : JSON.stringify(obj),
-							success : function(result) {
-								if (result == 1) {
-									alert('답변 삭제 성공!');
-								} else {
-									alert('삭제할 답변이 없습니다.');
-								}
-							}
-						});
-					});
-				}); // end document
-	</script>
+    </script>
 </body>
 </html>

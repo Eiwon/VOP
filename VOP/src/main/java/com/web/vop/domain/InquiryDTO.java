@@ -23,4 +23,5 @@ public class InquiryDTO {
 	private String answerMemberId;
 	private String answerContent;
 	private Date answerDateCreated;
+	private int answerInquiryId;
 }
