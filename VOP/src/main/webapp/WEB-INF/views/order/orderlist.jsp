@@ -21,8 +21,15 @@
 <!-- 모달 스타일 창크기가 변하면는 같이변하게 하는기능 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>주문 목록</title>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <style>
 
+	  body {
+        font-family: 'Arial', sans-serif; /* 폰트 설정 */
+        padding: 20px; /* 전체적인 패딩 */
+    }
+    
     .order-box {
         border: 1px solid #ccc;
         padding: 10px;
@@ -33,12 +40,20 @@
         align-items: center;
         margin-bottom: 10px;
     }
+    
+    .order-details .details-text {
+        text-align: left;
+    }
+    
     .order-details img {
-        margin-right: 10px;
-        max-width: 100px;
+        margin-right: 20px; /* 텍스트와 이미지 사이의 간격 */
+        max-width: 150px; /* 이미지의 최대 너비 */
     }
     .order-buttons {
-        margin-left: auto;
+    	display: flex;
+        flex-wrap: wrap;
+        gap: 10px; /* 버튼 사이 간격 */
+        margin-top: 10px;
     }
 		 /* 모달 스타일 */
         .modal {
@@ -84,129 +99,134 @@
 </head>
 <body>
 
-<h1> 주문 목록 </h1>
 
-	<!-- 회원id -->
-	<h1>${memberDetails.getUsername()}</h1>
+	<div class="container">
+	<br>
+    <h1 class="mt-4 mb-4">${memberDetails.getUsername()}님의 주문 목록</h1><br><br>
 
-	<div id="order-container">
-    <c:forEach items="${orderList}" var="orderViewDTO">
-    	<c:set value="${orderViewDTO.orderVO }" var="orderVO"></c:set>
-        <div class="order-box">
-            <div class="order-details">
-                	<!-- 이미지 목록 표시 -->
-				<div>
-                    <img src="${orderViewDTO.imgUrl }" />
-				</div>	
-                <div>
-                	<c:if test= "${now <= orderViewDTO.formattedExpectedDeliveryDate}">
-						<p>예상 배송일 : ${orderViewDTO.formattedExpectedDeliveryDate}</p>
-					</c:if>
-					<c:if test= "${now > orderViewDTO.formattedExpectedDeliveryDate}">
-						<p>배송 완료 ( ${orderViewDTO.formattedExpectedDeliveryDate} 일에 배송이 완료되었습니다!)</p>
-					</c:if>
-                    <p>상품명 : ${orderVO.productName}</p>
-                    <p>상품 가격 : ${orderVO.productPrice} 원</p>
-                    <p>상품 수량 : ${orderVO.purchaseNum} 개</p>
-                </div>
-            </div>
-            <div class="order-buttons">
-                <a href="../Delivery/delivery?paymentId=${orderVO.paymentId}"><button>배송 조회</button></a>
-                
-                	<!-- 리뷰 쓰기 코드 -->
-	                <form action="../review/register" method="get">
-	                	<input type="hidden" name="productId" value="${orderVO.productId}">
-	                	<input type="hidden" name="imgId" value="${orderVO.imgId}">
-	                	<button type="submit">리뷰 쓰기</button>
-	                </form>
 
-	                 <!-- 리뷰 관리 코드 -->
-	                 <form action="../review/list" method="get">
-	                	<input type="hidden" name="memberId" value="${memberDetails.getUsername()}">
-	                	<button type="submit">리뷰 관리</button>
-	                </form>
-	                
-	                 <form action="../inquiry/myList" method="get">
-	                	<input type="hidden" name="memberId" value="${memberDetails.getUsername()}">
-	                	<input type="hidden" name="memberId" value="${orderVO.productName}">
-	                	<button type="submit">문의 리스트</button>
-	                </form>
-	                
-	                <!-- 판매자 문의 코드 -->
-	                <button class="sellerInquiry">판매자 문의</button>
+    <div id="order-container">
+        <c:forEach items="${orderList}" var="orderViewDTO">
+            <c:set value="${orderViewDTO.orderVO }" var="orderVO"></c:set>
+             <div class="card mb-3 order-box">
+             	<div class="card-body">
+                 <div class="row order-details">
+                    <!-- 이미지 목록 표시 -->
+                    <div class="col-md-2">
+                          <img src="${orderViewDTO.imgUrl}" class="img-fluid">
+                    </div> <!-- closing col-md-2 -->
+                    <div class="col-md-10 details-text">
+                        <c:if test= "${now <= orderViewDTO.formattedExpectedDeliveryDate}">
+                            <p class="font-weight-bold text-primary">예상 배송일 : <span style="color: blue;"> ${orderViewDTO.formattedExpectedDeliveryDate}</p>
+                        </c:if>
+                        <c:if test= "${now > orderViewDTO.formattedExpectedDeliveryDate}">
+                            <p class="font-weight-bold text-primary">배송 완료 ( ${orderViewDTO.formattedExpectedDeliveryDate} 일에 배송이 완료되었습니다!)</p>
+                        </c:if>
+                        <p>상품명 : ${orderVO.productName}</p>
+                        <p>상품 가격 : ${orderVO.productPrice} 원</p>
+                        <p>상품 수량 : ${orderVO.purchaseNum} 개</p>
+                    </div> <!-- closing col-md-10 -->
+                </div> <!-- closing row order-details -->
+                <div class="order-buttons">
+                    <a href="../Delivery/delivery?paymentId=${orderVO.paymentId}" class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2">배송 조회</a>
+                    
+                    <!-- 리뷰 쓰기 코드 -->
+                    <form action="../review/register" method="get" class="d-inline">
+                        <input type="hidden" name="productId" value="${orderVO.productId}">
+                        <input type="hidden" name="imgId" value="${orderVO.imgId}">
+                        <button type="submit" class="d-inline-flex focus-ring focus-ring-primary py-1 px-2 text-decoration-none border rounded-2">리뷰 쓰기</button>
+                    </form>
 
-					<!-- 판매자 문의 등록 모달 -->
-					<div class="modal sellerModal createModal">
-    					<div class="modal-content">
-        				<span class="close">&times;</span>
-        				<h2>판매자 문의</h2>
-        					<form class="createInquiry">
-        						<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
-            					<input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
-            					<input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
-            					<label for="message">내용:</label><br>
-            					<textarea class="content" name="content"></textarea><br>
-            					<button type="submit">판매자에게 1:1문의하기</button>
-        					</form>    
-    					</div>
-					</div>
-					
-					<!-- 판매자 수정 코드 -->
-	                <button class="inquiryUpdate">판매자 문의 수정</button>
-	                
-					<!-- 판매자 문의 수정 모달 -->
-					<div class="modal sellerModal updateModal">
-    					<div class="modal-content">
-        				<span class="close">&times;</span>
-        				<h2>판매자 수정</h2>
-        					<form class="updateInquiry">
-        						<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
-            					<input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
-            					<input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
-            					<label for="message">내용:</label><br>
-            					<textarea class="content" name="content"></textarea><br>
-            					<button type="submit">수정하기</button>
-        					</form>    
-    					</div>
-					</div>
-					
-					<!-- 판매자 삭제 코드 -->
-	                <button class="inquiryDelete">판매자 문의 삭제</button>
-					
-	                <!-- 판매자 문의 삭제 모달 -->
-					<div class="modal sellerModal deleteModal">
-    					<div class="modal-content">
-        				<span class="close">&times;</span>
-	                	<form class="deleteInquiry">
-	                		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
-	                		<input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
-            				<input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
-            				<button type="submit">삭제하시 겠습니까?</button>
-	                	</form>
-	                	</div>
-					</div>
-	                
-				<!-- <a href=""><button>교환/반품 신청</button></a> -->
-				
-					<!-- 주문목록 삭제 -->
-					<c:if test= "${now > orderViewDTO.formattedExpectedDeliveryDate}">
-						<button class="deleteOrderBtn" data-order-id="${orderVO.orderId}">주문 목록 삭제</button>
-					</c:if>
-					
-            </div>
-        </div>
-    </c:forEach>
-    </div>
+                    <!-- 리뷰 관리 코드 -->
+                    <form action="../review/list" method="get">
+                        <input type="hidden" name="memberId" value="${memberDetails.getUsername()}">
+                        <button type="submit" class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2">리뷰 관리</button>
+                    </form>
+                    
+                    <!-- 문의 리스트 코드 -->
+                    <form action="../inquiry/myList" method="get">
+                        <input type="hidden" name="memberId" value="${memberDetails.getUsername()}">
+                        <input type="hidden" name="productName" value="${orderVO.productName}">
+                        <button type="submit" class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2">문의 리스트</button>
+                    </form>
+                    
+                    <!-- 판매자 문의 버튼 -->
+                    <button class="sellerInquiry d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2">판매자 문의</button>
+
+                    <!-- 판매자 문의 등록 모달 -->
+                    <div class="modal sellerModal createModal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h2>판매자 문의</h2>
+                            <form class="createInquiry">
+                                <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
+                                <input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
+                                <input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
+                                <label for="message">내용:</label><br>
+                                <textarea class="content form-control" name="content"></textarea><br>
+                                <button type="submit" class="btn btn-success">판매자에게 1:1문의하기</button>
+                            </form>    
+                        </div><!-- closing modal-content -->
+                    </div><!-- closing modal sellerModal createModal -->
+                    
+                    <!-- 판매자 문의 수정 버튼 -->
+                    <button class="inquiryUpdate d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2">판매자 문의 수정</button>
+                    
+                    <!-- 판매자 문의 수정 모달 -->
+                    <div class="modal sellerModal updateModal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h2>판매자 문의 수정</h2>
+                            <form class="updateInquiry">
+                                <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
+                                <input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
+                                <input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
+                                <label for="message">내용:</label><br>
+                                <textarea class="content form-control" name="content"></textarea><br>
+                                <button type="submit" class="btn btn-info">수정하기</button>
+                            </form>    
+                        </div><!-- closing modal-content -->
+                    </div><!-- closing modal sellerModal updateModal -->
+                    
+                    <!-- 판매자 문의 삭제 버튼 -->
+                    <button class="inquiryDelete d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2">판매자 문의 삭제</button>
+                    
+                    <!-- 판매자 문의 삭제 모달 -->
+                    <div class="modal sellerModal deleteModal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <form class="deleteInquiry">
+                                <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
+                                <input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
+                                <input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
+                                <button type="submit" class="btn btn-danger">삭제하시겠습니까?</button>
+                            </form>
+                        </div> <!-- closing modal-content -->
+                    </div> <!-- closing modal sellerModal deleteModal -->
+                    
+                    <!-- 주문 목록 삭제 -->
+                    <c:if test= "${now > orderViewDTO.formattedExpectedDeliveryDate}">
+                        <button class="deleteOrderBtn d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2" data-order-id="${orderVO.orderId}">주문 목록 삭제</button>
+                    </c:if>
+                    
+                </div> <!-- closing order-buttons -->
+             </div> <!-- closing card-body -->
+            </div> <!-- closing card mb-3 order-box -->
+        </c:forEach>
+    </div> <!-- closing order-container -->
     
     <!-- 주문 목록이 비어있을 때 -->
     <c:if test="${empty orderList}">
-        <div>
-            <p>주문 목록이 비어 있습니다.</p>
+        <div class="alert alert-info mt-3">
+            주문 목록이 비어 있습니다.
         </div>
     </c:if>
-
+    
 	<!-- 배송지 관리 페이지 -->
-    <a href="../Delivery/deliveryAddressList">배송지 관리</a>
+    <a href="../Delivery/deliveryAddressList" class="btn btn-info mt-3">배송지 관리</a>
+    	
+   </div> <!-- closing container -->
+    
     	
     <script type="text/javascript">
     

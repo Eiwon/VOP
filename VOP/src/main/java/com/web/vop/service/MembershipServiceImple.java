@@ -94,7 +94,7 @@ public class MembershipServiceImple implements MembershipService{
 	public MembershipVO selectByMemberId(String memberId) { // 멤버십 전체 조회 
 		log.info("selectByMemberId : " + memberId);
 		MembershipVO result = membershipMapper.selectByMemberId(memberId);
-		log.info("멤버십 전체 조회 : " + result.toString());
+		//log.info("멤버십 전체 조회 : " + result.toString());
 		return result;
 	}//end selectByMemberId()
 

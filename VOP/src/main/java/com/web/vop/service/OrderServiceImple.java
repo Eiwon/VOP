@@ -22,9 +22,9 @@ public class OrderServiceImple implements OrderService {
 	@Autowired
 	OrderMapper orderMapper;
 	
-	public Date getExpectDateByPaymentId(int paymentId) { // 배송 예정일 조회 (TEST 중)
+	public String getExpectDateByPaymentId(int paymentId) { // 배송 예정일 조회 (TEST 중)
 		 log.info("getExpectDateByPaymentId()");
-		 Date expectDate = orderMapper.selectByExpectDeliveryDate(paymentId);
+		 String expectDate = orderMapper.selectByExpectDeliveryDate(paymentId);
 		 
 		 if (expectDate == null) {
 	            log.error(expectDate, null);

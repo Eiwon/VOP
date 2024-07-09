@@ -11,41 +11,85 @@
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>배송지 등록</title>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
 <!-- 우편번호 API 스크립트 -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-
+	<style>
+        
+        body {
+            padding: 20px; /* Add padding for visual appeal */
+        }
+        
+        /* 예시: 입력란 너비 조절 */
+		.form-control {
+		    width: 100%; /* 또는 필요한 너비 값 설정 */
+		    max-width: 400px; /* 최대 너비 설정 (예: 400px) */
+		    margin: auto; /* 가운데 정렬 */
+		}
+    </style>
 </head>
 <body>
-<h2>배송지 등록</h2>
 
 
-<form id="deliveryForm" action="register" method="post">
-	<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
-    <label for="receiverName">받는 사람:</label>
-    <input type="text" id="receiverName" name="receiverName" onblur="checkValid(this)" required >
-	<div></div> <!-- 유효성 메시지 출력을 위한 빈 div -->
-	<br><br>
+<div class="container">
+<h2 class="text-center mt-5">배송지 등록</h2><br>
+
+<form id="deliveryForm" action="register" method="post" class="mt-4">
+	<input type="hidden"  class="form-control" name="${_csrf.parameterName }" value="${_csrf.token }">
 	
-    <!-- 우편번호 찾기 관련 코드 -->
-    <input type="text" id="sample6_postcode" placeholder="우편번호">
-    <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
-    <input type="text" id="receiverAddress" name="receiverAddress" placeholder="주소"><br>
-    <input type="text" id="deliveryAddressDetails" name="deliveryAddressDetails" placeholder="상세주소"><br><br>
-
-    <label for="receiverPhone">휴대폰 번호:</label>
-    <input type="text" id="receiverPhone" name="receiverPhone" placeholder="010-1234-5678 형식으로 입력하세요." onblur="checkValid(this)" required>
-    <div></div> <!-- 유효성 메시지 출력을 위한 빈 div -->
-    <br><br>
-
-    <label for="requirement">배송 요청사항:</label><br>
-    <textarea id="requirement" name="requirement" rows="4" cols="50">일반 : 문앞</textarea><br><br>
-
-    <input type="checkbox" id="isDefault" name="isDefault" value="1" checked>
-    <label for="isDefault">기본 배송지로 설정</label><br><br>
-
-    <button type="submit" id="registerBtn">저장</button>
+	<div class="form-group">
+	    <label for="receiverName">받는 사람:</label><br>
+	    <input type="text" class="form-control" id="receiverName" name="receiverName" onblur="checkValid(this)" required >
+		<div></div> <!-- 유효성 메시지 출력을 위한 빈 div -->
+	</div>
+	
+    <div class="form-row justify-content-center">
+            <div class="form-group col-md-6">
+                <label for="sample6_postcode">우편번호</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="sample6_postcode" placeholder="우편번호">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" onclick="sample6_execDaumPostcode()">우편번호 찾기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+         <div class="form-group">
+            <label for="receiverAddress">주소:</label>
+            <input type="text" class="form-control" id="receiverAddress" name="receiverAddress" placeholder="주소">
+        </div>
+        
+     	<div class="form-group">
+            <label for="deliveryAddressDetails">상세주소:</label>
+            <input type="text" class="form-control" id="deliveryAddressDetails" name="deliveryAddressDetails" placeholder="상세주소">
+        </div>
+        
+		<div class="form-group">
+		    <label for="receiverPhone">휴대폰 번호:</label>
+		    <input type="text" class="form-control" id="receiverPhone" name="receiverPhone" placeholder="010-1234-5678 형식으로 입력하세요." onblur="checkValid(this)" required>
+		    <div></div> <!-- 유효성 메시지 출력을 위한 빈 div -->
+	    </div>
+	    <br><br>
+	    
+		<div class="form-group">
+		    <label for="requirement">배송 요청사항:</label><br>
+		    <textarea id="requirement" name="requirement" rows="4" cols="50">일반 : 문앞</textarea><br><br>
+		</div>
+		
+		<div class="form-check">
+    		<input type="checkbox" id="isDefault" name="isDefault" value="1" checked>
+    		<label for="isDefault">기본 배송지로 설정</label><br><br>
+		</div>
+		
+    	<button type="submit" class="btn btn-success mt-3" id="registerBtn">저장</button>
 
 </form>
+</div> <!-- end container -->
+
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 <script>
     function sample6_execDaumPostcode() {

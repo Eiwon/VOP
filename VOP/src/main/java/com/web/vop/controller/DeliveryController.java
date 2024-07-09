@@ -16,9 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.web.vop.domain.DeliveryVO;
 import com.web.vop.domain.MemberDetails;
-import com.web.vop.domain.PaymentVO;
 import com.web.vop.service.DeliveryService;
-import com.web.vop.service.MemberService;
 import com.web.vop.service.OrderService;
 import com.web.vop.service.PaymentService;
 
@@ -40,25 +38,19 @@ public class DeliveryController {
     
     // 마이페이지에서 주문목록 > 배송조회 페이지로 이동
     @GetMapping("/delivery")
-    public String deliveryGET(@RequestParam("paymentId") int paymentId,Model model) {
-        /*log.info("deliveryGET - paymentId : " + paymentId);
+    public String deliveryGET(@RequestParam("paymentId") int paymentId, Model model) {
+        log.info("deliveryGET()");
+        
+        Date now = new Date(); // 현재날짜
         // 배송 예정일 조회
-    	Date expectedDate = orderService.getExpectDateByPaymentId(paymentId);
-    	SimpleDateFormat format = new SimpleDateFormat("yyyy년 MM월 dd일");
-    	String date = format.format(expectedDate);
-    	log.info("date : " + date);
-        model.addAttribute("date", date);
-        
-        // 송장번호 조회 
-        int getPayment = orderService.getPaymentId(paymentId);
-        log.info("getPayment : " + getPayment);
-        model.addAttribute("getPayment", getPayment);
-        
-        // 주문 조회 by paymentId 
-        List<PaymentVO> paymentList = paymentService.getPaymentByPaymentId(paymentId);
-        log.info("paymentList : " + paymentList);
-        model.addAttribute("paymentList", paymentList);
-        */
+    	String expectedDate = orderService.getExpectDateByPaymentId(paymentId);
+    	log.info("배송 예정일 : " + expectedDate);
+    	SimpleDateFormat formatted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    	String formattedNow = formatted.format(now);
+    	log.info("현재날짜 : " + formattedNow);
+    	
+        model.addAttribute("formattedNow", formattedNow);
+        model.addAttribute("expectedDate", expectedDate);
         
     	// paymentId를 모델에 담아서 delivery.jsp로 전달
     	model.addAttribute("paymentId", paymentId);

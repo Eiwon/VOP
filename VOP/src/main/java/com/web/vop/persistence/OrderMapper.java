@@ -13,7 +13,7 @@ import com.web.vop.domain.OrderViewDTO;
 @Mapper
 public interface OrderMapper {
 	// 배송지 상세 조회 (배송 예정일)
-	public Date selectByExpectDeliveryDate(int paymentId); 
+	public String selectByExpectDeliveryDate(int paymentId); 
 	
 	// 배송지 상세 조회 (송장 번호)
 	public int selectByPaymentId(int paymentId); 
