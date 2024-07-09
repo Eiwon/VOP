@@ -33,7 +33,7 @@ public class SchedulerServiceImple {
 	 MailAuthenticationUtil mailAuthenticationUtil;
 	 
 	//@Scheduled(cron = "0 * * * * ?") // 1 분에 한 번 실행(TEST)
-	@Scheduled(cron = "0 0 12 * * ?") // 매일 12시에 실행
+	@Scheduled(cron = "0 0 14 * * ?") // 매일 14시에 실행
 	public void checkMembershipExpiry() {
 			
 			List<MembershipExpiryDTO> expiryInfoList = membershipMapper.selectExpiryDateBySchedulling();
@@ -43,22 +43,30 @@ public class SchedulerServiceImple {
 	            Date today = new Date();
 	            for(MembershipExpiryDTO expiryInfo : expiryInfoList) {
 	            		Date expiryDate = expiryInfo.getExpiryDate();
-	            	if (expiryDate.before(today)) {
-	            		// 만료 처리 로직 작성
-	            		sendExpiryNotification(expiryInfo.getMemberId(),expiryDate, expiryInfo.getMemberEmail());
-	            	}else {
-	                    // 만료일까지 남은 일수 계산
-	                    long diffInMillies = Math.abs(expiryDate.getTime() - today.getTime());
+	            		long diffInMillies = expiryDate.getTime() - today.getTime();
 	                    long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-	                    System.out.println("-- 멤버십 알림 --");
-	                    System.out.println("사용자 ID : " + expiryInfo.getMemberId() + ", 만료일까지 남은 일수: " + diffInDays + "일");
+	                    
+	                if (diffInDays == 0) {
+	                	// 오늘이 만료일인 경우
+	            		sendExpiryNotification(expiryInfo.getMemberId(),expiryDate, expiryInfo.getMemberEmail(),"멤버십이 당일 만료됩니다.");
+	                }else if (diffInDays < 0) {
+	            		// 만료일이 지난 경우
+	                	long daysSinceDelivery = TimeUnit.DAYS.convert(today.getTime() - expiryDate.getTime(), TimeUnit.MILLISECONDS);
+	                    if (daysSinceDelivery <= 5) {
+	                        // 멤버십이 만료된 지, 5일 이내의 회원에게만 메세지 보내기
+	                    	 handleExpiredMembership(expiryInfo.getMemberId(), expiryDate, expiryInfo.getMemberEmail());
+	                    }
+	            	}else if (diffInDays < 5){
+	            		sendExpiryNotification(expiryInfo.getMemberId(),expiryDate, expiryInfo.getMemberEmail(),"멤버십이 곧 만료됩니다!");   
 	                }
 	            }// end for()
 	        }// if()
 	}//end checkMembershipExpiry()
 	
+	
+
 	//@Scheduled(cron = "0 * * * * ?") // 1 분에 한 번 실행(TEST)
-	@Scheduled(cron = "0 0 11 * * ?") // 매일 11시에 한 번 실행(TEST)
+	@Scheduled(cron = "0 0 13 * * ?") // 매일 13시에 한 번 실행(TEST)
 	public void checkDeliveryExpiry() {
 		String title, content;
 		List<DeliveryExpectDTO> expectInfoList = orderMapper.selectDeliveryExpect();
@@ -100,7 +108,17 @@ public class SchedulerServiceImple {
 		}// end checkDeliveryExpiry() 
 
 	
-	
+	// 만료된 멤버십을 처리 (재등록 요청 메일)
+	private void handleExpiredMembership(String memberId, Date expiryDate, String memberEmail) {
+		String title = "-- 멤버십 재등록 알림 --";
+		String content = memberId + "님, 멤버십이 만료되었습니다. 재등록이 필요합니다. ( 만료 날짜 : " + expiryDate + " )";
+		
+		mailAuthenticationUtil.sendEmail(memberEmail, title, content);
+		
+		System.out.println(title);
+		System.out.println(content);
+	}//end handleExpiredMembership()
+		
 	private void sendDeliveryCompleteNotification(String memberId,int orderId, int productId, Date expectDate, String memberEmail) {
 		// 배송완료 알림이나 이메일을 보내는 로직 구현
 		String title = "-- 배송 완료 알림 --";
@@ -114,10 +132,11 @@ public class SchedulerServiceImple {
 	}//end sendExpectNotification()
 
 
-	private void sendExpiryNotification(String memberId, Date expiryDate, String memberEmail) {
-		// 알림이나 이메일을 보내는 로직 구현 
+	private void sendExpiryNotification(String memberId, Date expiryDate, String memberEmail,String message) {
+	
+		
 		String title = "-- 멤버십 알림 --";
-		String content = "사용자 ID : " + memberId + ", 멤버십이 만료되었습니다. 멤버십 만료 날짜는 " + expiryDate + "입니다.";
+		String content = "사용자 ID : " + memberId + "님," + message + " 멤버십 만료 날짜는 " + expiryDate + "입니다.";
 		
 		mailAuthenticationUtil.sendEmail(memberEmail, title, content);
 		

@@ -45,4 +45,7 @@ public interface MembershipMapper {
 	
 	// 멤버십 만료일 조회 (스케줄링)
 	List<MembershipExpiryDTO> selectExpiryDateBySchedulling();
+	
+	// 멤버십 환불아이디(chargeId) 조회
+	String selectChargeIdByMemberId(@Param("memberId") String memberId);
 }

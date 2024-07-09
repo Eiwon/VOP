@@ -33,4 +33,6 @@ public interface MembershipService {
 	// 멤버십 삭제 시 권한 업데이트
 	void updateMemberAuthOnDelete(String memberId);
 	
+	// 멤버십 환불아이디(chargeId) 조회
+	String getChargeIdByMemberId(String memberId);
 }
