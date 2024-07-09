@@ -11,71 +11,28 @@
 <meta charset="UTF-8">
 <style type="text/css">
 
-.page_list {
-	display: flex;
-	flex-direction: row;
-	list-style: none;
+.body_container{
+	width: 65%;
+	margin: auto;
 }
-.product_table {
-	display: flex;
-	flex-direction: row;
+.product_table{
+	margin-right: 5px;
+	margin-bottom: 5px;
 }
-.thumbnail {
-	width: 200px;
-}
-.category {
-	width : 200px;
-}
-.productName {
-	width: 200px;
-}
-.productPrice {
-	width: 100px;
-}
-.productRemains {
-	width: 100px;
-}
-.productState {
-	width: 100px;
-}
-
 </style>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>등록한 상품 조회</title>
 </head>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <body>
-	<div>
-		<strong>${memberDetails.getUsername() } 님이 등록한 상품</strong>
-	</div>
-	<div>
-		<div class="product_table">
-			<div class="thumbnail">썸네일</div>
-			<div class="category">분류</div>
-			<div class="productName">상품명</div>
-			<div class="productPrice">가격</div>
-			<div class="productRemains">재고</div>
-			<div class="productState">상태</div>
+	<div class="body_container">
+		<div>
+			<strong>${memberDetails.getUsername() } 님이 등록한 상품</strong>
 		</div>
-		<div id="product_list">
-		
-		</div>
+		<div id="product_list" class="row row-cols-5"></div>
 		<div id="product_list_page"></div>
 	</div>
-	<!-- <table>
-		<thead>
-			<tr>
-				<th>썸네일</th>
-				<th>분류</th>
-				<th>상품명</th>
-				<th>가격</th>
-				<th>재고</th>
-			</tr>
-		</thead>
-		<tbody id="product_list"></tbody>
-		<tfoot id="product_list_page"></tfoot>
-	</table> -->
-
+	
 	<script type="text/javascript">
 		let pagingListDTO = {}; // 상품 목록과 페이지 정보를 저장할 객체 선언
 		
@@ -100,17 +57,18 @@
 					
 					for (x in pagingListDTO.list) {
 						const productVO = pagingListDTO.list[x].productVO;
-						form += '<div class="product_table">' +
-								'<div class="productRow product_table" onclick="popupUpdate(this)">' + 
-								'<div class="targetIndex" hidden="hidden">'+ x + '</div>' +
-								'<div class="thumbnail"><img src="' + pagingListDTO.list[x].imgUrl + '"></div>' +
-								'<div class="category">' + productVO.category + '</div>' + 
-								'<div class="productName">' + productVO.productName + '</div>' + 
-								'<div class="productPrice">' + productVO.productPrice + '원</div>' + 
-								'<div class="productRemains">' + productVO.productRemains + '</div>' + 
-								'<div class="productState">' + productVO.productState + '</div>' + 
-			            		'</div>' + 
-								'<button style="height:50px;" onclick="toInquiry(' + productVO.productId + ')">문의 목록 가기</button>' +
+						form += '<div class="product_table card">' +
+									'<div class="card-header">' + productVO.productState + '</div>' + 
+									'<img class="card-img-top" src="' + pagingListDTO.list[x].imgUrl + '">' +
+									'<div class="card-body">' + 
+										'<h4 class="productName card-title">' + productVO.productName + '</h4>' + 
+										'<h6 class="category card-subtitle mb-2 text-body-secondary">' + productVO.category + '</h6>' + 
+										'<div class="productPrice card-text"> 판매가 : ' + productVO.productPrice + '원</div>' + 
+										'<div class="productRemains card-text">남은 수량 : ' + productVO.productRemains + '개</div>' + 
+										'<div class="targetIndex" hidden="hidden">'+ x + '</div>' +
+			            			'</div>' + 
+			            			'<a class="btn btn-primary" style="margin-bottom: 5px;" onclick="popupUpdate(this)">상세 정보</a>' +
+									'<a class="btn btn-primary" onclick="toInquiry(' + productVO.productId + ')">문의 목록</a>' +
 					    		'</div>';
 					}
 					// 페이지 생성 후 등록
@@ -130,33 +88,48 @@
 			const pageMaker = pagingListDTO.pageMaker;
 			const startNum = pageMaker.startNum;
 			const endNum = pageMaker.endNum;
-
-			let pageForm = $('<ul class="page_list"></ul>');
+			
+			let pageForm = $('<ul class="pagination pagination-lg justify-content-center"></ul>');
 			let numForm;
-			if (pageMaker.prev) {
-				numForm = $('<li>이전&nbsp&nbsp</li>').click(function() {
+			
+			numForm = $('<li class="page-item"><a class="page-link">&laquo;</a></li>');
+			if(pageMaker.prev){
+				numForm.click(function() {
 					pagingListDTO.show(startNum - 1);
 				});
-				pageForm.append(numForm);
+			}else {
+				numForm.addClass('disabled');
 			}
+			pageForm.append(numForm);
+			
 			for (let x = startNum; x <= endNum; x++) {
-				numForm = $('<li>' + x + '&nbsp&nbsp</li>').click(function() {
-					pagingListDTO.show(x);
-				});
+				numForm = $('<li class="page-item"><a class="page-link">' + x + '</a></li>');
+				if(pageMaker.curPage == x){
+					numForm.addClass('active');
+				}else{
+					numForm.click(function() {
+						pagingListDTO.show(x);
+					});
+				}
 				pageForm.append(numForm);
 			}
+			
+			numForm = $('<li class="page-item"><a class="page-link">&raquo;</a></li>');
 			if (pageMaker.next) {
-				numForm = $('<li>다음</li>').click(function() {
+				numForm.click(function() {
 					pagingListDTO.show(endNum + 1);
 				});
-				pageForm.append(numForm);
+			}else {
+				numForm.addClass('disabled');
 			}
+			pageForm.append(numForm);
+			
 			return pageForm;
 		} // end makePageForm
 		
 		function popupUpdate(input){
 			// 클릭한 항목의 index 검색
-			const targetIndex = $(input).find('.targetIndex').text();
+			const targetIndex = $(input).parents('.product_table').find('.targetIndex').text();
 			let targetUrl = 'popupUpdate?productId=' + pagingListDTO.list[targetIndex].productVO.productId;
 			
 			// 팝업창 정보 설정

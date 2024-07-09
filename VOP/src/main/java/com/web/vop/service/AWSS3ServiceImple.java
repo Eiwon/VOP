@@ -53,7 +53,7 @@ public class AWSS3ServiceImple implements AWSS3Service {
 	public String uploadIcon(MultipartFile file, ImageVO imageVO) throws IOException {
 		log.info("s3에 썸네일로 저장");
 		
-		String imgUrl = uploadResizedImage(file, imageVO, 120, 120);
+		String imgUrl = uploadResizedImage(file, imageVO, 140, 140);
 		return imgUrl;
 	} //end uploadIcon
 
