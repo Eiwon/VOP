@@ -9,10 +9,14 @@
 <jsp:include page="../include/header.jsp"></jsp:include>
 <style type="text/css">
 .form_container{
-	border: 1px solid black;
+	border: 1px solid grey;
+	padding: 10px;
 	width: 500px;
-	height: 800px;
+	height: 500px;
 	display: inline-block;
+}
+.btn_submit {
+	width: 480px;
 }
 </style>
 <meta charset="UTF-8">
@@ -53,7 +57,7 @@
 				<label for="memberPhone">전화번호</label>
 			</div>
 			<div style="margin-top: 30px;">
-				<input type="submit" value="회원 가입">
+				<input type="submit" class="btn_submit btn btn-primary" value="회원 가입">
 			</div>
 		</form>
 	</div>
@@ -136,10 +140,12 @@
 					console.log("중복 체크 결과 : " + result);
 					if(result == 1){
 						$('#memberId').next().text("사용할 수 있는 아이디입니다.");
+						$('#memberId').removeClass('is-invalid');
 						checkMap['memberId'].isValid = true;
 					}else{
 						$('#memberId').next().text("사용 불가능한 아이디입니다.");
 						checkMap['memberId'].isValid = false;
+						$('#memberId').addClass('is-invalid');
 					}
 				}
 			}); // end ajax
@@ -152,13 +158,15 @@
 			if(memberPwVal == checkPwVal){
 				$('#checkPw').next().text("비밀번호가 일치합니다.");
 				checkMap.checkPw.isValid = true;
+				$('#checkPw').removeClass('is-invalid');
 			}else{
 				$('#checkPw').next().text("비밀번호 불일치");
 				checkMap.checkPw.isValid = false;
+				$('#checkPw').addClass('is-invalid');
 			}
 		} // end checkPw
 		
-		function isValidPhone(memberPhone){
+		/* function isValidPhone(memberPhone){
 			// 이미 가입된 번호인지 체크
 			$.ajax({
 				method : 'GET',
@@ -176,7 +184,7 @@
 					}
 				}
 			}); // end ajax
-		} // end isValidPhone
+		} // end isValidPhone */
 		
 		$('form').submit(function(event){
 			for(x in checkMap){

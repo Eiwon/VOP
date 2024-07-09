@@ -9,7 +9,7 @@ body {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 800px;
+        height: 600px;
     }
 .loginInput{
 	padding: 20px;
