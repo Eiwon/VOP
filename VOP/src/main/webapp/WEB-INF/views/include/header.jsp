@@ -60,7 +60,7 @@ body {
 }
 /* 검색 라인 설정 */
 .line_search {
-    width: 80%; /* 너비 설정 */
+    width: 100%; /* 너비 설정 */
     margin: auto; /* 가운데 정렬 */
 }
 
