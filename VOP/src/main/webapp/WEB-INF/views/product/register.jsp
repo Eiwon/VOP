@@ -12,26 +12,37 @@
 <!-- 카카오 주소검색 API 사용하기 위한 script -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <title>상품 등록</title>
+<style type="text/css">
+.body_container{
+	width: 50%;
+	height: 800px;
+	margin: auto;
+}
+.form_header {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+</style>
 </head>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <body>
-	<div>
+	<div class="body_container">
+		<div class="form_header">
+			<h3>상품 등록</h3>
+		</div>
 		<form id="productForm" action="register?${_csrf.parameterName }=${_csrf.token }" method="post" enctype="multipart/form-data">
-			<div>
-				판매자
-				<input type="text" value='${memberDetails.getUsername() }' readonly>
+			<div class="input-group mb-3">
+				<span class="input-group-text">판매자</span>
+				<input type="text" class="form-control" value='${memberDetails.getUsername() }' readonly>
 			</div>
-			<div>
-				<input type="text" id="productName" name="productName" placeholder="상품명" >
+			<div class="input-group mb-3">
+				<span class="input-group-text">상품명</span>
+				<input type="text" class="form-control" id="productName" name="productName">
 				<div></div>
 			</div>
-			<div>
-				<input type="text" id="productPrice" name="productPrice" placeholder="가격" >
-				<div></div>
-			</div>
-			<div>
-        		<span>카테고리</span> 
-        		<select id="boxCategory" name="category">
+			<div class="input-group mb-3">
+				<label class="input-group-text">카테고리</label>
+        		<select id="boxCategory" class="form-select" name="category">
 					<option value="여성패션">여성패션</option>
 					<option value="남성패션">남성패션</option>
 					<option value="남녀 공용 의류">남녀 공용 의류</option>
@@ -52,31 +63,36 @@
 					<option value="헬스/건강식품">헬스/건강식품</option>
 				</select> 
 			</div>
-			<div>
-				<input type="number" id="productRemains" name="productRemains" placeholder="수량">
+			<div class="input-group mb-3">
+				<span class="input-group-text">가격</span>
+				<input type="text" class="form-control" id="productPrice" name="productPrice">
 				<div></div>
 			</div>
-			<div>
-				<div>
-					<input type="text" id="productPlace" name="productPlace" placeholder="배송 지점" readonly="readonly">
-					<input type="button" onclick="searchAddress()" value="주소 검색">
-				</div>
+			<div class="input-group mb-3">
+				<span class="input-group-text">수량</span>
+				<input type="number" class="form-control" id="productRemains" name="productRemains">
 				<div></div>
 			</div>
-			<div>
-				<strong>썸네일 선택</strong>
-				<input id="inputThumbnail" type="file" name="thumbnail" onchange="showThumbPreview()"> 
+			<div class="input-group mb-3">
+				<span class="input-group-text">배송 지점</span>
+				<input type="text" class="form-control" id="productPlace" name="productPlace" readonly="readonly">
+				<button type="button" class="btn btn-outline-secondary" onclick="searchAddress()">주소 검색</button>
+				<div></div>
+			</div>
+			<div class="input-group mb-3">
+				<label class="input-group-text">썸네일</label>
+				<input id="inputThumbnail" class="form-control" type="file" name="thumbnail" onchange="showThumbPreview()"> 
 				<div id="previewThumbnail">
 				</div>
 			</div>
-			<div>
-				<strong>상세정보 이미지</strong>
-				<input id="inputDetails" type="file" name="details" multiple="multiple" onchange="showDetailsPreview()">
+			<div class="input-group mb-3">
+				<label class="input-group-text">상세 이미지</label>
+				<input id="inputDetails" class="form-control" type="file" name="details" multiple="multiple" onchange="showDetailsPreview()">
 				<div id="previewDetails">
 				</div>
 			</div>
 			
-			<input type="submit" value="등록">
+			<input type="submit" class="btn btn-primary" value="등록">
 		</form>
 	</div>
 	

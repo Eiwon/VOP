@@ -90,78 +90,72 @@
 	
 
 			
-	function cancelPayment(memberId) {
+	async function cancelPayment(memberId) {
 			console.log("cancelPayment(memberId) : ", memberId);
-		
-	   $.ajax({
-	      	    method: 'POST',
-	      	    url: 'cancelPayment', // 실제 서버에서 결제 취소를 처리하는 URL
-	      	    headers: {
-	      	        'Content-Type': 'application/json',
-	      	        'X-CSRF-TOKEN': $('meta[name="${_csrf.token }"]').attr('content')
-	      	    },
-	      	    data: JSON.stringify({
-	      	    		'memberId' : memberId 	      	    	
-	      	    }), 
-	      	    success: function(response, textStatus, xhr) {
-	      	        console.log('서버 응답 코드:', xhr.status);
-	      	        if (xhr.status === 200) {
-	      	            alert('결제가 성공적으로 취소되었습니다.');
-	      	           
-	      	        } else {
-	      	            alert('결제 취소에 실패했습니다.');
-	      	        }
-	      	    },
-	      	    error: function(xhr, status, error) {
-	      	        console.error('서버 요청 중 오류 발생:', error);
-	      	        alert('결제 취소 요청 중 오류가 발생했습니다.');
-	      	    }
-	      	 });//end ajax POST
-	      	 
+			   $.ajax({
+			      	    method: 'POST',
+			      	    url: 'cancelPayment', // 실제 서버에서 결제 취소를 처리하는 URL
+			      	    headers: {
+			      	        'Content-Type': 'application/json',
+			      	        'X-CSRF-TOKEN': $('meta[name="${_csrf.token }"]').attr('content')
+			      	    },
+			      	    data: JSON.stringify({
+			      	    		'memberId' : memberId 	      	    	
+			      	    }), 
+			      	    success: function(response, textStatus, xhr) {
+			      	        console.log('서버 응답 코드:', xhr.status);
+			      	        if (xhr.status === 200) {
+			      	            alert('결제가 성공적으로 취소되었습니다.');
+			      	           
+			      	        } else {
+			      	            alert('결제 취소에 실패했습니다.');
+			      	        }
+			      	    },
+			      	    error: function(xhr, status, error) {
+			      	        console.error('서버 요청 중 오류 발생:', error);
+			      	        alert('결제 취소 요청 중 오류가 발생했습니다.');
+			      	    }
+			      	 });//end ajax POST
    		}//end function cancelPayment()
 		      	
 			
-   		function deleteMembership(memberId){
-			// 멤버십 삭제(해지)
-			$.ajax({
-				type : 'DELETE',
-				url : 'deleteMembership/' + memberId,
-				headers : {
-					'X-CSRF-TOKEN' : '${_csrf.token }' 
-				},
-				success: function(response) {
-					console.log('멤버십 정보가 삭제되었습니다.');
-				},
-				error: function(){
-					console.error('멤버십 삭제 도중 오류 발생 . ',error);
-				}
-			}); //end ajax
+   		async function deleteMembership(memberId){
+				// 멤버십 삭제(해지)
+				$.ajax({
+					type : 'DELETE',
+					url : 'deleteMembership/' + memberId,
+					headers : {
+						'X-CSRF-TOKEN' : '${_csrf.token }' 
+					},
+					success: function(response) {
+						console.log('멤버십 정보가 삭제되었습니다.');
+					},
+					error: function(){
+						console.error('멤버십 삭제 도중 오류 발생 . ',error);
+					}
+				}); //end ajax
    		}//end deleteMembership()
 			
    		
-   		function updateMembershipAuth(memberId){
-			// 멤버십 권한(일반) 수정
-			$.ajax({
-                type: 'PUT',
-                url: 'updateAuthOnUser/' + memberId,
-                headers : {
-					'X-CSRF-TOKEN' : '${_csrf.token }' 
-				},
-                success: function() {
-                    console.log('멤버십 권한 업데이트 성공');
-                 // 일반 유저로 권한까지 수정 하면 다시 등록 페이지로 이동한다. 
-        			//window.location.href = "../membership/register";
-                },
-                error: function() {
-                    console.error('멤버십 권한 업데이트 실패', error);
-                }
-            }); //end ajax		
+   		async function updateMembershipAuth(memberId){
+				// 멤버십 권한(일반) 수정
+				$.ajax({
+	                type: 'PUT',
+	                url: 'updateAuthOnUser/' + memberId,
+	                headers : {
+						'X-CSRF-TOKEN' : '${_csrf.token }' 
+					},
+	                success: function() {
+	                    console.log('멤버십 권한 업데이트 성공');
+	                 // 일반 유저로 권한까지 수정 하면 다시 등록 페이지로 이동한다. 
+	        			//window.location.href = "../membership/register";
+	                },
+	                error: function() {
+	                    console.error('멤버십 권한 업데이트 실패', error);
+	                }
+	            }); //end ajax	
    		}//end updateMembershipAuth()
-
 	
 </script>
-
-	
-
 </body>
 </html>

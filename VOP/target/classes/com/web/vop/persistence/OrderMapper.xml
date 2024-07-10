@@ -35,8 +35,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </resultMap>
    
 	<!-- 배송지 상세 조회 (배송 예정일) -->
-	<select id="selectByExpectDeliveryDate" resultType="java.util.Date">
-		SELECT EXPECT_DELIVERY_DATE FROM "ORDER" WHERE PAYMENT_ID = #{paymentId}
+	<select id="selectByExpectDeliveryDate" resultType="String">
+		SELECT TO_CHAR(EXPECT_DELIVERY_DATE, 'YYYY-MM-DD"T"HH24:MI:SS') AS EXPECT_DELIVERY_DATE FROM "ORDER" WHERE PAYMENT_ID = #{paymentId}
 	</select>
 
 	<!-- 배송지 상세 조회 (송장 번호)  -->

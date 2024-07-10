@@ -11,43 +11,101 @@
 <meta name="${_csrf.token }" content="${_csrf.token }">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <title>배송지 수정/삭제</title>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
 <!-- 우편번호 API 스크립트 -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<style>
+
+        body {
+            padding: 20px; /* Add padding for visual appeal */
+        }
+        
+         .form-container {
+            max-width: 600px; /* 원하는 폭으로 설정 */
+            margin: auto; /* 가운데 정렬 */
+            padding: 20px; /* 내용과의 간격 */
+        }
+
+        /* 예시: 입력란 너비 조절 */
+		.form-control {
+		    width: 100%; /* 입력 요소 너비 100% */
+		    max-width: 600px; /* 최대 너비 설정 (예: 400px) */
+		}
+    </style>
 </head>
 <body>
-<h2>배송지 수정</h2>
 
 
-<form id="delivery" action="update" method="post">
-	<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
-	<input type="hidden" id="deliveryId" name="deliveryId" value="${delivery.deliveryId}">
+<div class="container-fluid">
+<div class="form-container">
+	<h2 class="text-center mt-5">배송지 수정</h2><br>
+
+
+	<form id="delivery" action="update" method="post" class="mt-4 text-center" >
+		<input type="hidden" class="form-control" name="${_csrf.parameterName }" value="${_csrf.token }">
+		<input type="hidden" id="deliveryId" name="deliveryId" value="${delivery.deliveryId}">
 	
-    <label for="receiverName">받는 사람:</label>
-    <input type="text" id="receiverName" name="receiverName" onblur="checkValid(this)" value="${delivery.receiverName}" required>
-    <div></div> <!-- 유효성 메시지 출력을 위한 빈 div -->
-    <br><br>
+    <div class="form-group text-center">
+	    <label for="receiverName">받는 사람:</label><br>
+	    <input type="text" class="form-control" id="receiverName" name="receiverName" onblur="checkValid(this)" required >
+		<div></div> <!-- 유효성 메시지 출력을 위한 빈 div -->
+	</div>
 
-    <!-- 우편번호 찾기 관련 코드 -->
-    <input type="text" id="sample6_postcode" placeholder="우편번호">
-    <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
-    <input type="text" id="receiverAddress" name="receiverAddress" value="${delivery.receiverAddress}" placeholder="주소"><br>
-    <input type="text" id="deliveryAddressDetails" name="deliveryAddressDetails" value="${delivery.deliveryAddressDetails}" placeholder="상세주소"><br><br>
-
-    <label for="receiverPhone">휴대폰 번호:</label>
-    <input type="text" id="receiverPhone" name="receiverPhone" onblur="checkValid(this)" value="${delivery.receiverPhone}" placeholder="010-1234-5678" required>
-    <div></div> <!-- 유효성 메시지 출력을 위한 빈 div -->
-    <br><br>
-
-    <label for="requirement">배송 요청사항:</label><br>
-    <textarea id="requirement" name="requirement" rows="4" cols="50">${delivery.requirement}</textarea><br><br>
-
-    <input type="checkbox" id="isDefault" name="isDefault" value="1" ${delivery.isDefault == 1 ? 'checked' : ''}>
-    <label for="isDefault">기본 배송지로 설정</label><br><br>
-
-    <!-- 수정 버튼 -->
-    <button type="submit" id="updateButton">수정</button>
     
-</form>
+    	<div class="form-row justify-content-center">
+            <div class="form-group text-center">
+                <label for="sample6_postcode">우편번호</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="sample6_postcode" placeholder="우편번호">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" onclick="sample6_execDaumPostcode()">우편번호 찾기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+         <div class="form-group text-center">
+            <label for="receiverAddress">주소:</label>
+            <input type="text" class="form-control" id="receiverAddress" name="receiverAddress" placeholder="주소">
+        </div>
+        
+     	<div class="form-group text-center">
+            <label for="deliveryAddressDetails">상세주소:</label>
+            <input type="text" class="form-control" id="deliveryAddressDetails" name="deliveryAddressDetails" placeholder="상세주소">
+        </div>
+        
+		<div class="form-group text-center">
+		    <label for="receiverPhone">휴대폰 번호:</label>
+		    <input type="text" class="form-control" id="receiverPhone" name="receiverPhone" placeholder="010-1234-5678 형식으로 입력하세요." onblur="checkValid(this)" required>
+		    <div></div> <!-- 유효성 메시지 출력을 위한 빈 div -->
+	    </div>
+	    <br><br>
+	    
+		<div class="form-group text-center">
+		    <label for="requirement">배송 요청사항:</label><br>
+		    <textarea id="requirement" name="requirement" rows="4" cols="50">일반 : 문앞</textarea><br><br>
+		</div>
+		
+		<div class="form-check text-center">
+    		<input type="checkbox" id="isDefault" name="isDefault" value="1" checked>
+    		<label for="isDefault">기본 배송지로 설정</label><br><br>
+		</div>
+
+	    <!-- 수정 버튼 -->
+	    <button type="submit" class="btn btn-success mt-3" id="updateButton">수정</button>
+    </form>
+    
+		 <!-- 삭제 버튼 -->
+        <form id="deleteForm" action="delete" method="post" class="text-center">
+            <input type="hidden" id="deliveryId" name="deliveryId" value="${delivery.deliveryId}">
+            <button type="button" class="btn btn-success mt-3" id="deleteButton">삭제</button>
+        </form>
+    </div>
+</div> <!-- end container -->
+
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 
 <script>
@@ -77,12 +135,7 @@
     }
 </script>
 
-<!-- 삭제 버튼 -->
-<form id="deleteForm" action="delete" method="post">
-    <input type="hidden" id="deliveryId" name="deliveryId" value="${delivery.deliveryId}">
-    
-    <button type="button" id="deleteButton">삭제</button>
-</form>
+
 
 <script>
     // 삭제 버튼 클릭 시 삭제 동작 실행
