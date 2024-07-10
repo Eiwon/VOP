@@ -821,7 +821,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
 	
 	} else {
 		alert('로그인 후 사용 가능 합니다.');
-		window.location.href = '../member/login';
+		window.location.href = '../member/login';// 나중에 시큐리티 공부해서 적용하기
 	}
 }); // end (document).on
 
