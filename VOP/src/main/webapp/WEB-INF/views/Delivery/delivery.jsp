@@ -120,21 +120,25 @@ $(document).ready(function() {
 
 	 	// 날짜 문자열을 Date 객체로 변환
 	    let nowDate = new Date(formattedNow);
-	    console.log(nowDate.getTime());
+	    console.log('nowDate.getTime() = ', nowDate.getTime());
 	 	let expectedDateDate = new Date(expectedDate);
-		console.log(expectedDateDate.getTime());
+		console.log('expectedDateDate.getTime() = ', expectedDateDate.getTime());
 	 	
 	    // 예상 배송일과 현재 날짜 비교
 	    let deliveryStatusHtml;
 	    
 	    if (nowDate.getTime() <= expectedDateDate.getTime()) {
 	    	let formattedExpectedDate = formatDate(expectedDate);
+	    	console.log("예상배송일 : ",formattedExpectedDate);
 	        // 예상 배송일이 현재 날짜와 같거나 이후인 경우
 	        deliveryStatusHtml = '<p class="font-weight-bold text-primary">예상 배송일 : <span style="color: blue;">' + formattedExpectedDate + '</span></p>';
-	    } else {
+	    } else if(nowDate.getTime() > expectedDateDate.getTime()){
 	    	let formattedExpectedDate = formatDate(expectedDate);
+	    	console.log("배송완료일 : ",formattedExpectedDate);
 	        // 예상 배송일이 현재 날짜보다 이전인 경우
 	        deliveryStatusHtml = '<p class="font-weight-bold text-primary">배송 완료 (' + formattedExpectedDate + ' 일에 배송이 완료되었습니다!)</p>';
+	    } else {
+	    	console.log("error : nowDate.getTime() = ", nowDate.getTime() , ", expectedDateDate.getTime() = ", expectedDateDate.getTime());
 	    }
 
 	    // deliveryStatusHtml을 #deliveryStatus에 삽입

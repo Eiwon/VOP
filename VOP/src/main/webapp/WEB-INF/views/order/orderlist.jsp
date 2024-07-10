@@ -78,10 +78,12 @@
 
         /* 모달 닫기 버튼 스타일 */
         .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
+            position: absolute; /* 절대 위치 설정 */
+	        top: 10px; /* 위에서 10px 위치 */
+	        right: 20px; /* 오른쪽에서 20px 위치 */
+	        font-size: 28px; /* 버튼 크기 설정 */
+	        font-weight: bold; /* 글자 두껍게 */
+	        color: #000; /* 글자색 */
         }
 
         .close:hover,

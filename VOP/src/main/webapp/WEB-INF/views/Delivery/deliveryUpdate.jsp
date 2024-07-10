@@ -77,7 +77,7 @@
         
 		<div class="form-group text-center">
 		    <label for="receiverPhone">휴대폰 번호:</label>
-		    <input type="text" class="form-control" id="receiverPhone" name="receiverPhone" placeholder="010-1234-5678 형식으로 입력하세요." onblur="checkValid(this)" required>
+		    <input type="text" class="form-control" id="receiverPhone" name="receiverPhone" placeholder="01012345678 형식으로 입력하세요." onblur="checkValid(this)" required>
 		    <div></div> <!-- 유효성 메시지 출력을 위한 빈 div -->
 	    </div>
 	    <br><br>
@@ -133,81 +133,6 @@
             }
         }).open();
     }
-</script>
-
-
-
-<script>
-    // 삭제 버튼 클릭 시 삭제 동작 실행
-    $(document).ready(function() {
-        $("#deleteButton").click(function() {
-            var deliveryId = $("#deliveryId").val();
-         
-            // 배송지 삭제를 위한 Ajax 요청
-            $.ajax({
-                url: "delete/" + deliveryId,
-                headers : {
-                	'X-CSRF-TOKEN' : '${_csrf.token }' 
-    			},
-                type: 'DELETE',
-                success: function(response) {
-                	
-                	if(response === 1){
-                    	// 삭제 성공 시 페이지 새로고침 또는 다른 동작 수행
-                		window.location.href = "../Delivery/deliveryAddressList";               		
-                	}else{
-                		// 삭제 실패 시 에러 메시지 출력
-                        console.error("배송지 삭제 실패");
-                        alert("배송지 삭제 실패");
-                	}
-                },
-                error: function(xhr, status, error) {
-                	// Ajax 요청 실패 시 에러 처리
-                    console.error("배송지 삭제 실패:", error);
-                    alert("배송지 삭제 중 오류가 발생했습니다.");
-                }
-            });//end ajax
-        }); //end click event handler
-    }); //end document.ready function
-</script>
-
-<script>
-    
-    // 배송지 정보를 폼에 입력하는 함수
-    function populateForm(delivery) {
-        document.getElementById("receiverName").value = delivery.receiverName;
-        document.getElementById("receiverAddress").value = delivery.receiverAddress;
-        document.getElementById("deliveryAddressDetails").value = delivery.deliveryAddressDetails;
-        document.getElementById("receiverPhone").value = delivery.receiverPhone;
-        document.getElementById("requirement").value = delivery.requirement;
-        
-        // 기본 배송지 설정
-        document.getElementById("isDefault").checked = (delivery.isDefault == 1);
-    }
-
-    // 페이지 로딩 시 해당 배송지 정보 입력
-    $(document).ready(function() {
-    	
-    	var deliveryId = $("#deliveryId").val(); // deliveryId가 페이지 로드 시 설정되어 있어야 한다
-    	
-    	console.log('deliveryId : ' + deliveryId);
-        // 서버에서 해당 배송지 정보를 받아오는 Ajax 요청 
-        $.ajax({
-        	url : "restDeliveryUpdate",
-        	type : "GET",
-        	data : { deliveryId: deliveryId}, // 배송지 Id를 서버에 전달
-        	success : function(data) {
-        		// 받아온 배송지 정보를 deliveryInfo에 할당
-        		console.log(data);
-        		var deliveryInfo = data; // 여기서 data는 서버로부터 받아온 JSON 형식의 배송지 
-        		populateForm(deliveryInfo); // 폼에 배송지 정보 입력
-        	},
-        	error : function(xhr, status, error) {
-        		console.error("배송지 정보 불러오기 실패 : ",error);
-        	}
-        });
-    	
-    });
     
     let checkMap = {
     		receiverName : {
@@ -218,20 +143,21 @@
 			},
 			
 			receiverPhone: {
-	            exp: new RegExp("^010-\\d{4}-\\d{4}$"),
+	            exp: new RegExp("^010\\d{8}$"),
 	            success: "올바른 입력 형식 입니다.",
-	            fail: "휴대폰 번호는 010-1234-5678 형식으로 입력하세요.",
+	            fail: "휴대폰 번호는 01012345678 형식으로 입력하세요.",
 	            isValid: false
 	        }
     };
     
- // 입력값의 유효성을 체크하는 함수
-    function checkValid(input){
+ 	// 입력값의 유효성을 체크하는 함수
+     function checkValid(input){
 		let type = $(input).attr('id'); // 입력 요소의 id를 가져옴
 		let inputVal = $(input).val(); // 입력한 값
 		
 		console.log('Checking validity for:', type); // 디버깅을 위해 추가
-	    
+	    console.log('입력한 값 : ', inputVal);
+		
 	    // checkMap에 type이 존재하는지 확인
 	    if (!checkMap.hasOwnProperty(type)) {
 	        console.error('checkMap에 존재하지 않는 type입니다:', type);
@@ -254,50 +180,184 @@
 		if(!isValid) {  // 유효하지 않으면 종료
 			return;
 		}
-			
-	} // end checkValid
-    
+	} // end checkValid 
+	
+
 </script>
+
+
 
 <script>
 
-const memberId = '${memberDetails.getUsername()}';
-console.log('member ID:', memberId);
 
-$(document).ready(function() {
+    const memberId = '${memberDetails.getUsername()}';
+    console.log('member ID:', memberId);
 	
-	 // 페이지 로드 시 기본 배송지 여부 확인
-    checkDefaultAddress().then(function(isExistingDefault) {
+    // 페이지 로딩 시 해당 배송지 정보 입력
+    $(document).ready(function() {
+        	
+    	
+    	var deliveryId = $("#deliveryId").val(); // deliveryId가 페이지 로드 시 설정되어 있어야 한다
+    	
+    	// 배송지 정보 가져오기 
+    	UpdatedeliveryInfo(deliveryId);
+    	
+    	// 페이지 로드 시 기본 배송지 여부 확인
+	    checkAndHandleDefaultAddress();
+    	
+	 	// 기본 배송지 있는지 조회 
+		//checkDefaultAddress(); 
+    	
+	 	// 사용자가 입력란을 벗어날 때 마다 유효성 검사를 즉시 실행
+	    $("#receiverName").blur(function() {
+	        checkValid(this);
+	    });
+	
+	    $("#receiverPhone").blur(function() {
+	        checkValid(this);
+	    });
         
-    	 if (isExistingDefault) {
-    	        alert("기본 배송지가 설정되어 있습니다.");
-    	        
-    	        // 기본 배송지가 있는 경우
-    	        // 체크박스 상태에 따라 수정 버튼 활성화/비활성화 설정
-    	        $('#isDefault').change(function() {
-    	            if ($(this).prop('checked')) {
-    	                // 체크박스가 선택되면 수정 버튼을 비활성화
-    	                $('#updateButton').prop('disabled', true);
-    	            } else {
-    	                // 체크박스가 비선택되면 수정 버튼을 활성화
-    	                $('#updateButton').prop('disabled', false);
-    	            }
-    	        });
-    	        
-    	        // 초기 체크박스 상태에 따라 수정 버튼 활성화/비활성화 설정
-    	        if ($('#isDefault').prop('checked')) {
-    	            $('#updateButton').prop('disabled', true);
-    	        } else {
-    	            $('#updateButton').prop('disabled', false);
-    	        }
-    	    } else {
-    	        console.log("기본 배송지가 없습니다.");
-    	        
-    	        // 기본 배송지가 없는 경우 수정 버튼을 항상 활성화
-    	        $('#updateButton').prop('disabled', false);
-    	    }
-    });
-});// end document.ready()
+	 	// 수정 버튼 클릭 이벤트 핸들러 설정
+		$('#updateButton').click(function(event) {
+			// 폼 유효성 검사 수행
+	        for(x in checkMap){
+	            if(!checkMap[x].isValid){
+	                alert('유효하지 않은 입력 : ' + x);
+	                event.preventDefault();
+	                return;
+	            }
+	        }
+
+	        // 받는 사람, 휴대폰 번호가 비어있는지 확인
+	        if (!receiverName || !receiverPhone) {
+	            alert("받는 사람, 휴대폰 번호는 필수 입력 사항입니다.");
+	            event.preventDefault(); // 폼 제출 막기
+	            return;
+	        }
+			
+	        
+		    // 수정 동작 수행
+		    if (!$(this).prop('disabled')) { // 기본 배송지 설정이 되어있지 않을 때 
+		    	performUpdate();
+		    
+		    } else {
+		        alert("기본 배송지를 체크한 경우 수정할 수 없습니다.");
+		    }
+		});//end updateButton
+    	
+		// 배송지 삭제 버튼 클릭 시
+    	$("#deleteButton").click(function() {
+        	
+           console.log('deleteButton - deliveryId :' , deliveryId);
+           // 배송지 삭제
+           deleteDeliveryData(deliveryId);
+           
+        }); //end deleteButton
+	 	
+    });//end document.ready()
+    
+ 	
+    
+    // 배송지 정보를 폼에 입력하는 함수
+    function populateForm(delivery) {
+        document.getElementById("receiverName").value = delivery.receiverName;
+        document.getElementById("receiverAddress").value = delivery.receiverAddress;
+        document.getElementById("deliveryAddressDetails").value = delivery.deliveryAddressDetails;
+        document.getElementById("receiverPhone").value = delivery.receiverPhone;
+        document.getElementById("requirement").value = delivery.requirement;
+        
+        // 기본 배송지 설정
+        document.getElementById("isDefault").checked = (delivery.isDefault == 1);
+        
+     	// 각 필드의 유효성 검사 수행
+        checkValid(document.getElementById("receiverName"));
+        checkValid(document.getElementById("receiverPhone"));
+    }//end populateForm()
+    
+    
+    function UpdatedeliveryInfo(deliveryId){
+    	$.ajax({
+         	url : "restDeliveryUpdate",
+         	type : "GET",
+         	data : { deliveryId: deliveryId}, // 배송지 Id를 서버에 전달
+         	success : function(data) {
+         		// 받아온 배송지 정보를 deliveryInfo에 할당
+         		console.log('deliveryInfo - ',data);
+         		var deliveryInfo = data; // 여기서 data는 서버로부터 받아온 JSON 형식의 배송지 
+         		populateForm(deliveryInfo); // 폼에 배송지 정보 입력
+         	},
+         	error : function(xhr, status, error) {
+         		console.error("배송지 정보 불러오기 실패 : ",error);
+         	}
+         });//end ajax get
+    }//end UpdatedeliveryInfo()
+    
+    
+    function deleteDeliveryData(deliveryId){
+    	// 배송지 삭제를 위한 Ajax 요청
+        $.ajax({
+            url: "delete/" + deliveryId,
+            headers : {
+            	'X-CSRF-TOKEN' : '${_csrf.token }' 
+			},
+            type: 'DELETE',
+            success: function(response) {
+            	
+            	if(response === 1){
+                	// 삭제 성공 시 페이지 새로고침 또는 다른 동작 수행
+            		window.location.href = "../Delivery/deliveryAddressList";               		
+            	}else{
+            		// 삭제 실패 시 에러 메시지 출력
+                    console.error("배송지 삭제 실패");
+                    alert("배송지 삭제 실패");
+            	}
+            },
+            error: function(xhr, status, error) {
+            	// Ajax 요청 실패 시 에러 처리
+                console.error("배송지 삭제 실패:", error);
+                alert("배송지 삭제 중 오류가 발생했습니다.");
+            }
+        });//end ajax
+    }//end deleteDeliveryData()
+    
+    
+    
+    
+	
+	//기본 배송지 확인 및 처리 함수
+	function checkAndHandleDefaultAddress() {
+		checkDefaultAddress().then(function(isExistingDefault) {
+	        
+	    	 if (isExistingDefault) {
+	    	        alert("기본 배송지가 설정되어 있습니다.");
+	    	        
+	    	        // 기본 배송지가 있는 경우
+	    	        // 체크박스 상태에 따라 수정 버튼 활성화/비활성화 설정
+	    	        $('#isDefault').change(function() {
+	    	            if ($(this).prop('checked')) {
+	    	                // 체크박스가 선택되면 수정 버튼을 비활성화
+	    	                $('#updateButton').prop('disabled', true);
+	    	            } else {
+	    	                // 체크박스가 비선택되면 수정 버튼을 활성화
+	    	                $('#updateButton').prop('disabled', false);
+	    	            }
+	    	        });
+	    	        
+	    	        // 초기 체크박스 상태에 따라 수정 버튼 활성화/비활성화 설정
+	    	        if ($('#isDefault').prop('checked')) {
+	    	            $('#updateButton').prop('disabled', true);
+	    	        } else {
+	    	            $('#updateButton').prop('disabled', false);
+	    	        }
+	    	    } else {
+	    	        console.log("기본 배송지가 없습니다.");
+	    	        
+	    	        // 기본 배송지가 없는 경우 수정 버튼을 항상 활성화
+	    	        $('#updateButton').prop('disabled', false);
+	    	    }
+	    });
+	}//end checkAndHandleDefaultAddress()
+
 	
 	
 	// 수정 동작을 수행하는 함수 예제
@@ -305,113 +365,28 @@ $(document).ready(function() {
 	    // 여기에 수정 동작을 수행하는 코드를 작성하세요.
 	    console.log("수정 동작이 수행되었습니다.");
 	}
-
-	// 수정 버튼 클릭 이벤트 핸들러 설정
-	$('#updateButton').click(function() {
-	    // 수정 동작 수행
-	    if (!$(this).prop('disabled')) { // 기본 배송지 설정이 되어있지 않을 때 
-	        
-	        
-	    } else {
-	        alert("기본 배송지를 체크한 경우 수정할 수 없습니다.");
-	    }
-	});
 	
+    
 
-	   
-    // 페이지 로드 시 기본 배송지 여부 확인
-    checkDefaultAddress().then(function(isExistingDefault) {
-        
-        if (isExistingDefault) {
-              
-               // 기본 배송지가 있는 경우
-               // 체크박스 상태에 따라 수정 버튼 활성화/비활성화 설정
-               $('#isDefault').change(function() {
-                   if ($(this).prop('checked')) {
-                       // 체크박스가 선택되면 수정 버튼을 비활성화
-                       $('#updateButton').prop('disabled', true);
-                   } else {
-                       // 체크박스가 비선택되면 수정 버튼을 활성화
-                       $('#updateButton').prop('disabled', false);
-                   }
-               });
-               
-               // 초기 체크박스 상태에 따라 수정 버튼 활성화/비활성화 설정
-               if ($('#isDefault').prop('checked')) {
-                   $('#updateButton').prop('disabled', true);
-               } else {
-                   $('#updateButton').prop('disabled', false);
-               }
-           } else {
-               console.log("기본 배송지가 없습니다.");
-               
-               // 기본 배송지가 없는 경우 수정 버튼을 항상 활성화
-               $('#updateButton').prop('disabled', false);
-           }
-    });
-
-   
-
-
-
-
-
-// 기본 배송지 있는지 조회 
-function checkDefaultAddress() {
-    return new Promise(function(resolve, reject) {
-        $.ajax({
-            url: 'checkDefaultAddress', // 서버 엔드포인트 URL
-            method: 'GET', // GET 방식으로 요청
-            data: { memberId: memberId },
-            success: function(response) {
-                console.log('기본 배송지 확인 성공:', response); // true or false 
-                resolve(response.hasDefaultAddress); // 응답의 기본 배송지 여부를 반환
-            },
-            error: function(err) {
-                console.error("기본 배송지 확인 실패:", err);
-                resolve(false); // 오류가 발생하면 기본 배송지는 없다고 가정
-            }
-        });
-    });
-}
-
-
-
-	//수정 버튼 클릭 시 폼 유효성 검사 후 제출 및 페이지 이동
-	
-	 $("#updateButton").click(function(event) {
-        var receiverName = $("#receiverName").val();
-        var receiverPhone = $("#receiverPhone").val();
-
-        // 받는 사람, 휴대폰 번호가 비어있는지 확인
-        if (!receiverName || !receiverPhone) {
-            alert("받는 사람, 휴대폰 번호는 필수 입력 사항입니다.");
-            event.preventDefault(); // 폼 제출 막기
-            return;
-        }
-
-
-        // 기본 배송지로 설정되었는지 확인
-        var isDefault = $("#isDefault").prop("checked");
-        if (isDefault && !receiverName) {
-            alert("기본 배송지로 설정하려면 받는 사람 정보가 필요합니다.");
-            event.preventDefault(); // 폼 제출 막기
-            return;
-        }
-
-        for (let x in checkMap) {
-            if (!checkMap[x].isValid) {
-                alert('유효하지 않은 입력 : ' + x);
-                event.preventDefault();
-                return;
-            }
-        }
-        
-    });
-
-
-	
-	
+	// 기본 배송지 있는지 조회 
+	function checkDefaultAddress() {
+	    return new Promise(function(resolve, reject) {
+	        $.ajax({
+	            url: 'checkDefaultAddress', // 서버 엔드포인트 URL
+	            method: 'GET', // GET 방식으로 요청
+	            data: { memberId: memberId },
+	            success: function(response) {
+	                console.log('기본 배송지 확인 성공:', response); // true or false 
+	                resolve(response.hasDefaultAddress); // 응답의 기본 배송지 여부를 반환
+	            },
+	            error: function(err) {
+	                console.error("기본 배송지 확인 실패:", err);
+	                resolve(false); // 오류가 발생하면 기본 배송지는 없다고 가정
+	            }
+	        });
+	    });
+	}//end checkDefaultAddress()
+	 
 </script>
 
 </body>
