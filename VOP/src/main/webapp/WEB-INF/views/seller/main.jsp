@@ -12,6 +12,7 @@
 .body_container{
 	width: 40%;
 	margin: auto;
+	margin-top: 100px;
 }
 </style>
 <title>판매 신청</title>

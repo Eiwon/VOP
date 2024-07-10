@@ -22,7 +22,7 @@
 		margin: auto;
 	}
 	.inner_header {
-		margin-bottom: 40px;
+		margin: 40px;
 	}
 </style>
 </head>

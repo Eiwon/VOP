@@ -101,9 +101,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   	
   	<!-- 리뷰 평균값 구하는 코드 -->
     <select id="selectReviewAgv" resultType="Float">
-   		SELECT ROUND(AVG(REVIEW_STAR), 1) AS AVG_REVIEW_STAR
-		FROM REVIEW
-		WHERE PRODUCT_ID = #{productId}
+   		SELECT COALESCE(ROUND(AVG(REVIEW_STAR), 1), 0.0) AS AVG_REVIEW_STAR
+    	FROM REVIEW
+    	WHERE PRODUCT_ID = #{productId}
     </select>
    
 

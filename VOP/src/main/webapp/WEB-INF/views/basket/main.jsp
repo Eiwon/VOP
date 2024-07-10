@@ -37,6 +37,7 @@
 </head>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <body>
+	<jsp:include page="../include/sideBar.jsp"/>
 	<div class="body_container">
 		<div class="inner_header">
 			<h3>장바구니</h3>

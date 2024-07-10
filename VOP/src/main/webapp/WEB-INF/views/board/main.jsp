@@ -8,7 +8,7 @@
 <!-- jquery 라이브러리 import -->
 <jsp:include page="../include/header.jsp"></jsp:include>
 <title>VOP</title>
-	<style>
+<style type="text/css">
 	#myform fieldset {
 	display: inline-block;
 	direction: ltr; /* 텍스트 방향을 오른쪽에서 왼쪽으로 설정 */

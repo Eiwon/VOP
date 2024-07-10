@@ -6,7 +6,7 @@
 <head>
 <style type="text/css">
 .side_bar {
-	width: 200px;
+	width: 150px;
 	text-align: left;
 	margin: 2%;
 	position: fixed;
@@ -19,7 +19,8 @@
 		<div class="side_bar">
 			<div> 
 				<ul id="my_info" class="list-group">
-					<li class="list-group-item"><a href="../board/myInfo">내 정보 확인 / 수정</a></li>
+					<li class="list-group-item"><a href="../board/myInfo">내 정보 수정</a></li>
+					<li class="list-group-item"><a href="../basket/main">장바구니</a></li>
 					<li class="list-group-item"><a href="../order/orderlist">주문 목록</a></li>
 					<li class="list-group-item"><a href="../Delivery/deliveryAddressList">배송지 관리</a></li>
 					<li class="list-group-item"><a href="../coupon/myCoupon">쿠폰함</a></li>

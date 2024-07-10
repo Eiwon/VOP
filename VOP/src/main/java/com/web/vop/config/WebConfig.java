@@ -6,6 +6,7 @@ import javax.servlet.ServletRegistration.Dynamic;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 // web.xml°ú µ¿ÀÏ
@@ -40,6 +41,7 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
 	   registration.setInitParameter("throwExceptionIfNoHandlerFound", "true");
    } // end customizeRegistration
 
+   
 } // end WebConfig
 
 

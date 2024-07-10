@@ -12,21 +12,85 @@
 <head>
 <meta charset="UTF-8">
 <title>멤버십</title>
+<!-- 부트스트랩 CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 <!-- jquery 라이브러리 import -->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <meta name="${_csrf.token }" content="${_csrf.token }">
+
+<style>
+
+	 body {
+	        font-family: Arial, sans-serif;
+	        background-color: #f8f9fa;
+	        color: #333;
+	    }
+	    
+    .membership-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .membership-info {
+        margin-bottom: 20px;
+    }
+
+	 .btn-custom {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 18px;
+        font-weight: bold;
+        text-decoration: none;
+        text-align: center;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .btn-custom-primary {
+        background-color: #6cb2eb;
+        color: #fff;
+        border: 1px solid #6cb2eb;
+    }
+
+    .btn-custom-primary:hover {
+        background-color: #0056b3; /* 더 진한 연하늘색 */
+        border-color: #0056b3;
+        color: #fff; /* 텍스트 색상 화이트 */
+    }
+
+    .btn-custom-danger {
+        background-color: #F28599;
+        color: #fff;
+        border: 1px solid #F28599;
+    }
+
+    .btn-custom-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+        color: #fff; /* 텍스트 색상 화이트 */
+    }
+    
+</style>
 </head>
 <body>
-	
+	<jsp:include page="../include/sideBar.jsp"/>
 
-		<h2>VOP 멤버십 가입을 환영합니다!</h2>
+	<div class="container membership-container text-center mt-5">
+    <div class="membership-info">
+        <h2 class="mb-4">VOP 멤버십 가입을 환영합니다!</h2>
+        <div id="expirydate" class="mb-3"></div>
+        <button id="cancelMembershipBtn" class="btn btn-custom btn-custom-danger" style="display: none;">멤버십 해지하기</button>
+    </div>
+    
+	<a href="../board/mypage" class="btn btn-custom btn-custom-primary mb-3">마이페이지로 이동</a>
 	
- 		<div id="expirydate"></div><br>
-	
-		<button id="cancelMembershipBtn" style="display: none;">멤버십 해지하기</button><br><br>
-	 	
-	 	<a href="../board/mypage">마이페이지로 이동</a>
 	
 <script>
 		
@@ -59,7 +123,6 @@
 	            }
 	        }//end if
 	    }); // end cancelMembershipBtn.click
-		
 		
 	});//end document.ready()		
 	    
@@ -157,5 +220,6 @@
    		}//end updateMembershipAuth()
 	
 </script>
+</div>
 </body>
 </html>

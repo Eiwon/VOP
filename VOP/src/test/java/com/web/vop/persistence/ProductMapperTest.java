@@ -1,6 +1,7 @@
 package com.web.vop.persistence;
 
 import org.junit.Test;
+
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -105,17 +106,17 @@ public class ProductMapperTest {
 		log.info(res);
 	} // end reviewNumDown
 	
-	// 상품 리뷰(별) 평균값 등록
-	public void updateReviewAvg(int productId, String reviewAvg) {
+	// 상품 리뷰(별) 평균값 등록(
+	public void updateReviewAvg(int productId, float reviewAvg) {
 		int res = productMapper.updateReviewAvg(productId, reviewAvg);
 		log.info(res);
 	} // end updateReviewAvg
 		
-	// 상품 리뷰(별) 평균값 수정
-	public void updateReviewAvgNew(int productId, float reviewAvg) {
-		int res = productMapper.updateReviewAvgNew(productId, reviewAvg);
-		log.info(res);
-	} // end updateReviewAvgNew
+//	// 상품 리뷰(별) 평균값 수정(사용 안함)
+//	public void updateReviewAvgNew(int productId, float reviewAvg) {
+//		int res = productMapper.updateReviewAvgNew(productId, reviewAvg);
+//		log.info(res);
+//	} // end updateReviewAvgNew
 	
 	// 댓글(리뷰) 카운터
 	public void updateReviewNum(int productId, int reviewNum) {

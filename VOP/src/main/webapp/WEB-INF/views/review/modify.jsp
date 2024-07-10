@@ -67,6 +67,9 @@
         #starFieldset input[type=radio]:checked ~ label {
             color: #fada00; /* 선택된 별 색상 변경 */
         }
+        textarea.form-control {
+            resize: none; /* 크기 조절 불가 */
+        }
     </style>
 </head>
 <body>
@@ -94,7 +97,8 @@
             </fieldset>
             <div class="form-group">
                 <label for="reviewContent">리뷰 내용</label>
-                <textarea class="form-control" id="reviewContent" rows="3"></textarea>
+                <textarea class="form-control" id="reviewContent" rows="6" maxlength="450"></textarea>
+                <small id="charCount" class="form-text text-muted">0/450</small>
             </div>
             <button type="button" id="btnUpdate" class="btn btn-submit">수정</button>
             <input type="hidden" id="productId" value="${productVO.productId}">
@@ -111,6 +115,12 @@
                 // 선택된 별의 값 가져오기
                 selectedStar = $(this).val();
                 console.log(selectedStar);
+            });
+
+            // textarea의 입력 길이를 확인하는 이벤트 핸들러
+            $('#reviewContent').on('input', function() {
+                let charCount = $(this).val().length;
+                $('#charCount').text(charCount + '/450');
             });
 
             // 수정 버튼 클릭 시

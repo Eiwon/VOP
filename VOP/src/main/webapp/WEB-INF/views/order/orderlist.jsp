@@ -79,10 +79,12 @@
 
         /* 모달 닫기 버튼 스타일 */
         .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
+            position: absolute; /* 절대 위치 설정 */
+	        top: 10px; /* 위에서 10px 위치 */
+	        right: 20px; /* 오른쪽에서 20px 위치 */
+	        font-size: 28px; /* 버튼 크기 설정 */
+	        font-weight: bold; /* 글자 두껍게 */
+	        color: #000; /* 글자색 */
         }
 
         .close:hover,
@@ -165,7 +167,7 @@
                                 <input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
                                 <input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
                                 <label for="message">내용:</label><br>
-                                <textarea class="content form-control" name="content"></textarea><br>
+                                <textarea class="content form-control" name="content" maxlength="450" style="resize: none;"></textarea><br>
                                 <button type="submit" class="btn btn-success">판매자에게 1:1문의하기</button>
                             </form>    
                         </div><!-- closing modal-content -->
@@ -184,7 +186,7 @@
                                 <input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
                                 <input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
                                 <label for="message">내용:</label><br>
-                                <textarea class="content form-control" name="content"></textarea><br>
+                                <textarea class="content form-control" name="content" maxlength="450" style="resize: none;"></textarea><br>
                                 <button type="submit" class="btn btn-info">수정하기</button>
                             </form>    
                         </div><!-- closing modal-content -->
@@ -311,6 +313,7 @@
     	        }
     	    });
     	}); */
+
     // 판매자 문의 코드 
     // 폼 제출 시 데이터 출력
     let inquiryCreate = document.querySelectorAll('.createInquiry');

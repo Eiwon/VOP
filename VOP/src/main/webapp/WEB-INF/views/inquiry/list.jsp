@@ -14,6 +14,8 @@
 <title>문의 리스트</title>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.7.1.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
 <style type="text/css">
     body {
         font-family: Arial, sans-serif;
@@ -201,8 +203,7 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    
     <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {
         const memberId = '${memberDetails.getUsername()}';
