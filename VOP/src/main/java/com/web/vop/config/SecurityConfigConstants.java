@@ -76,7 +76,7 @@ public interface SecurityConfigConstants {
 			"/seller/main", "/seller/registerProduct", "/seller/myProduct"  };
 
 	// 참조 허용 url
-	public static final String PERMIT_IMG_SRC = "blob: https://d2j7x0t84z88uc.cloudfront.net https://developers.kakao.com http://www.w3.org";
+	public static final String PERMIT_IMG_SRC = "blob: 'self' data: https://d2j7x0t84z88uc.cloudfront.net https://developers.kakao.com";
 	public static final String PERMIT_SCRIPT_SRC = "'self' https://code.jquery.com/jquery-3.7.1.js https://cdn.iamport.kr";
 	
 }

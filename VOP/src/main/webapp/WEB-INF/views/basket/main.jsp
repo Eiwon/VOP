@@ -7,64 +7,59 @@
 <meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <style type="text/css">
-.col_check{
-	width: 50px;
+.body_container{
+	width: 65%;
+	margin: auto;
 }
-.col_img{
-	width: 100px;
+.inner_header {
+	margin-bottom: 40px;
 }
-.col_name{
-	width: 150px;
+.basket_item {
+	border: solid 0.5px grey;
+	margin: 2px;
+	align-items: center;
 }
-.col_price{
-	width: 100px;
+.chk_product {
+	transform: scale(2);
+	margin-top: 100%;
 }
-.col_remains{
-	width: 100px;
+.btn_cnt {
+	height: 40px;
+	text-align: center;
 }
-.col_total{
-	width: 100px;
+.btn_delete_set{
+	display: flex;
+	margin: 20px;
 }
-.col_num{
-	width: 400px;
-}
+
 </style>
 <title>장바구니</title>
 </head>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <body>
-	
-	<div id="basket_container">
-	
-	</div>
+	<div class="body_container">
+		<div class="inner_header">
+			<h3>장바구니</h3>
+		</div>
+		<div id="basket_container"></div>
 	
 	<div id="product_container">
-		<button id="btn_clear">장바구니 비우기</button>
-		<table>
-			<thead>
-				<tr>
-					<td class="col_check">선택</td>
-					<td class="col_img">이미지</td>
-					<td class="col_name">상품명</td>
-					<td class="col_price">가격</td>
-					<td class="col_remains">남은 수량</td>
-					<td class="col_total">총액</td>
-					<td class="col_num">선택 수량</td>
-				</tr>
-			</thead>
-			<tbody id="basket_list"></tbody>
-		</table>
-		<input id="chk_select_all" type="checkbox">
-		<input id="btn_delete" type="button" value="선택 삭제">
+		<div id="basket_list" class="container text-center"></div>
 	</div>	
-	
+	<div class="btn_delete_set">
+		<input id="chk_select_all" type="checkbox" style="transform: scale(2);">
+		<input id="btn_delete" type="button" class="btn btn-danger" style="margin-left: 20px;" value="선택 삭제">
+		<button id="btn_clear" class="btn btn-danger" style="margin-left: 55%">장바구니 비우기</button>
+	</div>
 	<form action="../payment/checkout" method="POST" id="form_expense">
 		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
 		<div id="order_list" hidden="hidden"></div>
-		<div id="total_product_price"></div>
-		<input type="button" value="결제하기" onclick="submitOrder()">
+		<div><h5 id="total_product_price"></h5></div>
+		<input type="button" id="btn_payment" value="결제하기" class="btn btn-primary">
 	</form>
 	
+	
+	</div>
 	<script type="text/javascript">
 		let pageNum = 1;
 		let tagBasketList = $('#basket_list');
@@ -77,7 +72,9 @@
 				$('#btn_clear').click(function(){
 					clearBasket();
 				}); // end btn_clear.click
-				
+				$('#btn_payment').click(function(){
+					submitOrder();
+				}); // end btn_payment.click
 				$('#chk_select_all').change(function(){ // "전체 선택" 체크 박스에 이벤트 등록(클릭시 모든 체크박스 상태를 자신과 같게 변경)
 					let chkAll = $(this).prop("checked");
 					
@@ -104,22 +101,26 @@
 					let str = "";
 					for(x in basketMap){
 						const productVO = basketMap[x];
-						str += '<tr class="basket_item">' +
-							'<td class="col_check"><input type="checkbox" class="chk_product"></td>' +
-							'<td class="col_img"><img src="' + productVO.imgUrl + '"></td>' +
-							'<td class="product_id" hidden="hidden">' + productVO.productId + '</td>' +
-							'<td class="product_name col_name">' + productVO.productName + '</td>' +
-							'<td class="product_price col_price">' + productVO.productPrice + '원</td>' +
-							'<td class="product_remains col_remains">' + productVO.productRemains + '개</td>' +
-							'<td class="total_price col_total">' + (productVO.productPrice * productVO.productNum) + '원</td>' +
-							'<td class="col_num btn_num">' +
-								'<button class="btnMinus">-</button>' +
-								'<input class="product_num" type="number" value=' + productVO.productNum + '>' +
-								'<button class="btnPlus">+</button>' +
-							'</td>' +
-							'<td><a class="btnDelete">삭제</a></td>' +
-							'<td></td>' +
-							'</tr>';
+						str += '<div class="basket_item row">' +
+							'<div class="col-sm-1"><input type="checkbox" class="chk_product">' + 
+							'</div>' +
+							'<div class="col-sm-1"><img src="' + productVO.imgUrl + '">' + 
+							'</div>' +
+							'<div class="col-sm-4"><span class="product_id" hidden="hidden">' + productVO.productId + '</span>' +
+								'<h4 class="product_name">' + productVO.productName + '</h4><br>' +
+								'<span class="product_price">' + productVO.productPrice + '원</span><br>' +
+								'<span class="product_remains">남은 수량 ' + productVO.productRemains + '개</span><br>' +
+								'<span class="total_price">소계 ' + (productVO.productPrice * productVO.productNum) + '원</span>' +
+							'</div>' +
+							'<div class="col-sm-1 btn_num btn-group btn_cnt" role="group">' +
+								'<button class="btnMinus btn btn-primary">-</button>' +
+								'<input class="product_num" type="text" value=' + productVO.productNum + '>' +
+								'<button class="btnPlus btn btn-primary">+</button>' +
+							'</div>' +
+							'<div class="col-sm-5">' + 
+								'<button type="button" class="btn-close btnDelete"></button>' +
+							'</div>' +
+							'</div>';
 					} // end for
 					tagBasketList.html(str);
 					calcTotalExpense();
@@ -205,7 +206,7 @@
 		function plusProductNum(input){
 			let basketItem = $(input).parents('.basket_item');
 			let targetId = getTargetId(input);
-			let targetProductNum = basketMap[targetId].productNum;
+			let targetProductNum = parseInt(basketMap[targetId].productNum);
 			let maxNum = basketMap[targetId].productRemains;
 			
 			console.log("plusProductNum() - 클릭된 상품 id : " + targetId);
@@ -350,7 +351,7 @@
 				basketMap[productId].updateNum = function(basketItem, productId, productNum){
 					basketMap[productId].productNum = productNum;
 					basketItem.find('.product_num').val(basketMap[productId].productNum);
-					basketItem.find('.total_price').text(basketMap[productId].productNum * basketMap[productId].productPrice);
+					basketItem.find('.total_price').text('소계 ' + basketMap[productId].productNum * basketMap[productId].productPrice + '원');
 					calcTotalExpense();
 					if(basketMap[productId].updateId != null){
 						clearTimeout(basketMap[productId].updateId);

@@ -25,9 +25,10 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <style>
 
-	  body {
+	 .container {
         font-family: 'Arial', sans-serif; /* 폰트 설정 */
         padding: 20px; /* 전체적인 패딩 */
+        width: 65%;
     }
     
     .order-box {
@@ -99,6 +100,7 @@
 </head>
 <body>
 
+	<jsp:include page="../include/sideBar.jsp"/>
 
 	<div class="container">
 	<br>
@@ -226,7 +228,6 @@
     <a href="../Delivery/deliveryAddressList" class="btn btn-info mt-3">배송지 관리</a>
     	
    </div> <!-- closing container -->
-    
     	
     <script type="text/javascript">
     
