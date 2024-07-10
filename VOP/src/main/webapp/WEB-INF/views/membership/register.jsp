@@ -22,6 +22,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<!-- 웹 페이지에서 로컬 서버의 이미지에 접근 가능 -->
 
 <!-- jquery 라이브러리 import -->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -42,6 +43,61 @@
 	.couponRow {
 		border: 0.5px solid blue;
 	}
+	
+	 #membershipImage {
+         width: 100%;
+         max-width: 1200px;
+         margin: 0 auto;
+         display: block;
+     }
+     .benefits {
+         margin-top: 20px;
+     }
+     .disabled-btn {
+         cursor: not-allowed;
+     }
+     
+      #registerBtn {
+        width: 500px; /* 원하는 가로 크기 */
+        height: 90px; /* 원하는 세로 크기 */
+        background-color: #F25E7A; /* 배경색 */
+        color: white; /* 글자색 */
+        font-size: 30px; /* 글자 크기 */
+        font-weight: bold; /* 볼드체 */
+        border: none; /* 테두리 없애기 */
+        cursor: pointer; /* 커서를 포인터로 변경하여 클릭 가능한 상태로 만듦 */
+        display: block; /* 블록 레벨 요소로 설정하여 가로폭에 맞추어 표시 */
+        margin: 0 auto; /* 가운데 정렬 */
+        line-height: 70px; /* 버튼 높이와 같은 줄 높이로 설정하여 텍스트를 가운데 정렬 */
+        text-align: center; /* 텍스트를 가운데 정렬 */
+        text-decoration: none; /* 기본 텍스트 밑줄 제거 */
+        border-radius: 5px; /* 모서리 둥글게 */
+        transition: opacity 0.3s ease; /* 마우스 호버 시 투명도 전환 효과 추가 */
+    }
+	
+	#registerBtn:hover {
+        opacity: 0.8; /* 마우스를 올렸을 때 투명도 조정 */
+    }
+	
+	.custom-btn {
+        display: inline-block;
+        width: 300px;
+        height: 70px;
+        line-height: 70px;
+        background-color: #F2EB88;
+        color: black;
+        font-size: 25px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .custom-btn:hover {
+        opacity: 0.8; /* 마우스를 올렸을 때 투명도 조정 */
+    }
 </style>
 <title>멤버십 등록</title>
 <meta name="${_csrf.token }" content="${_csrf.token }">
@@ -67,19 +123,9 @@
 		
          // 멤버십 신청
          $('#registerBtn').on('click', function() {
-        	 
-        	 //var hasMembership = "${hasMembership}"; // 변수 초기화
-             
-             //console.log("멤버 권한 = ", hasMembership);
-             
-        	  if (memberVO.memberAuth === '멤버십') {
-                  // 멤버십이 이미 등록된 경우 처리할 로직 추가
-                  alert('이미 멤버십이 등록되어 있습니다.');
-                  document.getElementById("registerBtn").disabled = true; //등록 버튼 비활성화
-                  return;
-              }
               
         	 payment();
+        	 
          });// end registerBtn.click
          
      });// end document.ready
@@ -253,32 +299,45 @@
 </script>
 
 
+<div class="container text-center mt-5">
 
-<h1>VOP 멤버십</h1>
-    <p>월 1000원으로 멤버십 혜택을 누려보세요!</p>
-    <button id="registerBtn">멤버십 신청하기</button>
+
+	<!-- 혜택 이미지 -->
+    <img id="membershipImage" src="${pageContext.request.contextPath }/resources/path_to_your_image.png" alt="멤버십 혜택 이미지"><br><br>
+    
+    
+    <button id="registerBtn">멤버십 신청하기</button><br><br>
+    
     <!-- 멤버십 권한이 있는 유저는 버튼 비활성화 -->
     <sec:authorize access="hasAnyRole('멤버십', '판매자', '관리자')">
 		<script type="text/javascript">
 			$('#registerBtn').attr('disabled', 'disabled');
 		</script>
 	</sec:authorize>
-    <h2>멤버십 혜택</h2>
-
-    <p>무제한 20% 할인 혜택 제공</p><br><br>
-   
-
-<a id="membershipLink" href="success" style="display:none;">멤버십 페이지로 이동하기</a>   
-
-<script type="text/javascript">
-       
-        if (memberVO.memberAuth === '멤버십') {
-            document.getElementById("membershipLink").style.display = "block";
-        }
- 
-</script>
 
     
+   
+    <div class="mt-3"> <!-- 위의 버튼과 간격을 주기 위해 mt-3 클래스 추가 -->
+        <div class="d-flex justify-content-center">
+			 <a id="membershipLink" href="success" class="custom-btn" style="display:none;">멤버십 페이지 이동</a>   
+		</div>
+	</div>		
+
+</div>
+
+  <!-- 멤버십 권한이 있는 유저 멤버십 이동하기 링크 보여주기 -->
+    <sec:authorize access="hasAnyRole('멤버십')">
+		<script type="text/javascript">
+		document.getElementById("membershipLink").style.display = "block";
+		</script>
+	</sec:authorize>
+
+
+
+   <!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> 
 
 </body>
 </html>

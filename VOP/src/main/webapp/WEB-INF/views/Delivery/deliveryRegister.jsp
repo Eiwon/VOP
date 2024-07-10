@@ -68,7 +68,7 @@
         
 		<div class="form-group">
 		    <label for="receiverPhone">휴대폰 번호:</label>
-		    <input type="text" class="form-control" id="receiverPhone" name="receiverPhone" placeholder="010-1234-5678 형식으로 입력하세요." onblur="checkValid(this)" required>
+		    <input type="text" class="form-control" id="receiverPhone" name="receiverPhone" placeholder="01012345678 형식으로 입력하세요." onblur="checkValid(this)" required>
 		    <div></div> <!-- 유효성 메시지 출력을 위한 빈 div -->
 	    </div>
 	    <br><br>
@@ -149,9 +149,9 @@
 			},
 			
 			receiverPhone: {
-	            exp: new RegExp("^010-\\d{4}-\\d{4}$"),
+				exp: new RegExp("^010\\d{8}$"),
 	            success: "올바른 입력 형식 입니다.",
-	            fail: "휴대폰 번호는 010-1234-5678 형식으로 입력하세요.",
+	            fail: "휴대폰 번호는 01012345678 형식으로 입력하세요.",
 	            isValid: false
 	        }
     };
