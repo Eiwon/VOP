@@ -39,8 +39,12 @@ public class LikesServiceImple implements LikesService{
 		if(likesVO.getLikesType() == 1) {
 			int insertReviewLikes = reviewMapper.updateReviewLikeUp(reviewId);
 			log.info(insertRes + "행 좋아요 등록 " + insertReviewLikes + "행 좋아요 갯수 UP");
+		} else if(likesVO.getLikesType() == 0) {
+			int insertReviewDislike = reviewMapper.updateReviewDislikeUp(reviewId);
+			log.info(insertRes + "행 싫어요 등록 " + insertReviewDislike + "행 싫어요 갯수 UP");
+		} else {
+			log.info("에러 발생");
 		}
-		log.info(insertRes + "행 좋아요 등록 ");
 		return insertRes;
 	}
 	
@@ -59,11 +63,11 @@ public class LikesServiceImple implements LikesService{
 		int likesType = likesVO.getLikesType();
 		int updateRes = likesMapper.updateLikes(likesVO);
 		if(likesType == 1) {
-			int insertReviewLikes = reviewMapper.updateReviewLikeUp(reviewId);
+			int insertReviewLikes = reviewMapper.updateReviewLikeUpDown(reviewId);
 			log.info(updateRes + "행 수정" + insertReviewLikes + "행 좋아요 갯수 UP");
 		}else if(likesType == 0) {
-			int insertReviewLikes = reviewMapper.updateReviewLikeDown(reviewId);
-			log.info(updateRes + "행 수정" + insertReviewLikes + "행 좋아요 갯수 DOWN");
+			int insertReviewDislike = reviewMapper.updateReviewLikeDownUp(reviewId);
+			log.info(updateRes + "행 수정" + insertReviewDislike + "행 좋아요 갯수 DOWN");
 		}
 		
 		return updateRes;
@@ -78,10 +82,10 @@ public class LikesServiceImple implements LikesService{
 		if(likesType == 1) {
 			int insertReviewLikes = reviewMapper.updateReviewLikeDown(reviewId);
 			log.info(deleteRes + "행 삭제" + insertReviewLikes + "행 좋아요 갯수 DOWN");
-		} else {
-			log.info(deleteRes + "행 삭제");
+		} else if(likesType == 0){
+			int insertReviewDislike = reviewMapper.updateReviewDislikeDown(reviewId);
+			log.info(deleteRes + "행 삭제" + insertReviewDislike + "행 싫어요 갯수 DOWN");
 		}
-		
 		return deleteRes;
 	}
 	

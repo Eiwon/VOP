@@ -120,8 +120,8 @@
             <input type="hidden" id="productId" value="${productPreviewDTO.productVO.productId}">
             <div class="form-group">
                 <label for="reviewContent">리뷰 내용</label>
-                <textarea class="form-control" id="reviewContent" rows="6" maxlength="450"></textarea>
-                <small id="charCount" class="form-text text-muted">0/450</small>
+                <textarea class="form-control" id="reviewContent" rows="6" maxlength="150"></textarea>
+                <small id="charCount" class="form-text text-muted">0/150</small>
             </div>
             <button type="button" id="btnAdd" class="btn btn-submit btn-block">등록</button>
         </form>
@@ -142,7 +142,7 @@
             // textarea의 입력 길이를 확인하는 이벤트 핸들러
             $('#reviewContent').on('input', function() {
                 let charCount = $(this).val().length;
-                $('#charCount').text(charCount + '/450');
+                $('#charCount').text(charCount + '/150');
             });
 
             // 댓글 입력 코드
@@ -151,7 +151,7 @@
                 let reviewStar = selectedStar;
                 let reviewContent = $('#reviewContent').val();
 
-                if (reviewStar && reviewContent) {
+                if (reviewStar && reviewContent && reviewContent.trim() !== "") {
                     let obj = {
                         'memberId': memberId,
                         'productId': productId,

@@ -237,6 +237,8 @@
                 var answerContent = document.getElementById('replyAnswer_' + this.getAttribute('data-inquiryid')).value;
                 var inquiryId = this.getAttribute('data-inquiryid');
                 var productId = this.getAttribute('data-productid');
+				
+                if (answerContent && answerContent.trim() !== "") {
 
                 var obj = {
                     'inquiryId': inquiryId,
@@ -267,7 +269,11 @@
                 .catch(function(error) {
                     console.error('Error:', error);
                 });
-            });
+                
+                } else{
+                	alert('내용을 입력해주세요.');
+                }
+            });// end btnSubmits()
         }
 
         var btnModifySubmits = document.querySelectorAll('.btnModifySubmit');
@@ -275,7 +281,9 @@
             btnModifySubmits[i].addEventListener('click', function() {
                 var answerContent = document.getElementById('modifyAnswer_' + this.getAttribute('data-inquiryid')).value;
                 var inquiryId = this.getAttribute('data-inquiryid');
-
+				
+                if (answerContent && answerContent.trim() !== "") {
+                
                 var obj = {
                     'inquiryId': inquiryId,
                     'memberId': memberId,
@@ -304,6 +312,10 @@
                 .catch(function(error) {
                     console.error('Error:', error);
                 });
+                
+                } else {
+                	alert('내용을 입력해주세요.');
+                }
             });
         }
 

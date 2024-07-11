@@ -34,12 +34,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       WHERE REVIEW_ID = #{reviewId} AND MEMBER_ID = #{memberId}
    	</delete>
    	
-   	<!-- 좋아요 or 싫어요 productId 그리고 memberId통해 검색 -->
+   	<!-- 좋아요 or 싫어요 reviewId 그리고 memberId통해 검색 -->
    <select id="selectByLikes" resultMap="LikesResultMap">
    		SELECT * FROM LIKES
 	 	WHERE REVIEW_ID = #{reviewId} AND MEMBER_ID = #{memberId}
    </select>
    
+   <!-- 좋아요 or 싫어요 productId 그리고 memberId통해 검색 -->
     <select id="selectByLikesPaging" resultMap="LikesResultMap">
     	SELECT * FROM LIKES
     	WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId} 

@@ -167,7 +167,7 @@
                                 <input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
                                 <input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
                                 <label for="message">내용:</label><br>
-                                <textarea class="content form-control" name="content" maxlength="450" style="resize: none;"></textarea><br>
+                                <textarea class="content form-control" name="content" maxlength="150" style="resize: none;"></textarea><br>
                                 <button type="submit" class="btn btn-success">판매자에게 1:1문의하기</button>
                             </form>    
                         </div><!-- closing modal-content -->
@@ -186,7 +186,7 @@
                                 <input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
                                 <input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
                                 <label for="message">내용:</label><br>
-                                <textarea class="content form-control" name="content" maxlength="450" style="resize: none;"></textarea><br>
+                                <textarea class="content form-control" name="content" maxlength="150" style="resize: none;"></textarea><br>
                                 <button type="submit" class="btn btn-info">수정하기</button>
                             </form>    
                         </div><!-- closing modal-content -->
@@ -261,7 +261,6 @@
                 });
             });// end buttons
         }// end addModalEventListener
-
 
     	// 각 판매자 문의 버튼에 대한 이벤트 리스너 추가
     	addModalEventListener('.sellerInquiry', '.createModal');

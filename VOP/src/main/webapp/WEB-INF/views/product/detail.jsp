@@ -637,6 +637,7 @@ reviewMap.show = function(page) {
                 reviewContent: reviewNUM[i].reviewContent,
                 reviewDateCreated: reviewNUM[i].reviewDateCreated,
                 reviewLike: reviewNUM[i].reviewLike,
+                reviewDislike: reviewNUM[i].reviewDislike,
                 likes: matchingLikes  // 일치하는 답변들 배열을 answers 필드로 저장
             });
         }
@@ -687,7 +688,7 @@ reviewMap.show = function(page) {
     	                '<td class="reviewDateCreated">' + toDate(comments[i].reviewDateCreated) + '</td>' +
     	                '<td class="button-container">' +
     	                '(' + comments[i].reviewLike + ')<div class="button likeButton ' + likeClass + '" data-value="1" data-page="' + page + '"><i class="fa ' + likeIcon + '" aria-hidden="true"></i></div>' +
-    	                '<div class="button dislikeButton ' + dislikeClass + '" data-value="0" data-page="' + page + '"><i class="fa ' + dislikeIcon + '" aria-hidden="true"></i></div>' +
+    	                '(' + comments[i].reviewDislike + ')<div class="button dislikeButton ' + dislikeClass + '" data-value="0" data-page="' + page + '"><i class="fa ' + dislikeIcon + '" aria-hidden="true"></i></div>' +
     	                '</td>' +
     	                '</tr>';
     	    }
@@ -821,7 +822,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
 	
 	} else {
 		alert('로그인 후 사용 가능 합니다.');
-		window.location.href = '../member/login';
+		window.location.href = '../member/login';// 나중에 시큐리티 공부해서 적용하기
 	}
 }); // end (document).on
 
@@ -945,9 +946,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
             // 모든 일치하는 요소들을 테이블의 각 행으로 변환하여 form에 추가
             for (let i = 0; i < comments.length; i++) {
                 // 문의 내용 행 추가
-                form += '<tr>' +
-                		'<td colspan="4">문의 내용</td>' +  
-                		'</tr>' +
+                form += 
                 		'<tr>' +
                 		'<td>문의 내용</td>' +
                         '<td class="inquiryId">' + comments[i].inquiryId + '</td>' +
@@ -958,9 +957,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
 
                 // 모든 일치하는 답변들에 대해 행 추가
                 for (let j = 0; j < comments[i].answers.length; j++) {
-                    form += '<tr>' +
-                            '<td colspan="3">ㄴ답변 내용</td>' +  // 답변 내용 표시
-                            '</tr>' +
+                    form += 
                             '<tr>' +
                             '<td>ㄴ답변 내용</td>' +
                             '<td class="answerId">' + comments[i].answers[j].answerId + '</td>' +

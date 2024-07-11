@@ -39,6 +39,18 @@ public interface ReviewMapper {
 	 // ´ñ±Û ÁÁ¾Æ¿ä DOWN
 	 int updateReviewLikeDown(int reviewId);
 	 
+	// ´ñ±Û ½È¾î¿ä UP
+	int updateReviewDislikeUp(int reviewId);
+		 
+	// ´ñ±Û ½È¾î¿ä DOWN
+	int updateReviewDislikeDown(int reviewId);
+	 
+	// ´ñ±Û ÁÁ¾Æ¿ä UP ½È¾î¿ä DOWN
+	int updateReviewLikeUpDown(int reviewId);
+		 
+	// ´ñ±Û ÁÁ¾Æ¿ä DOWN ½È¾î¿äUP
+	int updateReviewLikeDownUp(int reviewId);
+	 
 	// »óÇ° ¸®ºä(º°) ÃÑÇÕ °Ë»ö
 	int selectReviewStar(int productId);
 	

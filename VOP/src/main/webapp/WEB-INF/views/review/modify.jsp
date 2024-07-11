@@ -97,8 +97,8 @@
             </fieldset>
             <div class="form-group">
                 <label for="reviewContent">리뷰 내용</label>
-                <textarea class="form-control" id="reviewContent" rows="6" maxlength="450"></textarea>
-                <small id="charCount" class="form-text text-muted">0/450</small>
+                <textarea class="form-control" id="reviewContent" rows="6" maxlength="150"></textarea>
+                <small id="charCount" class="form-text text-muted">0/150</small>
             </div>
             <button type="button" id="btnUpdate" class="btn btn-submit">수정</button>
             <input type="hidden" id="productId" value="${productVO.productId}">
@@ -120,7 +120,7 @@
             // textarea의 입력 길이를 확인하는 이벤트 핸들러
             $('#reviewContent').on('input', function() {
                 let charCount = $(this).val().length;
-                $('#charCount').text(charCount + '/450');
+                $('#charCount').text(charCount + '/150');
             });
 
             // 수정 버튼 클릭 시
@@ -129,7 +129,7 @@
                 let reviewStar = selectedStar;
                 let reviewContent = $('#reviewContent').val();
 
-                if (reviewStar && reviewContent) {
+                if (reviewStar && reviewContent && reviewContent.trim() !== "") {
                     let obj = {
                         'reviewStar': reviewStar,
                         'reviewContent': reviewContent,
