@@ -8,12 +8,11 @@
 <style type="text/css">
 .search_table {
 	border: 1px solid black;
-	width: 1000px;
 }
 
 
 .request_container {
-	height: 800px;
+	height: 500px;
 }
 
 .page_list {
@@ -32,54 +31,106 @@
 .requestList td {
 	width: 200px;
 }
+
+.body_container{
+	width: 65%;
+	margin: auto;
+}
+.inner_header {
+	margin: 40px;
+}
+.form_foot {
+	display: flex;
+	justify-content: center;
+	margin-top: 4px;
+}
 </style>
 <title>관리자 페이지</title>
 </head>
 <jsp:include page="../include/header.jsp"></jsp:include>
 
 <body>
-	<div>
+<jsp:include page="../include/sideBar.jsp"/>
+	<div class="body_container">
+	<div class="inner_header">
 		<h2>관리자 페이지</h2>
 	</div>
-	<div>
-		<a href="../popupAds/main">팝업 광고 관리</a>
-		<a href="../coupon/main">쿠폰 관리</a>
+	<div style="display: flex; justify-content: flex-end;">
+		<div class="btn-group" role="group">
+			<a href="../popupAds/main" class="btn btn-outline-primary">팝업 광고 관리</a>
+			<a href="../coupon/main" class="btn btn-outline-primary">쿠폰 관리</a>
+		</div>
 	</div>
 	<div>
-		<div class="request_container">
+		<div class="request_container table">
 			<h3>사업자 등록 요청</h3>
 			<table class="search_table">
+				<thead>
+    				<tr>
+      				<th scope="col">아이디</th>
+     				<th scope="col">사업자 명</th>
+      				<th scope="col">신청 시간</th>
+     			 	<th scope="col">상태</th>
+    				</tr>
+ 				</thead>
 				<tbody id="seller_req_list" class="requestList">
 				</tbody>
-				<tfoot id="seller_req_list_page"></tfoot>
 			</table>
+			<div class="form_foot" id="seller_req_list_page"></div>
 		</div>
-		<div class="request_container">
+		<div class="request_container table">
 			<h3>등록된 사업자 조회</h3>
 			<table class="search_table">
+				<thead>
+    				<tr>
+      				<th scope="col">아이디</th>
+     				<th scope="col">사업자 명</th>
+      				<th scope="col">신청 시간</th>
+    				</tr>
+ 				</thead>
 				<tbody id="seller_approved_list" class="requestList">
 				</tbody>
-				<tfoot id="seller_approved_list_page"></tfoot>
 			</table>
+			<div class="form_foot" id="seller_approved_list_page"></div>
 		</div>
-		<div class="request_container">
+		<div class="request_container table">
 			<h3>상품 등록 요청</h3>
 			<table class="search_table">
+				<thead>
+    				<tr>
+      				<th scope="col">썸네일</th>
+     				<th scope="col">분류</th>
+      				<th scope="col">품명</th>
+      				<th scope="col">가격</th>
+      				<th scope="col">판매자</th>
+      				<th scope="col">신청 시간</th>
+    				</tr>
+ 				</thead>
 				<tbody id="product_register_req_list" class="requestList">
 				</tbody>
-				<tfoot id="product_register_req_list_page"></tfoot>
 			</table>
+			<div class="form_foot" id="product_register_req_list_page"></div>
 		</div>
 		<div class="request_container">
 			<h3>상품 삭제 요청</h3>
-			<table class="search_table">
+			<table class="search_table table">
+				<thead>
+    				<tr>
+      				<th scope="col">썸네일</th>
+     				<th scope="col">분류</th>
+      				<th scope="col">품명</th>
+      				<th scope="col">가격</th>
+      				<th scope="col">판매자</th>
+      				<th scope="col">신청 시간</th>
+    				</tr>
+ 				</thead>
 				<tbody id="product_delete_req_list" class="requestList">
 				</tbody>
-				<tfoot id="product_delete_req_list_page"></tfoot>
 			</table>
+			<div class="form_foot" id="product_delete_req_list_page"></div>
 		</div>
 	</div>
-	
+	</div>
 	
 	<script type="text/javascript">
 		let tagSellerReqList = $('#seller_req_list');
@@ -240,27 +291,42 @@
 			const pageMaker = board.pageMaker;
 			const startNum = pageMaker.startNum;
 			const endNum = pageMaker.endNum;
+			const curPage = pageMaker.curPage;
 			
-			let pageForm = $('<ul class="page_list"></ul>');
+			let pageForm = $('<ul class="page_list pagination"></ul>');
 			let numForm;
+			
+			numForm = $('<li class="page-item"><a class="page-link">&laquo;</a></li>');
+			// 이전 페이지가 있으면 클릭 리스너 등록, 없으면 disabled
 			if(pageMaker.prev){
-				numForm = $('<li>이전&nbsp&nbsp</li>').click(function() {
+				numForm.click(function() {
 					board.show(startNum -1);
-				});
-				pageForm.append(numForm);
+				});	
+			}else {
+				numForm.addClass('disabled');
 			}
+			pageForm.append(numForm);
+			
+			
 			for(let x = startNum; x <= endNum; x++){
-				numForm = $('<li>' + x + '&nbsp&nbsp</li>').click(function(){
+				numForm = $('<li class="page-item"><a class="page-link">' + x + '</a></li>').click(function(){
 					board.show(x);
 				});
+				if(curPage == x) { // 현재 페이지 번호는 색 변경
+					numForm.addClass('active');
+				}
 				pageForm.append(numForm);
 			}
+			
+			numForm = $('<li class="page-item"><a class="page-link">&raquo;</a></li>');
 			if(pageMaker.next){
-				numForm = $('<li>다음</li>').click(function(){
+				numForm.click(function(){
 					board.show(endNum +1);
 				});
-				pageForm.append(numForm);
+			}else{
+				numForm.addClass('disabled');
 			}
+			pageForm.append(numForm);
 			return pageForm;
 		} // end makePageForm
 		

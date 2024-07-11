@@ -25,9 +25,10 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <style>
 
-	  body {
+	 .container {
         font-family: 'Arial', sans-serif; /* 폰트 설정 */
         padding: 20px; /* 전체적인 패딩 */
+        width: 65%;
     }
     
     .order-box {
@@ -101,6 +102,7 @@
 </head>
 <body>
 
+	<jsp:include page="../include/sideBar.jsp"/>
 
 	<div class="container">
 	<br>
@@ -165,7 +167,7 @@
                                 <input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
                                 <input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
                                 <label for="message">내용:</label><br>
-                                <textarea class="content form-control" name="content" maxlength="450" style="resize: none;"></textarea><br>
+                                <textarea class="content form-control" name="content" maxlength="150" style="resize: none;"></textarea><br>
                                 <button type="submit" class="btn btn-success">판매자에게 1:1문의하기</button>
                             </form>    
                         </div><!-- closing modal-content -->
@@ -184,7 +186,7 @@
                                 <input type="hidden" id="memberId" name="memberId" value="${memberDetails.getUsername()}">
                                 <input type="hidden" id="productId" name="productId" value="${orderVO.productId}">
                                 <label for="message">내용:</label><br>
-                                <textarea class="content form-control" name="content" maxlength="450" style="resize: none;"></textarea><br>
+                                <textarea class="content form-control" name="content" maxlength="150" style="resize: none;"></textarea><br>
                                 <button type="submit" class="btn btn-info">수정하기</button>
                             </form>    
                         </div><!-- closing modal-content -->
@@ -228,7 +230,6 @@
     <a href="../Delivery/deliveryAddressList" class="btn btn-info mt-3">배송지 관리</a>
     	
    </div> <!-- closing container -->
-    
     	
     <script type="text/javascript">
     
@@ -260,7 +261,6 @@
                 });
             });// end buttons
         }// end addModalEventListener
-
 
     	// 각 판매자 문의 버튼에 대한 이벤트 리스너 추가
     	addModalEventListener('.sellerInquiry', '.createModal');

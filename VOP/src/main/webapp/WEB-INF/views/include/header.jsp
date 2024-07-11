@@ -54,10 +54,13 @@ body {
 .container2.user-links2 a:hover {
     color: black; /* 호버 시 글자 색상 설정 */
 }
-
+.user_container {
+	display: flex;
+	justify-content: flex-end;
+}
 /* 검색 라인 설정 */
 .line_search {
-    width: 65%; /* 너비 설정 */
+    width: 100%; /* 너비 설정 */
     margin: auto; /* 가운데 정렬 */
 }
 
@@ -226,11 +229,11 @@ body {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <div class="container2">
 
-    <div class="user-links2" id="box_login">
+    <div class="user_container" id="box_login">
     	<sec:authorize access="isAuthenticated()">
-    		<div>
-    			${memberDetails.username } 님 환영합니다. <br>
-    			${memberDetails.username } 님의 현재 권한 : ${memberDetails.authorities[0].authority.substring(5) }
+    		<div style="font-size: 10px;">
+    			${memberDetails.username } 님 환영합니다<br>
+    			권한 : ${memberDetails.authorities[0].authority.substring(5) }
     		</div>
     		<form action="../member/logout" method="POST">
     			<input type="submit" value="로그아웃">
@@ -238,11 +241,17 @@ body {
     		</form>
     	</sec:authorize>
     	<sec:authorize access="isAnonymous()">
-    		<a href="../member/login">로그인</a>
+    		<a href="../member/login" style="margin-right: 10px;">로그인</a>
         	<a href="../member/register">회원가입</a>
     	</sec:authorize>
     </div>
 	<div class="line_search">
+	
+	<!-- VOP 링크 추가 -->
+    <a href="../board/main" class="vop-link">
+    <img src="${pageContext.request.contextPath}/resources/vop.png">
+	</a>
+	
 	<div class="btn-group maincategory" role="group">
     	<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
       		카테고리
@@ -269,11 +278,6 @@ body {
    	 	</ul>
     </div>
 	
-	<!-- VOP 링크 추가 -->
-    <a href="../board/main" class="vop-link">
-    <img src="${pageContext.request.contextPath}/resources/vop.png" onclick="window.location.href='../board/main';">
-	</a>
-    
     <!-- 카테고리 드롭다운 -->
     <div class="search-container">
           <!-- 카테고리 선택 드롭다운 -->

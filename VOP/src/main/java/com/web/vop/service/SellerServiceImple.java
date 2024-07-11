@@ -112,8 +112,7 @@ public class SellerServiceImple implements SellerService{
 	public int retrySellerRequest(SellerVO sellerVO) {
 		log.info("판매자 권한 재신청");
 		sellerVO.setRequestState(Constant.STATE_APPROVAL_WAIT);
-		sellerMapper.updateMemberContent(sellerVO);
-		return 0;
+		return sellerMapper.updateMemberContent(sellerVO);
 	} // end retrySellerRequest
 	
 

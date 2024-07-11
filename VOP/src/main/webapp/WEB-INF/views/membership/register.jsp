@@ -104,7 +104,7 @@
 </head>
 
 <body>
-
+<jsp:include page="../include/sideBar.jsp"/>
 
 
 <script type="text/javascript">

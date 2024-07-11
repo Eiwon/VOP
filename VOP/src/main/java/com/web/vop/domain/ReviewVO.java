@@ -21,5 +21,6 @@ public class ReviewVO {
 	private Date reviewDateCreated;
 	private float reviewStar;
 	private int reviewLike;
+	private int reviewDislike;
 	/* private int imgId; */
 }

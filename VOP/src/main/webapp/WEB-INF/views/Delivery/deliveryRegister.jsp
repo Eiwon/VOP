@@ -30,7 +30,7 @@
     </style>
 </head>
 <body>
-
+<jsp:include page="../include/sideBar.jsp"/>
 
 <div class="container">
 <h2 class="text-center mt-5">배송지 등록</h2><br>

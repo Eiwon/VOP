@@ -17,6 +17,10 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- 부가적인 사용자 지정 CSS -->
     <style>
+    	.container {
+    		width: 75%;
+    		margin: auto;
+    	}
     	.custom-badge {
 		    font-size: 0.9rem; /* 원하는 크기로 조정 */
 		    padding: 0.3rem 0.5rem; /* 패딩을 조절하여 크기를 조정할 수도 있습니다 */
@@ -62,6 +66,7 @@
     </style>
 </head>
 <body>
+<jsp:include page="../include/sideBar.jsp"/>
 <div class="container"><br>
     <h2 class="mt-4 mb-4">${memberDetails.getUsername()}님의 배송지 관리</h2>
     <br>

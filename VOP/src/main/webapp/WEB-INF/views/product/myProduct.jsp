@@ -12,7 +12,7 @@
 <style type="text/css">
 
 .body_container{
-	width: 65%;
+	width: 60%;
 	margin: auto;
 }
 .product_table{
@@ -25,6 +25,8 @@
 </head>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <body>
+	<jsp:include page="../include/sideBar.jsp"/>
+	
 	<div class="body_container">
 		<div>
 			<strong>${memberDetails.getUsername() } 님이 등록한 상품</strong>
@@ -32,7 +34,6 @@
 		<div id="product_list" class="row row-cols-5"></div>
 		<div id="product_list_page"></div>
 	</div>
-	
 	<script type="text/javascript">
 		let pagingListDTO = {}; // 상품 목록과 페이지 정보를 저장할 객체 선언
 		
