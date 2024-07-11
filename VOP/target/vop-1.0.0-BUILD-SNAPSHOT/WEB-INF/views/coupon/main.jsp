@@ -8,9 +8,6 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <style type="text/css">
-.formContainer{
-	border: 1px solid black;
-}
 
 .pageList {
 	display: flex;
@@ -22,17 +19,18 @@
 	display: flex;
 	flex-direction: row;
 }
-.couponId {
-	width: 100px;
+.body_container{
+	width: 65%;
+	margin: auto;
+	height: 500px;
 }
-.couponName {
-	width: 200px;
+.inner_header {
+	margin: 40px;
 }
-.discount {
-	width : 100px;
-}
-.dateCreated {
-	width : 200px;
+.form_foot {
+	display: flex;
+	justify-content: center;
+	margin-top: 4px;
 }
 .selected {
 	background-color: red;
@@ -40,30 +38,40 @@
 .unselected {
 	background-color: white;
 }
+.couponPage {
+	display: flex;
+	justify-content: center;
+	margin-top: 4px;
+}
 </style>
 <title>쿠폰 관리</title>
 </head>
 <body>
-	<div class="formContainer">
-		<div>
+	<jsp:include page="../include/sideBar.jsp"/>
+	<div class="body_container ">
+		<div class="inner_header">
 			<h2>등록된 쿠폰 목록</h2>
 		</div>
-		<div>
+		<div style="height: 200px;">
 			<div class="couponHeader tableList">
-				<div class="couponId">쿠폰 코드</div>
-				<div class="couponName">쿠폰명</div>
-				<div class="discount">할인률</div>
-				<div class="dateCreated">등록일</div>
-				<div class="publishing">배포 상태</div>
+				<div class="couponId col">쿠폰 코드</div>
+				<div class="couponName col">쿠폰명</div>
+				<div class="discount col">할인률</div>
+				<div class="dateCreated col">등록일</div>
+				<div class="publishing col">배포 상태</div>
 			</div>
 			<div class="couponList"></div>
-			<div class="couponPage"></div>
 		</div>
+		
+		<div class="couponPage"></div>
+		
 		<div>
-			<input type="button" value="쿠폰 등록" onclick="registerCoupon()">
-			<input type="button" value="삭제" onclick="deleteCoupon()">
-			<input type="button" value="배포" onclick="publishCoupon(1)">
-			<input type="button" value="배포 취소" onclick="publishCoupon(0)">
+			<input type="button" class="btn btn-outline-primary" value="쿠폰 등록" onclick="registerCoupon()">
+			<div class="btn-group" role="group">
+			<input type="button" class="btn btn-outline-success" value="배포" onclick="publishCoupon(1)">
+			<input type="button" class="btn btn-outline-success" value="배포 취소" onclick="publishCoupon(0)">
+			</div>
+			<input type="button" class="btn btn-outline-danger" value="삭제" onclick="deleteCoupon()">
 		</div>
 	</div>
 	<script type="text/javascript">
@@ -105,41 +113,55 @@
 				isPublishing = list[x].publishing == '0' ? '미배포' : '배포중';
 				listForm += 
 					'<div class="couponItem tableList ' + isSelected + '" onclick="select(this)">' +
-						'<span class="couponId">' + list[x].couponId + '</span>' + 
-						'<span class="couponName">' + list[x].couponName + '</span>' +
-						'<span class="discount">' + list[x].discount + '%</span>' +
-						'<span class="dateCreated">' + toDate(list[x].dateCreated) + '</span>' +
-						'<span class="publishing">' + isPublishing + '</span>' +
+						'<span class="couponId col">' + list[x].couponId + '</span>' + 
+						'<span class="couponName col">' + list[x].couponName + '</span>' +
+						'<span class="discount col">' + list[x].discount + '%</span>' +
+						'<span class="dateCreated col">' + toDate(list[x].dateCreated) + '</span>' +
+						'<span class="publishing col">' + isPublishing + '</span>' +
 					'</div>';
 			}
 			return listForm;
 		} // end makeListForm
 		
-		
 		function makePageForm(pageMaker){
 			const startNum = pageMaker.startNum;
 			const endNum = pageMaker.endNum;
+			const curPage = pageMaker.curPage;
 			
-			let pageForm = $('<ul class="pageList"></ul>');
+			let pageForm = $('<ul class="pageList pagination"></ul>');
 			let numForm;
+			
+			numForm = $('<li class="page-item"><a class="page-link">&laquo;</a></li>');
+			// 이전 페이지가 있으면 클릭 리스너 등록, 없으면 disabled
 			if(pageMaker.prev){
-				numForm = $('<li>이전&nbsp&nbsp</li>').click(function() {
+				numForm.click(function() {
 					loadCouponList(startNum -1);
-				});
-				pageForm.append(numForm);
+				});	
+			}else {
+				numForm.addClass('disabled');
 			}
+			pageForm.append(numForm);
+			
 			for(let x = startNum; x <= endNum; x++){
-				numForm = $('<li>' + x + '&nbsp&nbsp</li>').click(function(){
+				numForm = $('<li class="page-item"><a class="page-link">' + x + '</a></li>').click(function(){
 					loadCouponList(x);
 				});
+				if(curPage == x) { // 현재 페이지 번호는 색 변경
+					numForm.addClass('active');
+				}
 				pageForm.append(numForm);
 			}
+			
+			numForm = $('<li class="page-item"><a class="page-link">&raquo;</a></li>');
 			if(pageMaker.next){
-				numForm = $('<li>다음</li>').click(function(){
+				numForm.click(function(){
 					loadCouponList(endNum +1);
 				});
-				pageForm.append(numForm);
+			}else{
+				numForm.addClass('disabled');
 			}
+			pageForm.append(numForm);
+			
 			return pageForm;
 		} // end makePageForm
 		
@@ -164,7 +186,7 @@
 			const popupStat = {
 					'url' : 'register',
 					'name' : 'popupCouponRegister',
-					'option' : 'width=1000, height=600, top=50, left=400'
+					'option' : 'width=300, height=300, top=50, left=400'
 			};
 			
 			// 팝업 창 띄우기

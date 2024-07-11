@@ -10,24 +10,36 @@
 <style type="text/css">
 	.box_info {
 		border: 1px solid black;
-		width: 1000px;
 	}
 	.order_box {
 		display: flex;
     	flex-direction: row;
 	}
+	.body_container{
+		width: 50%;
+		margin: auto
+	}
+	.inner_header {
+		margin: 20px;
+	}
+	.small_header {
+		margin-bottom: 10px;
+		margin-top: 15px;
+		display: flex;
+	}
 </style>
 <title>결제 결과</title>
 </head>
 <body>
-
-	<div>
+	<div class="body_container">
+	<div class="inner_header">
 		<h2>결제 결과</h2>
 	</div>
 	
-		
 	<div class="box_info" id="receiver_info">
-		<h2>받는 사람 정보</h2>
+		<div class="small_header">
+			<h3>받는 사람 정보</h3>
+		</div>
 		<table>
 			<tbody>
 				<tr>
@@ -51,7 +63,9 @@
 	</div>
 		
 	<div class="box_info" id="order_info">
-		<h2>주문 정보</h2>
+		<div class="small_header">
+			<h3>주문 정보</h3>
+		</div>
 		<c:set var="totalPrice" value="0"/>
 		<c:forEach var="orderViewDTO" items="${paymentWrapper.orderList}">
 			<c:set var="orderVO" value="${orderViewDTO.orderVO }"></c:set>
@@ -68,7 +82,9 @@
 	</div>
 		
 	<div class="box_info" id="payment_info">
-		<h2>결제 정보</h2>
+		<div class="small_header">
+			<h3>결제 정보</h3>
+		</div>
 		<table>
 			<tbody>
 				<tr>
@@ -96,10 +112,10 @@
 	</div>
 		
 	<div>
-		<button onclick="toHome()"> 돌아가기 </button>
+		<button class="btn btn-primary" onclick="toHome()"> 돌아가기 </button>
 		
 	</div>
-	
+	</div>
 	<script type="text/javascript">
 		
 		function toHome(){

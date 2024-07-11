@@ -2,157 +2,165 @@
     pageEncoding="UTF-8"%>
 <%@ page import="javax.servlet.http.HttpSession" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!-- 시큐리티 사용하는 코드 -->
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authorize access="isAuthenticated()">
     <sec:authentication var="memberDetails" property="principal"/>
-</sec:authorize> 
+</sec:authorize>
 
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="${_csrf.parameterName }" content="${_csrf.token }">
-<title>리뷰 수정</title>
-<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<jsp:include page="../include/header.jsp"></jsp:include>
-<style>
-/* 리뷰 별 폼 스타일 */
-#myform fieldset {
-    display: inline-block;
-    direction: rtl; /* 텍스트 방향을 오른쪽에서 왼쪽으로 설정 */
-    border: 0;
-}
-
-/* 라디오 버튼 숨김 */
-#myform input[type=radio] {
-    display: none;
-}
-
-/* 별표시 스타일 */
-#myform label {
-    font-size: 1em;
-    color: transparent;
-    text-shadow: 0 0 0 #f0f0f0;
-}
-/* 별표시에 마우스 호버 시 효과 */
-#myform label:hover{
-    text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
-}
-/* 이전 별표시에 마우스 호버 시 효과 */
-#myform label:hover ~ label{
-    text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
-}
-/* 선택된 별표시 스타일 */
-#myform input[type=radio]:checked ~ label{
-    text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="${_csrf.parameterName }" content="${_csrf.token }">
+    <title>리뷰 수정</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <jsp:include page="../include/header.jsp"></jsp:include>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8f9fa;
+            padding-top: 50px;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 50px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-control {
+            height: calc(2.25rem + 2px);
+            border-radius: 4px;
+        }
+        .btn-submit {
+            background-color: #ffa000;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-submit:hover {
+            background-color: #ffca28;
+        }
+        #starFieldset {
+            direction: rtl; /* 오른쪽에서 왼쪽으로 표시 */
+            margin-bottom: 10px;
+        }
+        #starFieldset input[type=radio] {
+            display: none; /* 라디오 버튼 숨김 */
+        }
+        #starFieldset label {
+            font-size: 1.5em;
+            color: #e4e5e9; /* 기본 별 색상 */
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        #starFieldset label:hover,
+        #starFieldset label:hover ~ label {
+            color: #fada00; /* 호버 시 별 색상 변경 */
+        }
+        #starFieldset input[type=radio]:checked ~ label {
+            color: #fada00; /* 선택된 별 색상 변경 */
+        }
+        textarea.form-control {
+            resize: none; /* 크기 조절 불가 */
+        }
+    </style>
 </head>
 <body>
-	<c:set var="productVO" value="${productPreviewDTO.productVO }"></c:set>
-	<h1>리뷰 수정</h1>
-	
-	<div>
-		<p>상품 번호 "${productVO.productId}"</p>
-	</div>
-	
-	<p>이미지 썸네일</p>
-      <div>
-        <img src="${productPreviewDTO.imgUrl}">
-      </div>
-	
- 	<div id="myform">
- 	<fieldset id="starFieldset">
-        <!-- 별점 선택 라디오 버튼 -->
-        <input type="radio" name="reviewStar" value="5" id="rate1"><label for="rate1">★</label>
-        <input type="radio" name="reviewStar" value="4" id="rate2"><label for="rate2">★</label>
-        <input type="radio" name="reviewStar" value="3" id="rate3"><label for="rate3">★</label>
-        <input type="radio" name="reviewStar" value="2" id="rate4"><label for="rate4">★</label>
-        <input type="radio" name="reviewStar" value="1" id="rate5"><label for="rate5">★</label>
-    </fieldset>
-      <input type="text" id="reviewContent">
-      <!-- 이미지는 나중에 -->
-      <button id="btnUpdate">수정</button>
-     </div>
-     
-     <script type="text/javascript">
-     
-     let memberId = "${memberDetails.getUsername()}";
-     
-     $(document).ready(function(){
-    	 	
-    	 	//loadImg();
-    	 	
-    		let selectedStar; // 전역 변수로 selectedStar 선언
-  
-    	    /* // 이미지 없을때 이름과 확장명 보여주는 코드
-    	    function loadImg(){
-    	        $(document).find('img').each(function(){
-    	            let target = $(this);
-    	            let imgId = target.attr("alt");
-    	            $.ajax({
-    	                method : 'GET',
-    	                url : '../image/' + imgId,
-    	                success : function(result){
-    	                    target.attr('src', result);
-    	                }
-    	            }); // end ajax
-    	        });
-    	    } // end loadImg */
-    		
-    	    // 라디오 버튼 클릭 이벤트 핸들러
-    	    $('#starFieldset input[type="radio"]').click(function() {
-    	        // 선택된 별의 값 가져오기
-    	        selectedStar = $(this).val();
-    	        // reviewStar 변수에 선택된 별 값 할당
-    	        $('#reviewStar').val(selectedStar);
-    	        
-    	        console.log(selectedStar);
-    	    });
-     
- 	 // 수정 버튼을 클릭하면 선택된 댓글 수정
-     $('#btnUpdate').click(function(){
-        console.log(this);
+    <div class="container">
+        <c:set var="productVO" value="${productPreviewDTO.productVO }"></c:set>
+        <h1>리뷰 수정</h1>
+        
+        <div>
+            <p>상품 번호: ${productVO.productId}</p>
+        </div>
+        
+        <p>이미지 썸네일</p>
+        <div>
+            <img src="${productPreviewDTO.imgUrl}" style="max-width: 300px; height: auto;" class="mb-4">
+        </div>
+        
+        <form id="myform">
+            <fieldset id="starFieldset">
+                <!-- 별점 선택 라디오 버튼 -->
+                <input type="radio" name="reviewStar" value="5" id="rate5"><label for="rate5">★</label>
+                <input type="radio" name="reviewStar" value="4" id="rate4"><label for="rate4">★</label>
+                <input type="radio" name="reviewStar" value="3" id="rate3"><label for="rate3">★</label>
+                <input type="radio" name="reviewStar" value="2" id="rate2"><label for="rate2">★</label>
+                <input type="radio" name="reviewStar" value="1" id="rate1"><label for="rate1">★</label>
+            </fieldset>
+            <div class="form-group">
+                <label for="reviewContent">리뷰 내용</label>
+                <textarea class="form-control" id="reviewContent" rows="6" maxlength="150"></textarea>
+                <small id="charCount" class="form-text text-muted">0/150</small>
+            </div>
+            <button type="button" id="btnUpdate" class="btn btn-submit">수정</button>
+            <input type="hidden" id="productId" value="${productVO.productId}">
+        </form>
+    </div>
 
-        let reviewStar = selectedStar// 리뷰(별)
-        let reviewContent = $('#reviewContent').val();
-        let productId = ${productVO.productId};
-        if(reviewStar !== null && reviewStar !== '' && reviewStar !== undefined && reviewContent !== null && reviewContent !== '') {
-        let obj = {
-        		'reviewStar' : reviewStar,
-        		'reviewContent' : reviewContent,
-        		'productId' : productId,
-        		'memberId' : memberId
-        }
-        
-        console.log(obj);
-        
-        // ajax 요청
-        $.ajax({
-           type : 'PUT', // 메서드 타입
-           url : '../reviewRest/modify',// 경로 
-           headers : {
-        	   'Content-Type' : 'application/json', // json content-type 설정
-               'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
-           }, // 'Content - Type' : application/json; 헤더 정보가 안들어가면 4050에러가 나온다.
-           data : JSON.stringify(obj), // JSON으로 변환
-           success : function(result) { // 전송 성공 시 서버에서 result 값 전송
-              console.log(result);
-              if(result == 1) {
-                 alert('댓글 수정 성공!');
-                 window.location.href = '../review/list?memberId=' + memberId;
-              } else {
-            	alert('댓글 수정 실패!');
-              }
-           }
+    <script>
+        $(document).ready(function() {
+            let memberId = "${memberDetails.getUsername()}";
+            let selectedStar; // 전역 변수로 selectedStar 선언
+
+            // 라디오 버튼 클릭 이벤트 핸들러
+            $('#starFieldset input[type="radio"]').click(function() {
+                // 선택된 별의 값 가져오기
+                selectedStar = $(this).val();
+                console.log(selectedStar);
+            });
+
+            // textarea의 입력 길이를 확인하는 이벤트 핸들러
+            $('#reviewContent').on('input', function() {
+                let charCount = $(this).val().length;
+                $('#charCount').text(charCount + '/150');
+            });
+
+            // 수정 버튼 클릭 시
+            $('#btnUpdate').click(function(event) {
+                let productId = $("#productId").val(); 
+                let reviewStar = selectedStar;
+                let reviewContent = $('#reviewContent').val();
+
+                if (reviewStar && reviewContent && reviewContent.trim() !== "") {
+                    let obj = {
+                        'reviewStar': reviewStar,
+                        'reviewContent': reviewContent,
+                        'productId': productId,
+                        'memberId': memberId
+                    };
+
+                    // ajax 요청
+                    $.ajax({
+                        type: 'PUT',
+                        url: '../reviewRest/modify',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': $('meta[name="${_csrf.parameterName }"]').attr('content')
+                        },
+                        data: JSON.stringify(obj),
+                        success: function(result) {
+                            console.log(result);
+                            if (result == 1) {
+                                alert('리뷰 수정 성공');
+                                window.location.href = '../review/list?memberId=' + memberId;
+                            } else {
+                                alert('리뷰 수정 실패');
+                            }
+                        }
+                    });
+                } else {
+                    alert('별점과 리뷰 내용을 모두 입력해주세요.');
+                }
+            });
         });
-        } else {
-        	alert('별 표시와 내용을 모두 입력 해주세요');
-        }
-     }); // end replies.on()
-     }); // end document.ready()
-     </script>
-
+    </script>
 </body>
 </html>

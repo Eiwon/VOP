@@ -1,14 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-	
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<!-- 세션 사용할수 있게하는 코드 -->
 <%@ page import="javax.servlet.http.HttpSession"%>
 
-<%@ taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
-	
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal" />
 </sec:authorize>
@@ -16,221 +13,361 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 한국어 인코딩 -->
 <meta charset="UTF-8">
-<meta name="${_csrf.parameterName }" content="${_csrf.token }">
-
-<!-- 모바일 관련 코드라서 없어도 동작 가능 -->
+<meta name="${_csrf.parameterName}" content="${_csrf.token}">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- jquery 라이브러리 import -->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
-
-<!-- 카카오 공유 api 관련 코드 -->
-<!-- 위에 있는 이유는 밑에 있는 코드들이 적용 되야해서 -->
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
 	integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
-	crossorigin="anonymous" type="text/javascript">
-</script>
-
-<!-- Kakao JavaScript SDK를 초기화하는 코드입니다. -->
+	crossorigin="anonymous" type="text/javascript"></script>
 <script>
-Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaScript 키 입력
+Kakao.init('fc798d4c0b15af3cd0e864357925d0b3');
 </script>
-
-
-
 <title>상품 상세 조회</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
-/* 리뷰 별 폼 스타일 (여기 코드로 인해 별이 박스 형태로 안나온다.)*/ 
-#myform fieldset {
-	display: inline-block;
-	direction: ltr; /* 텍스트 방향을 오른쪽에서 왼쪽으로 설정 */
-	border: 0;
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 0;
 }
 
-/* 별표시 스타일 */
+.product-details {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.product-summary, .product-pricing, .product-stock, .product-actions, .product-description {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+}
+
+.product-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.product-category, .product-info, .product-review {
+    flex: 1;
+    min-width: 200px;
+}
+
+.product-thumbnail img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    padding: 5px;
+}
+
+.product-info p, .product-review p, .product-pricing p, .product-stock p {
+    margin: 10px 0;
+}
+
+.product-info span, .product-review span, .product-pricing span, .product-stock span {
+    font-weight: bold;
+}
+
+.product-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+}
+
+.product-actions button, .product-actions .basket-link, .product-actions form button {
+    background-color: #ff6700;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.product-actions .basket-link {
+    background-color: #00aaff;
+}
+
+.product-description img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+#quantity {
+    width: 50px;
+    padding: 5px;
+}
+
+#myform fieldset {
+    display: inline-block;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
 #myform label {
-	font-size: 1em;
-	color: transparent;
-	text-shadow: 0 0 0 #f0f0f0;
-	margin-right: 10px; /* 별 사이의 간격 설정 */
+    font-size: 1em;
+    color: transparent;
+    text-shadow: 0 0 0 #f0d000;
+    margin-right: 10px;
 }
 
 .reviewStars {
-	color: #f0d000; /* 별 색상 */
+    color: #f0d000;
 }
 
-/* end 리뷰 별 폼 스타일 */
-
-/* 오른쪽 정렬 코드 */
 .right-align {
-	display: flex;
-	justify-content: flex-end;
+    display: flex;
+    justify-content: flex-end;
 }
 
-/* 페이징 처리 숫자 스타일 */
 .page_list {
-	display: flex;
-	flex-direction: row;
-	list-style: none;
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 tbody {
-	height: 250px;
+    height: 250px;
 }
+
 tr {
-	height: 50px;
+    height: 50px;
 }
+
 td {
-	width: 200px;
+    width: 200px;
 }
 
-/* 좋아요 or 싫어요 css 코드 */
-        .button-container {
-            display: flex;
-            gap: 20px;
-        }
+.button-container {
+    display: flex;
+    gap: 20px;
+}
 
-        .button {
-            font-size: 24px;
-            color: grey;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
+.button {
+    font-size: 24px;
+    color: grey;
+    cursor: pointer;
+    transition: color 0.3s;
+}
 
-        .button.liked {
-            color: blue;
-        }
+.button.liked {
+    color: blue;
+}
 
-        .button.disliked {
-            color: red;
-        }
+.button.disliked {
+    color: red;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.section {
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.section h3 {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    text-align: center;
+    color: #333;
+}
+
+.content-center {
+    display: flex;
+    justify-content: center;
+}
+
+.content-center div {
+    width: 100%;
+}
+
+.review-table, .comment-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.review-table th, .review-table td, .comment-table th, .comment-table td {
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+    text-align: left;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination div {
+    margin: 0 5px;
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pagination div:hover {
+    background-color: #e0e0e0;
+}
+
+@media (max-width: 768px) {
+    .product-summary {
+        flex-direction: column;
+    }
+
+    .product-actions {
+        flex-direction: column;
+    }
+
+    .product-actions button, .product-actions .basket-link, .product-actions form button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .product-category, .product-info, .product-review {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .container, .product-details {
+        padding: 10px;
+    }
+
+    .section {
+        padding: 10px;
+    }
+
+    .section h3 {
+        font-size: 1.2em;
+    }
+
+    .product-actions button, .product-actions .basket-link, .product-actions form button {
+        padding: 10px;
+    }
+
+    #quantity {
+        width: 100%;
+    }
+}
 </style>
-
 </head>
 <body>
-	
-	<!-- 카카오 공유 아이콘 -->
-<!-- <div class="right-align"> -->
-		<a id="kakaotalk-sharing-btn" href="javascript:;"> 
-		<img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" alt="카카오톡 공유 보내기 버튼"/>
-		</a>
-	<!-- </div>  -->
-	
-	<!-- 상품 상세 페이지 제작 중 -->
-	<h2>상품 상세 페이지</h2>
-	<c:set var="productVO" value="${productDetails.productVO }"/>
-	<c:set var="memberVO" value="${productDetails.memberVO }"/>
+<c:set var="productVO" value="${productDetails.productVO}"/>
+<c:set var="memberVO" value="${productDetails.memberVO}"/>
 
-	<div>
-		<p>카테고리 : ${productVO.category }</p>
-		<!-- 썸네일 상품 이미지 -->
-		<c:choose>
-			<c:when test="${productDetails.thumbnailUrl != null }">
-				<img src="${productDetails.thumbnailUrl }">
-			</c:when>
-		</c:choose>
-		<p>상품 번호 : ${productVO.productId }</p>
-		<p>상품 이름 : ${productVO.productName }</p>
-	</div>
+<div class="product-details">
+    <h2>상품 상세 페이지</h2>
+    <a id="kakaotalk-sharing-btn" href="javascript:;">
+        <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" alt="카카오톡 공유 보내기 버튼"/>
+    </a>
+    <div class="product-summary">
+        <div class="product-category">
+            <span>카테고리:</span> ${productVO.category}
+        </div>
+        <div class="product-thumbnail">
+            <c:choose>
+                <c:when test="${productDetails.thumbnailUrl != null}">
+                    <img src="${productDetails.thumbnailUrl}" alt="상품 이미지">
+                </c:when>
+            </c:choose>
+        </div>
+        <div class="product-info">
+            <p><span>상품 번호:</span> ${productVO.productId}</p>
+            <p><span>상품 이름:</span> ${productVO.productName}</p>
+        </div>
+        <div class="product-review">
+            <div id="myform">
+                <fieldset id="starsFieldset">
+                </fieldset>
+            </div>
+            <p><span>리뷰 평균:</span> ${productVO.reviewAvg}</p>
+            <p><span>리뷰 총 개수:</span> ${productVO.reviewNum}</p>
+        </div>
+    </div>
+    <div class="product-pricing">
+        <p><span>상품 가격:</span> <span id="totalPrice">${productVO.productPrice}</span></p>
+        <input type="number" id="quantity" value="1" min="1" max="99" maxlength="2">
+    </div>
+    <div class="product-stock">
+        <p><span>상품 현황:</span> ${productVO.productState}</p>
+        <p><span>상품 재고:</span> ${productVO.productRemains}</p>
+        <p><span>상품 보관 장소:</span> ${productVO.productPlace}</p>
+        <p><span>판매자:</span> ${productVO.memberId}</p>
+        <p><span>현재 구매 시 도착 일자:</span> <time id="current-date"></time></p>
+    </div>
+    <div class="product-actions">
+        <button id="btnBasket">장바구니</button>
+        <a href="../basket/main" class="basket-link">장바구니 바로가기</a>
+        <form id="checkoutForm" action="../payment/checkout" method="POST">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+            <input type="hidden" name="memberId" value="${memberDetails.getUsername()}"> 
+            <input type="hidden" name="productIds" value="${productVO.productId}">
+            <input type="hidden" name="productNums" value="1">
+            <button type="submit">바로구매</button>
+        </form>
+    </div>
+    <div class="product-description">
+        <p>상품 상세 설명</p>
+        <c:forEach var="imgUrl" items="${productDetails.detailsUrl}">
+            <img src="${imgUrl}" alt="상세 설명 이미지">
+        </c:forEach>
+    </div>
+</div>
 
-	<!-- 리뷰 별점 표시 코드-->
-	<div id="myform">
-    	<fieldset id="starsFieldset">
-        <!-- 별이 여기에 동적으로 추가될 것입니다. -->
-    	</fieldset>
-	</div>
-
-	<div>
-		<p>리뷰 평균 : ${productVO.reviewAvg}</p>
-		<p>리뷰 총 개수 : ${productVO.reviewNum}</p>
-	</div>
-	
-	<div>
-		<p>
-			상품 가격 : <span id="totalPrice">${productVO.productPrice}</span>
-		</p>
-	</div>
-	<!-- 현재 선택된 상품 수량 -->
-	<input type="number" id="quantity" value="1" min="1" max="99"
-		maxlength="2">
-
-	<!-- 상품 배송 정보 제작 해야함 -->
-	<div>
-		<p>상품 현황 : ${productVO.productState}</p>
-		<p>상품 재고 : ${productVO.productRemains}</p>
-		<p>상품 보관 장소 : ${productVO.productPlace}</p>
-		<p>판매자 : ${productVO.memberId}</p>
-		도착 일자 : <time id="current-date"></time>
-	</div>
-
-	<!-- 장바구니 버튼 -->
-	<!-- 세션 아이디가 없는 경우 -->
-	<c:if test="${empty memberDetails.getUsername() }">
-		<button id="btnBasket" disabled="disabled">장바구니</button>
-		<p>로그인 후 장바구니 가능합니다.</p>
-	</c:if>
-	<!-- 세션 아이디가 있는 경우 -->
-	<c:if test="${not empty memberDetails.getUsername() }">
-		<button id="btnBasket">장바구니</button>
-	</c:if>
-	<!-- end 장바구니 버튼 -->
-
-	<!-- 장바구니 링크 -->
-	<a href="../basket/main">장바구니 바로가기</a>
-	
-	<!-- 바로구매 버튼 -->
-	<!-- 로그인된 세션 아이디 전달 -->
-	<form id="checkoutForm" action="../payment/checkout" method="POST">
-		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
-		<input type="hidden" name="memberId" value="${memberDetails.getUsername() }"> 
-		<input type="hidden" name="productIds" value="${productVO.productId}">
-		<input type="hidden" name="productNums" value="1">
-
-		<!-- 세션 아이디가 없 경우 -->
-		<c:if test="${empty memberDetails.getUsername() }">
-			<button type="submit" disabled="disabled">바로구매</button>
-			<p>로그인 후 결제 가능합니다.</p>
-		</c:if>
-
-		<!-- 세션 아이디가 있는 경우 -->
-		<c:if test="${not empty memberDetails.getUsername() }">
-			<button type="submit">바로구매</button>
-		</c:if>
-	</form>
-	<!-- end 바로구매 버튼 -->
-
-	<!-- 상품 설명 이미지 -->
-	<p>상품 상세 설명</p>
-
-	<div>
-		<c:forEach var="imgUrl" items="${productDetails.detailsUrl}">
-			<img src="${imgUrl }">
-		</c:forEach>
-	</div>
-	
-	<!-- 댓글 화면 코드 및 가운데 정렬 -->
-	<h3>상품 리뷰</h3>
-	<div id="review"></div>
-	<!-- 리뷰 페징처리 내용 -->
-	<div id="product_list_page"></div>
-	
-	<h3>상품 문의</h3>
-	<div id="comments"></div>
-	<!-- 문의 페징처리 내용 -->
-	<div id="comments_list_page"></div>
+<div class="container">
+    <div class="section">
+        <h3>상품 리뷰</h3>
+        <div class="content-center">
+            <div id="review"></div>
+        </div>
+        <div class="pagination" id="product_list_page"></div>
+    </div>
+    <div class="section">	
+        <h3>상품 문의</h3>
+        <div class="content-center">
+            <div id="comments"></div>
+        </div>
+        <div class="pagination" id="comments_list_page"></div>
+    </div>
+</div>
 
 	<!-- <div>
 		<h3>배송/교환/반품 안내</h3>
 		<p>내용 작성 예정</p>
 	</div> -->
-
+	
 	<!-- 좋아요 표시 제작 예정? -->
-
 	<script type="text/javascript">
+	
+	 //const vopUrl = "http://3.36.204.47:8080/vop";
+	 const vopUrl = "http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}";
+	 // 현재 시험 용으로는 사용하면 안되는데 나중에 완성 되면는 사용해도 될것 같다. 우선는 주소는 하드 코딩으로 작성 하기
+	 // ${pageContext.request.serverName} ip 주소 현재 pc ip 주소(로컬 호스트)
+	 // ${pageContext.request.serverPort} 포트 번호 현재 pc 포트 번호
+	 // ${pageContext.request.contextPath} 프로젝트 명 현재 pc의 서버 명
      
      let reviewMap = {};
      let inquiryMap = {};
@@ -287,6 +424,35 @@ td {
         // 수량을 form 요소에 업데이트
         document.querySelector('input[name="productNums"]').value = quantity;
     });
+    
+    $('#quantity').on('input', function() {
+        // 현재 입력된 값 가져오기
+        let quantity = $(this).val();
+
+        // 값이 비어 있거나 숫자가 아니면 기본값 1로 설정
+        if (!quantity || isNaN(quantity)) {
+            quantity = 1;
+        } else {
+            // 숫자로 변환 후, 최소값(min)과 최대값(max) 사이 범위 제한
+            quantity = parseInt(quantity);
+            let min = parseInt($(this).attr('min'));
+            let max = parseInt($(this).attr('max'));
+            quantity = Math.min(Math.max(quantity, min), max);
+        }
+
+        // 입력란에 수정된 값을 적용
+        $(this).val(quantity);
+        
+     	// 총 상품 가격 계산 및 표시
+        let totalPrice = quantity * productPrice;
+        totalPriceSpan.textContent = totalPrice;
+        
+        // 수량을 form 요소에 업데이트
+        document.querySelector('input[name="productNums"]').value = quantity;
+    });
+    
+ 	// 페이지 로드 후 초기 수량 1로 설정
+    $('#quantity').val(1);
      /* end 상품 수량 관련 코드 */
       
 
@@ -294,26 +460,25 @@ td {
 function createStars(reviewAvg) {
     const starContainer = document.getElementById('starsFieldset'); // 별을 추가할 컨테이너
     const starCount = 5; // 생성할 별의 개수
-
+    console.log('reviewAvg : ' + reviewAvg);
     // 별을 생성하여 컨테이너에 추가하는 반복문
     for (let i = 0; i < starCount; i++) {
         const starLabel = document.createElement('label'); // 별을 나타낼 라벨 요소 생성
-        starLabel.setAttribute('for', 'star'); // for 속성 설정
         starLabel.innerHTML = '&#9733;'; // HTML 엔티티를 사용하여 별 모양 설정
         if (i < reviewAvg) {
             starLabel.style.color = '#f0d000'; // 선택된 별보다 작은 값의 별은 노란색으로 표시
         } else {
-            starLabel.style.color = 'transparent'; // 선택된 별보다 큰 값의 별은 투명하게 표시
+            starLabel.style.color = 'lightgray'; // 선택된 별보다 큰 값의 별은 회색으로 표시
         }
         starContainer.appendChild(starLabel); // 컨테이너에 별 추가
     }
 }
 
+
 $(document).ready(function() { 
 	displayCurrentDate();
-	//loadImg();
-    reviewMap.show(1); //리뷰
-    inquiryMap.show(1);
+    reviewMap.show(1); // 리뷰
+    inquiryMap.show(1);// 문의
     createStars(reviewAvg); // 상품 평균 리뷰값 별 표시
     
     // 장바구니
@@ -354,13 +519,13 @@ Kakao.Share.createDefaultButton({
 	    objectType: 'commerce',
 	    content: {
 	      title: 
-	    	  'VOP사이트 다양한 상품들도 있습니다. 많은 관심 부탁 드립니다.',
+	    	  'VOP 사이트는 PC로 이용해 주세요.',
 	    	  // 공유시 제목 
 	      imageUrl: '${productDetails.thumbnailUrl}',// 썸네일 이미지 가져오는 기능(월래는 url를 통해 이미지 불려 옴)
 	      link: {
 	        // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
-	        mobileWebUrl: 'http://localhost:8080/vop/board/main', //카카오 api에 등록된 경로
-	        webUrl: 'http://localhost:8080/vop/board/main',
+	        mobileWebUrl: vopUrl + '/board/main', //카카오 api에 등록된 경로
+	        webUrl: vopUrl + '/board/main',
 	      },
 	    },
 	    commerce: { // 상품 설명
@@ -373,15 +538,15 @@ Kakao.Share.createDefaultButton({
 	      {
 	        title: '상품 보러가기', // 공유 했을때 버튼
 	        link: { // 클릭시 이동하는 링크
-	          mobileWebUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 앱 버전
-	          webUrl: 'http://localhost:8080/vop/product/detail?productId=${productVO.productId }', // 웹 버전
+	          mobileWebUrl: vopUrl + '/product/detail?productId=${productVO.productId }', // 앱 버전
+	          webUrl: vopUrl + '/product/detail?productId=${productVO.productId }', // 웹 버전
 	        },
 	      },
 	      {
 		    title: '메인 페이지', // 공유 했을때 버튼
 		    link: { // 클릭시 이동하는 링크
-		      mobileWebUrl: 'http://localhost:8080/vop/board/main', // 앱 버전
-		      webUrl: 'http://localhost:8080/vop/board/main', // 웹 버전
+		      mobileWebUrl: vopUrl + '/board/main', // 앱 버전
+		      webUrl: vopUrl + '/board/main', // 웹 버전
 		     },
 		   },
 	    ],
@@ -472,6 +637,7 @@ reviewMap.show = function(page) {
                 reviewContent: reviewNUM[i].reviewContent,
                 reviewDateCreated: reviewNUM[i].reviewDateCreated,
                 reviewLike: reviewNUM[i].reviewLike,
+                reviewDislike: reviewNUM[i].reviewDislike,
                 likes: matchingLikes  // 일치하는 답변들 배열을 answers 필드로 저장
             });
         }
@@ -522,7 +688,7 @@ reviewMap.show = function(page) {
     	                '<td class="reviewDateCreated">' + toDate(comments[i].reviewDateCreated) + '</td>' +
     	                '<td class="button-container">' +
     	                '(' + comments[i].reviewLike + ')<div class="button likeButton ' + likeClass + '" data-value="1" data-page="' + page + '"><i class="fa ' + likeIcon + '" aria-hidden="true"></i></div>' +
-    	                '<div class="button dislikeButton ' + dislikeClass + '" data-value="0" data-page="' + page + '"><i class="fa ' + dislikeIcon + '" aria-hidden="true"></i></div>' +
+    	                '(' + comments[i].reviewDislike + ')<div class="button dislikeButton ' + dislikeClass + '" data-value="0" data-page="' + page + '"><i class="fa ' + dislikeIcon + '" aria-hidden="true"></i></div>' +
     	                '</td>' +
     	                '</tr>';
     	    }
@@ -656,7 +822,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
 	
 	} else {
 		alert('로그인 후 사용 가능 합니다.');
-		window.location.href = '../member/login';
+		window.location.href = '../member/login';// 나중에 시큐리티 공부해서 적용하기
 	}
 }); // end (document).on
 
@@ -697,7 +863,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
 	// 문의(대댓글) 
     inquiryMap.show = function(page) {
         let inquiryUrl = '../inquiryRest/list/' + productId + '/' + page;// 문의 데이터 API 엔드포인트
-        let answerUrl = '../answer/list/' + productId;      // 답변 데이터 API 엔드포인트
+        let answerUrl = '../answer/list/' + productId; // 답변 데이터 API 엔드포인트
         
         let inquiryNUM = []; // 문의 데이터 배열
         let answerNUM = []; // 답변 데이터 배열
@@ -780,10 +946,9 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
             // 모든 일치하는 요소들을 테이블의 각 행으로 변환하여 form에 추가
             for (let i = 0; i < comments.length; i++) {
                 // 문의 내용 행 추가
-                form += '<tr>' +
-                		'<td colspan="4">문의 내용</td>' +  
-                		'</tr>' +
+                form += 
                 		'<tr>' +
+                		'<td>문의 내용</td>' +
                         '<td class="inquiryId">' + comments[i].inquiryId + '</td>' +
                         '<td class="memberId">' + comments[i].memberId + '</td>' +
                         '<td class="inquiryContent">' + comments[i].inquiryContent + '</td>' + 
@@ -792,10 +957,9 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
 
                 // 모든 일치하는 답변들에 대해 행 추가
                 for (let j = 0; j < comments[i].answers.length; j++) {
-                    form += '<tr>' +
-                            '<td colspan="3">ㄴ답변 내용</td>' +  // 답변 내용 표시
-                            '</tr>' +
+                    form += 
                             '<tr>' +
+                            '<td>ㄴ답변 내용</td>' +
                             '<td class="answerId">' + comments[i].answers[j].answerId + '</td>' +
                             '<td class="answerMemberId">' + comments[i].answers[j].memberId + '</td>' +
                             '<td class="answerContent">' + comments[i].answers[j].answerContent + '</td>' + 
@@ -841,27 +1005,7 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
 		}
 		return pageForm;
 	} // end inquiryMakePageForm
-	
-	/* // 이미지가 없을때 대체하는 코드
-	function loadImg(){
-		$(document).find('.productImg').each(function(){
-			let target = $(this);
-			let imgId = target.attr("alt");
-			$.ajax({
-				method : 'GET',
-				url : '../image/' + imgId,
-				success : function(result){
-					target.attr('src', result);
-					// 카카오 공유시 썸네일 이미지 사용하기 위해 사용
-					if (imgId === thumbnailImgId) {
-				          // 썸네일 이미지 URL을 카카오 공유 설정에 사용
-				          initKakaoShare(result);
-				        }
-				}// end success
-			}); // end ajax
-		});//end document
-	} // end loadImg  */
-	
+
 	// 시간 변환 함수
 	function toDate(timestamp) {
         let date = new Date(timestamp);

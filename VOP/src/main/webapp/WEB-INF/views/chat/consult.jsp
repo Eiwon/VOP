@@ -51,8 +51,9 @@
 		let consultSocketUrl = "ws://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/consult";
 		let consultWebSocket = null;
 		let roomId = '${roomId }';
-		const role = '${role }';
 		const memberId = '${memberDetails.username }';
+		const role = '${role }';
+		let stateCode = 0;
 		let tagReadArea = $('#readArea');
 		let tagWriteChat = $('#writeChat');
 		let chatHandler = {};

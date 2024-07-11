@@ -10,38 +10,49 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <style type="text/css">
-tr{
-	height: 50px;
+.body_container{
+	width: 50%;
+	margin: auto;
+}
+.inner_header {
+	margin: 40px;
+	text-align: center;
+}
+.pw_alert {
+	color: red;
 }
 </style>
 <title>회원 정보 수정</title>
 </head>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <body>
-	<div>
-		<div>
+	<jsp:include page="../include/sideBar.jsp"/>
+	
+	<div class="body_container">
+		<div class="inner_header">
 			<h2 id="subtitle">회원 정보 확인</h2>
 		</div>
-		<div id="form">
-			<span>비밀번호 확인</span>
-			<div>
-				<span>아이디</span><br>
-				<span>${memberVO.memberId }</span>
+		<div class="inner_header">
+			<span id="notice">비밀번호를 다시 입력해주세요</span>
+		</div>	
+		<div id="form" >
+			<div class="input-group mb-3">
+				<span class="input-group-text">아이디</span>
+				<input type="text" class="form-control" value="${memberVO.memberId }" readonly>
 			</div>
-			<div>
-				<span>비밀번호</span>
-				<input type="password" id="member_pw">
-				<div></div>
+			<div class="input-group mb-3">
+				<span class="input-group-text">비밀번호</span>
+				<input type="password" class="form-control" id="member_pw">
 			</div>
+			<div class="pw_alert"></div>
 			<div>
-				<input type="button" value="확인" onclick="checkPw()">
-				<input type="button" value="취소" onclick='location.href="../board/mypage"'>
+				<input type="button" class="btn btn-primary" value="확인" onclick="checkPw()">
+				<input type="button" class="btn btn-primary" value="취소" onclick='location.href="../board/mypage"'>
 			</div>
 		</div>
 		<div class="link_withdrawal"></div>
 		
 	</div>
-	
 	<script type="text/javascript">
 		let memberPw = $('#member_pw');
 		let memberOrigin = {
@@ -88,7 +99,7 @@ tr{
 			let memberPwVal = memberPw.val();
 			
 			if(memberPwVal.length == 0){
-				memberPw.next().text("비밀번호를 입력해주세요.");
+				$('.pw_alert').text("비밀번호를 입력해주세요.");
 				return;
 			}
 			
@@ -106,7 +117,7 @@ tr{
 					if(result){
 						printModify();	
 					}else{
-						memberPw.next().text("비밀번호가 일치하지 않습니다.");
+						$('.pw_alert').text("비밀번호가 일치하지 않습니다.");
 					}
 				} // end success
 			}); // end ajax
@@ -116,23 +127,22 @@ tr{
 		
 		function printModify(){
 			$('#subtitle').text("회원 정보 변경");
-			let form = '<form action="modify" method="POST" id="formUpdate" accept-charset="UTF-8"><table><tbody>' +
+			$('#notice').text('아이디는 변경할 수 없습니다');
+			let form = '<form action="modify" method="POST" id="formUpdate">' +
 				'<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">' +
-				'<tr><td>아이디</td>' +
-				'<td><input type="text" name="memberId" value="${memberVO.memberId }" readonly></td><td></td></tr>' +
-				'<tr><td>이름</td>' +
-				'<td><input type="text" name="memberName" value="${memberVO.memberName }" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
-				'<tr><td>휴대폰 번호</td>' +
-				'<td><input type="text" name="memberPhone" value="${memberVO.memberPhone }" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
-				'<tr><td>Email</td>' +
-				'<td><input type="text" name="memberEmail" value="${memberVO.memberEmail }" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
-				'<tr><td>비밀번호</td>' +
-				'<td><input type="password" id="memberPw" name="memberPw" onblur="validCheck(this)"></td><td class="alert"></td></tr>' +
-				'<tr><td>비밀번호 확인</td>' +
-				'<td><input type="password" id="memberPwChk"></td><td class="alert"></td></tr>' +
-				'</tbody></table>' + 
-				'<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">' + 
-				'<td><input type="submit"></td>' + 
+				'<div class="input-group mb-3"><span class="input-group-text">아이디</span>' +
+				'<input type="text" name="memberId" class="form-control" value="${memberVO.memberId }" readonly></div>' +
+				'<div class="input-group mb-3"><span class="input-group-text">이름</span>' +
+				'<input type="text" name="memberName" class="form-control" value="${memberVO.memberName }" onblur="validCheck(this)"></div><span class="alert"></span>' +
+				'<div class="input-group mb-3"><span class="input-group-text">휴대폰 번호</span>' +
+				'<input type="text" name="memberPhone" class="form-control" value="${memberVO.memberPhone }" onblur="validCheck(this)"></div><span class="alert"></span>' +
+				'<div class="input-group mb-3"><span class="input-group-text">Email</span>' +
+				'<input type="text" name="memberEmail" class="form-control" value="${memberVO.memberEmail }" onblur="validCheck(this)"></div><span class="alert"></span>' +
+				'<div class="input-group mb-3"><span class="input-group-text">비밀번호</span>' +
+				'<input type="password" id="memberPw" name="memberPw" class="form-control" onblur="validCheck(this)"></div><span class="alert"></span>' +
+				'<div class="input-group mb-3"><span class="input-group-text">비밀번호 확인</span>' +
+				'<input type="password" id="memberPwChk" class="form-control"></div><span class="alert"></span>' +
+				'<div><input type="submit" class="btn btn-primary"></div>' + 
 				'</form>';
 			
 			$('#form').html(form);
@@ -172,14 +182,14 @@ tr{
 				validList.memberPwChk = false;
 			}
 				
-			$('#memberPwChk').parents('tr').find('.alert').text(msg);
+			$('#memberPwChk').parents('.input-group').next().text(msg);
 			console.log(msg);
 		} // end comparePw
 		
 		function validCheck(input){
 			let type = $(input).attr('name');
 			let inputVal = $(input).val();
-			let boxMsg = $(input).parents('tr').find('.alert');
+			let boxMsg = $(input).parents('.input-group').next();
 			
 			console.log('validCheck = ' + type + ' : ' + inputVal);
 			if(inputVal == memberOrigin[type]){ // 입력값이 기존과 같을 경우
