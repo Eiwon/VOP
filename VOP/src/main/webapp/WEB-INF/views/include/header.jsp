@@ -60,21 +60,22 @@ body {
 }
 /* 검색 라인 설정 */
 .line_search {
-    width: 100%; /* 너비 설정 */
+    width: 80%; /* 너비 설정 */
     margin: auto; /* 가운데 정렬 */
 }
 
 /* VOP 링크 설정 */
 .vop-link {
-    margin-right: 50px; /* 오른쪽 여백 설정 */
+    margin-right: 20px; /* 오른쪽 여백 설정 */
+    margin-left: 20px;
     margin-bottom: 30px; /* 아래 여백 설정 */
     color: blue; /* 글자 색상 설정 */
     text-decoration: none; /* 밑줄 제거 */
 }
 
-/* VOP 링크 호버 설정 */
-.vop-link:hover {
-    color: darkblue; /* 호버 시 글자 색상 설정 */
+.logo_img {
+	max-width: 100px; 
+	height: auto;
 }
 
 /* 검색창 컨테이너 설정 */
@@ -231,12 +232,12 @@ body {
 
     <div class="user_container" id="box_login">
     	<sec:authorize access="isAuthenticated()">
-    		<div style="font-size: 10px;">
-    			${memberDetails.username } 님 환영합니다<br>
-    			권한 : ${memberDetails.authorities[0].authority.substring(5) }
+    		<div style="font-size: 15px; margin-right: 15px;">
+    			${memberDetails.authorities[0].authority.substring(5) }<br>
+    			${memberDetails.memberVO.memberName } 님
     		</div>
     		<form action="../member/logout" method="POST">
-    			<input type="submit" value="로그아웃">
+    			<input type="submit" value="로그아웃" class="btn btn-outline-danger">
     			<sec:csrfInput/>
     		</form>
     	</sec:authorize>
@@ -246,11 +247,6 @@ body {
     	</sec:authorize>
     </div>
 	<div class="line_search">
-	
-	<!-- VOP 링크 추가 -->
-    <a href="../board/main" class="vop-link">
-    <img src="${pageContext.request.contextPath}/resources/vop.png">
-	</a>
 	
 	<div class="btn-group maincategory" role="group">
     	<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -278,6 +274,11 @@ body {
    	 	</ul>
     </div>
 	
+	<!-- VOP 링크 추가 -->
+    <a href="../board/main" class="vop-link">
+    <img src="${pageContext.request.contextPath}/resources/vop.png"  class="logo_img">
+	</a>
+	
     <!-- 카테고리 드롭다운 -->
     <div class="search-container">
           <!-- 카테고리 선택 드롭다운 -->
@@ -304,7 +305,7 @@ body {
           </select> 
           
         <!-- 검색 입력창 -->
-        <input type="text"class="search-input" placeholder="검색어를 입력하세요">
+        <input type="text"class="search-input" placeholder="검색어를 입력하세요" style="width: 300px;">
         <!-- 검색 버튼 -->
         <button class="search-button">검색</button>
 		

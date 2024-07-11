@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
@@ -107,6 +108,7 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 				chatRoom = consultRoomList.get(roomId);
 				chatRoom.setState(ROOM_STATE_CONSULTING);
 				chatRoom.getMemberList().put(senderId, session);
+				sendJoinSuccess(roomId, senderId); // 방 입장 성공 응답
 			}else {
 				// 새로운 방 생성
 				chatRoom = new ChatRoom();
@@ -115,9 +117,12 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 				chatRoom.setMemberList(new HashMap<>());
 				chatRoom.getMemberList().put(senderId, session);
 				consultRoomList.put(roomId, chatRoom);
-				callConsultant(roomId);
+				if(callConsultant(roomId) > 0) { // 호출할 관리자가 있을 경우
+					sendJoinSuccess(roomId, senderId); // 방 입장 성공 응답					
+				}else {
+					sendJoinFail(session, "현재 대기 중인 상담사가 없습니다. 잠시 후 다시 시도해주세요.");
+				}
 			}
-			sendJoinSuccess(roomId, senderId); // 방 입장 성공 응답
 			
 		}
 		break;
@@ -176,7 +181,7 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 	} // end handleTextMessage
 	
 
-	private void callConsultant(String roomId) throws IOException {
+	private int callConsultant(String roomId) throws IOException {
 		// db에서 관리자 목록 검색
 		log.info("callConsultant");
 		List<String> adminList = memberService.getAdminId();
@@ -185,6 +190,7 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 		adminCallMsg.setRoomId(roomId);
 		TextMessage returnMsg = convertMsg(adminCallMsg);
 		
+		int sendNum = 0;
 		// 상담 중인 모든 관리자 id를 adminList에서 제거해야 함
 		log.info("admin List : " + adminList);
 		for(String adminId : adminList) { // 접속 중이고 상담중이 아닌 관리자들에게 메시지 송신
@@ -192,8 +198,10 @@ public class ConsultHandler extends AbstractWebSocketHandler{
 				WebSocketSession session = alarmConnMap.get(adminId);
 				log.info("call to " + adminId);
 				session.sendMessage(returnMsg);
+				sendNum++;
 			}
 		}
+		return sendNum;
 	} // end callConsultant
 	
 	private void sendJoinSuccess(String roomId, String memberId) throws IOException {

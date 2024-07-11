@@ -24,6 +24,9 @@
 </head>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <body>
+	<div class="spinner-border text-primary start-50 top-50" style="position: fixed; z-index: 1030;" role="status" hidden="hidden">
+  		<span class="visually-hidden">Loading...</span>
+	</div>
 	<div class="body_container">
 	<h2>아이디 찾기</h2>
 	<form action="findAccount" method="POST">
@@ -60,6 +63,7 @@
 		let tagCodeAlert = $('.code_alert');
 		let verifiedEmail; // 이메일 인증 받은 후 입력된 이메일 변경 방지. 인증한 이메일을 저장하여 form 제출시 비교.
 		let emailExp = new RegExp("^[a-zA-Z][a-zA-Z0-9]{5,19}@[a-zA-Z\.]{6,20}$");
+		let spinner = $('.spinner-border');
 		
 		tagMemberEmail.focus(function(){
 			tagMemberEmail.removeClass('is-invalid');
@@ -82,13 +86,14 @@
 			
 			verifiedEmail = memberEmail;
 			$('#btnAuthCode').attr('disabled', 'disabled');
-			
+			spinner.attr('hidden', null);
 			$.ajax({
 				method : 'GET',
 				url : 'mailAuthentication?email=' + memberEmail,
 				success : function(result){
 					tagCodeAlert.text('인증 번호가 발송되었습니다. 3분 이내에 입력해주세요.');
 					$('#btnAuthCode').attr('disabled', null);
+					spinner.attr('hidden', 'hidden');
 					tagAuthCode.val('');
 				}
 			});

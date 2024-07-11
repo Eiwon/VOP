@@ -7,54 +7,67 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <style type="text/css">
 .selectCoupon {
-	width: 600px;
+	width: 700px;
+}
+.body_container {
+	width: 65%;
+	margin: auto;
+	margin-top: 10%;
 }
 </style>
 <title>쿠폰 등록</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+	
+	<div class="body_container">
 	<form action="register" method="POST">
 		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
-		<div>
-			<span>분류</span>
-			<select name="type" class="type">
+		
+		<div class="input-group mb-3">
+			<label class="input-group-text">분류</label>
+			<select id="type" class="form-select" name="type">
 				<option value="notice">공지사항</option>
 				<option value="coupon">쿠폰 팝업</option>
 			</select>
 		</div>
-		<div>
-			<span>제목</span>
-			<input type="text" name="title" class="title">
+		<div class="form-floating mb-3">
+			<input type="text" name="title" class="form-control" id="title" placeholder="제목">
+			<label for="title">제목</label>
+		</div>
+		<div class="form-floating mb-3">
+			<textarea rows="4" cols="25" name="content" id="content" class="form-control" placeholder="최대 30자 입력 가능"></textarea>
+			<label for="title">내용</label>
 		</div>
 		<div>
-			<span>내용</span>
-			<textarea rows="4" cols="25" name="content" class="content"></textarea>
-		</div>
-		<div>
-			<select class="selectCoupon" name="callbackInfo" hidden="hidden">
+			<select class="selectCoupon form-select" name="callbackInfo" hidden="hidden">
 				
 			</select>
 		</div>
 		<div>
-			<input type="submit" value="등록">
+			<input type="submit" value="등록" class="btn btn-outline-primary">
 		</div>
 	</form>
+	
+	</div>
 	<script type="text/javascript">
-		let tagType = $('.type');
+		let tagType = $('#type');
 		let tagSelectCoupon = $('.selectCoupon');
 		let couponList;
 		
 		$(document).ready(function(){
 			
-			tagType.change(changeForm);
+			tagType.change(function(){
+				changeForm();
+			});
 			
 		}); // end document.ready
 		
 		$('form').submit(function(event){
 			let type = tagType.val();
-			let title = $('.title').val();
-			let content = $('.content').val();
+			let title = $('#title').val();
+			let content = $('#content').val();
 			let selectCoupon = tagSelectCoupon.val();
 			
 			if(title.length == 0 || content.length == 0){
@@ -80,6 +93,9 @@
 				event.preventDefault();
 				return;
 			}
+			
+			window.opener.loadPopupAdsList();
+			
 		}); // end form.submit
 		
 		function changeForm(){

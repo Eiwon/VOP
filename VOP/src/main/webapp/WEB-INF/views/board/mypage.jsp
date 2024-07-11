@@ -8,11 +8,17 @@
 <meta charset="UTF-8">
 <jsp:include page="../include/header.jsp"></jsp:include>
 <style type="text/css">
-.container {
-	flex-direction: row;
-	display: flex;
+
+.info_container {
+	width: 70%;
+	margin: auto;
 }
-	
+.inner_header {
+	margin: 15px;
+}	
+.link_box {
+	margin: 15px;
+}
 </style>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <!-- 부트스트랩 아이콘 -->
@@ -24,11 +30,11 @@
     body {
         padding-top: 56px;
     }
-    .info_container {
+    /* .info_container {
         display: flex;
         justify-content: center;
         padding: 2rem;
-    }
+    } */
     .side_bar {
         width: 250px;
         margin-right: 2rem;
@@ -53,7 +59,8 @@
 </head>
 
 <body>
-	<!-- 네비게이션 바 -->
+
+	<%-- <!-- 네비게이션 바 -->
 	  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
 	        
 	        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,27 +80,74 @@
 	            </ul>
 	        </div>
 	    </nav>
-	    
-	<div class="container info_container">
-		<div class="side_bar">
-			<div> 
-				<strong><i class="bi bi-person-circle"></i> 내 정보</strong>
-				<ul id="my_info" class="list-group">
-					<li class="list-group-item"><a href="myInfo">내 정보 확인 / 수정</a></li>
-					<li class="list-group-item"><a href="../order/orderlist">주문 목록</a></li>
-					<li class="list-group-item"><a href="../Delivery/deliveryAddressList">배송지 관리</a></li>
-					<li class="list-group-item"><a href="../coupon/myCoupon">쿠폰함</a></li>
-					<li class="list-group-item"><a href="../membership/register">멤버십 등록</a></li>
-					<li class="list-group-item"><a href="../seller/main">판매자 페이지</a></li>
-					<sec:authorize access="hasRole('ROLE_관리자')">
-						<li class="list-group-item"><a href="admin">관리자 페이지</a></li>
-					</sec:authorize>
-					<%-- <sec:authorize access="!hasRole('ROLE_관리자')"> --%>
-						<li class="list-group-item"><a onclick="consult()">1대1 상담</a> </li>
-					<%-- </sec:authorize> --%>
-				</ul>
-			</div>
+	     --%>
+	<div class="info_container">
+		<div class="inner_header">
+			<h3>마이 페이지</h3>
 		</div>
+		<div class="container text-center">
+  			<div class="row row-cols-5">
+    			<div class="col link_box">
+    			<a href="myInfo">
+    				<img src="${pageContext.request.contextPath}/resources/myInfo.png" class="logo_img">
+    				<div>내 정보</div>
+    			</a>
+    			</div>
+    			<div class="col link_box">
+    			<a href="../basket/main">
+    				<img src="${pageContext.request.contextPath}/resources/basket.png" class="logo_img">
+    				<div>장바구니</div>
+    			</a>
+    			</div>
+    			<div class="col link_box">
+    			<a href="../order/orderlist">
+    				<img src="${pageContext.request.contextPath}/resources/order.png" class="logo_img">
+    				<div>주문 목록</div>
+    			</a>
+    			</div>
+   		 		<div class="col link_box">
+   		 		<a href="../Delivery/deliveryAddressList">
+   		 			<img src="${pageContext.request.contextPath}/resources/delivery.png" class="logo_img">
+    				<div>배송지 관리</div>
+   		 		</a>
+   		 		</div>
+    			<div class="col link_box">
+    			<a href="../coupon/myCoupon">
+    				<img src="${pageContext.request.contextPath}/resources/coupon.png" class="logo_img">
+    				<div>쿠폰함</div>
+    			</a>
+    			</div>
+    			<div class="col link_box">
+    			<a href="../membership/register">
+    				<img src="${pageContext.request.contextPath}/resources/membership.png" class="logo_img">
+    				<div>멤버십</div>
+    			</a>
+    			</div>
+    			<div class="col link_box">
+    			<a href="../seller/main">
+    				<img src="${pageContext.request.contextPath}/resources/seller.png" class="logo_img">
+    				<div>판매자</div>
+    			</a>
+    			</div>
+    			<sec:authorize access="hasRole('ROLE_관리자')">
+    				<div class="col link_box">
+    				<a href="admin">
+    					<img src="${pageContext.request.contextPath}/resources/admin.png" class="logo_img">
+    					<div>관리자</div>
+    				</a>
+    				</div>
+    			</sec:authorize>
+    			<sec:authorize access="!hasRole('ROLE_관리자')">
+    				<div class="col link_box">
+    				<a onclick="consult()">
+    					<img src="${pageContext.request.contextPath}/resources/consult.png" class="logo_img">
+    					<div>1대1 상담</div>
+    				</a>
+    				</div>
+				</sec:authorize>
+  			</div>
+		</div>
+		
 	</div>
 	
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -107,7 +161,7 @@
 		const popupStat = {
 				'url' : targetUrl,
 				'name' : 'popupConsult',
-				'option' : 'width=800, height=1000, top=50, left=400'
+				'option' : 'width=900, height=1000, top=50, left=400'
 		};
 		
 		// 팝업 창 띄우기
