@@ -1,6 +1,6 @@
 package com.web.vop.persistence;
 
-import java.util.Date;
+
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.web.vop.domain.DeliveryExpectDTO;
 import com.web.vop.domain.OrderVO;
 import com.web.vop.domain.OrderViewDTO;
+
 
 
 @Mapper
@@ -31,5 +32,11 @@ public interface OrderMapper {
 	public int deleteOrderListByOrderId(int orderId);
 	
 	// 배송 예정일 조회 스케줄링
-	List<DeliveryExpectDTO> selectDeliveryExpect();
+	 List<DeliveryExpectDTO> selectDeliveryExpect();
+	
+	// 상품 목록 조회 (페이징)
+	 //List<OrderViewDTO> selectByOrderlist(Pagination pagination);
+	 
+	// 상품 목록 수 (페이징)
+	 //int selectByOrderlistCnt(Pagination pagination);
 }

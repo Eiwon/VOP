@@ -13,6 +13,7 @@ public class Pagination {
 	private int pageSize; // 현재 페이지 사이즈
 	private String category; // 검색 항목
 	private String word; // 검색 키워드 
+	private String memberId; // 회원 ID
 
 	public Pagination() {
 		this.pageNum = 1; // 기본 페이지 번호 설정

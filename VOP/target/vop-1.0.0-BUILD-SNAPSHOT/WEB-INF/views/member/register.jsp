@@ -8,54 +8,68 @@
 <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <style type="text/css">
-.form_container{
-	border: 1px solid black;
-	width: 500px;
-	height: 800px;
-	display: inline-block;
+.btn_submit {
+	width: 100%;
 }
-.input_tag {
-	width: 400px;
-	height: 40px;
+.body_container {
+	width: 40%;
+	margin: auto;
 }
-.input_box {
-	height: 50px;
-	margin-top: 40px;
+.form_container {
+	padding: 10px;
+}
+.inner_header {
+	text-align: center;
+	margin: 15px;
+	margin-top: 30px;
+}
+.form-floating {
+	height: 100px;
 }
 </style>
 <meta charset="UTF-8">
 <title>회원 가입</title>
 </head>
 <body>
-	<div style="text-align: center;">
+	<div class="body_container">
+		<div class="inner_header">
+			<h3>회원 가입</h3>
+		</div>
+	
 		<form class="form_container" action="register" method="POST">
 			<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
-			<div class="input_box">
-				<input type="text" id="memberId" class="input_tag" name="memberId" placeholder="아이디" onblur="checkValid(this)">
+			<div class="form-floating">
+				<input type="text" id="memberId" class="form-control" name="memberId" placeholder="아이디" onblur="checkValid(this)">
 				<div></div>
+				<label for="memberId">아이디</label>
 			</div>
-			<div class="input_box">
-				<input type="password" id="memberPw" class="input_tag" name="memberPw" placeholder="비밀번호" onblur="checkValid(this)">
+			<div class="form-floating">
+				<input type="password" id="memberPw" class="form-control" name="memberPw" placeholder="비밀번호" onblur="checkValid(this)">
 				<div></div>
+				<label for="memberPw">비밀번호</label>
 			</div>
-			<div class="input_box">
-				<input type="password" id="checkPw" class="input_tag" placeholder="비밀번호 확인" onblur="comparePw()">
+			<div class="form-floating">
+				<input type="password" id="checkPw" class="form-control" placeholder="비밀번호 확인" onblur="comparePw()">
 				<div></div>
+				<label for="checkPw">비밀번호 확인</label>
 			</div>
-			<div class="input_box">
-				<input type="text" id="memberName" class="input_tag" name="memberName" placeholder="이름" onblur="checkValid(this)">
+			<div class="form-floating">
+				<input type="text" id="memberName" class="form-control" name="memberName" placeholder="이름" onblur="checkValid(this)">
 				<div></div>
+				<label for="memberName">이름</label>
 			</div>
-			<div class="input_box">
-				<input type="text" id="memberEmail" class="input_tag" name="memberEmail" placeholder="이메일" onblur="checkValid(this)">
+			<div class="form-floating">
+				<input type="text" id="memberEmail" class="form-control" name="memberEmail" placeholder="이메일" onblur="checkValid(this)">
 				<div></div>
+				<label for="memberEmail">이메일</label>
 			</div>
-			<div class="input_box">
-				<input type="text" id="memberPhone" class="input_tag" name="memberPhone" placeholder="전화번호" onblur="checkValid(this)">
+			<div class="form-floating">
+				<input type="text" id="memberPhone" class="form-control" name="memberPhone" placeholder="전화번호" onblur="checkValid(this)">
 				<div></div>
+				<label for="memberPhone">전화번호</label>
 			</div>
 			<div style="margin-top: 30px;">
-				<input type="submit" value="회원 가입">
+				<input type="submit" class="btn_submit btn btn-primary" value="회원 가입">
 			</div>
 		</form>
 	</div>
@@ -114,7 +128,12 @@
 			$(input).next().text(msg);
 			checkMap[type].isValid = isValid;
 			if(!isValid) {
+				$(input).addClass('is-invalid');
+				checkMap[type].val = '';
 				return;
+			}else{
+				$(input).removeClass('is-invalid');
+				checkMap[type].val = inputVal;
 			}
 			
 			if(type == 'memberId'){
@@ -129,16 +148,20 @@
 		// 아이디 유효성 체크
 		function isValidId(memberId){
 			$.ajax({ // 중복 체크
-				type : 'GET',
+				method : 'GET',
 				url : 'idDupChk?memberId=' + memberId,
 				success : function(result){
 					console.log("중복 체크 결과 : " + result);
 					if(result == 1){
 						$('#memberId').next().text("사용할 수 있는 아이디입니다.");
+						$('#memberId').removeClass('is-invalid');
 						checkMap['memberId'].isValid = true;
+						checkMap['memberId'].val = memberId;
 					}else{
 						$('#memberId').next().text("사용 불가능한 아이디입니다.");
 						checkMap['memberId'].isValid = false;
+						$('#memberId').addClass('is-invalid');
+						checkMap['memberId'].val = '';
 					}
 				}
 			}); // end ajax
@@ -151,13 +174,15 @@
 			if(memberPwVal == checkPwVal){
 				$('#checkPw').next().text("비밀번호가 일치합니다.");
 				checkMap.checkPw.isValid = true;
+				$('#checkPw').removeClass('is-invalid');
 			}else{
 				$('#checkPw').next().text("비밀번호 불일치");
 				checkMap.checkPw.isValid = false;
+				$('#checkPw').addClass('is-invalid');
 			}
 		} // end checkPw
 		
-		function isValidPhone(memberPhone){
+		/* function isValidPhone(memberPhone){
 			// 이미 가입된 번호인지 체크
 			$.ajax({
 				method : 'GET',
@@ -175,7 +200,7 @@
 					}
 				}
 			}); // end ajax
-		} // end isValidPhone
+		} // end isValidPhone */
 		
 		$('form').submit(function(event){
 			for(x in checkMap){

@@ -12,6 +12,8 @@ import com.web.vop.domain.DeliveryVO;
 import com.web.vop.domain.OrderVO;
 import com.web.vop.domain.OrderViewDTO;
 import com.web.vop.persistence.OrderMapper;
+import com.web.vop.util.PageMaker;
+import com.web.vop.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -84,7 +86,13 @@ public class OrderServiceImple implements OrderService {
 		return res;
 	}//end deleteOrderListByOrderId()
 
-	
+	// 주문 목록 (페이징)
+	/*
+	 * @Override public List<OrderViewDTO> search(PageMaker pageMaker) {
+	 * log.info("search()"); Pagination pagination = pageMaker.getPagination();
+	 * pageMaker.setTotalCount(orderMapper.selectByOrderlistCnt(pagination)); return
+	 * orderMapper.selectByOrderlist(pagination); }// end selectByOrderlist()
+	 */	
 
 
 }// end OrderServiceImple()

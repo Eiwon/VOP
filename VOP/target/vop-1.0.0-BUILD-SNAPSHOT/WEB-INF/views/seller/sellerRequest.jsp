@@ -8,35 +8,44 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<style type="text/css">
+.body_container{
+	width: 50%;
+	margin: auto;
+}
+.inner_header {
+	margin-bottom: 40px;
+}
+</style>
 <title>판매 신청</title>
 </head>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <body>
-	<div>
-		<h2>판매자 등록 신청</h2>
+	<jsp:include page="../include/sideBar.jsp"/>
+	
+	<div class="body_container">
+		<div class="inner_header">
+			<h2>판매자 등록 신청</h2>
+		</div>
 		
 		<form action="sellerRequest" method="POST" id="sellerRequestForm">
 			<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
-			<table>
-				<tbody>
-					<tr>
-						<td>유저 ID</td>
-						<td>${memberDetails.getUsername() }</td>
-					</tr>
-					<tr>
-						<td>사업자 명</td>
-						<td><input type="text" name="businessName" onblur="validChk(this)"></td>
-						<td id="businessNameAlert"></td>
-					</tr>
-					<tr>
-						<td>세부 내용</td>
-						<td><input type="text" name="requestContent" onblur="validChk(this)"></td>
-						<td id="requestContentAlert"></td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="input-group mb-3">
+  				<span class="input-group-text">유저 ID</span>
+ 				<input type="text" class="form-control" value="${memberDetails.getUsername() }" readonly>
+			</div>
+			<div class="form-floating mb-3">
+  				<input type="text" class="form-control" id="businessName" name="businessName" placeholder="사업자 명" onblur="validChk(this)">
+  				<div id="businessNameAlert"></div>
+  				<label for="businessName">사업자 명</label>
+			</div>
+			<div class="form-floating mb-3">
+  				<input type="text" class="form-control" id="requestContent" name="requestContent" placeholder="세부 사항" onblur="validChk(this)">
+  				<div id="requestContentAlert"></div>
+  				<label for="requestContent">세부 사항</label>
+			</div>
 			<input type="hidden" name="memberId" value="${memberDetails.getUsername() }">
-			<input type="submit" value="신청하기">
+			<input type="submit" class="btn btn-outline-primary" value="신청하기">
 		</form>
 	</div>
 	

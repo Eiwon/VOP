@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.web.vop.domain.DeliveryVO;
 import com.web.vop.domain.OrderVO;
 import com.web.vop.domain.OrderViewDTO;
+import com.web.vop.util.PageMaker;
+import com.web.vop.util.Pagination;
 
 
 @Service
@@ -31,4 +33,7 @@ public interface OrderService {
 	
 	// 주문 목록 조회 
 	List<OrderViewDTO> getOrderListByMemberId(String memberId);
+	
+	// 주문 목록 (페이징)
+	//public List<OrderViewDTO> search(PageMaker pageMaker);
 }

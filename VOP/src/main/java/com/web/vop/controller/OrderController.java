@@ -9,13 +9,17 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.OrderVO;
 import com.web.vop.domain.OrderViewDTO;
 import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.OrderService;
+import com.web.vop.util.PageMaker;
+import com.web.vop.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -30,9 +34,21 @@ public class OrderController {
 	@Autowired
 	AWSS3Service awsS3Service;
 	
+
 	@GetMapping("/orderlist") 
-	public void orderlistGET(Model model,@AuthenticationPrincipal MemberDetails memberDetails) { // 주문목록 페이지 불러오기
+	public void orderlistGET(Model model,
+							@AuthenticationPrincipal MemberDetails memberDetails,
+							Pagination pagination) { // 주문목록 페이지 불러오기
 		log.info("orderlistGET()");
+		log.info("orderlist - category:" + pagination.getCategory() + ",word :" + pagination.getWord());
+		
+		/*
+		 * List<OrderViewDTO> list; int pageSize = 5; PageMaker pageMaker = new
+		 * PageMaker(); pagination.setPageSize(pageSize);
+		 * pageMaker.setPagination(pagination);
+		 */
+		//list = orderService.search(pageMaker);
+		//pageMaker.update();
 		
 		List<OrderViewDTO> orderList = orderService.getOrderListByMemberId(memberDetails.getUsername());
 	        
@@ -48,11 +64,13 @@ public class OrderController {
 	    String formattedNow = dateFormat.format(now);
 	    log.info("formattedNow : " + formattedNow); //현재날짜
 	    
+	    
 	    model.addAttribute("now", formattedNow);
-	    
 	    model.addAttribute("orderList", orderList);
-	    
+	   // model.addAttribute("list", list);//주문 목록 (페이징)
+	   // model.addAttribute("pageMaker", pageMaker);
 	}//end orderlistGET
+	
 	
 	
 	

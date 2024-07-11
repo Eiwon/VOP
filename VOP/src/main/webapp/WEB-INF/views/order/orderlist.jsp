@@ -19,7 +19,6 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <!-- 모달 스타일 창크기가 변하면는 같이변하게 하는기능 -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>주문 목록</title>
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -104,9 +103,9 @@
 
 	<jsp:include page="../include/sideBar.jsp"/>
 
-	<div class="container">
+	<div class="container text-center">
 	<br>
-    <h1 class="mt-4 mb-4">${memberDetails.getUsername()}님의 주문 목록</h1><br><br>
+    <h1 class="mt-4 mb-4 text-center">${memberDetails.getUsername()}님의 주문 목록</h1><br><br>
 
 
     <div id="order-container">

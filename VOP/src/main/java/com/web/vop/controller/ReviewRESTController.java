@@ -63,7 +63,7 @@ public class ReviewRESTController {
 		}
 		
 		// result 값을 전송하여 리턴하는 방식으로 성공하면 200 OK를 전송합니다.
-		return new ResponseEntity<>(res, HttpStatus.OK);
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	}
 	
 	

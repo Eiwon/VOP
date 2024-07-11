@@ -15,7 +15,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="${_csrf.parameterName}" content="${_csrf.token}">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> 모발일 적용 코드인데 사용하면는 더이상해 사용안함-->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"

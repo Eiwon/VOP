@@ -86,4 +86,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<!-- SELECT MEMBER_ID, ORDER_ID, PAYMENT_ID, PRODUCT_ID, EXPECT_DELIVERY_DATE FROM "ORDER" -->
 	</select>
 	
+	
+	<!-- 주문 목록 조회 (페이징) -->
+	<!-- <select id="selectByOrderlist" resultMap="OrderViewDTOResultMap">
+		SELECT ORDER_WITH_ROWNUM.*, IMAGE.IMG_PATH, IMAGE.IMG_CHANGE_NAME
+		    FROM (
+		        SELECT ORD.*, 
+		               ROW_NUMBER() OVER (ORDER BY ORDER_DATE DESC) AS RN
+		        FROM ORDER ORD
+		        WHERE ORD.MEMBER_ID = #{memberId}
+		    ) ORDER_WITH_ROWNUM
+		 LEFT JOIN IMAGE ON ORDER_WITH_ROWNUM.IMG_ID = IMAGE.IMG_ID
+		 WHERE RN BETWEEN #{start} AND #{end}
+	</select>
+	
+	주문 목록 수(페이징)
+	<select id="selectByNameNCategoryCnt" parameterType="com.web.vop.util.Pagination" resultType="Integer">
+   		 SELECT COUNT(*)
+    	 FROM "ORDER"
+    	 WHERE MEMBER_ID = #{memberId}
+	</select>
+	 -->
+	
 </mapper>

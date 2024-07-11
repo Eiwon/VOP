@@ -33,15 +33,16 @@
 </head>
 
 <body>
-<div class="container"><br>
+<div class="container text-center"><br>
     <h2 class="mt-4 mb-4 text-center">배송 조회</h2><br>
 	 
-	 <div id="deliveryStatus">
-        </div><br><br>
-
-    <div id="deliveryContainer"></div><br><br>
+	 
+	 <div id="deliveryStatus" class="text-center"></div>
+    <br><br>
     
-    <a href="../order/orderlist" class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2">주문 목록으로 돌아가기</a>
+    <div id="deliveryContainer"  class="text-center"></div><br><br>
+    
+    <a href="../order/orderlist" class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2 ">주문 목록으로 돌아가기</a>
 </div>
 
 <!-- jQuery -->
@@ -136,7 +137,7 @@ $(document).ready(function() {
 	    	let formattedExpectedDate = formatDate(expectedDate);
 	    	console.log("배송완료일 : ",formattedExpectedDate);
 	        // 예상 배송일이 현재 날짜보다 이전인 경우
-	        deliveryStatusHtml = '<p class="font-weight-bold text-primary">배송 완료 (' + formattedExpectedDate + ' 일에 배송이 완료되었습니다!)</p>';
+	        deliveryStatusHtml = '<p class="font-weight-bold text-primary">배송 완료 (' + formattedExpectedDate + '  배송이 완료되었습니다!)</p>';
 	    } else {
 	    	console.log("error : nowDate.getTime() = ", nowDate.getTime() , ", expectedDateDate.getTime() = ", expectedDateDate.getTime());
 	    }
