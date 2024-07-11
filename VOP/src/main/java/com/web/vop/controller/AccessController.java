@@ -38,14 +38,14 @@ public class AccessController {
 	
 	
 	
-	@GetMapping("/exception")
-	public String allException(Model model) {
-		log.info("allException");
-		AlertVO alertVO = new AlertVO();
-		alertVO.setAlertMsg("예외 발생!!");
-		alertVO.setRedirectUri("back");
-		model.addAttribute("alertVO", alertVO);
-		return Constant.ALERT_PATH;
-	} // end allException
+//	@GetMapping("/exception")
+//	public String allException(Model model) {
+//		log.info("allException");
+//		AlertVO alertVO = new AlertVO();
+//		alertVO.setAlertMsg("예외 발생!!");
+//		alertVO.setRedirectUri("back");
+//		model.addAttribute("alertVO", alertVO);
+//		return Constant.ALERT_PATH;
+//	} // end allException
 	
 }
