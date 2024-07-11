@@ -104,9 +104,9 @@
 
 	<jsp:include page="../include/sideBar.jsp"/>
 
-	<div class="container">
+	<div class="container text-center">
 	<br>
-    <h1 class="mt-4 mb-4">${memberDetails.getUsername()}님의 주문 목록</h1><br><br>
+    <h1 class="mt-4 mb-4 text-center">${memberDetails.getUsername()}님의 주문 목록</h1><br><br>
 
 
     <div id="order-container">

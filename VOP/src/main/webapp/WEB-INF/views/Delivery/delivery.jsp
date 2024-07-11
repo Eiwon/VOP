@@ -33,15 +33,16 @@
 </head>
 
 <body>
-<div class="container"><br>
+<div class="container text-center"><br>
     <h2 class="mt-4 mb-4 text-center">배송 조회</h2><br>
 	 
-	 <div id="deliveryStatus">
-        </div><br><br>
-
-    <div id="deliveryContainer"></div><br><br>
+	 
+	 <div id="deliveryStatus" class="text-center"></div>
+    <br><br>
     
-    <a href="../order/orderlist" class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2">주문 목록으로 돌아가기</a>
+    <div id="deliveryContainer"  class="text-center"></div><br><br>
+    
+    <a href="../order/orderlist" class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2 ">주문 목록으로 돌아가기</a>
 </div>
 
 <!-- jQuery -->
