@@ -32,8 +32,8 @@
 <body>
 <jsp:include page="../include/sideBar.jsp"/>
 
-<div class="container">
-<h2 class="text-center mt-5">배송지 등록</h2><br>
+<div class="container text-center">
+<h2 class="mt-5">배송지 등록</h2><br>
 
 <form id="deliveryForm" action="register" method="post" class="mt-4">
 	<input type="hidden"  class="form-control" name="${_csrf.parameterName }" value="${_csrf.token }">
