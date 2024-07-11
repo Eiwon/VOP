@@ -1,14 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-	
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<!-- 세션 사용할수 있게하는 코드 -->
 <%@ page import="javax.servlet.http.HttpSession"%>
 
-<%@ taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
-	
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+
 <sec:authorize access="isAuthenticated()">
 	<sec:authentication var="memberDetails" property="principal" />
 </sec:authorize>
@@ -16,71 +13,74 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 한국어 인코딩 -->
 <meta charset="UTF-8">
-<meta name="${_csrf.parameterName }" content="${_csrf.token }">
-
-<!-- 모바일 관련 코드라서 없어도 동작 가능 -->
+<meta name="${_csrf.parameterName}" content="${_csrf.token}">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- jquery 라이브러리 import -->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
-
-<!-- 카카오 공유 api 관련 코드 -->
-<!-- 위에 있는 이유는 밑에 있는 코드들이 적용 되야해서 -->
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
 	integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
-	crossorigin="anonymous" type="text/javascript">
-</script>
-
-<!-- Kakao JavaScript SDK를 초기화하는 코드입니다. -->
+	crossorigin="anonymous" type="text/javascript"></script>
 <script>
-Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaScript 키 입력
+Kakao.init('fc798d4c0b15af3cd0e864357925d0b3');
 </script>
-
-
-
 <title>상품 상세 조회</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
 <style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 0;
+}
+
 .product-details {
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 20px auto;
     padding: 20px;
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
 .product-summary, .product-pricing, .product-stock, .product-actions, .product-description {
     border-bottom: 1px solid #ddd;
     margin-bottom: 20px;
     padding-bottom: 20px;
 }
+
 .product-summary {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
 }
+
 .product-category, .product-info, .product-review {
     flex: 1;
+    min-width: 200px;
 }
+
 .product-thumbnail img {
     max-width: 100%;
     height: auto;
     border: 1px solid #ddd;
     padding: 5px;
 }
+
 .product-info p, .product-review p, .product-pricing p, .product-stock p {
     margin: 10px 0;
 }
+
 .product-info span, .product-review span, .product-pricing span, .product-stock span {
     font-weight: bold;
 }
+
 .product-actions {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
     gap: 20px;
+    align-items: center;
 }
+
 .product-actions button, .product-actions .basket-link, .product-actions form button {
     background-color: #ff6700;
     color: #fff;
@@ -89,20 +89,22 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
     cursor: pointer;
     text-decoration: none;
 }
+
 .product-actions .basket-link {
     background-color: #00aaff;
 }
+
 .product-description img {
     max-width: 100%;
     height: auto;
     margin-bottom: 10px;
 }
+
 #quantity {
     width: 50px;
     padding: 5px;
 }
 
-/* 리뷰 별 폼 스타일 */
 #myform fieldset {
     display: inline-block;
     border: 0;
@@ -110,25 +112,22 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
     margin: 0;
 }
 
-/* 별표시 스타일 */
 #myform label {
     font-size: 1em;
     color: transparent;
-    text-shadow: 0 0 0 #f0d000; /* 색상을 별도로 지정 */
-    margin-right: 10px; /* 별 사이의 간격 설정 */
+    text-shadow: 0 0 0 #f0d000;
+    margin-right: 10px;
 }
 
 .reviewStars {
-    color: #f0d000; /* 별 색상 */
+    color: #f0d000;
 }
 
-/* 오른쪽 정렬 코드 */
 .right-align {
     display: flex;
     justify-content: flex-end;
 }
 
-/* 페이징 처리 숫자 스타일 */
 .page_list {
     display: flex;
     flex-direction: row;
@@ -137,18 +136,18 @@ Kakao.init('fc798d4c0b15af3cd0e864357925d0b3'); // 사용하려는 앱의 JavaSc
     margin: 0;
 }
 
-/* 테이블 스타일 */
 tbody {
     height: 250px;
 }
+
 tr {
     height: 50px;
 }
+
 td {
     width: 200px;
 }
 
-/* 좋아요 or 싫어요 css 코드 */
 .button-container {
     display: flex;
     gap: 20px;
@@ -169,14 +168,14 @@ td {
     color: red;
 }
 
-/* 리뷰 및 문의 섹션 스타일 */
 .container {
     max-width: 1200px;
-    margin: auto;
+    margin: 20px auto;
     padding: 20px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
 .section {
     margin-bottom: 40px;
     padding: 20px;
@@ -185,34 +184,41 @@ td {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 .section h3 {
     margin-bottom: 20px;
     font-size: 1.5em;
     text-align: center;
     color: #333;
 }
+
 .content-center {
     display: flex;
     justify-content: center;
 }
+
 .content-center div {
     width: 100%;
 }
+
 .review-table, .comment-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
+
 .review-table th, .review-table td, .comment-table th, .comment-table td {
     border: 1px solid #e0e0e0;
     padding: 10px;
     text-align: left;
 }
+
 .pagination {
     display: flex;
     justify-content: center;
     margin-top: 20px;
 }
+
 .pagination div {
     margin: 0 5px;
     padding: 10px 20px;
@@ -221,27 +227,63 @@ td {
     border-radius: 4px;
     cursor: pointer;
 }
+
 .pagination div:hover {
     background-color: #e0e0e0;
 }
 
-</style>
+@media (max-width: 768px) {
+    .product-summary {
+        flex-direction: column;
+    }
 
+    .product-actions {
+        flex-direction: column;
+    }
+
+    .product-actions button, .product-actions .basket-link, .product-actions form button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .product-category, .product-info, .product-review {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .container, .product-details {
+        padding: 10px;
+    }
+
+    .section {
+        padding: 10px;
+    }
+
+    .section h3 {
+        font-size: 1.2em;
+    }
+
+    .product-actions button, .product-actions .basket-link, .product-actions form button {
+        padding: 10px;
+    }
+
+    #quantity {
+        width: 100%;
+    }
+}
+</style>
 </head>
 <body>
-	
 <c:set var="productVO" value="${productDetails.productVO}"/>
 <c:set var="memberVO" value="${productDetails.memberVO}"/>
 
 <div class="product-details">
-  <h2>상품 상세 페이지</h2>
-    	<!-- 카카오 공유 아이콘 -->
-		<!-- <div class="right-align"> -->
-		<a id="kakaotalk-sharing-btn" href="javascript:;"> 
-		<img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" alt="카카오톡 공유 보내기 버튼"/>
-		</a>
+    <h2>상품 상세 페이지</h2>
+    <a id="kakaotalk-sharing-btn" href="javascript:;">
+        <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" alt="카카오톡 공유 보내기 버튼"/>
+    </a>
     <div class="product-summary">
-    	
         <div class="product-category">
             <span>카테고리:</span> ${productVO.category}
         </div>
@@ -259,7 +301,6 @@ td {
         <div class="product-review">
             <div id="myform">
                 <fieldset id="starsFieldset">
-                    <!-- 별이 여기에 동적으로 추가될 것입니다. -->
                 </fieldset>
             </div>
             <p><span>리뷰 평균:</span> ${productVO.reviewAvg}</p>
@@ -295,27 +336,23 @@ td {
         </c:forEach>
     </div>
 </div>
-	
-	<!-- 댓글 화면 코드 및 가운데 정렬 -->
-	 <div class="container">
-        <div class="section">
-            <h3>상품 리뷰</h3>
-            <div class="content-center">
-                <div id="review"></div>
-            </div>
-            <!-- 리뷰 페이징 처리 내용 -->
-            <div class="pagination" id="product_list_page"></div>
+
+<div class="container">
+    <div class="section">
+        <h3>상품 리뷰</h3>
+        <div class="content-center">
+            <div id="review"></div>
         </div>
-        
-        <div class="section">
-            <h3>상품 문의</h3>
-            <div class="content-center">
-                <div id="comments"></div>
-            </div>
-            <!-- 문의 페이징 처리 내용 -->
-            <div class="pagination" id="comments_list_page"></div>
-        </div>
+        <div class="pagination" id="product_list_page"></div>
     </div>
+    <div class="section">	
+        <h3>상품 문의</h3>
+        <div class="content-center">
+            <div id="comments"></div>
+        </div>
+        <div class="pagination" id="comments_list_page"></div>
+    </div>
+</div>
 
 	<!-- <div>
 		<h3>배송/교환/반품 안내</h3>
@@ -387,6 +424,35 @@ td {
         // 수량을 form 요소에 업데이트
         document.querySelector('input[name="productNums"]').value = quantity;
     });
+    
+    $('#quantity').on('input', function() {
+        // 현재 입력된 값 가져오기
+        let quantity = $(this).val();
+
+        // 값이 비어 있거나 숫자가 아니면 기본값 1로 설정
+        if (!quantity || isNaN(quantity)) {
+            quantity = 1;
+        } else {
+            // 숫자로 변환 후, 최소값(min)과 최대값(max) 사이 범위 제한
+            quantity = parseInt(quantity);
+            let min = parseInt($(this).attr('min'));
+            let max = parseInt($(this).attr('max'));
+            quantity = Math.min(Math.max(quantity, min), max);
+        }
+
+        // 입력란에 수정된 값을 적용
+        $(this).val(quantity);
+        
+     	// 총 상품 가격 계산 및 표시
+        let totalPrice = quantity * productPrice;
+        totalPriceSpan.textContent = totalPrice;
+        
+        // 수량을 form 요소에 업데이트
+        document.querySelector('input[name="productNums"]').value = quantity;
+    });
+    
+ 	// 페이지 로드 후 초기 수량 1로 설정
+    $('#quantity').val(1);
      /* end 상품 수량 관련 코드 */
       
 
@@ -401,10 +467,8 @@ function createStars(reviewAvg) {
         starLabel.innerHTML = '&#9733;'; // HTML 엔티티를 사용하여 별 모양 설정
         if (i < reviewAvg) {
             starLabel.style.color = '#f0d000'; // 선택된 별보다 작은 값의 별은 노란색으로 표시
-            console.log('로그1 : ');
         } else {
             starLabel.style.color = 'lightgray'; // 선택된 별보다 큰 값의 별은 회색으로 표시
-            console.log('로그2 : ');
         }
         starContainer.appendChild(starLabel); // 컨테이너에 별 추가
     }

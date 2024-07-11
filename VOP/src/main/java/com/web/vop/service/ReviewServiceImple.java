@@ -1,7 +1,5 @@
 package com.web.vop.service;
 
-import java.text.DecimalFormat;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.ProductPreviewDTO;
-import com.web.vop.domain.ProductVO;
 import com.web.vop.domain.ReviewVO;
 import com.web.vop.persistence.ProductMapper;
 import com.web.vop.persistence.ReviewMapper;
@@ -54,50 +51,17 @@ public class ReviewServiceImple implements ReviewService {
         	// 리뷰 등록 
     		insertRes = reviewMapper.insertReview(reviewVO);
         	
-//    		// 상품에서 리뷰 총 개수 증가
-//    		int update = productMapper.reviewNumUP(productId);
-//    		log.info(update + "행 개수 증가");
+    		// 상품에서 리뷰 총 개수 증가
+    		int update = productMapper.reviewNumUP(productId);
+    		log.info(update + "행 개수 증가");
     		
-        	// 소수점 첫 째 자리까지만 출력
-    		DecimalFormat df = new DecimalFormat("#.#");
+    		// 리뷰 평균값 구하기
+    		float reviewAvg = reviewMapper.selectReviewAgv(productId);
     		
-    		// 현재 상품 댓글 카운터
-    		int reviewNum = productMapper.selectReviewCount(productId);
+    		log.info("평균 값 :" + reviewAvg);
 
-    		// 댓글 총 갯수 로그
-    		log.info("reviewNum : " + reviewNum);
-
-    		// 상품 댓글 카운터 수정
-    		int updateRes = productMapper.updateReviewNum(productId, reviewNum);
-    		
-    		// 리뷰 평균 관련 코드
-    		// productId에 해당하는 상품 조회 // 업그레이드 된 상태
-    		ProductVO productVO = productMapper.selectProduct(productId);
-
-    		int res = 0; // 댓글 입력시 소수점 입력 불가
-    		String reviewAvg = "0";
-    				
-    		// 리뷰 별 총 합
-    		res = reviewMapper.selectReviewStar(productId);
-    		log.info("리뷰(별) : " + res);
-
-    		// 리뷰 평균 값 reviewStar
-    		reviewAvg = df.format((float) res / productVO.getReviewNum());
-
-    		log.info("res : " + res);
-    		log.info("reviewAvg : " + reviewAvg);
-    		
-//    		// 리뷰 평균값 구하기
-//    		float reviewAvg = reviewMapper.selectReviewAgv(productId);
-//    		
-//    		log.info("평균 값 :" + reviewAvg);
-    		
-//    		// 리뷰 평균값 업데이트
-//    		int updateResNew = productMapper.updateReviewAvgNew(productId, reviewAvg);
-//    		log.info("updateResNew : " + updateResNew);
-    		
     		// 리뷰 평균값 업데이트
-    		updateRes = productMapper.updateReviewAvg(productId, reviewAvg);
+    		int updateRes = productMapper.updateReviewAvg(productId, reviewAvg);
     		log.info("updateRes : " + updateRes);
     		
         } else {
@@ -139,9 +103,6 @@ public class ReviewServiceImple implements ReviewService {
 	@Override
 	public int updateReview(String memberId, String reviewContent, float reviewStar, int productId) {
 		log.info("updateReview()");
-		
-		// 소수점 첫 째 자리까지만 출력
-		DecimalFormat df = new DecimalFormat("#.#");
 				
 		ReviewVO reviewVO = new ReviewVO();
 		// reviewVO에 각 변경사항 변수들 저장
@@ -150,31 +111,21 @@ public class ReviewServiceImple implements ReviewService {
 		reviewVO.setReviewStar(reviewStar);
 		reviewVO.setProductId(productId);
 		log.info("reviewContent: " + reviewContent);
+		
+		// 리뷰 수정
 		int updateRes = reviewMapper.updateReview(reviewVO);
 
-		// productId에 해당하는 상품 조회 // 업그레이드 된 상태
-		  ProductVO productVO = productMapper.selectProduct(productId);
-		  
-	      int res = 0; // 댓글 입력시 소수점 입력 불가
-		  String reviewAvg = "0";
-	      
 	      if(updateRes == 1) {
 	    	    // 리뷰 총 합
-				res = reviewMapper.selectReviewStar(productId);
-				log.info("리뷰(별) : " + res);
 				
-				// 리뷰 평균 값 reviewStar
-				reviewAvg = df.format((float)res / productVO.getReviewNum());
-				
-				log.info("res : " + res);
-				log.info("reviewAvg : " + reviewAvg);
-				
+	    	  	// 리뷰 평균값 구하기
+	    		float reviewAvg = reviewMapper.selectReviewAgv(productId);
+			
 				// 리뷰 평균값 업데이트
 				int result = productMapper.updateReviewAvg(productId, reviewAvg);
 
-				log.info("updateRes : " + result);
+				log.info("result : " + result);
 	      } 
-	      
 	      log.info(updateRes + "행 수정 되었습니다.");
 
 		return updateRes;
@@ -185,48 +136,29 @@ public class ReviewServiceImple implements ReviewService {
 	@Override
 	public int deleteReview(int productId, String memberId) {
 		log.info("deleteReview()");
+		
+		// 리뷰 삭제
 		int deleteRes = reviewMapper.deleteReview(productId, memberId);
-
-		// 소수점 첫 째 자리까지만 출력
-		DecimalFormat df = new DecimalFormat("#.#");
 
 		if (deleteRes == 1) {
 
-			// 현재 상품 댓글 총 갯수 조회
-			int reviewNum = productMapper.selectReviewCount(productId);
+			// 상품에서 리뷰 총 개수 증가
+    		int update = productMapper.reviewNumDown(productId);
+    		log.info(update + "행 개수 감소");
+    		
+    		log.info("productId : " + productId);
+    		// 리뷰 평균값 구하기
+    		float reviewAvg = reviewMapper.selectReviewAgv(productId);
+    		
+    		log.info("리뷰 평균 값" + reviewAvg);
+    		
+			// 리뷰 평균값 업데이트
+			int updateRes = productMapper.updateReviewAvg(productId, reviewAvg);
 
-			// 댓글 총 갯수 로그
-			log.info("reviewNum : " + reviewNum);
-
-			// 상품 댓글 카운터 수정
-			int updateRes = productMapper.updateReviewNum(productId, reviewNum);
-
-			// 리뷰 평균 관련 코드
-			// productId에 해당하는 상품 조회 // 업그레이드 된 상태
-			ProductVO productVO = productMapper.selectProduct(productId);
-
-			int res = 0; // 댓글 입력시 소수점 입력 불가
-			String reviewAvg = "0";
-			if (productVO.getReviewNum() != 0) { // 0 이하일 때 무한의 에러가 나와온다.
-
-				// 삭제 후 해당 상품의 리뷰 총 합
-				res = reviewMapper.selectReviewStar(productId);
-				log.info("리뷰(별) : " + res);
-
-				// 리뷰 평균 값 reviewStar
-				reviewAvg = df.format((float) res / productVO.getReviewNum());
-
-				log.info("res : " + res);
-				log.info("reviewAvg : " + reviewAvg);
-
-				// 리뷰 평균값 업데이트
-				updateRes = productMapper.updateReviewAvg(productId, reviewAvg);
-
-				log.info("updateRes : " + updateRes);
+				log.info("리뷰 평균 값 : " + updateRes);
 			} else {
 				log.info("작성된 리뷰가 없습니다.");
 			}
-		}
 
 		log.info(deleteRes + "행 삭제");
 		return deleteRes;
@@ -244,7 +176,6 @@ public class ReviewServiceImple implements ReviewService {
 
 	@Override
 	public ProductPreviewDTO getProductPreview(int productId) {
-		
 		return productMapper.selectPreviewById(productId);
 	}
 }

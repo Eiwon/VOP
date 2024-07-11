@@ -80,7 +80,7 @@
 </style>
 </head>
 <body>
-	
+	<jsp:include page="../include/sideBar.jsp"/>
 
 	<div class="container membership-container text-center mt-5">
     <div class="membership-info">

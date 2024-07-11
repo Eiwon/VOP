@@ -58,11 +58,11 @@
         .btn-submit:hover {
             background-color: #ffca28; /* 호버 배경색 설정 */
         }
-        
-		#starFieldset input[type=radio] {
+
+        #starFieldset input[type=radio] {
             display: none; /* 라디오 버튼 숨김 */
         }
-        
+
         /* 별점 필드셋 스타일 */
         #starFieldset {
             direction: rtl; /* 오른쪽에서 왼쪽으로 표시 */
@@ -86,6 +86,11 @@
         /* 선택된 별점 라벨 스타일 */
         #starFieldset input[type=radio]:checked ~ label {
             color: #fada00; /* 선택된 별 색상 설정 */
+        }
+
+        /* textarea의 크기를 조절하지 못하도록 설정 */
+        textarea.form-control {
+            resize: none;
         }
     </style>
 </head>
@@ -115,7 +120,8 @@
             <input type="hidden" id="productId" value="${productPreviewDTO.productVO.productId}">
             <div class="form-group">
                 <label for="reviewContent">리뷰 내용</label>
-                <textarea class="form-control" id="reviewContent" rows="5"></textarea>
+                <textarea class="form-control" id="reviewContent" rows="6" maxlength="450"></textarea>
+                <small id="charCount" class="form-text text-muted">0/450</small>
             </div>
             <button type="button" id="btnAdd" class="btn btn-submit btn-block">등록</button>
         </form>
@@ -131,6 +137,12 @@
                 // 선택된 별의 값 가져오기
                 selectedStar = $(this).val();
                 console.log(selectedStar);
+            });
+
+            // textarea의 입력 길이를 확인하는 이벤트 핸들러
+            $('#reviewContent').on('input', function() {
+                let charCount = $(this).val().length;
+                $('#charCount').text(charCount + '/450');
             });
 
             // 댓글 입력 코드
@@ -169,8 +181,8 @@
                 } else {
                     alert('별점과 리뷰 내용을 모두 입력해주세요.');
                 }
-            });
-        });
+            });// end ajax()
+        });// end $(document).ready()
     </script>
 </body>
 </html>

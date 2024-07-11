@@ -66,13 +66,13 @@ public class ProductServiceImple implements ProductService{
 		return res;
 	}
 	
-	// »óÇ° ¸®ºä Æò±Õ°ª ¼öÁ¤
-	@Override
-	public int updateReviewAvg(int productId, String reviewAvg) {
-		log.info("updateReviewAvg()");
-		int res = productMapper.updateReviewAvg(productId, reviewAvg);
-		return res;
-	}
+//	// »óÇ° ¸®ºä Æò±Õ°ª ¼öÁ¤
+//	@Override
+//	public int updateReviewAvg(int productId, float reviewAvg) {
+//		log.info("updateReviewAvg()");
+//		int res = productMapper.updateReviewAvg(productId, reviewAvg);
+//		return res;
+//	}
 	
 	
 	// ´ñ±Û(¸®ºä) Ä«¿îÅÍ

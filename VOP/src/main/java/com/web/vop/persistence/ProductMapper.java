@@ -33,10 +33,7 @@ public interface ProductMapper {
 //	int selectReviewStar(int productId);
 	
 	// »óÇ° ¸®ºä(º°) Æò±Õ°ª µî·Ï
-	int updateReviewAvg(@Param("productId")int productId, @Param("reviewAvg")String reviewAvg);
-	
-	// »óÇ° ¸®ºä(º°) Æò±Õ°ª ¼öÁ¤
-	int updateReviewAvgNew(@Param("productId")int productId, @Param("reviewAvg")float reviewAvg);
+	int updateReviewAvg(@Param("productId")int productId, @Param("reviewAvg")float reviewAvg);
 	
 	// ´ñ±Û(¸®ºä) Ä«¿îÅÍ
 	int updateReviewNum(@Param("productId")int productId, @Param("reviewNum")int reviewNum);

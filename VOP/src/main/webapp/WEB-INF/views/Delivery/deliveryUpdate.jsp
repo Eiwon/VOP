@@ -35,7 +35,7 @@
     </style>
 </head>
 <body>
-
+<jsp:include page="../include/sideBar.jsp"/>
 
 <div class="container-fluid">
 <div class="form-container">

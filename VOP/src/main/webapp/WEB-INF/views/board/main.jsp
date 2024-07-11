@@ -8,7 +8,7 @@
 <!-- jquery 라이브러리 import -->
 <jsp:include page="../include/header.jsp"></jsp:include>
 <title>VOP</title>
-	<style>
+<style type="text/css">
 	#myform fieldset {
 	display: inline-block;
 	direction: ltr; /* 텍스트 방향을 오른쪽에서 왼쪽으로 설정 */
@@ -39,6 +39,11 @@
         	display: flex;
     		flex-direction: row;
         }
+.product_box {
+	width: 180px;
+	margin: 2px;
+	border-color: white;
+}
 /* end 리뷰 별 폼 스타일 */
     </style>
 </head>
@@ -87,8 +92,8 @@
 		                        starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
 		                    }
 		                }
-						form += '<div class="card" style="width: 20rem;" onclick="toDetails(this)">' + 
-							'<img class="card-img-top" src="' + result[x].imgUrl + '">' + 
+						form += '<div class="card product_box" onclick="toDetails(this)">' + 
+							'<img class="card-img-top img-thumbnail" src="' + result[x].imgUrl + '">' + 
 							'<div class="card-body">' + 
 							'<h3 class="card-title">' + productVO.productName + '</h3>' +
 							'<p class="card-text">' + productVO.productPrice + '원</p>' + 
@@ -124,8 +129,8 @@
 			                        starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
 			                    }
 			                }
-							form += '<div class="card" style="width: 20rem;" onclick="toDetails(this)">' + 
-									'<img class="card-img-top" src="' + result[x][i].imgUrl + '">' + 
+							form += '<div class="card product_box" onclick="toDetails(this)">' + 
+									'<img class="card-img-top img-thumbnail" src="' + result[x][i].imgUrl + '">' + 
 									'<div class="card-body">' +
 									'<h3 class="card-title">' + productVO.productName + '</h3>' + 
 									'<p class="card-text">' + productVO.productPrice + '원</p>' +

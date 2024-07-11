@@ -15,7 +15,7 @@
 <style type="text/css">
 .body_container{
 	width: 50%;
-	height: 800px;
+	height: 600px;
 	margin: auto;
 }
 .form_header {
@@ -26,6 +26,8 @@
 </head>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <body>
+	<jsp:include page="../include/sideBar.jsp"/>
+	
 	<div class="body_container">
 		<div class="form_header">
 			<h3>상품 등록</h3>
@@ -95,7 +97,6 @@
 			<input type="submit" class="btn btn-primary" value="등록">
 		</form>
 	</div>
-	
 	
 	<script type="text/javascript">
 		let validCheckMap = {};
