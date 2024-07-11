@@ -67,7 +67,7 @@
 </head>
 <body>
 <jsp:include page="../include/sideBar.jsp"/>
-<div class="container"><br>
+<div class="container text-center"><br>
     <h2 class="mt-4 mb-4">${memberDetails.getUsername()}님의 배송지 관리</h2>
     <br>
 
