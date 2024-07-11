@@ -42,7 +42,7 @@
 		const popupStat = {
 				'url' : targetUrl,
 				'name' : 'popupConsult',
-				'option' : 'width=800, height=1000, top=50, left=400'
+				'option' : 'width=900, height=1000, top=50, left=400'
 		};
 		
 		// 팝업 창 띄우기

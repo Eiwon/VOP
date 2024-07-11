@@ -184,6 +184,7 @@ public class AlarmHandler extends TextWebSocketHandler{
 	public void sendAuthUpdateAlarm(String memberId, String content) {
 		MessageVO returnMsg = new MessageVO();
 		returnMsg.setReceiverId(memberId);
+		returnMsg.setTitle("권한 변경 알림");
 		returnMsg.setContent(content);
 		returnMsg.setType(TYPE_AUTH_UPDATE);
 		unicast(returnMsg);
