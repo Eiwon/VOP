@@ -8,25 +8,37 @@
 <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <style type="text/css">
-.form_container{
-	border: 1px solid grey;
-	padding: 10px;
-	width: 500px;
-	height: 500px;
-	display: inline-block;
-}
 .btn_submit {
-	width: 480px;
+	width: 100%;
+}
+.body_container {
+	width: 40%;
+	margin: auto;
+}
+.form_container {
+	padding: 10px;
+}
+.inner_header {
+	text-align: center;
+	margin: 15px;
+	margin-top: 30px;
+}
+.form-floating {
+	height: 100px;
 }
 </style>
 <meta charset="UTF-8">
 <title>회원 가입</title>
 </head>
 <body>
-	<div style="text-align: center;">
+	<div class="body_container">
+		<div class="inner_header">
+			<h3>회원 가입</h3>
+		</div>
+	
 		<form class="form_container" action="register" method="POST">
 			<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
-			<div class="form-floating mb-3">
+			<div class="form-floating">
 				<input type="text" id="memberId" class="form-control" name="memberId" placeholder="아이디" onblur="checkValid(this)">
 				<div></div>
 				<label for="memberId">아이디</label>
@@ -117,9 +129,11 @@
 			checkMap[type].isValid = isValid;
 			if(!isValid) {
 				$(input).addClass('is-invalid');
+				checkMap[type].val = '';
 				return;
 			}else{
 				$(input).removeClass('is-invalid');
+				checkMap[type].val = inputVal;
 			}
 			
 			if(type == 'memberId'){
@@ -134,7 +148,7 @@
 		// 아이디 유효성 체크
 		function isValidId(memberId){
 			$.ajax({ // 중복 체크
-				type : 'GET',
+				method : 'GET',
 				url : 'idDupChk?memberId=' + memberId,
 				success : function(result){
 					console.log("중복 체크 결과 : " + result);
@@ -142,10 +156,12 @@
 						$('#memberId').next().text("사용할 수 있는 아이디입니다.");
 						$('#memberId').removeClass('is-invalid');
 						checkMap['memberId'].isValid = true;
+						checkMap['memberId'].val = memberId;
 					}else{
 						$('#memberId').next().text("사용 불가능한 아이디입니다.");
 						checkMap['memberId'].isValid = false;
 						$('#memberId').addClass('is-invalid');
+						checkMap['memberId'].val = '';
 					}
 				}
 			}); // end ajax

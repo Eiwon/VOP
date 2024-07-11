@@ -5,8 +5,37 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+	
+	<div class="toast authUpdateAlarm" role="alert">
+		<div class="toast-header">
+			<strong class="me-auto toast_title"></strong>
+	      	<button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+	    </div>
+	    <div class="toast-body">
+	    	<span class="toast_content"></span>
+	    </div>
+	</div>
+	
+	<div class="toast replyAlarm" role="alert">
+		<div class="toast-header">
+			<strong class="me-auto toast_title"></strong>
+	      	<button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+	    </div>
+	    <div class="toast-body">
+	    	<span class="toast_content"></span>
+	    	<div class="mt-2 pt-2 border-top">
+      			<button type="button" class="btn btn-primary btn-sm">바로 이동하기</button>
+    		</div>
+	    </div>
+	</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 	<script type="text/javascript">
 	
@@ -102,13 +131,16 @@
 	msgHandler.replyAlarm = function(msg){
 		console.log('replyAlarm 메시지 수신' + msg);
 		
-		showSocketAlarm(msg, function(){
+		showToast(msg, '../product/detail?productId=' + msg.callbackInfo);
+		/* showSocketAlarm(msg, function(){
 			window.open('../product/detail?productId=' + msg.callbackInfo);
-		});
+		}); */
 	}; // 타입이 replyAlarm인 메시지 수신시 호출될 함수
 	
 	msgHandler.authUpdateAlarm = function(msg){
-		console.log('권한 변경 메시지 수신 : ' + msg);
+		console.log('권한 변경 메시지 수신');
+		
+		showToast(msg);
 		
 		$.ajax({
 			method : 'GET',
@@ -118,7 +150,7 @@
 			}
 		});
 		
-		alert(msg.content);
+		//alert(msg.content);
 		
 	} // end updateAuthAlarm
 	
@@ -142,7 +174,7 @@
 			const popupStat = {
 					'url' : targetUrl,
 					'name' : 'popupConsultAdmin',
-					'option' : 'width=800, height=800, top=50, left=400'
+					'option' : 'width=900, height=800, top=50, left=400'
 			};
 				
 			// 팝업 창 띄우기
@@ -152,14 +184,14 @@
 				console.log("팝업 닫힘");
 			} // end popup.onbeforeunload
 		}
-		
+		/* 
 		showSocketNotification("1대1 상담 요청", "1대1 상담 요청 수신. 수락하시겠습니까?", function(){
 			let targetUrl = '../board/consultAccept?roomId=' + msg.roomId;
 			console.log('onclick : ' + targetUrl);
 			const popupStat = {
 					'url' : targetUrl,
 					'name' : 'popupConsultAdmin',
-					'option' : 'width=800, height=800, top=50, left=400'
+					'option' : 'width=600, height=800, top=50, left=400'
 			};
 				
 			// 팝업 창 띄우기
@@ -168,7 +200,7 @@
 				// 팝업 닫힐 때 실행
 				console.log("팝업 닫힘");
 			} // end popup.onbeforeunload
-		});
+		}); */
 		
 	} // end msgHandler.consultRequest
 	
@@ -202,6 +234,21 @@
 		console.log(temp);
 	} // end showSocketAlarm
 	
+	function showToast(msg, redirectUri) {
+		let tagToastContainer = $('.toast-container');
+		
+		let toast = $('.' + msg.type);
+		toast.find('.toast_title').text(msg.title);
+		toast.find('.toast_content').text(msg.content);
+		
+		if(redirectUri !== undefined){
+			toast.find('button').click(function(){
+				window.open(redirectUri);
+			});
+		}
+		bootstrap.Toast.getOrCreateInstance(toast).show();
+		
+	} // end showToast
 	
 	
 	/* function showSocketPopup(){

@@ -10,7 +10,7 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <style type="text/css">
 	#readArea {
-		width: 500px;
+		width: 400px;
 		height: 500px;
 		overflow: scroll;
 	}
@@ -20,28 +20,32 @@
 	.myChat {
 		text-align: right;
 	}
+	.body_container {
+		width: 60%;
+		margin: auto;
+	}
 </style>
-<title>Insert title here</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<title>상담실</title>
 </head>
 <body>
-	<c:set var="role" value="consultant"></c:set>
-	<c:if test="${roomId == null }">
-		<c:set var="role" value="client"></c:set>
-		<button onclick="callConsultant()">상담사 연결</button>
-	</c:if>
-	<button onclick="finishConsult()">상담 종료</button>
-	<div class="chat_container">
-		<div id="readArea">
-			
-		
-		</div>
-		<div id="writeArea">
-			<input type="text" id="writeChat">
-			<button onclick="sendChat()">전송</button>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+	<div class="body_container">
+		<c:set var="role" value="consultant"></c:set>
+		<c:if test="${roomId == null }">
+			<c:set var="role" value="client"></c:set>
+			<button class="btn btn-outline-primary" onclick="callConsultant()">상담사 연결</button>
+		</c:if>
+		<button class="btn btn-outline-primary" onclick="finishConsult()">상담 종료</button>
+		<div class="chat_container">
+			<div id="readArea"></div>
+			<div id="writeArea">
+				<input type="text" id="writeChat">
+				<button class="btn btn-outline-primary" onclick="sendChat()">전송</button>
+			</div>
 		</div>
 	</div>
-	
-
 	<script type="text/javascript">
 		
 		let consultSocketUrl = "ws://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/consult";

@@ -3,6 +3,7 @@ package com.web.vop.controller;
 
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -257,8 +258,7 @@ public class MemberController {
 	} // end withdrawGET
 	
 	@PostMapping("/withdrawal")
-	public String withdrawPOST(Model model, String authCode, @AuthenticationPrincipal UserDetails memberDetails,
-			HttpServletRequest request) {
+	public String withdrawPOST(Model model, String authCode, @AuthenticationPrincipal UserDetails memberDetails) {
 		log.info("회원 탈퇴 신청");
 				
 		AlertVO alertVO = new AlertVO();
@@ -271,7 +271,8 @@ public class MemberController {
 			memberService.deleteMember(memberDetails.getUsername());
 			alertVO.setAlertMsg("회원 탈퇴되었습니다.");
 			alertVO.setRedirectUri("board/main");
-			request.getSession().invalidate();
+			// 인증된 사용자인지 여부를 false로 지정
+			SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
 			break;
 		case 101 : 
 			// 유효기간 만료
