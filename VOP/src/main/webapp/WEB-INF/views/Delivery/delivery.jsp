@@ -136,7 +136,7 @@ $(document).ready(function() {
 	    	let formattedExpectedDate = formatDate(expectedDate);
 	    	console.log("배송완료일 : ",formattedExpectedDate);
 	        // 예상 배송일이 현재 날짜보다 이전인 경우
-	        deliveryStatusHtml = '<p class="font-weight-bold text-primary">배송 완료 (' + formattedExpectedDate + ' 일에 배송이 완료되었습니다!)</p>';
+	        deliveryStatusHtml = '<p class="font-weight-bold text-primary">배송 완료 (' + formattedExpectedDate + '  배송이 완료되었습니다!)</p>';
 	    } else {
 	    	console.log("error : nowDate.getTime() = ", nowDate.getTime() , ", expectedDateDate.getTime() = ", expectedDateDate.getTime());
 	    }
