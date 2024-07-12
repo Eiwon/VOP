@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.web.vop.persistence.ImageMapper">
+
+   <resultMap type="com.web.vop.domain.ImageVO"
+      id="imageResultMap">
+      
+      <id property="imgId" column="IMG_ID" /> 
+      <result property="productId" column="PRODUCT_ID" />
+      <result property="imgPath" column="IMG_PATH"/>
+      <result property="imgRealName" column="IMG_REAL_NAME"/>
+      <result property="imgChangeName" column="IMG_CHANGE_NAME"/>
+      <result property="imgExtension" column="IMG_EXTENSION"/>
+   </resultMap>
+   
+   <!-- imgId로 이미지 검색 -->
+   <select id="selectByImgId" resultMap="imageResultMap">
+      SELECT * FROM IMAGE
+      WHERE IMG_ID = #{imgId}
+   </select>
+   
+   <!-- 이미지 등록 -->
+   <insert id="insertImg">
+   		INSERT INTO IMAGE VALUES(
+   		IMAGE_SEQ.NEXTVAL, #{productId}, #{imgPath}, #{imgRealName}, #{imgChangeName}, #{imgExtension}
+   		)
+   </insert>
+   
+   <!-- 상품 상세정보 이미지 등록 -->
+   <insert id="insertProductDetailsImg">
+   		INSERT INTO IMAGE VALUES(
+   		IMAGE_SEQ.NEXTVAL, PRODUCT_SEQ.CURRVAL, #{imgPath}, #{imgRealName}, #{imgChangeName}, #{imgExtension}
+   		)
+   </insert>
+   
+   <!-- 최근에 등록한 이미지 id 검색 -->    
+   <select id="selectRecentImgId" resultType="Integer">
+   		SELECT IMAGE_SEQ.CURRVAL FROM DUAL
+   </select>
+   
+   <!-- productId로 이미지 검색 -->
+   <select id="selectByProductId" resultMap="imageResultMap">
+   		SELECT * FROM IMAGE WHERE PRODUCT_ID = #{productId}
+   </select>
+   
+   <!-- imgId로 이미지 경로 조회  -->
+   <select id="selectImgPathByImgId" resultType="String">
+   		SELECT IMG_PATH FROM IMAGE WHERE IMG_ID = #{imgId}
+   </select>
+   
+   <!-- productId로 이미지 id 검색 -->
+   <select id="selectImgIdByProductId" resultType="Integer">
+   		SELECT IMG_ID FROM IMAGE WHERE PRODUCT_ID = #{productId}
+   </select>
+   
+   <!-- 상품과 관련된 모든 이미지 검색 -->
+   <select id="selectAllbyProductId" resultMap="imageResultMap">
+   		SELECT * FROM IMAGE WHERE PRODUCT_ID = #{productId} OR IMG_ID = (
+   			SELECT IMG_ID FROM PRODUCT WHERE PRODUCT_ID = #{productId}
+   		)
+   </select>
+   
+   <!-- 상품과 관련된 모든 이미지 삭제 -->
+   <delete id="deleteProductImage">
+   		DELETE IMAGE WHERE PRODUCT_ID = #{productId} OR IMG_ID = (
+   			SELECT IMG_ID FROM PRODUCT WHERE PRODUCT_ID = #{productId}
+   		)
+   </delete>
+   
+   <!-- imgId로 이미지 삭제 -->
+   <delete id="deleteById">
+   		DELETE IMAGE WHERE IMG_ID = #{imgId}
+   </delete>
+   
+   <!-- productId로 이미지 삭제 -->
+   <delete id="deleteByProductId">
+   		DELETE IMAGE WHERE PRODUCT_ID = #{productId}
+   </delete>
+   
+   <!-- 이미지 업데이트 -->
+   <update id="updateById">
+   		UPDATE IMAGE SET IMG_REAL_NAME = #{imgRealName}, IMG_CHANGE_NAME = #{imgChangeName}, 
+   		IMG_EXTENSION = #{imgExtension} WHERE IMG_ID = #{imgId}
+   </update>
+   
+</mapper>

@@ -44,5 +44,11 @@ public interface InquiryMapper {
 	 
 	// 댓글(문의) 삭제
 	int deleteInquiry(@Param("productId")int productId, @Param("memberId")String memberId);
-	 
+	
+	// 관리자로 댓글(문의) 전체 검색
+	List<InquiryVO> allList(@Param("pagination") Pagination pagination);
+	
+	// 댓글(문의) productId로 페이징 수 검색 용도
+	int allListPaging();
+
 }
