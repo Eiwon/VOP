@@ -75,7 +75,6 @@
 					// 페이지 생성 후 등록
 					$('#product_list_page').html(makePageForm(pagingListDTO));
 					$('#product_list').html(form);
-					
 				} // end success
 			}); // end ajax
 

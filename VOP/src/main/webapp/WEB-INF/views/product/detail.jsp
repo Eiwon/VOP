@@ -15,7 +15,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="${_csrf.parameterName}" content="${_csrf.token}">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> 모발일 적용 코드인데 사용하면는 더이상해 사용안함-->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
@@ -280,9 +280,10 @@ td {
 
 <div class="product-details">
     <h2>상품 상세 페이지</h2>
-    <a id="kakaotalk-sharing-btn" href="javascript:;">
-        <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" alt="카카오톡 공유 보내기 버튼"/>
-    </a>
+	    <a id="kakaotalk-sharing-btn" href="javascript:;">
+	        <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" alt="카카오톡 공유 보내기 버튼"/>
+	    </a>
+	    <p>(카카오 공유 버튼)</p>
     <div class="product-summary">
         <div class="product-category">
             <span>카테고리:</span> ${productVO.category}
@@ -576,7 +577,6 @@ reviewMap.show = function(page) {
             reviewNUM =  reviewMap.list;  // 성공적으로 데이터를 가져오면 inquiryNUM에 저장
            
             console.log("reviewNUM : " + reviewNUM);
-            
             
             reviewProcessComments();
             

@@ -116,7 +116,7 @@
 	function sendResult(productState){
 		
 		$.ajax({
-			url : 'changeState',
+			url : 'changeStateByAdmin',
 			headers : {
 				'Content-Type' : 'application/json',
 				'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')

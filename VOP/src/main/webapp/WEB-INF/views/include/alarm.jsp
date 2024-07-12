@@ -50,7 +50,7 @@
 	// 서버로부터 메시지를 받으면, 해당 메시지의 type에 맞는 함수를 찾아서 실행
 	webSocket.onmessage = function(e){
 		let msg = JSON.parse(e.data);
-		console.log("receive message : " + msg);
+		console.log("receive message : " + msg.content);
 		
 		msgHandler[msg.type](msg); // type에 맞는 핸들러를 맵에서 찾아서 실행
 	}; // end webSocket.onmessage
@@ -72,70 +72,7 @@
 	
 	
 	
-	
-	/* function sendAlert(){ //테스트 용
-		
-		let content = prompt('송신할 메시지를 입력하세요.');
-		if(content != null){
-			let msg = {};
-			msg.type = 'alert';
-			msg.content = content;
-			webSocket.send(JSON.stringify(msg));
-		}
-	} // end sendAlert
-		
-	function sendNotice(){
-		// 모든 유저에게 공지 송신
-		console.log('공지보내기');
-		let notice = prompt('송신할 메시지를 입력하세요.');
-		console.log('보낼 메시지 : ' + notice);
-		
-		if(notice != null){
-			let msg = {};
-			msg.type = 'notice';
-			msg.content = notice;
-			webSocket.send(JSON.stringify(msg));
-		}
-	} // end sendNotice
-	
-	function sendInstanceMsg(){
-		let instanceMsg = prompt('송신할 메시지를 입력하세요.');
-		if(instanceMsg != null){
-			let msg = {};
-			msg.type = 'instanceMsg';
-			msg.content = instanceMsg;
-			webSocket.send(JSON.stringify(msg));
-		}
-	} // end sendInstanceMsg */
-	
-	/* function sendReplyAlarm(productId){
-		// 댓글 알림 보내기(클라이언트 측에서 보낼 일 X)
-		
-		let msg = {};
-		msg.type = 'replyAlarm';
-		msg.callbackInfo = productId;
-		
-		webSocket.send(JSON.stringify(msg));
-		
-	} // end sendReplyAlarm  */
-	
-	
-	
-	// 서버로부터 메시지 수신시 호출되는 함수들
-	
-	msgHandler.alert = function(msg){
-		console.log('alert 메시지 수신' + msg);
-		alert(msg.content);
-	}; // 타입이 alert인 메시지 수신시 호출될 함수
-	
-	msgHandler.replyAlarm = function(msg){
-		console.log('replyAlarm 메시지 수신' + msg);
-		
-		showToast(msg, '../product/detail?productId=' + msg.callbackInfo);
-		/* showSocketAlarm(msg, function(){
-			window.open('../product/detail?productId=' + msg.callbackInfo);
-		}); */
-	}; // 타입이 replyAlarm인 메시지 수신시 호출될 함수
+	// ---------------------메시지 타입에 따라 처리할 함수 설정----------------
 	
 	msgHandler.authUpdateAlarm = function(msg){
 		console.log('권한 변경 메시지 수신');
@@ -150,23 +87,13 @@
 			}
 		});
 		
-		//alert(msg.content);
-		
 	} // end updateAuthAlarm
 	
-	msgHandler.alarm = function(msg){
+	msgHandler.instanceAlarm = function(msg){
 		console.log('메시지 수신');
 		
-	}
-	
-	msgHandler.instanceAlarm = function(msg){
-		console.log('알림 메시지 수신 : ' + msg);
-		alert(msg.content);
-		let notification = new Notification(msg.title, {
-			title : msg.title,
-			body : msg.content
-		});
-	} // 일반 알림 메시지 수신
+		showToast(msg);
+	} // end alarm
 	
 	msgHandler.consultRequest = function(msg){
 		console.log('consultRequest 메시지 수신 ' + msg);
@@ -189,25 +116,11 @@
 				console.log("팝업 닫힘");
 			} // end popup.onbeforeunload
 		}
-		/* 
-		showSocketNotification("1대1 상담 요청", "1대1 상담 요청 수신. 수락하시겠습니까?", function(){
-			let targetUrl = '../board/consultAccept?roomId=' + msg.roomId;
-			console.log('onclick : ' + targetUrl);
-			const popupStat = {
-					'url' : targetUrl,
-					'name' : 'popupConsultAdmin',
-					'option' : 'width=600, height=800, top=50, left=400'
-			};
-				
-			// 팝업 창 띄우기
-			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
-			popup.onbeforeunload = function(){
-				// 팝업 닫힐 때 실행
-				console.log("팝업 닫힘");
-			} // end popup.onbeforeunload
-		}); */
 		
 	} // end msgHandler.consultRequest
+	
+	
+	// -------------------------------------------------------------------------------
 	
 	
 	function alarmPermitRequest(){ // 알림창 표시 기능 허가 요청 (허가 거부시 크롬 설정->개인정보보호 및 보안->사이트설정->알림에서 재설정 가능)
@@ -221,35 +134,20 @@
 	} // end alarmPermitRequest
 	
 	
-	function showSocketNotification(title, content, onclickListener) {
-		let notification = new Notification(title, {
-			title : title,
-			body : content
-		});
-		notification.onclick = onclickListener;
-		console.log(notification);
-		
-	} // end showSocketNotification
-	
-	function showSocketAlarm(msg, onclickListener){
-		let temp = confirm(msg.content);
-		if(onclickListener != null && temp){
-			onclickListener();
-		}
-		console.log(temp);
-	} // end showSocketAlarm
-	
+	// 토스트 메시지 출력 (메시지에 redirectUri가 설정되어 있지 않으면 버튼 없는 토스트 출력)
 	function showToast(msg) {
 		let tagToastContainer = $('.toast-container');
 		let toast;
 		let redirectUri = msg.callbackInfo;
 
 		if(redirectUri === undefined || redirectUri === null || redirectUri === ''){
+			console.log('normal toast');
 			toast = $('.instanceAlarm');		
 		}else {
+			console.log('link toast');
 			toast = $('.linkedAlarm');
 			toast.find('button').click(function(){
-				window.open(redirectUri);
+				window.open('../' + redirectUri);
 			});
 		}
 		
@@ -261,22 +159,6 @@
 	} // end showToast
 	
 	
-	/* function showSocketPopup(){
-		let targetUrl = '../board/popupNotice';
-		
-		const popupStat = {
-				'url' : targetUrl,
-				'name' : 'popupNotice',
-				'option' : 'width=500, height=600, top=50, left=400'
-		};
-		
-		// 팝업 창 띄우기
-		let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
-		popup.onbeforeunload = function(){
-			// 팝업 닫힐 때 실행
-			console.log("팝업 닫힘");
-		} // end popup.onbeforeunload
-	} // end showSocketPopup */
 	
 	</script>
 	

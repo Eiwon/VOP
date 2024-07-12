@@ -12,6 +12,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
+<jsp:include page="../include/sideBar.jsp"/>
 <title>회원 문의 리스트</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style type="text/css">

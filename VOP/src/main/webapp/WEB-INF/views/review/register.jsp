@@ -12,7 +12,6 @@
     <meta charset="UTF-8">
     <meta name="${_csrf.parameterName }" content="${_csrf.token }">
     <title>리뷰 작성</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <jsp:include page="../include/header.jsp"></jsp:include>
@@ -95,7 +94,8 @@
     </style>
 </head>
 <body>
-    <div class="container">
+<jsp:include page="../include/sideBar.jsp"/>
+    <div class="container" style="width: 65%; margin: auto;">
         <h1 class="mb-4">리뷰 작성</h1>
         
         <h3>${memberDetails.getUsername() } 님의 리뷰 작성</h3>

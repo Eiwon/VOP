@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -69,6 +70,9 @@ public class ProductController {
 	
 	@Autowired
 	private String uploadPath;
+	
+	@Autowired
+	private WebSocketHandler alarmHandler;
 	
 	//@Autowired
 	//private WebSocketHandler alarmHandler;
@@ -329,9 +333,8 @@ public class ProductController {
 		model.addAttribute("productDetailsDTO", productDetails);
 	} // end popupProductUpdateGET
 	
-	// 상품 상태 변경
-	// 상품 등록한 사람 또는 관리자만 변경 가능
-	@PreAuthorize("#productVO.memberId == authentication.principal.username || hasRole('관리자')")
+	// 상품 등록한 사람에 의한 상품 상태 변경
+	@PreAuthorize("#productVO.memberId == authentication.principal.username")
 	@PutMapping("/changeState")
 	@ResponseBody
 	public ResponseEntity<Integer> updateProductState(@RequestBody ProductVO productVO) {
@@ -342,22 +345,42 @@ public class ProductController {
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	} // end updateProductState
 
+	// 상품 상태 변경
+	// 상품 등록한 사람 또는 관리자만 변경 가능
+	@PutMapping("/changeStateByAdmin")
+	@ResponseBody
+	public ResponseEntity<Integer> updateStateByAdmin(@RequestBody ProductVO productVO){
+		int productId = productVO.getProductId();
+		log.info("상품 상태 변경 : " + productVO.getProductId() + ", " + productVO.getProductState());
+		int res = productService.setProductState(productVO.getProductState(), productVO.getProductId());
+		log.info(res + "행 수정 성공");
+		
+		String msgContent = productVO.getProductState().equals(Constant.STATE_SELL) 
+				? productId + " 상품의 등록/수정 요청이 승인되었습니다" : productId + " 상품의 등록/수정 요청이 거절되었습니다";
+		
+		((AlarmHandler)alarmHandler).sendInstanceAlarm(
+				productVO.getProductId(), "요청 승인", msgContent, null);
+		
+		return new ResponseEntity<Integer>(res, HttpStatus.OK);
+	} // end approveProductState
+	
 	// 상품 즉시 삭제
 	@DeleteMapping("/delete")
 	@ResponseBody
 	public ResponseEntity<Integer> deleteProduct(@RequestBody ProductVO productVO) {
 		log.info("상품 삭제 : " + productVO.getProductId());
-		
+		int productId = productVO.getProductId();
 		// 삭제할 상품의 img 정보 불러오기
-		List<ImageVO> imgList = productService.getAllProductImg(productVO.getProductId());
+		List<ImageVO> imgList = productService.getAllProductImg(productId);
 		
 		// 상품 삭제
-		int res = productService.deleteProduct(productVO.getProductId());
+		int res = productService.deleteProduct(productId);
 		
 		// 서버에서 모든 관련 이미지 삭제
 		if(res == 1) {
 			for(ImageVO image : imgList) {
 			awsS3Service.removeImage(image);
+			((AlarmHandler)alarmHandler).sendInstanceAlarm(productId, "요청 승인", productId + " 상품의 삭제 요청이 승인되었습니다", null);
 			}
 		}
 		
@@ -372,14 +395,14 @@ public class ProductController {
 	public ResponseEntity<Integer> deleteRequestProduct(@RequestBody ProductVO productVO) {
 		int productId = productVO.getProductId();
 		log.info("상품 삭제 요청 : " + productId);
-		String productState = productService.selectStateByProductId(productId);
+		//String productState = productService.selectStateByProductId(productId);
 		
 		int res = 0;
-		if (productState.equals(Constant.STATE_SELL)) {
+		//if (productState.equals(Constant.STATE_SELL)) {
 			res = productService.setProductState(Constant.STATE_REMOVE_WAIT, productId) > 0 ? 201 : 200;
-		} else if (!productState.equals(Constant.STATE_REMOVE_WAIT)) {
-			res = productService.deleteProduct(productId) > 0 ? 101 : 100;
-		}
+		//} else if (!productState.equals(Constant.STATE_REMOVE_WAIT)) {
+			//res = productService.deleteProduct(productId) > 0 ? 101 : 100;
+		//}
 		// res 코드 100 = 삭제 실패, 101 = 삭제 성공, 201 = 삭제요청 성공, 200 = 삭제요청 실패
 		
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);

@@ -56,11 +56,10 @@ public class ReviewController {
 	
 	// ¥Ò±€(∏Æ∫‰) µÓ∑œ GET ¿Ãµø
 	@GetMapping("/register")
-	public String createReviewGET(Model model, Integer productId, Integer imgId) {
+	public String createReviewGET(Model model, Integer productId) {
 	    log.info("createReviewGET()");
 
 	    log.info("productId : " + productId);
-	    log.info("imgId : " + imgId);
 
 	    ProductPreviewDTO productPreviewDTO = reviewService.getProductPreview(productId);
 	    if(productPreviewDTO != null) {
