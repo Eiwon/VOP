@@ -126,7 +126,8 @@
 		
 		function validCheck(input){
 			console.log("유효성 체크 : " + $(input).val());
-			const inputVal = $(input).val();
+			const inputVal = $(input).val().trim();
+			$(input).val(inputVal);
 			const targetId = $(input).attr('id');
 			const tester = expMap[targetId];
 			

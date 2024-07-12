@@ -59,7 +59,10 @@ public class ReviewRESTController {
 
 		if(res == 1) {
 			// 댓글 알람 송신
-	        ((AlarmHandler)alarmHandler).sendReplyAlarm(reviewVO.getProductId());
+	        ((AlarmHandler)alarmHandler).sendInstanceAlarm(
+	        		reviewVO.getProductId(), 
+	        		"댓글 알림", "등록한 상품에 댓글이 등록되었습니다", "product/detail?productId=" + reviewVO.getProductId()
+	        		);
 		}
 		
 		// result 값을 전송하여 리턴하는 방식으로 성공하면 200 OK를 전송합니다.

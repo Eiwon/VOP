@@ -136,7 +136,6 @@
                     <!-- 리뷰 쓰기 코드 -->
                     <form action="../review/register" method="get" class="d-inline">
                         <input type="hidden" name="productId" value="${orderVO.productId}">
-                        <input type="hidden" name="imgId" value="${orderVO.imgId}">
                         <button type="submit" class="d-inline-flex focus-ring focus-ring-primary py-1 px-2 text-decoration-none border rounded-2">리뷰 쓰기</button>
                     </form>
 

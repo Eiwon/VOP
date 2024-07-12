@@ -88,7 +88,7 @@
 </head>
 <body>
 
-<div class="container mt-5">
+<div class="container mt-5" style="width: 65%; margin: auto;">
     <h1>댓글 리스트</h1>
 
     <c:forEach var="product" items="${productList}">

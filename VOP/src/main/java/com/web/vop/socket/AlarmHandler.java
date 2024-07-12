@@ -34,24 +34,22 @@ public class AlarmHandler extends TextWebSocketHandler{
 	Map<String, WebSocketSession> alarmConnMap;
 	
 	private static final String TYPE_INSTANCE = "instanceAlarm";
-	private static final String TYPE_REPLY = "replyAlarm";
 	private static final String TYPE_ALERT = "alert";
 	private static final String TYPE_AUTH_UPDATE = "authUpdateAlarm";
-	private static final String TYPE_INQUIRY = "inquiryAlarm";
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-		log.info("socket message received : " + message.getPayload());
-		MessageVO messageVO = convertMsg(message.getPayload());
-		
-		MessageVO returnMsg = null;
-    	String msgType = messageVO.getType();
-    	String memberId = session.getPrincipal().getName();
-    	messageVO.setWriterId(memberId);
-    	
-    	if(msgType.equals(TYPE_ALERT)) {
-    		broadcast(messageVO);
-    	}
-		
+//		log.info("socket message received : " + message.getPayload());
+//		MessageVO messageVO = convertMsg(message.getPayload());
+//		
+//		MessageVO returnMsg = null;
+//    	String msgType = messageVO.getType();
+//    	String memberId = session.getPrincipal().getName();
+//    	messageVO.setWriterId(memberId);
+//    	
+//    	if(msgType.equals(TYPE_ALERT)) {
+//    		broadcast(messageVO);
+//    	}
+//		
 	} // end handleTextMessage
 	
 	@Override
@@ -93,9 +91,6 @@ public class AlarmHandler extends TextWebSocketHandler{
 		String receiverId; 
 		while(iterator.hasNext()) {
 			receiverId = iterator.next();
-//			if(receiverId.equals(message.getWriterId())) {
-//				continue;
-//			} // 자기 자신은 송신 대상에서 제외 (테스트를 위해 주석 처리)
 			WebSocketSession client = alarmConnMap.get(receiverId);
 			if(client.isOpen()) {
 				try {
@@ -130,68 +125,6 @@ public class AlarmHandler extends TextWebSocketHandler{
 		
 	} // end unicast
 	
-	
-//	private MessageVO noticeHandler(MessageVO messageVO, String writerId) {
-//		MessageVO returnMsg = new MessageVO();
-//		returnMsg.setReceiverId(writerId);
-//		messageVO.setTitle("공지 사항");
-//		messageVO.setReceiverId("all");
-//		messageVO.setCallbackInfo(null);
-//		
-//		log.info(messageVO);
-//		int res = messageService.registerMessage(messageVO);
-//		
-//		if(res == 1) {
-//			returnMsg.setContent("공지 등록 성공");
-//		}else {
-//			returnMsg.setContent("공지 등록에 실패했습니다. 다시 시도해주세요.");
-//		}
-//		
-//		return returnMsg;
-//	} // end noticeHandler
-
-	public void sendAlert(String msg, String receiverId) {
-		MessageVO messageVO = new MessageVO();
-		messageVO.setReceiverId(receiverId);
-		messageVO.setContent(msg);
-		messageVO.setType("alert");
-		
-		TextMessage jsonMsg = convertMsg(messageVO);
-		if(alarmConnMap.containsKey(receiverId)) { // 수신 대상이 접속 중이면 바로 송신
-			WebSocketSession client = alarmConnMap.get(receiverId);
-			if(client.isOpen()) {
-				try {
-					client.sendMessage(jsonMsg);
-					return;
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		} // end 접속 중인 유저 송신
-	} // end sendAlert
-	
-	public void sendReplyAlarm(int productId) {
-		MessageVO returnMsg = new MessageVO();
-		String receiverId = messageService.getSellerIdOf(productId);
-		String redirectId = String.valueOf(productId);
-		returnMsg.setContent("등록한 상품에 댓글이 등록되었습니다. 이동하려면 클릭하세요.");
-		returnMsg.setType(TYPE_REPLY);
-		returnMsg.setReceiverId(receiverId);
-		returnMsg.setCallbackInfo(redirectId);
-		unicast(returnMsg);
-	} // end sendReplyAlarm
-	
-	public void sendInquiryAlarm(int productId) {
-		MessageVO returnMsg = new MessageVO();
-		String receiverId = messageService.getSellerIdOf(productId);
-		String redirectId = String.valueOf(productId);
-		returnMsg.setContent("등록한 상품에 문의가 등록되었습니다. 이동하려면 클릭하세요.");
-		returnMsg.setType(TYPE_INQUIRY);
-		returnMsg.setReceiverId(receiverId);
-		returnMsg.setCallbackInfo(redirectId);
-		unicast(returnMsg);
-	} // end sendReplyAlarm
-	
 	public void sendAuthUpdateAlarm(String memberId, String content) {
 		MessageVO returnMsg = new MessageVO();
 		returnMsg.setReceiverId(memberId);
@@ -201,15 +134,26 @@ public class AlarmHandler extends TextWebSocketHandler{
 		unicast(returnMsg);
 	} // end sendAuthUpdateAlarm
 	
-	public void sendInstanceAlarm(String title, String content, String receiverId) {
+	public void sendInstanceAlarm(String receiverId, String title, String content, String returnUri) {
 		MessageVO returnMsg = new MessageVO();
+		returnMsg.setType(TYPE_INSTANCE);
 		returnMsg.setTitle(title);
 		returnMsg.setContent(content);
-		returnMsg.setType(TYPE_INSTANCE);
 		returnMsg.setReceiverId(receiverId);
+		returnMsg.setCallbackInfo(returnUri);
 		unicast(returnMsg);
 	} // end sendInstanceAlarm
 	
+	public void sendInstanceAlarm(int productId, String title, String content, String returnUri) {
+		MessageVO returnMsg = new MessageVO();
+		String receiverId = messageService.getSellerIdOf(productId);
+		returnMsg.setType(TYPE_INSTANCE);
+		returnMsg.setTitle(title);
+		returnMsg.setContent(content);
+		returnMsg.setReceiverId(receiverId);
+		returnMsg.setCallbackInfo(returnUri);
+		unicast(returnMsg);
+	} // end sendInstanceAlarm
 	
 	private MessageVO convertMsg(String jsonMsg) {
 		MessageVO message = null;

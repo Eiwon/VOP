@@ -106,7 +106,7 @@
 		
 		function toDetails(input){
 			let productId = $(input).find('.productId').val();
-			location.href = 'detail?productId=' + productId;
+			window.open('detail?productId=' + productId);
 		} // end toDetails
 		
 	</script>

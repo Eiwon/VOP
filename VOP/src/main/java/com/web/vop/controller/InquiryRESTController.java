@@ -56,7 +56,12 @@ public class InquiryRESTController {
 		
 		if(result == 1) {
 			// 댓글 알람 송신
-	        ((AlarmHandler)alarmHandler).sendInquiryAlarm(inquiryVO.getProductId());
+	        ((AlarmHandler)alarmHandler).sendInstanceAlarm(
+	        		inquiryVO.getProductId(), 
+	        		"문의 알림", 
+	        		"등록한 상품에 문의가 등록되었습니다", 
+	        		"inquiry/list?productId=" + inquiryVO.getProductId()
+	        		);
 		}
 		
 		// result값을 전송하여 리턴하는 방식으로 성공하면 200 ok를 갔습니다.

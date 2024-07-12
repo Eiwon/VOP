@@ -65,7 +65,8 @@ public interface SecurityConfigConstants {
 			"/board/admin", "/board/consultAccept",
 			"/coupon/list", "/coupon/register", "/coupon/delete", "/coupon/publish**",
 			"/popupAds/main", "/popupAds/register", "/popupAds/update", "/popupAds/delete", "/popupAds/list",
-			"/product/popupDetails", "/product/delete", "/product/registerRequest", "/product/deleteRequest",
+			"/product/popupDetails", "/product/delete", "/product/registerRequest", "/product/deleteRequest", 
+			"/product/changeStateByAdmin",
 			"/seller/admin", "/seller/approval", "/seller/delete", "/seller/wait", "/seller/approved", "/seller/revoke",
 			"/seller/popupSellerDetails", "/seller/popupRegisterNotice" };	
 	

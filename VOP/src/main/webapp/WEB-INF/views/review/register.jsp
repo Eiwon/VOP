@@ -94,7 +94,8 @@
     </style>
 </head>
 <body>
-    <div class="container">
+<jsp:include page="../include/sideBar.jsp"/>
+    <div class="container" style="width: 65%; margin: auto;">
         <h1 class="mb-4">리뷰 작성</h1>
         
         <h3>${memberDetails.getUsername() } 님의 리뷰 작성</h3>
