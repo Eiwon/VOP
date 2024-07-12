@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.web.vop.domain.InquiryVO;
+import com.web.vop.domain.MemberDetails;
 import com.web.vop.service.InquiryService;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
@@ -55,6 +58,20 @@ public class InquiryController {
 	@GetMapping("/myList")
 	public void myListInquiryGET() {
 		log.info("myListInquiryGET()");
+	}
+	
+	@PreAuthorize("#memberDetails.username == authentication.principal.username")
+	@GetMapping("/answerList")
+	public void readAllAnswer(Model model, Integer productId, @AuthenticationPrincipal MemberDetails memberDetails) {
+		log.info("readAllAnswer()");
+		String memberId = memberDetails.getUsername();
+		log.info("memberId : " + memberId);
+		
+		// 회원이 리뷰 작성 한 리스트
+		model.addAttribute("productId", productId);
+		
+		// 회원이 작성한 리뷰
+		model.addAttribute("memberId", memberId);
 	}
 	
 //	@GetMapping("/myList")
