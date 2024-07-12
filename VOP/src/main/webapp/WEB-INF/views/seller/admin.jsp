@@ -11,27 +11,6 @@
 }
 
 
-.request_container {
-	height: 500px;
-}
-
-.page_list {
-	display: flex;
-	flex-direction: row;
-	list-style: none;
-	
-}
-
-.requestList {
-	height: 250px;
-}
-.requestList tr {
-	height: 50px;
-}
-.requestList td {
-	width: 200px;
-}
-
 .body_container{
 	width: 65%;
 	margin: auto;
@@ -62,9 +41,9 @@
 		</div>
 	</div>
 	<div>
-		<div class="request_container table">
+		<div class="request_container">
 			<h3>사업자 등록 요청</h3>
-			<table class="search_table">
+			<table class="search_table table">
 				<thead>
     				<tr>
       				<th scope="col">아이디</th>
@@ -78,9 +57,9 @@
 			</table>
 			<div class="form_foot" id="seller_req_list_page"></div>
 		</div>
-		<div class="request_container table">
+		<div class="request_container">
 			<h3>등록된 사업자 조회</h3>
-			<table class="search_table">
+			<table class="search_table table">
 				<thead>
     				<tr>
       				<th scope="col">아이디</th>
@@ -93,9 +72,9 @@
 			</table>
 			<div class="form_foot" id="seller_approved_list_page"></div>
 		</div>
-		<div class="request_container table">
+		<div class="request_container">
 			<h3>상품 등록 요청</h3>
-			<table class="search_table">
+			<table class="search_table table">
 				<thead>
     				<tr>
       				<th scope="col">썸네일</th>

@@ -150,7 +150,7 @@
 		function toDetails(input){
 			const selectedId = $(input).find('.product_id').val();
 			console.log(selectedId);
-			location.href = '../product/detail?productId=' + selectedId;
+			window.open('../product/detail?productId=' + selectedId);
 		} // end addDetailsEvent
 		
 		/* function readBlockList(){

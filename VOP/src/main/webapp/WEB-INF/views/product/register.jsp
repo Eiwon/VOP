@@ -181,11 +181,12 @@
          function checkTextValid() {
  			let val;
  			for(x in validCheckMap){
- 				val = $('#' + x).val();
+ 				val = $('#' + x).val().trim();
  				if(val.length == 0){
  					alert('모든 항목을 입력해주세요');
  					return false;
  				}
+ 				$('#' + x).val(val);
  				if(!validCheckMap[x].exp.test(val)){
  					alert(validCheckMap[x].failMsg);
  					return false;

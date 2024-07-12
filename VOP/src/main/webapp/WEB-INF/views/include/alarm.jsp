@@ -11,7 +11,7 @@
 
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
 	
-	<div class="toast authUpdateAlarm" role="alert">
+	<div class="toast instanceAlarm" role="alert">
 		<div class="toast-header">
 			<strong class="me-auto toast_title"></strong>
 	      	<button type="button" class="btn-close" data-bs-dismiss="toast"></button>
@@ -21,7 +21,7 @@
 	    </div>
 	</div>
 	
-	<div class="toast replyAlarm" role="alert">
+	<div class="toast linkedAlarm" role="alert">
 		<div class="toast-header">
 			<strong class="me-auto toast_title"></strong>
 	      	<button type="button" class="btn-close" data-bs-dismiss="toast"></button>
@@ -154,6 +154,11 @@
 		
 	} // end updateAuthAlarm
 	
+	msgHandler.alarm = function(msg){
+		console.log('메시지 수신');
+		
+	}
+	
 	msgHandler.instanceAlarm = function(msg){
 		console.log('알림 메시지 수신 : ' + msg);
 		alert(msg.content);
@@ -234,18 +239,23 @@
 		console.log(temp);
 	} // end showSocketAlarm
 	
-	function showToast(msg, redirectUri) {
+	function showToast(msg) {
 		let tagToastContainer = $('.toast-container');
-		
-		let toast = $('.' + msg.type);
-		toast.find('.toast_title').text(msg.title);
-		toast.find('.toast_content').text(msg.content);
-		
-		if(redirectUri !== undefined){
+		let toast;
+		let redirectUri = msg.callbackInfo;
+
+		if(redirectUri === undefined || redirectUri === null || redirectUri === ''){
+			toast = $('.instanceAlarm');		
+		}else {
+			toast = $('.linkedAlarm');
 			toast.find('button').click(function(){
 				window.open(redirectUri);
 			});
 		}
+		
+		toast.find('.toast_title').text(msg.title);
+		toast.find('.toast_content').text(msg.content);
+		
 		bootstrap.Toast.getOrCreateInstance(toast).show();
 		
 	} // end showToast
