@@ -69,7 +69,6 @@ public class ReviewRESTController {
 		return new ResponseEntity<Integer>(res, HttpStatus.OK);
 	}
 	
-	
 	@GetMapping("/all/{productId}/{page}") // GET : ¥Ò±€(∏Æ∫‰) º±≈√(all)
 	public ResponseEntity<Map<String, Object>> readAllReview(
 			@ModelAttribute Pagination pagination,
