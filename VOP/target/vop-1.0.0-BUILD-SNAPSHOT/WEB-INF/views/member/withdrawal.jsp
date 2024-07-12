@@ -43,7 +43,7 @@
 				<div></div>
 			</div>
 			<div>
-			<input type="submit" class="btn btn-danger" value="회원 탈퇴">
+			<input type="submit" value="회원 탈퇴">
 		</div>
 	</form>
 	</div>
