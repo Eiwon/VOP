@@ -137,6 +137,16 @@
 		}); */
 	}; // 타입이 replyAlarm인 메시지 수신시 호출될 함수
 	
+	msgHandler.inquiryAlarm = function(msg){
+		console.log('inquiryAlarm 메시지 수신' + msg);
+		msg.type = 'replyAlarm';
+		
+		showToast(msg, '../inquiry/list?productId=' + msg.callbackInfo);
+		/* showSocketAlarm(msg, function(){
+			window.open('../product/detail?productId=' + msg.callbackInfo);
+		}); */
+	}; // 타입이 replyAlarm인 메시지 수신시 호출될 함수
+	
 	msgHandler.authUpdateAlarm = function(msg){
 		console.log('권한 변경 메시지 수신');
 		

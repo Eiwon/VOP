@@ -37,7 +37,7 @@ public class AlarmHandler extends TextWebSocketHandler{
 	private static final String TYPE_REPLY = "replyAlarm";
 	private static final String TYPE_ALERT = "alert";
 	private static final String TYPE_AUTH_UPDATE = "authUpdateAlarm";
-	
+	private static final String TYPE_INQUIRY = "inquiryAlarm";
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		log.info("socket message received : " + message.getPayload());
@@ -176,6 +176,17 @@ public class AlarmHandler extends TextWebSocketHandler{
 		String redirectId = String.valueOf(productId);
 		returnMsg.setContent("등록한 상품에 댓글이 등록되었습니다. 이동하려면 클릭하세요.");
 		returnMsg.setType(TYPE_REPLY);
+		returnMsg.setReceiverId(receiverId);
+		returnMsg.setCallbackInfo(redirectId);
+		unicast(returnMsg);
+	} // end sendReplyAlarm
+	
+	public void sendInquiryAlarm(int productId) {
+		MessageVO returnMsg = new MessageVO();
+		String receiverId = messageService.getSellerIdOf(productId);
+		String redirectId = String.valueOf(productId);
+		returnMsg.setContent("등록한 상품에 문의가 등록되었습니다. 이동하려면 클릭하세요.");
+		returnMsg.setType(TYPE_INQUIRY);
 		returnMsg.setReceiverId(receiverId);
 		returnMsg.setCallbackInfo(redirectId);
 		unicast(returnMsg);

@@ -12,10 +12,11 @@
 <meta charset="UTF-8">
 <meta name="${_csrf.parameterName}" content="${_csrf.token}">
 <title>문의 리스트</title>
-<jsp:include page="../include/header.jsp"></jsp:include>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.7.1.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+<jsp:include page="../include/header.jsp"></jsp:include>
+<jsp:include page="../include/sideBar.jsp"></jsp:include>
 <style type="text/css">
     body {
         font-family: Arial, sans-serif;

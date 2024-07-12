@@ -56,25 +56,13 @@ public class InquiryRESTController {
 		
 		if(result == 1) {
 			// 댓글 알람 송신
-	        ((AlarmHandler)alarmHandler).sendReplyAlarm(inquiryVO.getProductId());
+	        ((AlarmHandler)alarmHandler).sendInquiryAlarm(inquiryVO.getProductId());
 		}
 		
 		// result값을 전송하여 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}// end createInquiry()
 	
-//	@GetMapping("/list/{productId}") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
-//	public ResponseEntity<List<InquiryVO>> readAllInquiry(
-//			@PathVariable("productId") int productId){
-//		log.info("readAllInquiry()");
-//		
-//		// productId에 해당하는 댓글(리뷰) list을 전체 검색
-//		List<InquiryVO> inquiryList = inquiryService.getAllInquiry(productId);
-//		
-//		
-//		// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
-//		return new ResponseEntity<List<InquiryVO>>(inquiryList, HttpStatus.OK);
-//	}// end readAllInquiry()
 	
 	@GetMapping("/list/{productId}/{page}") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
 	public ResponseEntity<Map<String, Object>> readAllInquiry(

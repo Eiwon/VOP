@@ -16,14 +16,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="reviewStar" column="REVIEW_STAR"/>
       <result property="reviewLike" column="REVIEW_LIKE"/>
       <result property="reviewDislike" column="REVIEW_DISLIKE"/>
-      <!-- <result property="imgId" column="IMG_ID"/> , IMG_ID -->
-      
       </resultMap>
    
    <!-- 댓글(리뷰) 입력 -->
    <insert id="insertReview">
       INSERT INTO REVIEW (REVIEW_ID, MEMBER_ID, PRODUCT_ID, REVIEW_CONTENT,
-       REVIEW_DATE_CREATED, REVIEW_STAR, REVIEW_LIKE)
+       REVIEW_DATE_CREATED, REVIEW_STAR, REVIEW_LIKE, REVIEW_DISLIKE)
       VALUES (REVIEW_SEQ.NEXTVAL, #{memberId}, #{productId}, 
       #{reviewContent}, SYSDATE, #{reviewStar}, 0, 0)<!--나중에 0추가 이미지 0 좋아요는 댓글 작성 하는 사람 이외 다른 사람이 수정 해야 한다. -->
    </insert>
@@ -38,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <select id="selectListByReviewCnt" resultType="Integer">
    	  SELECT COUNT(PRODUCT_ID) FROM REVIEW 
    	  WHERE PRODUCT_ID = #{productId}
-   </select>
+   </select>	
    
    <!-- 댓글(리뷰) productId로 전체 검색 -->
    <select id="selectListByReviewPaging" resultMap="reviewResultMap">
@@ -79,13 +77,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
    </delete>
 	
-	<!-- PRODUCT_ID 해당하는 리뷰(별) 총 합 -->
+	<!-- PRODUCT_ID 해당하는 리뷰(별) 총 합 (사용 안함)-->
     <select id="selectReviewStar" resultType="Integer">
    		SELECT SUM(REVIEW_STAR) AS TOTAL_STAR_RATINGS
 		FROM REVIEW
 		WHERE PRODUCT_ID = #{productId}
     </select>
-    
     
     <!-- 좋아요 갯수 증가 -->
     <update id="updateReviewLikeUp">
