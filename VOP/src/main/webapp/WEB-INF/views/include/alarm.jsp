@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
 
@@ -43,10 +43,6 @@
 	let webSocket = new WebSocket(socketUrl);
 	let msgHandler = {};
 	
-	$(document).ready(function(){
-		alarmPermitRequest();
-	}); // end document.ready
-	
 	// 서버로부터 메시지를 받으면, 해당 메시지의 type에 맞는 함수를 찾아서 실행
 	webSocket.onmessage = function(e){
 		let msg = JSON.parse(e.data);
@@ -63,6 +59,7 @@
 	// 웹소켓 연결 종료시 호출
 	webSocket.onclose = function(e){
 		console.log("webSocket close : " + e);
+		webSocket = new WebSocket(socketUrl);
 	}; // end webSocket.onclose
 	
 	// 웹소켓 에러 발생시 호출
@@ -121,17 +118,6 @@
 	
 	
 	// -------------------------------------------------------------------------------
-	
-	
-	function alarmPermitRequest(){ // 알림창 표시 기능 허가 요청 (허가 거부시 크롬 설정->개인정보보호 및 보안->사이트설정->알림에서 재설정 가능)
-		let permission = Notification.permission;
-		console.log('현재 알림창 설정 : ' + permission);
-		
-		if(permission != 'granted'){
-			Notification.requestPermission();
-		}
-		
-	} // end alarmPermitRequest
 	
 	
 	// 토스트 메시지 출력 (메시지에 redirectUri가 설정되어 있지 않으면 버튼 없는 토스트 출력)

@@ -24,9 +24,9 @@ public class OrderServiceImple implements OrderService {
 	@Autowired
 	OrderMapper orderMapper;
 	
-	public String getExpectDateByPaymentId(int paymentId) { // 배송 예정일 조회 (TEST 중)
+	public String getExpectDateByPaymentId(int orderId) { // 배송 예정일 조회 (TEST 중)
 		 log.info("getExpectDateByPaymentId()");
-		 String expectDate = orderMapper.selectByExpectDeliveryDate(paymentId);
+		 String expectDate = orderMapper.selectByExpectDeliveryDate(orderId);
 		 
 		 if (expectDate == null) {
 	            log.error(expectDate, null);

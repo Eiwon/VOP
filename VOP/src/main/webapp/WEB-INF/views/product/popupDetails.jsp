@@ -98,20 +98,58 @@
 		<div class="form_foot">
 			<c:if test="${productVO.productState eq '삭제 대기중' }">
 				<div class="btn-group" role="group">
-  				<button type="button" class="btn btn-outline-danger">삭제</button>
-  				<button type="button" class="btn btn-outline-primary">취소</button>
+  				<button id="btn_delete" type="button" class="btn btn-outline-danger">삭제</button>
+  				<button id="btn_cancel" type="button" class="btn btn-outline-primary">취소</button>
  				</div>
 			</c:if>
 			<c:if test="${productVO.productState eq '승인 대기중' }">
 				<div class="btn-group" role="group">
-  				<button type="button" class="btn btn-outline-primary" onclick="sendResult('판매중')">승인</button>
-  				<button type="button" class="btn btn-outline-primary" onclick="sendResult('판매 불가')">거부</button>
+  				<button id="btn_approve" type="button" class="btn btn-outline-primary">승인</button>
+  				<button id="btn_reject" type="button" class="btn btn-outline-danger">거부</button>
  				</div>
 			</c:if>
 		</div>
 		
 	</div>
 	<script type="text/javascript">
+	
+	$(document).ready(function(){
+		
+		$('#btn_delete').click(function(){
+			// 상품 삭제 요청
+			$.ajax({
+				url : 'delete',
+				headers : {
+					'Content-Type' : 'application/json',
+					'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+				},
+				method : 'DELETE',
+				data : JSON.stringify({
+					'productId' : '${productVO.productId}',
+					'memberId' : '${productVO.memberId}'
+				}),
+				success : function(result){
+					window.close();	
+				}
+			}); // end ajax
+		}); // end btn_delete.click
+		
+		$('#btn_cancel').click(function(){
+			window.close();
+		}); // end btn_cancel.click
+		
+		$('#btn_approve').click(function(){
+			sendResult('판매중');
+		});
+		
+		$('#btn_reject').click(function(){
+			sendResult('판매 불가');
+		});
+		
+	});
+	
+	
+	
 	
 	function sendResult(productState){
 		
@@ -132,34 +170,6 @@
 			}
 		}); // end ajax
 	} // end sendResult
-	
-	function deleteProduct(){
-		// 상품 삭제 요청
-		$.ajax({
-			url : 'delete',
-			headers : {
-				'Content-Type' : 'application/json',
-				'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
-			},
-			method : 'DELETE',
-			data : JSON.stringify({
-				'productId' : '${productVO.productId}',
-				'memberId' : '${productVO.memberId}'
-			}),
-			success : function(result){
-				window.close();	
-			}
-		}); // end ajax
-		
-	} // end deleteProduct
-	
-	
-	function toDate(timestamp){
-		let date = new Date(timestamp);
-		let formatted = (date.getYear() + 1900) + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + 
-				date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-		return formatted;
-	} // end toDate
 		
 	</script>
 </body>

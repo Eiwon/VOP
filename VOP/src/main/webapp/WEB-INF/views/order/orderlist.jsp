@@ -131,7 +131,7 @@
                     </div> <!-- closing col-md-10 -->
                 </div> <!-- closing row order-details -->
                 <div class="order-buttons">
-                    <a href="../Delivery/delivery?paymentId=${orderVO.paymentId}" class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2">배송 조회</a>
+                    <a href="../Delivery/delivery?paymentId=${orderVO.paymentId}&orderId=${orderVO.orderId}" class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2">배송 조회</a>
                     
                     <!-- 리뷰 쓰기 코드 -->
                     <form action="../review/register" method="get" class="d-inline">
