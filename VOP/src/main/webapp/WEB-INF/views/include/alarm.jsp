@@ -140,7 +140,8 @@
 		toast.find('.toast_title').text(msg.title);
 		toast.find('.toast_content').text(msg.content);
 		
-		bootstrap.Toast.getOrCreateInstance(toast).show();
+		toast.toast('show');
+		//bootstrap.Toast.getOrCreateInstance(toast).show();
 		
 	} // end showToast
 	

@@ -155,7 +155,7 @@
 		</div>
 		
 		<div>
-			<button id="btn_payment"> 결제하기 </button>
+			<button id="btn_payment" class="btn btn-outline-primary"> 결제하기 </button>
 		</div>
 	</div>
 	

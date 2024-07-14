@@ -4,6 +4,7 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <style>
 
     .delivery-box {
@@ -168,9 +169,11 @@
 			console.log(targetId);
 			
 			$.ajax({
-				method : 'POST',
-				url : 'delete',
-				data : targetId,
+				method : 'DELETE',
+				headers : {
+					'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+				},
+				url : 'delete/' + targetId,
 				success : function(result){
 					console.log(result);
 					showDeliveryList();

@@ -9,14 +9,18 @@
 	width: 150px;
 	text-align: left;
 	margin: 2%;
-	position: fixed;
+}
+.side_bar a {
+	display: block;
+    margin: 3px;
+    text-decoration: none;
 }
 	
 </style>
 </head>
 
 <body>
-		<div class="side_bar">
+		<div class="side_bar fixed-bottom">
 			<div> 
 				<ul id="my_info" class="list-group">
 					<li class="list-group-item"><a href="../board/myInfo">내 정보 수정</a></li>
