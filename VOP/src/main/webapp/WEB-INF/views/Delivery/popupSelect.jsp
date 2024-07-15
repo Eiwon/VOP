@@ -5,6 +5,7 @@
 <head>
 <meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <style>
 
     .delivery-box {
