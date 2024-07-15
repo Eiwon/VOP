@@ -62,7 +62,7 @@ public class MembershipServiceImple implements MembershipService{
 	}//end makeMembershipForm()
 	
 	
-	//@Transactional(value = "transactionManager")
+	@Transactional(value = "transactionManager")// 트랜잭션
 	@Override
 	public int registerMembership(PaymentWrapper payment)throws DataIntegrityViolationException{
 		log.info("registerMembership()");
@@ -77,16 +77,18 @@ public class MembershipServiceImple implements MembershipService{
 		
 		res = membershipMapper.insertMembership(membershipVO);
 		
+		// 회원 권한 수정
+		membershipMapper.updateMemberAuthOnInsert(payment.getMemberVO().getMemberId());
+		
 		return res;
 	}//end registerMembership()
 	
 
-	
 	@Override
 	public void updateMemberAuth(String memberId) { //멤버십 권한 업데이트
-		log.info("updateMemberAuth : " + memberId);
-		membershipMapper.updateMemberAuthOnInsert(memberId);
-		log.info("멤버십 권한 업데이트(멤버십)가 성공했습니다. " + memberId);
+//		log.info("updateMemberAuth : " + memberId);
+//		membershipMapper.updateMemberAuthOnInsert(memberId);
+//		log.info("멤버십 권한 업데이트(멤버십)가 성공했습니다. " + memberId);
 	}//end updateMemberAuth()
 
 	

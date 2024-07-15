@@ -280,7 +280,7 @@
 		
 	    
         // 회원 권한 업데이트
-           $.ajax({
+           /* $.ajax({
                type: 'PUT',
                url: 'updateAuth/' + memberId,
                headers : {
@@ -292,7 +292,7 @@
                error: function() {
                    console.log('멤버십 권한 업데이트 실패');
                }
-           });
+           }); */
 	} // end sendPaymentResult
 	
 		
