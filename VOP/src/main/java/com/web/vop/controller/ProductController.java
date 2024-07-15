@@ -380,7 +380,7 @@ public class ProductController {
 		if(res == 1) {
 			for(ImageVO image : imgList) {
 			awsS3Service.removeImage(image);
-			((AlarmHandler)alarmHandler).sendInstanceAlarm(productId, "요청 승인", productId + " 상품의 삭제 요청이 승인되었습니다", null);
+			((AlarmHandler)alarmHandler).sendInstanceAlarm(productVO.getMemberId(), "요청 승인", productId + " 상품의 삭제 요청이 승인되었습니다", null);
 			}
 		}
 		

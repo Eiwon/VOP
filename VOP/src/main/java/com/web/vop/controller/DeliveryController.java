@@ -38,12 +38,12 @@ public class DeliveryController {
     
     // 마이페이지에서 주문목록 > 배송조회 페이지로 이동
     @GetMapping("/delivery")
-    public String deliveryGET(@RequestParam("paymentId") int paymentId, Model model) {
+    public String deliveryGET(int paymentId, int orderId, Model model) {
         log.info("deliveryGET()");
         
         Date now = new Date(); // 현재날짜
         // 배송 예정일 조회
-    	String expectedDate = orderService.getExpectDateByPaymentId(paymentId);
+    	String expectedDate = orderService.getExpectDateByPaymentId(orderId);
     	log.info("배송 예정일 : " + expectedDate);
     	SimpleDateFormat formatted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     	String formattedNow = formatted.format(now);

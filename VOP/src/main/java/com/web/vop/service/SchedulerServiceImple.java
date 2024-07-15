@@ -56,7 +56,7 @@ public class SchedulerServiceImple {
 	                        // 멤버십이 만료된 지, 5일 이내의 회원에게만 메세지 보내기
 	                    	 handleExpiredMembership(expiryInfo.getMemberId(), expiryDate, expiryInfo.getMemberEmail());
 	                    }
-	            	}else if (diffInDays < 5){
+	            	}else if (diffInDays < 3){
 	            		sendExpiryNotification(expiryInfo.getMemberId(),expiryDate, expiryInfo.getMemberEmail(),"멤버십이 곧 만료됩니다!");   
 	                }
 	            }// end for()
@@ -110,6 +110,11 @@ public class SchedulerServiceImple {
 	
 	// 만료된 멤버십을 처리 (재등록 요청 메일)
 	private void handleExpiredMembership(String memberId, Date expiryDate, String memberEmail) {
+		if (memberEmail == null || memberEmail.isEmpty()) {
+            log.error("Email address is null or empty for memberId: " + memberId);
+            return;
+        }
+		
 		String title = "-- 멤버십 재등록 알림 --";
 		String content = memberId + "님, 멤버십이 만료되었습니다. 재등록이 필요합니다. ( 만료 날짜 : " + expiryDate + " )";
 		
@@ -133,7 +138,11 @@ public class SchedulerServiceImple {
 
 
 	private void sendExpiryNotification(String memberId, Date expiryDate, String memberEmail,String message) {
-	
+		
+		if (memberEmail == null || memberEmail.isEmpty()) {
+            log.error("Email address is null or empty for memberId: " + memberId);
+            return;
+        }
 		
 		String title = "-- 멤버십 알림 --";
 		String content = "사용자 ID : " + memberId + "님," + message + " 멤버십 만료 날짜는 " + expiryDate + "입니다.";
