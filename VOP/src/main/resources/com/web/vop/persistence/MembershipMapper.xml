@@ -17,6 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <resultMap type="com.web.vop.domain.MembershipExpiryDTO" id="MembershipExpiryResultMap">
    		<id property="memberId" column="MEMBER_ID"/> 
       	<result property="expiryDate" column="EXPIRY_DATE"/>
+      	<result property="memberEmail" column="MEMBER_EMAIL"/>
    </resultMap>
    
    
@@ -34,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <!-- 멤버십 등록 -->
    <insert id="insertMembership">
       INSERT INTO MEMBERSHIP (MEMBERSHIP_ID, MEMBER_ID, JOIN_DATE, EXPIRY_DATE, PAYMENT_DATE, MEMBERSHIP_FEE, CHARGE_ID) 
-      VALUES (#{membershipId}, #{memberId}, SYSDATE, SYSDATE + INTERVAL '5' DAY, SYSDATE, #{membershipFee}, #{chargeId})
+      VALUES (#{membershipId}, #{memberId}, SYSDATE, SYSDATE + INTERVAL '1' MINUTE, SYSDATE, #{membershipFee}, #{chargeId})
    </insert>
 
 	<!-- 멤버십 권한 수정 -->
@@ -69,10 +70,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 멤버십 만료일 조회 (스케줄링) -->
 	<select id="selectExpiryDateBySchedulling" resultMap="MembershipExpiryResultMap">
-		SELECT MS.MEMBER_ID, MS.EXPIRY_DATE, M.MEMBER_EMAIL 
-		FROM MEMBERSHIP MS JOIN MEMBER M 
-		ON MS.MEMBER_ID = M.MEMBER_ID
-		<!-- SELECT MEMBER_ID, EXPIRY_DATE FROM MEMBERSHIP -->
+		SELECT MS.*, M.MEMBER_EMAIL 
+		FROM(
+			SELECT MEMBER_ID, EXPIRY_DATE 
+			FROM MEMBERSHIP
+		) MS
+		JOIN MEMBER M ON MS.MEMBER_ID = M.MEMBER_ID
+		<!-- 이 쿼리는 MEMBERSHIP 테이블에서 MEMBER_ID와 EXPIRY_DATE를 선택하고, 이 결과에 MS라는 별칭을 붙입니다. 
+		그런 다음 MEMBER 테이블과 MEMBER_ID를 기준으로 조인하여 MS.*와 M.MEMBER_EMAIL을 선택합니다. -->
+		<!-- MembershipExpiryDTO 클래스에 매핑 -->
 	</select>
 	
 	<!-- 멤버십 환불아이디(chargeId) 조회 -->
