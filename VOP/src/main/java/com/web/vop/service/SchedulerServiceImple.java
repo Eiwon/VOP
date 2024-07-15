@@ -33,7 +33,7 @@ public class SchedulerServiceImple {
 	 MailAuthenticationUtil mailAuthenticationUtil;
 	 
 	//@Scheduled(cron = "0 * * * * ?") // 1 분에 한 번 실행(TEST)
-	//@Scheduled(cron = "0 0 14 * * ?") // 매일 14시에 실행
+	@Scheduled(cron = "0 0 14 * * ?") // 매일 14시에 실행
 	public void checkMembershipExpiry() {
 			
 			List<MembershipExpiryDTO> expiryInfoList = membershipMapper.selectExpiryDateBySchedulling();
