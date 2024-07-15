@@ -72,7 +72,6 @@ public class ServletConfig implements WebMvcConfigurer {
       resolver.setMaxUploadSizePerFile(10 * MB); // 10MB
 
       return resolver;
-   }
-   
+   } // end multipartResolver
    
 } // end ServletConfig

@@ -136,7 +136,7 @@ public class DeliveryServiceImple implements DeliveryService{
 				log.info("주소 : " + dto.getDeliveryAddress());
 				log.info("배송요구사항 : " + dto.getRequirement());
 				
-				 // 날짜 포맷팅 적용
+				// 날짜 포맷팅 적용
                 Date expectDeliveryDate = dto.getExpectDeliveryDate();
                 String formattedDate = dateFormat.format(expectDeliveryDate);
                 

@@ -14,15 +14,25 @@
 <jsp:include page="../include/header.jsp"></jsp:include>
 <!-- 포트원 결제 -->
 <style type="text/css">
-	.box_info {
-		border: 1px solid black;
-		width: 1000px;
-	}
 	#coupon_list{
 		list-style: none;
 	}
 	.couponRow {
 		border: 0.5px solid blue;
+		height: 40px;
+		display: flex;
+	}
+	.body_container{
+		width: 50%;
+		margin: auto
+	}
+	.inner_header {
+		margin: 20px;
+	}
+	.small_header {
+		margin-bottom: 10px;
+		margin-top: 15px;
+		display: flex;
 	}
 </style>
 <title>결제 페이지</title>
@@ -33,68 +43,74 @@
 	<c:set var="orderList" value="${paymentWrapper.orderList}"/>
 	<c:set var="membershipVO" value="${paymentWrapper.membershipVO }"/>
 	<c:set var="totalPrice" value="0"/>
-	<div>
-		<h2>주문 / 결제</h2>
+	<div class="body_container">
+		<div class="inner_header">
+			<h2>주문 / 결제</h2>
+		</div>
 		<div class="box_info" id="buyer_info">
-			<h2>구매자 정보</h2>
-			<table>
-				<tbody>
-					<tr>
-						<td>이름</td>
-						<td id="member_name">${memberVO.memberName }</td>
-					</tr>
-					<tr>
-						<td>이메일</td>
-						<td id="member_email">${memberVO.memberEmail }</td>
-					</tr>
-					<tr>
-						<td>휴대폰 번호</td>
-						<td id="member_phone">${memberVO.memberPhone }</td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="small_header">
+				<h3>구매자 정보</h3>
+			</div>
+			<div class="input-group mb-3">
+  				<span class="input-group-text">이름</span>
+  				<input type="text" class="form-control" value="${memberVO.memberName }" readonly>
+			</div>
+			<div class="input-group mb-3">
+  				<span class="input-group-text">이메일</span>
+  				<input type="text" class="form-control" value="${memberVO.memberEmail }" readonly>
+			</div>
+			<div class="input-group mb-3">
+  				<span class="input-group-text">휴대폰 번호</span>
+  				<input type="text" class="form-control" value="${memberVO.memberPhone }" readonly>
+			</div>
 		</div>
 		<div class="box_info" id="receiver_info">
-			<h2>받는 사람 정보 <button onclick="showDeliveryPopup()">배송지 변경</button></h2>
-			<table>
-				<tbody>
-					<tr>
-						<td>이름</td>
-						<td><input type="text" id="receiverName" value="${deliveryVO.receiverName }" readonly></td>
-					</tr>
-					<tr>
-						<td>배송주소</td>
-						<td><input type="text" id="receiverAddress" value="${deliveryVO.receiverAddress }" readonly></td>
-					</tr>
-					<tr>
-						<td>상세주소</td>
-						<td><input type="text" id="deliveryAddressDetails" value="${deliveryVO.deliveryAddressDetails }" readonly></td>
-					</tr>
-					<tr>
-						<td>연락처</td>
-						<td><input type="text" id="receiverPhone" value="${deliveryVO.receiverPhone }" readonly></td>
-					</tr>
-					<tr>
-						<td>배송 요청사항</td>
-						<td><input type="text" id="requirement" value="${deliveryVO.requirement }"></td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="small_header">
+				<h3>받는 사람 정보</h3>
+				<button onclick="showDeliveryPopup()" style="margin-left: 55%" class="btn btn-outline-primary">배송지 변경</button>
+			</div>
+			<div>
+				<div class="input-group mb-3">
+  					<span class="input-group-text">이름</span>
+  					<input type="text" id="receiverName" class="form-control" value="${deliveryVO.receiverName }" readonly>
+				</div>
+				<div class="input-group mb-3">
+  					<span class="input-group-text">배송주소</span>
+  					<input type="text" id="receiverAddress" class="form-control" value="${deliveryVO.receiverAddress }" readonly>
+				</div>
+				<div class="input-group mb-3">
+  					<span class="input-group-text">상세주소</span>
+  					<input type="text" id="deliveryAddressDetails" class="form-control" value="${deliveryVO.deliveryAddressDetails }" readonly>
+				</div>
+				<div class="input-group mb-3">
+  					<span class="input-group-text">연락처</span>
+  					<input type="text" id="receiverPhone" class="form-control" value="${deliveryVO.receiverPhone }" readonly>
+				</div>
+				<div class="input-group mb-3">
+  					<span class="input-group-text">배송 요청사항</span>
+  					<input type="text" id="requirement" class="form-control" value="${deliveryVO.requirement }" readonly>
+				</div>
+			</div>
 		</div>
 		
 		<div class="box_info" id="order_info">
-			<h2>주문 정보</h2>
+			<div class="small_header">
+				<h3>주문 정보</h3>
+			</div>
 			<div id="order_list">
 				<c:forEach var="orderDTO" items="${orderList }">
 					<c:set var="orderVO" value="${orderDTO.orderVO }"/>
-					<c:set var="totalPrice" value="${totalPrice + orderVO.productPrice *  orderVO.purchaseNum }"></c:set>
-					<div>
+					<c:set var="totalPrice" value="${totalPrice + orderVO.productPrice *  orderVO.purchaseNum }"/>
+					<div style="display: flex;">
 						<div>
-							<img src="${orderDTO.imgUrl }">
+							<img src="${orderDTO.imgUrl }" class="img-thumbnail">
 						</div>
 						<div>
-							<div style="width: 200px;">${orderVO.productName }</div>
-							<div style="width: 200px;">${orderVO.purchaseNum }</div>
+							<h4 style="width: 200px;">${orderVO.productName }</h4><br>
+							<span style="width: 200px;">${orderVO.purchaseNum }개</span>
+							<span>${orderVO.productPrice }원</span>
+						</div>
+						<div>
 							<div style="width: 200px;">${orderVO.productPrice *  orderVO.purchaseNum }원</div>
 						</div>
 					</div>
@@ -103,51 +119,44 @@
 		</div>
 		
 		<div class="box_info" id="payment_info">
-			<h2>결제 정보</h2>
-			<table>
-				<tbody>
-					<tr>
-						<td>총 상품 가격</td>
-						<td id="total_price">${totalPrice }</td>
-					</tr>
-					<tr>
-						<td>멤버십 할인</td>
-						<c:set var="membershipDiscount" value="0"/>
-						<sec:authorize access="hasAnyRole('판매자', '관리자') || ( hasRole('멤버십') && ${not empty membershipVO })">
-							<c:set var="membershipDiscount" value="20"/>
-						</sec:authorize>
-						<td id="membership_discount">
-							${membershipDiscount }%
-						</td>
-					</tr>
-					<tr>
-						<td>쿠폰 할인</td>
-						<td id="coupon_discount">${couponVO.discount }%</td>
-						<td><button id="btn_coupon" onclick="selectCoupon()">쿠폰 선택</button></td>
-					</tr>
-					<tr>
-						<td>
-							<div id="coupon_list">
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>배송비</td>
-						<td id="delivery_price"></td>
-					</tr>
-					<tr>
-						<td>총 결제 금액</td>
-						<td id="charge_price"></td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="small_header">
+				<h3>결제 정보</h3>
+			</div>
+			<div>
+				<div class="input-group mb-3">
+					<span class="input-group-text">총 상품 가격</span>
+  					<input type="text" class="form-control" id="total_price" value="${totalPrice }원" readonly>
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text">멤버십 할인</span>
+					<c:set var="membershipDiscount" value="0"/>
+					<sec:authorize access="hasAnyRole('판매자', '관리자') || ( hasRole('멤버십') && ${not empty membershipVO })">
+						<c:set var="membershipDiscount" value="20"/>
+					</sec:authorize>
+  					<input type="text" id="membership_discount" class="form-control" value="${membershipDiscount }%" readonly>
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text">쿠폰 할인</span>
+  					<input type="text" class="form-control" id="coupon_discount" value="${couponVO.discount }%" readonly>
+  					<button id="btn_coupon" class="btn btn-outline-secondary" type="button" onclick="selectCoupon()">쿠폰 선택</button>
+				</div>
+				<div id="coupon_list">
+				
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text">배송비</span>
+  					<input type="text" class="form-control" id="delivery_price" readonly>
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text">총 결제 금액</span>
+  					<input type="text" class="form-control" id="charge_price" readonly>
+				</div>
+			</div>
 		</div>
 		
 		<div>
-			<button id="btn_payment"> 결제하기 </button>
-		
+			<button id="btn_payment" class="btn btn-outline-primary"> 결제하기 </button>
 		</div>
-		
 	</div>
 	
 	<script type="text/javascript">
@@ -197,9 +206,9 @@
 		
 		function setPaymentInfo(){
 			// 결제 정보 출력
-			$('#coupon_discount').text(paymentVO.couponDiscount + '%');
-			$('#delivery_price').text(paymentVO.deliveryPrice);
-			$('#charge_price').text(calcChargePrice());
+			$('#coupon_discount').val(paymentVO.couponDiscount + '%');
+			$('#delivery_price').val(paymentVO.deliveryPrice);
+			$('#charge_price').val(calcChargePrice());
 			
 		} // end setPaymentInfo
 		
@@ -223,9 +232,11 @@
 					
 					let form = '';
 					for(x in myCouponList){
-					form += '<div class="couponRow"><div><input type="hidden" class="couponIdx" value="' + x + '"></div>' +
-						'<div style="width: 200px;">쿠폰명 ' + myCouponList[x].couponName + '<input type="radio" name="radioCoupon" onclick="applyCoupon(this)"></div>' +
-						'<div style="width: 200px;">할인률 ' + myCouponList[x].discount + '% 할인</div>' + 
+					form += '<div class="couponRow">' + 
+						'<div><input type="hidden" class="couponIdx" value="' + x + '"></div>' +
+						'<div style="width:200px;">' + myCouponList[x].couponName + '</div>' +
+						'<div style="width:200px;">' + myCouponList[x].discount + '% 할인</div>' + 
+						'<div style="width:200px;"><input type="radio" name="radioCoupon" onclick="applyCoupon(this)"></div>' +
 						'</div>';
 					}
 			
@@ -383,7 +394,7 @@
 			const popupStat = {
 					'url' : 'popupDeliverySelect',
 					'name' : 'popupDeliverySelect',
-					'option' : 'width=500, height=600, top=50, left=400'
+					'option' : 'width=800, height=600, top=50, left=400'
 			};
 			
 			// 팝업 창 띄우기

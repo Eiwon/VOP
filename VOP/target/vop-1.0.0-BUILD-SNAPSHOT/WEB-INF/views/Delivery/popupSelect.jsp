@@ -4,6 +4,7 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<meta name="${_csrf.parameterName }" content="${_csrf.token }">
 <style>
 
     .delivery-box {
@@ -21,18 +22,31 @@
     	text-align:center;
         height: 50px;
     }
-
+    .delivery_col {
+    	width: 150px;
+    }
+	.body_container{
+		width: 90%;
+		margin: auto;
+	}
 </style>
 <meta charset="UTF-8">
 <title>배송지 선택</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
 </head>
 <body>
-
-<div id="deliveryList"></div>
-<div id="deliveryAdd" onclick="addDelivery()">
-	<strong>배송지 추가</strong>
-</div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+	<div class="body_container">
+		<div id="deliveryList"></div>
+		<div style="text-align: center;">
+			<button type="button" id="deliveryAdd" class="btn btn-outline-primary" onclick="addDelivery()">
+				<strong>배송지 추가</strong>
+			</button>
+		</div>
+	</div>
+	
+	
 	<script type="text/javascript">
 		let deliveryList;
 		let tagDeliveryList = $('#deliveryList');
@@ -68,7 +82,7 @@
 			const popupStat = {
 					'url' : 'popupRegister',
 					'name' : 'popupDeliveryRegister',
-					'option' : 'width=1000, height=600, top=50, left=400'
+					'option' : 'width=800, height=800, top=50, left=400'
 			};
 			
 			// 팝업 창 띄우기
@@ -94,21 +108,36 @@
 		
 		function makeDeliveryForm(deliveryVO, x){
 			let form = 
-				'<div class="delivery-box">' +
-					'<div class="delivery-details" onclick="selectDelivery(this)">' + 
+				'<div class="delivery-box card">' +
+					'<div class="delivery-details card-body" onclick="selectDelivery(this)">' + 
 						'<div class="targetIdx" hidden="hidden">' + x + '</div>' +
-						'<div> 수신자 <strong class="receiverName">' + deliveryVO.receiverName + '</strong></div>' +
-						'<div> 수신자 연락처 <strong class="receiverPhone">' + deliveryVO.receiverPhone + '</strong></div>' +
-						'<div> 배송 주소 <strong class="receiverAddress">' + deliveryVO.receiverAddress + '</strong></div>' +
-						'<div> 상세 주소 <strong class="deliveryAddressDetails">' + deliveryVO.deliveryAddressDetails + '</strong></div>' +
-						'<div> 배송시 요청사항 <strong class="requirement">' + deliveryVO.requirement + '</strong></div>';
+						'<div style="display:flex;">' + 
+							'<div class="delivery_col">수신자</div>' + 
+							'<div class="receiverName">' + deliveryVO.receiverName + '</div>' + 
+						'</div>' +
+						'<div style="display:flex;">' + 
+							'<div class="delivery_col">수신자 연락처</div>' + 
+							'<div class="receiverPhone">' + deliveryVO.receiverPhone + '</div>' + 
+						'</div>' +
+						'<div style="display:flex;">' + 
+							'<div class="delivery_col">배송 주소</div>' + 
+							'<div class="receiverAddress">' + deliveryVO.receiverAddress + '</div>' + 
+						'</div>' +
+						'<div style="display:flex;">' + 
+							'<div class="delivery_col">상세 주소</div>' + 
+							'<div class="deliveryAddressDetails">' + deliveryVO.deliveryAddressDetails + '</div>' + 
+						'</div>' +
+						'<div style="display:flex;">' + 
+							'<div class="delivery_col">배송시 요청사항</div>' + 
+							'<div class="requirement">' + deliveryVO.requirement + '</div>' + 
+						'</div>';
 			if(deliveryVO.isDefault == '1'){
 				form += '<div style="color:blue;">기본 배송지</div>';
 			}
 			form +='</div>' +
-					'<div>' + 
-						'<input type="button" value="수정" onclick="showPopupUpdate(this)">' + 
-						'<input type="button" value="삭제" onclick="deleteDelivery(this)">' +
+					'<div class="btn-group" role="group">' + 
+						'<input type="button" class="btn btn-outline-success" value="수정" onclick="showPopupUpdate(this)">' + 
+						'<input type="button" class="btn btn-outline-danger" value="삭제" onclick="deleteDelivery(this)">' +
 					'</div>' +
 				'</div>';
 			return form;
@@ -140,9 +169,11 @@
 			console.log(targetId);
 			
 			$.ajax({
-				method : 'POST',
-				url : 'delete',
-				data : targetId,
+				method : 'DELETE',
+				headers : {
+					'X-CSRF-TOKEN' : $('meta[name="${_csrf.parameterName }"]').attr('content')
+				},
+				url : 'delete/' + targetId,
 				success : function(result){
 					console.log(result);
 					showDeliveryList();

@@ -8,9 +8,6 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <style type="text/css">
-.formContainer{
-	border: 1px solid black;
-}
 
 .pageList {
 	display: flex;
@@ -22,49 +19,54 @@
 	display: flex;
 	flex-direction: row;
 }
-.messageId {
-	width: 100px;
-}
-.type {
-	width: 100px;
-}
-.title {
-	width : 200px;
-}
-.content {
-	width : 200px;
-}
-.dateCreated{
-	width : 200px;
-}
+
 .selected {
 	background-color: red;
 }
 .unselected {
 	background-color: white;
 }
+.body_container{
+	width: 65%;
+	margin: auto;
+	height: 500px;
+}
+.inner_header {
+	margin: 40px;
+}
+.form_foot {
+	display: flex;
+	justify-content: center;
+	margin-top: 4px;
+}
+.popupAdsPage {
+	display: flex;
+	justify-content: center;
+	margin-top: 4px;
+}
 </style>
 <title>팝업 광고 관리</title>
 </head>
 <body>
-	<div class="formContainer">
-		<div>
+	<jsp:include page="../include/sideBar.jsp"/>
+	<div class="body_container">
+		<div class="inner_header">
 			<h2>등록된 팝업 광고 목록</h2>
 		</div>
-		<div>
+		<div style="height: 200px;">
 			<div class="popupAdsHeader tableList">
-				<div class="messageId">팝업 코드</div>
-				<div class="type">분류</div>
-				<div class="title">제목</div>
-				<div class="content">내용</div>
-				<div class="dateCreated">등록일</div>
+				<div class="messageId col">팝업 코드</div>
+				<div class="type col">분류</div>
+				<div class="title col">제목</div>
+				<div class="content col">내용</div>
+				<div class="dateCreated col">등록일</div>
 			</div>
 			<div class="popupAdsList"></div>
-			<div class="popupAdsPage"></div>
 		</div>
+			<div class="popupAdsPage"></div>
 		<div>
-			<input type="button" value="등록" onclick="registerPopupAds()">
-			<input type="button" value="삭제" onclick="deletePopupAds()">
+			<input type="button" class="btn btn-outline-primary" value="등록" onclick="registerPopupAds()">
+			<input type="button" class="btn btn-outline-danger" value="삭제" onclick="deletePopupAds()">
 		</div>
 	</div>
 
@@ -105,41 +107,80 @@
 				isSelected = selectedList.includes(list[x].couponId) ? "selected" : "unselected";
 				listForm += 
 					'<div class="popupAdsItem tableList ' + isSelected + '" onclick="select(this)">' +
-						'<span class="messageId">' + list[x].messageId + '</span>' + 
-						'<span class="type">' + list[x].type + '</span>' +
-						'<span class="title">' + list[x].title + '</span>' +
-						'<span class="content">' + list[x].content + '</span>' +
-						'<span class="dateCreated">' + toDate(list[x].dateCreated) + '</span>' +
+						'<span class="messageId col">' + list[x].messageId + '</span>' + 
+						'<span class="type col">' + list[x].type + '</span>' +
+						'<span class="title col">' + list[x].title + '</span>' +
+						'<span class="content col">' + list[x].content + '</span>' +
+						'<span class="dateCreated col">' + toDate(list[x].dateCreated) + '</span>' +
 					'</div>';
 			}
 			return listForm;
 		} // end makeListForm
 		
-		
+		function makePageForm(pageMaker){
+			
+			
+			for(let x = startNum; x <= endNum; x++){
+				numForm = $('<li class="page-item"><a class="page-link">' + x + '</a></li>').click(function(){
+					loadCouponList(x);
+				});
+				if(curPage == x) { // 현재 페이지 번호는 색 변경
+					numForm.addClass('active');
+				}
+				pageForm.append(numForm);
+			}
+			
+			numForm = $('<li class="page-item"><a class="page-link">&raquo;</a></li>');
+			if(pageMaker.next){
+				numForm.click(function(){
+					loadCouponList(endNum +1);
+				});
+			}else{
+				numForm.addClass('disabled');
+			}
+			pageForm.append(numForm);
+			
+			return pageForm;
+		} // end makePageForm
 		function makePageForm(pageMaker, listener){
 			const startNum = pageMaker.startNum;
 			const endNum = pageMaker.endNum;
+			const curPage = pageMaker.curPage;
 			
-			let pageForm = $('<ul class="pageList"></ul>');
+			let pageForm = $('<ul class="pageList pagination"></ul>');
 			let numForm;
+			
+			numForm = $('<li class="page-item"><a class="page-link">&laquo;</a></li>');
+			// 이전 페이지가 있으면 클릭 리스너 등록, 없으면 disabled
 			if(pageMaker.prev){
-				numForm = $('<li>이전&nbsp&nbsp</li>').click(function() {
+				numForm.click(function() {
 					listener(startNum -1);
-				});
-				pageForm.append(numForm);
+				});	
+			}else {
+				numForm.addClass('disabled');
 			}
+			pageForm.append(numForm);
+			
 			for(let x = startNum; x <= endNum; x++){
-				numForm = $('<li>' + x + '&nbsp&nbsp</li>').click(function(){
+				numForm = $('<li class="page-item"><a class="page-link">' + x + '</a></li>').click(function(){
 					listener(x);
 				});
+				if(curPage == x) { // 현재 페이지 번호는 색 변경
+					numForm.addClass('active');
+				}
 				pageForm.append(numForm);
 			}
+			
+			numForm = $('<li class="page-item"><a class="page-link">&raquo;</a></li>');
 			if(pageMaker.next){
-				numForm = $('<li>다음</li>').click(function(){
+				numForm.click(function(){
 					listener(endNum +1);
 				});
-				pageForm.append(numForm);
+			}else{
+				numForm.addClass('disabled');
 			}
+			pageForm.append(numForm);
+			
 			return pageForm;
 		} // end makePageForm
 		
@@ -169,7 +210,7 @@
 			const popupStat = {
 					'url' : 'register',
 					'name' : 'popupRegister',
-					'option' : 'width=1000, height=600, top=50, left=400'
+					'option' : 'width=800, height=600, top=200, left=600'
 			};
 			
 			// 팝업 창 띄우기

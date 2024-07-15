@@ -17,7 +17,7 @@ public interface OrderService {
 	
 	
 	// 배송지 상세 조회 (배송 예정일)
-	String getExpectDateByPaymentId(int paymentId);
+	String getExpectDateByPaymentId(int orderId);
 	
 	// 배송지 상세 조회 (송장 번호)
 	int getPaymentId(int paymentId);

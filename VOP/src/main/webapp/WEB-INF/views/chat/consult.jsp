@@ -35,9 +35,9 @@
 		<c:set var="role" value="consultant"></c:set>
 		<c:if test="${roomId == null }">
 			<c:set var="role" value="client"></c:set>
-			<button class="btn btn-outline-primary" onclick="callConsultant()">상담사 연결</button>
+			<button id="btnCall" class="btn btn-outline-primary" onclick="callConsultant()">상담사 연결</button>
 		</c:if>
-		<button class="btn btn-outline-primary" onclick="finishConsult()">상담 종료</button>
+		<button id="btnFinish" class="btn btn-outline-primary" onclick="finishConsult()" disabled>상담 종료</button>
 		<div class="chat_container">
 			<div id="readArea"></div>
 			<div id="writeArea">
@@ -51,8 +51,13 @@
 		let consultSocketUrl = "ws://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/consult";
 		let consultWebSocket = null;
 		let roomId = '${roomId }';
-		const role = '${role }';
 		const memberId = '${memberDetails.username }';
+		const role = '${role }';
+		let stateCode = 0;
+		// 0 : 상담사 연결 버튼 누르기 전
+		// 1 : 누른 후 ~ 상담사 연결 전
+		// 2 : 상담사 연결 후 ~ 상담 종료 전
+		
 		let tagReadArea = $('#readArea');
 		let tagWriteChat = $('#writeChat');
 		let chatHandler = {};
@@ -63,6 +68,7 @@
 					sendChat();
 				}
 			});
+			
 			connectWebSocket();
 		});
 		
@@ -80,22 +86,28 @@
 		}
 		
 		function addToReadArea(tellerId, content){
-			let chatBox = $('<div></div>');
-			if(tellerId == memberId){
-				chatBox.attr('class', 'myChat');
-			}else{
-				chatBox.attr('class', 'yourChat');
-			}
-			chatBox.append(tellerId + ' <br> ');
+			let chatBox = $('<div class="card" style="width: 18rem;"></div>');
 			
-			let contentStr = '';
+			if(tellerId == memberId){
+				chatBox.addClass('myChat');
+			}else{
+				chatBox.addClass('yourChat');
+			}
+			let chatBody = $('<div class="card-body"></div>');
+			
+			chatBody.append('<h5 class="card-title">' + tellerId + '</h5>');
+			chatBody.append('<p class="card-text">' + content + '</p>');
+			
+			chatBox.append(chatBody);
+			
+			/* let contentStr = '';
 			let start = 0, end;
 			while(start < content.length){
 				end = Math.min((start + 30), content.length);
 				contentStr += content.substring(start, end) + '<br>';
 				start = end;
 			}
-			chatBox.append(contentStr);
+			chatBox.append(contentStr); */
 			tagReadArea.append(chatBox);
 			tagReadArea.scrollTop = tagReadArea.scrollHeight; // 스크롤의 최상단 값을 최하단 값으로 변경 (스크롤 최대한 내리기)
 		}
@@ -115,6 +127,7 @@
 			consultWebSocket.onopen = function(e) {
 				console.log("webSocket open");
 				if(role == 'consultant'){ // 상담사라면 상담 수락 메시지
+					
 					consultWebSocket.send(JSON.stringify({
 						type : 'consultAccept',
 						roomId : roomId
@@ -141,11 +154,18 @@
 			if(roomId == ''){
 				roomId = msg.roomId;			
 			}
+			if(memberId == msg.senderId){
+				stateCode = 2;
+			}
+			if(memberId != msg.senderId && role == 'client'){
+				$('#btnCall').attr('disabled', 'disabled');
+				$('#btnFinish').attr('disabled', null);
+			}
 		} // end joinSuccess
 		
 		chatHandler.joinFail = function(msg){
 			alert('연결 실패 : ' + msg.content);
-			window.close();
+			//window.close();
 		}
 		
 		chatHandler.chatMessage = function(msg){
@@ -161,6 +181,8 @@
 		chatHandler.consultantExit = function(msg){
 			addToReadArea('System', '상담사가 퇴장했습니다.');
 			addToReadArea('System', '상담이 종료되었습니다.');
+			$('#btnCall').attr('disabled', null);
+			$('#btnFinish').attr('disabled', 'disabled');
 			consultWebSocket.close();
 		} // end consultantExit
 		

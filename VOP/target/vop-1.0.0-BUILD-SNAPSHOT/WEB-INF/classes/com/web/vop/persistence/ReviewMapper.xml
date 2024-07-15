@@ -15,16 +15,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="reviewDateCreated" column="REVIEW_DATE_CREATED" />
       <result property="reviewStar" column="REVIEW_STAR"/>
       <result property="reviewLike" column="REVIEW_LIKE"/>
-      <!-- <result property="imgId" column="IMG_ID"/> , IMG_ID -->
-      
+      <result property="reviewDislike" column="REVIEW_DISLIKE"/>
       </resultMap>
    
    <!-- 댓글(리뷰) 입력 -->
    <insert id="insertReview">
       INSERT INTO REVIEW (REVIEW_ID, MEMBER_ID, PRODUCT_ID, REVIEW_CONTENT,
-       REVIEW_DATE_CREATED, REVIEW_STAR, REVIEW_LIKE)
+       REVIEW_DATE_CREATED, REVIEW_STAR, REVIEW_LIKE, REVIEW_DISLIKE)
       VALUES (REVIEW_SEQ.NEXTVAL, #{memberId}, #{productId}, 
-      #{reviewContent}, SYSDATE, #{reviewStar}, 0)<!--나중에 0추가 이미지 0 좋아요는 댓글 작성 하는 사람 이외 다른 사람이 수정 해야 한다. -->
+      #{reviewContent}, SYSDATE, #{reviewStar}, 0, 0)<!--나중에 0추가 이미지 0 좋아요는 댓글 작성 하는 사람 이외 다른 사람이 수정 해야 한다. -->
    </insert>
    
    <!-- 댓글(리뷰) productId 그리고 memberId통해 검색 -->
@@ -37,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <select id="selectListByReviewCnt" resultType="Integer">
    	  SELECT COUNT(PRODUCT_ID) FROM REVIEW 
    	  WHERE PRODUCT_ID = #{productId}
-   </select>
+   </select>	
    
    <!-- 댓글(리뷰) productId로 전체 검색 -->
    <select id="selectListByReviewPaging" resultMap="reviewResultMap">
@@ -78,7 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       WHERE PRODUCT_ID = #{productId} AND MEMBER_ID = #{memberId}
    </delete>
 	
-	<!-- PRODUCT_ID 해당하는 리뷰(별) 총 합 -->
+	<!-- PRODUCT_ID 해당하는 리뷰(별) 총 합 (사용 안함)-->
     <select id="selectReviewStar" resultType="Integer">
    		SELECT SUM(REVIEW_STAR) AS TOTAL_STAR_RATINGS
 		FROM REVIEW
@@ -92,18 +91,50 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       WHERE REVIEW_ID = #{reviewId}
    </update>
    
-   <!-- 좋아요 갯수 감소 -->
+    <!-- 좋아요 갯수 감소 -->
    <update id="updateReviewLikeDown">
       UPDATE REVIEW
       SET REVIEW_LIKE = REVIEW_LIKE - 1
       WHERE REVIEW_ID = #{reviewId}
    </update>
+   
+   <!-- 싫어요 갯수 증가 -->
+    <update id="updateReviewDislikeUp">
+      UPDATE REVIEW
+      SET REVIEW_DISLIKE = REVIEW_DISLIKE + 1
+      WHERE REVIEW_ID = #{reviewId}
+   </update>
+   
+    <!-- 싫어요 갯수 감소 -->
+   <update id="updateReviewDislikeDown">
+      UPDATE REVIEW
+      SET REVIEW_DISLIKE = REVIEW_DISLIKE - 1
+      WHERE REVIEW_ID = #{reviewId}
+   </update>
+   
+   <!-- 좋아요 갯수 증가 후 싫어요 감소 -->
+    <update id="updateReviewLikeUpDown">
+      UPDATE REVIEW
+      SET 
+      REVIEW_LIKE = REVIEW_LIKE + 1, 
+      REVIEW_DISLIKE = REVIEW_DISLIKE - 1
+      WHERE REVIEW_ID = #{reviewId}
+   </update>
+
+   <!-- 싫어요 증가 후 좋아요 갯수 감소 -->
+   <update id="updateReviewLikeDownUp">
+      UPDATE REVIEW
+      SET 
+      REVIEW_LIKE = REVIEW_LIKE - 1,
+      REVIEW_DISLIKE = REVIEW_DISLIKE + 1
+      WHERE REVIEW_ID = #{reviewId}
+   </update>
   	
   	<!-- 리뷰 평균값 구하는 코드 -->
     <select id="selectReviewAgv" resultType="Float">
-   		SELECT ROUND(AVG(REVIEW_STAR), 1) AS AVG_REVIEW_STAR
-		FROM REVIEW
-		WHERE PRODUCT_ID = #{productId}
+   		SELECT COALESCE(ROUND(AVG(REVIEW_STAR), 1), 0.0) AS AVG_REVIEW_STAR
+    	FROM REVIEW
+    	WHERE PRODUCT_ID = #{productId}
     </select>
    
 

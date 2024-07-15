@@ -5,8 +5,37 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+	
+	<div class="toast instanceAlarm" role="alert">
+		<div class="toast-header">
+			<strong class="me-auto toast_title"></strong>
+	      	<button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+	    </div>
+	    <div class="toast-body">
+	    	<span class="toast_content"></span>
+	    </div>
+	</div>
+	
+	<div class="toast linkedAlarm" role="alert">
+		<div class="toast-header">
+			<strong class="me-auto toast_title"></strong>
+	      	<button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+	    </div>
+	    <div class="toast-body">
+	    	<span class="toast_content"></span>
+	    	<div class="mt-2 pt-2 border-top">
+      			<button type="button" class="btn btn-primary btn-sm">바로 이동하기</button>
+    		</div>
+	    </div>
+	</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 	<script type="text/javascript">
 	
@@ -14,14 +43,10 @@
 	let webSocket = new WebSocket(socketUrl);
 	let msgHandler = {};
 	
-	$(document).ready(function(){
-		alarmPermitRequest();
-	}); // end document.ready
-	
 	// 서버로부터 메시지를 받으면, 해당 메시지의 type에 맞는 함수를 찾아서 실행
 	webSocket.onmessage = function(e){
 		let msg = JSON.parse(e.data);
-		console.log("receive message : " + msg);
+		console.log("receive message : " + msg.content);
 		
 		msgHandler[msg.type](msg); // type에 맞는 핸들러를 맵에서 찾아서 실행
 	}; // end webSocket.onmessage
@@ -34,6 +59,7 @@
 	// 웹소켓 연결 종료시 호출
 	webSocket.onclose = function(e){
 		console.log("webSocket close : " + e);
+		webSocket = new WebSocket(socketUrl);
 	}; // end webSocket.onclose
 	
 	// 웹소켓 에러 발생시 호출
@@ -43,72 +69,12 @@
 	
 	
 	
-	
-	/* function sendAlert(){ //테스트 용
-		
-		let content = prompt('송신할 메시지를 입력하세요.');
-		if(content != null){
-			let msg = {};
-			msg.type = 'alert';
-			msg.content = content;
-			webSocket.send(JSON.stringify(msg));
-		}
-	} // end sendAlert
-		
-	function sendNotice(){
-		// 모든 유저에게 공지 송신
-		console.log('공지보내기');
-		let notice = prompt('송신할 메시지를 입력하세요.');
-		console.log('보낼 메시지 : ' + notice);
-		
-		if(notice != null){
-			let msg = {};
-			msg.type = 'notice';
-			msg.content = notice;
-			webSocket.send(JSON.stringify(msg));
-		}
-	} // end sendNotice
-	
-	function sendInstanceMsg(){
-		let instanceMsg = prompt('송신할 메시지를 입력하세요.');
-		if(instanceMsg != null){
-			let msg = {};
-			msg.type = 'instanceMsg';
-			msg.content = instanceMsg;
-			webSocket.send(JSON.stringify(msg));
-		}
-	} // end sendInstanceMsg */
-	
-	/* function sendReplyAlarm(productId){
-		// 댓글 알림 보내기(클라이언트 측에서 보낼 일 X)
-		
-		let msg = {};
-		msg.type = 'replyAlarm';
-		msg.callbackInfo = productId;
-		
-		webSocket.send(JSON.stringify(msg));
-		
-	} // end sendReplyAlarm  */
-	
-	
-	
-	// 서버로부터 메시지 수신시 호출되는 함수들
-	
-	msgHandler.alert = function(msg){
-		console.log('alert 메시지 수신' + msg);
-		alert(msg.content);
-	}; // 타입이 alert인 메시지 수신시 호출될 함수
-	
-	msgHandler.replyAlarm = function(msg){
-		console.log('replyAlarm 메시지 수신' + msg);
-		
-		showSocketAlarm(msg, function(){
-			window.open('../product/detail?productId=' + msg.callbackInfo);
-		});
-	}; // 타입이 replyAlarm인 메시지 수신시 호출될 함수
+	// ---------------------메시지 타입에 따라 처리할 함수 설정----------------
 	
 	msgHandler.authUpdateAlarm = function(msg){
-		console.log('권한 변경 메시지 수신 : ' + msg);
+		console.log('권한 변경 메시지 수신');
+		
+		showToast(msg);
 		
 		$.ajax({
 			method : 'GET',
@@ -118,18 +84,13 @@
 			}
 		});
 		
-		alert(msg.content);
-		
 	} // end updateAuthAlarm
 	
 	msgHandler.instanceAlarm = function(msg){
-		console.log('알림 메시지 수신 : ' + msg);
-		alert(msg.content);
-		let notification = new Notification(msg.title, {
-			title : msg.title,
-			body : msg.content
-		});
-	} // 일반 알림 메시지 수신
+		console.log('메시지 수신');
+		
+		showToast(msg);
+	} // end alarm
 	
 	msgHandler.consultRequest = function(msg){
 		console.log('consultRequest 메시지 수신 ' + msg);
@@ -142,7 +103,7 @@
 			const popupStat = {
 					'url' : targetUrl,
 					'name' : 'popupConsultAdmin',
-					'option' : 'width=800, height=800, top=50, left=400'
+					'option' : 'width=900, height=800, top=50, left=400'
 			};
 				
 			// 팝업 창 띄우기
@@ -152,74 +113,39 @@
 				console.log("팝업 닫힘");
 			} // end popup.onbeforeunload
 		}
-		
-		showSocketNotification("1대1 상담 요청", "1대1 상담 요청 수신. 수락하시겠습니까?", function(){
-			let targetUrl = '../board/consultAccept?roomId=' + msg.roomId;
-			console.log('onclick : ' + targetUrl);
-			const popupStat = {
-					'url' : targetUrl,
-					'name' : 'popupConsultAdmin',
-					'option' : 'width=800, height=800, top=50, left=400'
-			};
-				
-			// 팝업 창 띄우기
-			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
-			popup.onbeforeunload = function(){
-				// 팝업 닫힐 때 실행
-				console.log("팝업 닫힘");
-			} // end popup.onbeforeunload
-		});
 		
 	} // end msgHandler.consultRequest
 	
 	
-	function alarmPermitRequest(){ // 알림창 표시 기능 허가 요청 (허가 거부시 크롬 설정->개인정보보호 및 보안->사이트설정->알림에서 재설정 가능)
-		let permission = Notification.permission;
-		console.log('현재 알림창 설정 : ' + permission);
-		
-		if(permission != 'granted'){
-			Notification.requestPermission();
+	// -------------------------------------------------------------------------------
+	
+	
+	// 토스트 메시지 출력 (메시지에 redirectUri가 설정되어 있지 않으면 버튼 없는 토스트 출력)
+	function showToast(msg) {
+		let tagToastContainer = $('.toast-container');
+		let toast;
+		let redirectUri = msg.callbackInfo;
+
+		if(redirectUri === undefined || redirectUri === null || redirectUri === ''){
+			console.log('normal toast');
+			toast = $('.instanceAlarm');		
+		}else {
+			console.log('link toast');
+			toast = $('.linkedAlarm');
+			toast.find('button').click(function(){
+				window.open('../' + redirectUri);
+			});
 		}
 		
-	} // end alarmPermitRequest
-	
-	
-	function showSocketNotification(title, content, onclickListener) {
-		let notification = new Notification(title, {
-			title : title,
-			body : content
-		});
-		notification.onclick = onclickListener;
-		console.log(notification);
+		toast.find('.toast_title').text(msg.title);
+		toast.find('.toast_content').text(msg.content);
 		
-	} // end showSocketNotification
-	
-	function showSocketAlarm(msg, onclickListener){
-		let temp = confirm(msg.content);
-		if(onclickListener != null && temp){
-			onclickListener();
-		}
-		console.log(temp);
-	} // end showSocketAlarm
-	
-	
-	
-	/* function showSocketPopup(){
-		let targetUrl = '../board/popupNotice';
+		toast.toast('show');
+		//bootstrap.Toast.getOrCreateInstance(toast).show();
 		
-		const popupStat = {
-				'url' : targetUrl,
-				'name' : 'popupNotice',
-				'option' : 'width=500, height=600, top=50, left=400'
-		};
-		
-		// 팝업 창 띄우기
-		let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
-		popup.onbeforeunload = function(){
-			// 팝업 닫힐 때 실행
-			console.log("팝업 닫힘");
-		} // end popup.onbeforeunload
-	} // end showSocketPopup */
+	} // end showToast
+	
+	
 	
 	</script>
 	

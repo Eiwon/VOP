@@ -155,9 +155,26 @@
 		let btnContinue = $('#btn_continue');
 		let btnUpdate = $('#btn_update');
 		let btnDelete = $('#btn_delete');
-		const allowedExtensions = new RegExp("jpg|jpeg|png|bmp|tif|tiff|webp|svg");
 		
-		// 상태가 
+		const allowedExtensions = new RegExp("jpg|jpeg|png|bmp|tif|tiff|webp|svg");
+		let validCheckMap = {};
+		
+		validCheckMap.productName = {
+			exp : new RegExp('^[가-힣a-zA-Z0-9 !@#$%^&*()+,.<>?-]{2,30}$'),
+			failMsg : '상품명은 한글, 알파벳, 숫자, 일부 특수문자만 사용 가능합니다',
+		};
+		validCheckMap.productPrice = {
+			exp : new RegExp('^[0-9]{1,10}$'),
+			failMsg : '정상적인 판매가를 입력해주세요'
+		};
+		validCheckMap.productRemains = {
+			exp : new RegExp('^[0-9]{1,10}$'),
+			failMsg : '올바른 숫자를 입력해주세요'
+		};
+		validCheckMap.productPlace = {
+			exp : new RegExp('^[가-힣a-zA-Z0-9 !@#$%^&*()+,.<>?-]{10,65}$'),
+			failMsg : '형식에 맞지 않는 주소입니다'
+		};
 		
 		$(document).ready(function(){
 			
@@ -224,7 +241,30 @@
 		
 		let formProduct = $('#formProduct');
 		
-		formProduct.submit(function update(){
+		function checkTextValid() {
+ 			let val;
+ 			for(x in validCheckMap){
+ 				val = $('#' + x).val().trim();
+ 				if(val.length == 0){
+ 					alert('모든 항목을 입력해주세요');
+ 					return false;
+ 				}
+ 				$('#' + x).val(val);
+ 				if(!validCheckMap[x].exp.test(val)){
+ 					alert(validCheckMap[x].failMsg);
+ 					return false;
+ 				}
+ 			}
+ 			return true;
+ 		 } // end checkTextValid
+
+ 		 
+ 		$('#formProduct').submit(function update(){
+			
+			if(!checkTextValid()){
+				event.preventDefault();
+				return;
+			}
 			
             let file = $('#inputThumbnail').prop('files')[0]; // file 객체 참조
             

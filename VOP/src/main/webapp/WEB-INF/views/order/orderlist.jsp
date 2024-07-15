@@ -19,7 +19,6 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
 <!-- 모달 스타일 창크기가 변하면는 같이변하게 하는기능 -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>주문 목록</title>
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -132,12 +131,11 @@
                     </div> <!-- closing col-md-10 -->
                 </div> <!-- closing row order-details -->
                 <div class="order-buttons">
-                    <a href="../Delivery/delivery?paymentId=${orderVO.paymentId}" class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2">배송 조회</a>
+                    <a href="../Delivery/delivery?paymentId=${orderVO.paymentId}&orderId=${orderVO.orderId}" class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2">배송 조회</a>
                     
                     <!-- 리뷰 쓰기 코드 -->
                     <form action="../review/register" method="get" class="d-inline">
                         <input type="hidden" name="productId" value="${orderVO.productId}">
-                        <input type="hidden" name="imgId" value="${orderVO.imgId}">
                         <button type="submit" class="d-inline-flex focus-ring focus-ring-primary py-1 px-2 text-decoration-none border rounded-2">리뷰 쓰기</button>
                     </form>
 

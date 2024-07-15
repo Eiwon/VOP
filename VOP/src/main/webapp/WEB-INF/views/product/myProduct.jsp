@@ -18,6 +18,7 @@
 .product_table{
 	margin-right: 5px;
 	margin-bottom: 5px;
+	padding: 5px;
 }
 </style>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -69,13 +70,13 @@
 										'<div class="targetIndex" hidden="hidden">'+ x + '</div>' +
 			            			'</div>' + 
 			            			'<a class="btn btn-primary" style="margin-bottom: 5px;" onclick="popupUpdate(this)">상세 정보</a>' +
-									'<a class="btn btn-primary" onclick="toInquiry(' + productVO.productId + ')">문의 목록</a>' +
+									'<a class="btn btn-primary" style="margin-bottom: 5px;" onclick="toInquiry(' + productVO.productId + ')">문의 목록</a>' +
+									'<a class="btn btn-primary" onclick="toAnswer(' + productVO.productId + ')">답변 목록</a>' +
 					    		'</div>';
 					}
 					// 페이지 생성 후 등록
 					$('#product_list_page').html(makePageForm(pagingListDTO));
 					$('#product_list').html(form);
-					
 				} // end success
 			}); // end ajax
 
@@ -83,6 +84,10 @@
 
 		function toInquiry(productId) {
 			location.href='../inquiry/list?productId=' + productId;
+		} // end toInquiry
+		
+		function toAnswer(productId) {
+			location.href='../inquiry/answerList?productId=' + productId;
 		} // end toInquiry
 		
 		function makePageForm(pagingListDTO) { // 페이지 버튼 생성 후, pagingListDTO의 리스트 출력 함수 등록

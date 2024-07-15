@@ -36,8 +36,6 @@ public class AccessController {
 		return Constant.ALERT_PATH;
 	} // end NoHandlerFoundException
 	
-	
-	
 	@GetMapping("/exception")
 	public String allException(Model model) {
 		log.info("allException");

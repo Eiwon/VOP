@@ -181,7 +181,7 @@ public class PopupAdsController {
 		}
 		// 모든 팝업광고 id 불러오기
 		List<Integer> popupAdsList = messageService.getMyPopupId(memberId);
-		
+		int popupAdsLen = popupAdsList.size();
 		if(blockList == null) {
 			return new ResponseEntity<List<Integer>>(popupAdsList, HttpStatus.OK);
 		}
@@ -206,18 +206,20 @@ public class PopupAdsController {
 		int blockId = 0, idx = 0;
 		log.info("blockList : " + blockList);
 		log.info("popupAdsList : " + popupAdsList);
-		while(blockIter.hasNext() && idx < popupAdsList.size()) {
+		
+		while(blockIter.hasNext() && idx < popupAdsLen) {
 			blockId = blockIter.next();
-			while(popupAdsList.get(idx) > blockId) { // 가장 큰 차단id보다 크다면(=blockList에 존재하지 않는 id) 전부 resultList에 추가
+			while(idx < popupAdsLen && popupAdsList.get(idx) > blockId) { // 가장 큰 차단id보다 크다면(=blockList에 존재하지 않는 id) 전부 resultList에 추가
 				resultList.add(popupAdsList.get(idx++));
 			}
-			if(popupAdsList.get(idx) == blockId) { // 차단된 id이면 다음 차단id와 다음 popupAdsId 비교
+			if(idx < popupAdsLen && popupAdsList.get(idx) == blockId) { // 차단된 id이면 다음 차단id와 다음 popupAdsId 비교
 				idx++;
 			}
 		}
 		for(int i = idx; i < popupAdsList.size(); i++) {
 			resultList.add(popupAdsList.get(i));
 		}
+		
 		log.info("resultList : " + resultList);
 		return new ResponseEntity<List<Integer>>(resultList, HttpStatus.OK);
 	} // end blockPopup

@@ -4,7 +4,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- jquery 라이브러리 import -->
 <jsp:include page="../include/header.jsp"></jsp:include>
 <title>VOP</title>
@@ -150,7 +149,7 @@
 		function toDetails(input){
 			const selectedId = $(input).find('.product_id').val();
 			console.log(selectedId);
-			location.href = '../product/detail?productId=' + selectedId;
+			window.open('../product/detail?productId=' + selectedId);
 		} // end addDetailsEvent
 		
 		/* function readBlockList(){

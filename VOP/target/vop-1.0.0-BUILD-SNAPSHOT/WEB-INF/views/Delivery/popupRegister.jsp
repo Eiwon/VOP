@@ -9,42 +9,50 @@
 <!-- 카카오 주소검색 API 사용하기 위한 script -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <style type="text/css">
-tr {
-	flex-direction: row;
-	display: flex;
-}
+	.body_container{
+		width: 80%;
+		margin:auto;
+		margin-top: 10%;
+	}
 </style>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
 <title>배송지 등록</title>
 </head>
 <body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 	
-		<table>
-			<tbody>
-				<tr>
-					<td><input type="text" id="receiverName" placeholder="받는 사람" onblur="validCheck(this)"></td>
-					<td id="receiverNameAlert"></td>
-				</tr>
-				<tr>
-					<td><input type="text" id="receiverAddress" readonly></td>
-					<td><button type="button" onclick="searchAddress()">우편번호 검색</button></td>
-				</tr>
-				<tr>
-					<td><input type="text" id="deliveryAddressDetails" placeholder="상세 주소"></td>
-				</tr>
-				<tr>
-					<td><input type="text" id="receiverPhone" placeholder="휴대폰 번호" onblur="validCheck(this)"></td>
-					<td id="receiverPhoneAlert"></td>
-				</tr>
-				<tr>
-					<td><input type="text" id="requirement" placeholder="배송 요구사항"></td>
-				</tr>
-				<tr>
-					<td><input type="checkbox" id="isDefault">기본 배송지로 설정</td>
-				</tr>
-			</tbody>
-		</table>
-		<input type="button" value="저장" onclick="saveDelivery()">
-	
+	<div class="body_container">
+		<div class="form-floating mb-3">
+			<input type="text" class="form-control" id="receiverName" onblur="validCheck(this)">
+			<label for="receiverName">받는 사람</label>
+			<div id="receiverNameAlert"></div>
+		</div>
+		<div class="form-floating mb-3">
+			<input type="text" class="form-control" id="receiverAddress" readonly>
+			<label for="receiverAddress">배송 주소</label>
+			<button class="btn btn-outline-secondary" type="button" onclick="searchAddress()">우편번호 검색</button>
+		</div>
+		<div class="form-floating mb-3">
+			<input type="text" class="form-control" id="deliveryAddressDetails">
+			<label for="deliveryAddressDetails">상세 주소</label>
+		</div>
+		<div class="form-floating mb-3">
+			<input type="text" class="form-control" id="receiverPhone" onblur="validCheck(this)">
+			<label for="receiverPhone">휴대폰 번호</label>
+			<div id="receiverPhoneAlert"></div>
+		</div>
+		<div class="form-floating mb-3">
+			<input type="text" class="form-control" id="requirement">
+			<label for="requirement">배송 요구사항</label>
+		</div>
+		<div>
+			<input type="checkbox" id="isDefault">기본 배송지로 설정
+		</div>
+	</div>
+	<div style="text-align: center;">
+		<input type="button" class="btn btn-outline-primary" value="저장" onclick="saveDelivery()">
+	</div>
 	
 	<script type="text/javascript">
 		let tagReceiverName = $('#receiverName');
@@ -118,7 +126,8 @@ tr {
 		
 		function validCheck(input){
 			console.log("유효성 체크 : " + $(input).val());
-			const inputVal = $(input).val();
+			const inputVal = $(input).val().trim();
+			$(input).val(inputVal);
 			const targetId = $(input).attr('id');
 			const tester = expMap[targetId];
 			

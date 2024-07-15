@@ -4,11 +4,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- jquery 라이브러리 import -->
 <jsp:include page="../include/header.jsp"></jsp:include>
 <title>VOP</title>
-	<style>
+<style type="text/css">
 	#myform fieldset {
 	display: inline-block;
 	direction: ltr; /* 텍스트 방향을 오른쪽에서 왼쪽으로 설정 */
@@ -27,19 +26,36 @@
 	color: #f0d000; /* 별 색상 */
 }
 
+.body_container {
+	width: 60%;
+	margin: auto;
+}
+
+.product_row {
+	padding-bottom: 30px;
+}
+.product_list {
+        	display: flex;
+    		flex-direction: row;
+        }
+.product_box {
+	width: 180px;
+	margin: 2px;
+	border-color: white;
+}
 /* end 리뷰 별 폼 스타일 */
     </style>
 </head>
 <body>
-<div>
-	<div>
-		<h1>최근 등록된 상품</h1>
-		<ul class="flex_list" id="recent_list">
+<div class="body_container">
+	<div class="product_row">
+		<h2>최근 등록된 상품</h2>
+		<div class="product_list" id="recent_list">
 	
-		</ul>
+		</div>
 	</div>
 	<div>
-		<h1>추천 상품</h1>
+		<h2>추천 상품</h2>
 		<div id="recommend_container"></div>
 	</div>
 </div>
@@ -75,14 +91,15 @@
 		                        starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
 		                    }
 		                }
-						form += '<li class="product_box" onclick="toDetails(this)">' + 
-							'<img src="' + result[x].imgUrl + '">' + 
-							'<br><strong class="product_name">' + productVO.productName + '</strong><br>' +
-							'<strong class="product_price">' + productVO.productPrice + '원</strong><br>' + 
-							'<span class="reviewStars">' + starsHTML + '</span>' +
-							'<span class="review_num">(' + productVO.reviewNum + ')</span>' + 
+						form += '<div class="card product_box" onclick="toDetails(this)">' + 
+							'<img class="card-img-top img-thumbnail" src="' + result[x].imgUrl + '">' + 
+							'<div class="card-body">' + 
+							'<h3 class="card-title">' + productVO.productName + '</h3>' +
+							'<p class="card-text">' + productVO.productPrice + '원</p>' + 
+							'<span class="reviewStars card-text">' + starsHTML + '</span>' +
+							'<span class="review_num card-text">(' + productVO.reviewNum + ')</span>' + 
 							'<input hidden="hidden" class="product_id" value="' + productVO.productId + '"/>' + 
-							'</li>';
+							'</div></div>';
 					}
 					listRecent.html(form);
 				} // end success
@@ -97,8 +114,8 @@
 				success : function(result){ // result : key=카테고리명, value=해당 카테고리의 최고리뷰 상품 List<ProductPreviewDTO>
 					console.log(result);
 					for (x in result){
-						let form = '<div><h2>' + x + '</h2>' + 
-								   '<ul class="flex_list">';
+						let form = '<div class="product_row"><h2>' + x + '</h2>' + 
+								   '<div class="product_list">';
 						for(i in result[x]){
 							let productVO = result[x][i].productVO;
 							// 별표시 코드
@@ -111,16 +128,17 @@
 			                        starsHTML += '&#9734;'; // 빈 별 모양 HTML 코드 추가
 			                    }
 			                }
-							form += '<li class="product_box" onclick="toDetails(this)">' + 
-									'<img src="' + result[x][i].imgUrl + '">' + 
-									'<br><strong class="product_name">' + productVO.productName + '</strong><br>' + 
-									'<span class="product_price">' + productVO.productPrice + '원</span><br>' +
-									'<span class="reviewStars">' + starsHTML + '</span>' +
-									'<span class="review_num">(' + productVO.reviewNum + ')</span>' +
+							form += '<div class="card product_box" onclick="toDetails(this)">' + 
+									'<img class="card-img-top img-thumbnail" src="' + result[x][i].imgUrl + '">' + 
+									'<div class="card-body">' +
+									'<h3 class="card-title">' + productVO.productName + '</h3>' + 
+									'<p class="card-text">' + productVO.productPrice + '원</p>' +
+									'<span class="reviewStars card-text">' + starsHTML + '</span>' +
+									'<span class="review_num card-text">(' + productVO.reviewNum + ')</span>' +
 									'<input hidden="hidden" class="product_id" value="' + productVO.productId + '"/>' +
-									'</li>';
+									'</div></div>';
 						}
-						form += '</ul></div>';
+						form += '</div></div>';
 						containerRecommend.append(form);
 					}
 				} // end success
@@ -131,7 +149,7 @@
 		function toDetails(input){
 			const selectedId = $(input).find('.product_id').val();
 			console.log(selectedId);
-			location.href = '../product/detail?productId=' + selectedId;
+			window.open('../product/detail?productId=' + selectedId);
 		} // end addDetailsEvent
 		
 		/* function readBlockList(){
