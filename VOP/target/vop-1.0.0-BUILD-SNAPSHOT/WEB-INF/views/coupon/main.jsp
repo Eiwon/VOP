@@ -186,7 +186,7 @@
 			const popupStat = {
 					'url' : 'register',
 					'name' : 'popupCouponRegister',
-					'option' : 'width=300, height=300, top=50, left=400'
+					'option' : 'width=600, height=300, top=50, left=400'
 			};
 			
 			// 팝업 창 띄우기

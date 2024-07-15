@@ -279,8 +279,8 @@
 		}); // end ajax
 		
 	    
-        // 회원 권한 업데이트
-           $.ajax({
+        // 회원 권한 업데이트 ==> membershipRegister에서 트랜잭션으로 한번에 처리해서 필요 X
+        /*    $.ajax({
                type: 'PUT',
                url: 'updateAuth/' + memberId,
                headers : {
@@ -292,7 +292,7 @@
                error: function() {
                    console.log('멤버십 권한 업데이트 실패');
                }
-           });
+           }); */
 	} // end sendPaymentResult
 	
 		

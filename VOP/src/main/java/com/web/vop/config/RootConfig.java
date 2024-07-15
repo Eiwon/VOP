@@ -36,7 +36,7 @@ public class RootConfig {
       config.setUsername("vopmaster"); // DB 사용자 아이디
       config.setPassword("vopmaster"); // DB 사용자 비밀번호
       
-      config.setMaximumPoolSize(10); // 최대 풀(Pool) 크기 설정
+      config.setMaximumPoolSize(20); // 최대 풀(Pool) 크기 설정
       config.setConnectionTimeout(30000); // Connection 타임 아웃 설정(30초)
       HikariDataSource ds = new HikariDataSource(config); // config 객체를 참조하여 DataSource 객체 생성
       return ds; // ds 객체 리턴

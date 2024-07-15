@@ -72,6 +72,7 @@
 			});
 			$('#btnFinish').click(function(){
 				finishConsult();
+				alert('연결이 종료되었습니다');
 			});
 			
 		});
@@ -104,16 +105,8 @@
 			
 			chatBox.append(chatBody);
 			
-			/* let contentStr = '';
-			let start = 0, end;
-			while(start < content.length){
-				end = Math.min((start + 30), content.length);
-				contentStr += content.substring(start, end) + '<br>';
-				start = end;
-			}
-			chatBox.append(contentStr); */
 			tagReadArea.append(chatBox);
-			tagReadArea.scrollTop = tagReadArea.scrollHeight; // 스크롤의 최상단 값을 최하단 값으로 변경 (스크롤 최대한 내리기)
+			tagReadArea.scrollTop(tagReadArea.prop('scrollHeight')); // 스크롤의 최상단 값을 최하단 값으로 변경 (스크롤 최대한 내리기)
 		}
 		
 		
@@ -142,7 +135,7 @@
 			// 웹소켓 연결 종료시 호출
 			consultWebSocket.onclose = function(e) {
 				console.log("webSocket close : " + e);
-				connectWebSocket();
+				//connectWebSocket();
 			}; // end webSocket.onclose
 
 			// 웹소켓 에러 발생시 호출
@@ -201,7 +194,7 @@
 			consultWebSocket.close();
 			roomId = '';
 			$('#btnFinish').attr('disabled', 'disabled');
-			$('#btnCall').attr('disabled', null);
+			//$('#btnCall').attr('disabled', null);
 		} // end finishConsult
 		
 	</script>

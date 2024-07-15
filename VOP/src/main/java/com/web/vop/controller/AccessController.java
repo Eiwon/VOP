@@ -41,7 +41,7 @@ public class AccessController {
 		log.info("allException");
 		AlertVO alertVO = new AlertVO();
 		alertVO.setAlertMsg("예외 발생!!");
-		alertVO.setRedirectUri("back");
+		alertVO.setRedirectUri("board/main");
 		model.addAttribute("alertVO", alertVO);
 		return Constant.ALERT_PATH;
 	} // end allException

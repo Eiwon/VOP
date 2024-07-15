@@ -55,6 +55,9 @@ public class AlarmHandler extends TextWebSocketHandler{
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		log.info("socket open");
+		if(session.getPrincipal() == null) {
+			return;
+		}
 		String memberId = session.getPrincipal().getName();
 		log.info("연결 유저 id : " + memberId);
 		alarmConnMap.put(memberId, session);

@@ -9,7 +9,7 @@
 <jsp:include page="../include/header.jsp"></jsp:include>
 <style type="text/css">
 	.box_info {
-		border: 1px solid black;
+		border: 1px solid grey;
 	}
 	.order_box {
 		display: flex;
@@ -23,8 +23,7 @@
 		margin: 20px;
 	}
 	.small_header {
-		margin-bottom: 10px;
-		margin-top: 15px;
+		margin: 10px;
 		display: flex;
 	}
 </style>
@@ -40,26 +39,24 @@
 		<div class="small_header">
 			<h3>받는 사람 정보</h3>
 		</div>
-		<table>
-			<tbody>
-				<tr>
-					<td>이름</td>
-					<td id="receiver_name">${paymentWrapper.paymentVO.receiverName}</td>
-				</tr>
-				<tr>
-					<td>배송주소</td>
-					<td id="delivery_address">${paymentWrapper.paymentVO.deliveryAddress}</td>
-				</tr>
-				<tr>
-					<td>연락처</td>
-					<td id="receiver_phone">${paymentWrapper.paymentVO.receiverPhone}</td>
-				</tr>
-				<tr>
-					<td>배송 요청사항</td>
-					<td id="requirement">${paymentWrapper.paymentVO.requirement}</td>
-				</tr>
-			</tbody>
-		</table>
+		<div>
+			<div class="input-group mb-3">
+ 				<span class="input-group-text">이름</span>
+  				<input type="text" class="form-control" id="receiver_name" value="${paymentWrapper.paymentVO.receiverName}">
+			</div>
+			<div class="input-group mb-3">
+ 				<span class="input-group-text">배송주소</span>
+  				<input type="text" class="form-control" id="delivery_address" value="${paymentWrapper.paymentVO.deliveryAddress}">
+			</div>
+			<div class="input-group mb-3">
+ 				<span class="input-group-text">연락처</span>
+  				<input type="text" class="form-control" id="receiver_phone" value="${paymentWrapper.paymentVO.receiverPhone}">
+			</div>
+			<div class="input-group mb-3">
+ 				<span class="input-group-text">배송 요청사항</span>
+  				<input type="text" class="form-control" id="requirement" value="${paymentWrapper.paymentVO.requirement}">
+			</div>
+		</div>
 	</div>
 		
 	<div class="box_info" id="order_info">
@@ -85,30 +82,28 @@
 		<div class="small_header">
 			<h3>결제 정보</h3>
 		</div>
-		<table>
-			<tbody>
-				<tr>
-					<td>총 상품 가격</td>
-					<td>${totalPrice} 원</td>
-				</tr>
-				<tr>
-					<td>멤버십 할인</td>
-					<td id="membership_discount">${paymentWrapper.paymentVO.membershipDiscount} %</td>
-				</tr>
-				<tr>
-					<td>쿠폰 할인</td>
-					<td id="coupon_discount">${paymentWrapper.paymentVO.couponDiscount} %</td>
-				</tr>
-				<tr>
-					<td>배송비</td>
-					<td id="delivery_price">${paymentWrapper.paymentVO.deliveryPrice} 원</td>
-				</tr>
-				<tr>
-					<td>총 결제 금액</td>
-					<td id="charge_price">${paymentWrapper.paymentVO.chargePrice} 원</td>
-				</tr>
-			</tbody>
-		</table>
+		<div>
+			<div class="input-group mb-3">
+ 				<span class="input-group-text">총 상품 가격</span>
+  				<input type="text" class="form-control" value="${totalPrice} 원">
+			</div>
+			<div class="input-group mb-3">
+ 				<span class="input-group-text">멤버십 할인</span>
+  				<input type="text" class="form-control" id="membership_discount" value="${paymentWrapper.paymentVO.membershipDiscount}">
+			</div>
+			<div class="input-group mb-3">
+ 				<span class="input-group-text">쿠폰 할인</span>
+  				<input type="text" class="form-control" id="coupon_discount" value="${paymentWrapper.paymentVO.couponDiscount}">
+			</div>
+			<div class="input-group mb-3">
+ 				<span class="input-group-text">배송비</span>
+  				<input type="text" class="form-control" id="delivery_price" value="${paymentWrapper.paymentVO.deliveryPrice} 원">
+			</div>
+			<div class="input-group mb-3">
+ 				<span class="input-group-text">총 결제 금액</span>
+  				<input type="text" class="form-control" id="charge_price" value="${paymentWrapper.paymentVO.chargePrice} 원">
+			</div>
+		</div>
 	</div>
 		
 	<div>
