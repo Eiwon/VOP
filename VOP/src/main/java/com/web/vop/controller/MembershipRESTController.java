@@ -155,19 +155,19 @@ public class MembershipRESTController {
 	
 	
 	
-	@PreAuthorize("#memberId == authentication.principal.username")
-	// 멤버십 권한(멤버십) 수정
-	@PutMapping("/updateAuth/{memberId}")
-	public ResponseEntity<Void> MembershipAuthPUTOnInsert(@PathVariable("memberId") String memberId){
-		log.info("멤버십 권한 변경(멤버십) " + memberId);
-		 try {
-	            membershipService.updateMemberAuth(memberId);
-	            return ResponseEntity.noContent().build();  // 204 No Content 반환
-	        } catch (Exception e) {
-	            log.error("멤버십 권한 업데이트 실패: " + e.getMessage());
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	        }
-	}//end membershipPUT()
+//	@PreAuthorize("#memberId == authentication.principal.username")
+//	// 멤버십 권한(멤버십) 수정
+//	@PutMapping("/updateAuth/{memberId}")
+//	public ResponseEntity<Void> MembershipAuthPUTOnInsert(@PathVariable("memberId") String memberId){
+//		log.info("멤버십 권한 변경(멤버십) " + memberId);
+//		 try {
+//	            membershipService.updateMemberAuth(memberId);
+//	            return ResponseEntity.noContent().build();  // 204 No Content 반환
+//	        } catch (Exception e) {
+//	            log.error("멤버십 권한 업데이트 실패: " + e.getMessage());
+//	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//	        }
+//	}//end membershipPUT()
 	
 	
 	

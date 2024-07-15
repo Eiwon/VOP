@@ -168,8 +168,4 @@ public class SchedulerServiceImple {
 		System.out.println(title);
 		System.out.println(content);
 	}//end sendExpiryNotification()
-	
-	
-	
-	
 }//end SchedulerServiceImple
