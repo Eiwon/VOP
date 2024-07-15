@@ -35,9 +35,9 @@
 		<c:set var="role" value="consultant"></c:set>
 		<c:if test="${roomId == null }">
 			<c:set var="role" value="client"></c:set>
-			<button id="btnCall" class="btn btn-outline-primary" onclick="callConsultant()">상담사 연결</button>
+			<button id="btnCall" class="btn btn-outline-primary">상담사 연결</button>
 		</c:if>
-		<button id="btnFinish" class="btn btn-outline-primary" onclick="finishConsult()" disabled>상담 종료</button>
+		<button id="btnFinish" class="btn btn-outline-primary" disabled>상담 종료</button>
 		<div class="chat_container">
 			<div id="readArea"></div>
 			<div id="writeArea">
@@ -53,10 +53,6 @@
 		let roomId = '${roomId }';
 		const memberId = '${memberDetails.username }';
 		const role = '${role }';
-		let stateCode = 0;
-		// 0 : 상담사 연결 버튼 누르기 전
-		// 1 : 누른 후 ~ 상담사 연결 전
-		// 2 : 상담사 연결 후 ~ 상담 종료 전
 		
 		let tagReadArea = $('#readArea');
 		let tagWriteChat = $('#writeChat');
@@ -70,6 +66,14 @@
 			});
 			
 			connectWebSocket();
+			
+			$('#btnCall').click(function(){
+				callConsultant();
+			});
+			$('#btnFinish').click(function(){
+				finishConsult();
+			});
+			
 		});
 		
 		function sendChat(){
@@ -151,15 +155,12 @@
 		chatHandler.joinSuccess = function(msg){
 			console.log('join success roomId : ' + msg.roomId);
 			addToReadArea('System', msg.senderId + ' 님이 입장했습니다.');
-			if(roomId == ''){
+			if(roomId === '' || roomId === null || roomId === undefined){
 				roomId = msg.roomId;			
 			}
-			if(memberId == msg.senderId){
-				stateCode = 2;
-			}
-			if(memberId != msg.senderId && role == 'client'){
-				$('#btnCall').attr('disabled', 'disabled');
+			if(memberId != msg.senderId){
 				$('#btnFinish').attr('disabled', null);
+				$('#btnCall').attr('disabled', 'disabled');
 			}
 		} // end joinSuccess
 		
@@ -181,8 +182,6 @@
 		chatHandler.consultantExit = function(msg){
 			addToReadArea('System', '상담사가 퇴장했습니다.');
 			addToReadArea('System', '상담이 종료되었습니다.');
-			$('#btnCall').attr('disabled', null);
-			$('#btnFinish').attr('disabled', 'disabled');
 			consultWebSocket.close();
 		} // end consultantExit
 		
@@ -198,19 +197,11 @@
 			
 		} // end callConsultant
 		
-		function exitRoom(){
-			if(consultWebSocket.readyState > 1){
-				return;
-			}
-			consultWebSocket.send(JSON.stringify({
-				type : (role == 'client') ? 'clientExit' : 'consultantExit',
-				roomId : roomId
-			}));
-		} // end exitRoom
-		
 		function finishConsult(){
-			exitRoom();
+			consultWebSocket.close();
 			roomId = '';
+			$('#btnFinish').attr('disabled', 'disabled');
+			$('#btnCall').attr('disabled', null);
 		} // end finishConsult
 		
 	</script>
