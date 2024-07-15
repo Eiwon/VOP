@@ -83,6 +83,36 @@ public class ConsultHandler extends AbstractWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		
+		String memberId = session.getPrincipal().getName();
+		String roomId = null;
+		ChatRoom chatRoom = null;
+		
+		if(consultConnMap.containsKey(memberId)) { // 대상이 상담사라면
+			roomId = consultConnMap.get(memberId); // 대상이 속한 room id 검색
+			chatRoom = consultRoomList.get(roomId);
+			chatRoom.getMemberList().remove(memberId); // 해당 방에서 제거
+			consultConnMap.remove(memberId); // 상담 중인 상담사 리스트에서 제거
+			
+			if(chatRoom.getMemberList().size() > 0) {
+				chatRoom.setState(ROOM_STATE_TERMINATE);
+				sendConsultantExit(roomId, memberId);
+			}else {
+				consultRoomList.remove(roomId);
+			}
+		} else { // 대상이 클라이언트라면
+			roomId = memberId;
+			chatRoom = consultRoomList.get(roomId);
+			chatRoom.getMemberList().remove(memberId); // 해당 방에서 제거
+			
+			if(chatRoom.getMemberList().size() > 0) {
+				chatRoom.setState(ROOM_STATE_STOP);
+				sendClientExit(roomId, memberId);
+			}else {
+				consultRoomList.remove(roomId);
+			}
+		}
+		
+		
 	} // end afterConnectionClosed
 
 	@Override
@@ -148,6 +178,7 @@ public class ConsultHandler extends AbstractWebSocketHandler {
 			// 상담사 입장
 			chatRoom.getMemberList().put(senderId, session);
 			chatRoom.setState(ROOM_STATE_CONSULTING);
+			consultConnMap.put(senderId, roomId);
 			sendJoinSuccess(roomId, senderId);
 		}
 			break;
@@ -156,30 +187,30 @@ public class ConsultHandler extends AbstractWebSocketHandler {
 			break;
 		} // end case chatMessage
 		case TYPE_CONSULTANT_EXIT: { // 상담사 퇴장
-			String roomId = chatMessageVO.getRoomId();
-			chatRoom = consultRoomList.get(roomId);
-			sendConsultantExit(roomId, senderId);
-			chatRoom.getMemberList().remove(senderId);
-			// 남은 인원이 없으면 방 폭파, 있으면 상담 중단 상태로 변경
-			if (chatRoom.getMemberList().size() == 0) {
-				consultRoomList.remove(roomId);
-			} else {
-				chatRoom.setState(ROOM_STATE_STOP);
-			}
+//			String roomId = chatMessageVO.getRoomId();
+//			chatRoom = consultRoomList.get(roomId);
+//			sendConsultantExit(roomId, senderId);
+//			chatRoom.getMemberList().remove(senderId);
+//			// 남은 인원이 없으면 방 폭파, 있으면 상담 중단 상태로 변경
+//			if (chatRoom.getMemberList().size() == 0) {
+//				consultRoomList.remove(roomId);
+//			} else {
+//				chatRoom.setState(ROOM_STATE_STOP);
+//			}
 			break;
 		}
 		case TYPE_CLIENT_EXIT: { // 클라이언트 퇴장
-			String roomId = chatMessageVO.getRoomId();
-			chatRoom = consultRoomList.get(roomId);
-			sendClientExit(roomId, senderId);
-
-			chatRoom.getMemberList().remove(senderId);
-			// 남은 인원이 없으면 방 폭파, 있으면 상담 종료 상태로 변경
-			if(chatRoom.getMemberList().size() == 0) { 
-				consultRoomList.remove(roomId);
-			}else { 
-				chatRoom.setState(ROOM_STATE_TERMINATE); 
-			}
+//			String roomId = chatMessageVO.getRoomId();
+//			chatRoom = consultRoomList.get(roomId);
+//			sendClientExit(roomId, senderId);
+//
+//			chatRoom.getMemberList().remove(senderId);
+//			// 남은 인원이 없으면 방 폭파, 있으면 상담 종료 상태로 변경
+//			if(chatRoom.getMemberList().size() == 0) { 
+//				consultRoomList.remove(roomId);
+//			}else { 
+//				chatRoom.setState(ROOM_STATE_TERMINATE); 
+//			}
 			
 			break;
 		}
