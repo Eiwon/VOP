@@ -56,7 +56,7 @@ public class SchedulerServiceImple {
 	                        // 멤버십이 만료된 지, 5일 이내의 회원에게만 메세지 보내기
 	                    	 handleExpiredMembership(expiryInfo.getMemberId(), expiryDate, expiryInfo.getMemberEmail());
 	                    }
-	            	}else if (diffInDays < 5){
+	            	}else if (diffInDays < 3){
 	            		sendExpiryNotification(expiryInfo.getMemberId(),expiryDate, expiryInfo.getMemberEmail(),"멤버십이 곧 만료됩니다!");   
 	                }
 	            }// end for()
