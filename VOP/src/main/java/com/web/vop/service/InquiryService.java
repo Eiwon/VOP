@@ -21,7 +21,7 @@ public interface InquiryService {
 		
 		// 댓글(문의) 상품 페이징 전체 검색
 		List<InquiryVO> getAllInquiryPaging(int productId, PageMaker pageMaker);
-			 
+
 		// 댓글(리뷰) 검색
 		InquiryVO selectByInquiry(int productId, String memberId);
 		
@@ -30,4 +30,7 @@ public interface InquiryService {
 			 
 		// 댓글(문의) 삭제
 		int deleteInquiry(int productId, String memberId);
+		
+		// 댓글(문의) 관리 페이징 전체 검색
+		List<InquiryVO> AllList(PageMaker pageMaker);
 }

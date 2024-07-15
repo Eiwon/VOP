@@ -63,7 +63,6 @@ public class InquiryRESTController {
 	        		"inquiry/list?productId=" + inquiryVO.getProductId()
 	        		);
 		}
-		
 		// result값을 전송하여 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}// end createInquiry()
@@ -95,6 +94,32 @@ public class InquiryRESTController {
 		// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
 		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	}// end readAllInquiry()
+	
+//	@GetMapping("/AllList/{page}") // GET : 댓글(문의) 선택(all)  // 나중에 데이터 받는 거에 따라 달라짐
+//	public ResponseEntity<Map<String, Object>> readAllInquiry(
+//			Pagination pagination,
+//			@PathVariable("page") int page){
+//		log.info("readAllInquiry()");
+//		
+//		pagination.setPageNum(page);
+//		log.info("pagination : " + pagination);
+//		// 문자열 형태와 오브젝트 형태를 저장 하기 위해서 사용
+//		Map<String, Object> resultMap = new HashMap<>();
+//		PageMaker pageMaker = new PageMaker();
+//		// 설정 된 기본 페이지 적용
+//		pageMaker.setPagination(pagination);	
+//		log.info("쪽수 기본값 : " + pageMaker.getPagination());
+//		
+//		// productId에 해당하는 댓글(리뷰) list을 전체 검색
+//		List<InquiryVO> inquiryList = inquiryService.getAllInquiryPaging(productId, pageMaker);
+//		
+//		log.info("inquiryList : " + inquiryList);
+//		resultMap.put("inquiryList", inquiryList);
+//		resultMap.put("pageMaker", pageMaker);
+//		
+//		// list값을 전송하고 리턴하는 방식으로 성공하면 200 ok를 갔습니다.
+//		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+//	}// end readAllInquiry()
 	
 	@PreAuthorize("#inquiryVO.memberId == authentication.principal.username")
 	@PutMapping("/modify") // PUT : 댓글(리뷰) 수정 // 나중에 데이터 받는 거에 따라 달라짐

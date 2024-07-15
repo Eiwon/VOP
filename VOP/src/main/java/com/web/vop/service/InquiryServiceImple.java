@@ -148,6 +148,16 @@ public class InquiryServiceImple implements InquiryService{
 		log.info(deleteRes + "행 댓글이 삭제되었습니다.");	
 		return deleteRes;
 	}
+	
+	//관리자 
+	@Override
+	public List<InquiryVO> AllList(PageMaker pageMaker) {
+		log.info("getAllInquiryPaging()");
+		int totalCnt = inquiryMapper.allListPaging();
+		log.info("totalCnt : " + totalCnt);
+		pageMaker.setTotalCount(totalCnt);
+		return inquiryMapper.allList(pageMaker.getPagination());
+	}
 
 
 }

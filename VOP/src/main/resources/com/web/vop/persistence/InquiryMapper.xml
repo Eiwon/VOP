@@ -44,6 +44,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </select> 
    
    <!-- 댓글(문의) 전체 검색 (페이징 처리) -->
+	<select id="allList" resultMap="inquiryResultMap">
+    	SELECT * FROM (
+        	SELECT INQUIRY.*, ROW_NUMBER() OVER (ORDER BY INQUIRY_ID DESC) RN
+        	FROM INQUIRY
+   		)
+    	WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+	</select>
+	
+	<!-- 댓글(문의) 전체 검색(해당 상품의 문의 수) 페이징 처리-->
+   <select id="allListPaging" resultType="Integer">
+   	  SELECT COUNT(PRODUCT_ID) FROM INQUIRY 
+   </select>
+   
+   <!-- 댓글(문의) 전체 검색 (페이징 처리) -->
 	<select id="selectListByInquiryPaging" resultMap="inquiryResultMap">
     	SELECT * FROM (
         	SELECT INQUIRY.*, ROW_NUMBER() OVER (ORDER BY INQUIRY_ID DESC) RN

@@ -60,7 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <select id="selectListByReviewMemberId" resultMap="reviewResultMap">
       SELECT * FROM REVIEW
       WHERE MEMBER_ID = #{memberId}
-      ORDER BY REVIEW_ID
+      ORDER BY REVIEW_ID DESC
    </select>
    
    <!-- 댓글(리뷰) 수정 -->

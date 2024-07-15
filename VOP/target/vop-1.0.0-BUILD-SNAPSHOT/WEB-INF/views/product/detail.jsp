@@ -689,7 +689,7 @@ reviewMap.show = function(page) {
     	                '<td class="button-container">' +
     	                '(' + comments[i].reviewLike + ')<div class="button likeButton ' + likeClass + '" data-value="1" data-page="' + page + '"><i class="fa ' + likeIcon + '" aria-hidden="true"></i></div>' +
     	                '(' + comments[i].reviewDislike + ')<div class="button dislikeButton ' + dislikeClass + '" data-value="0" data-page="' + page + '"><i class="fa ' + dislikeIcon + '" aria-hidden="true"></i></div>' +
-    	                '</td>' +
+    	                '</td>' + 
     	                '</tr>';
     	    }
     	    $('#review').html(form);
