@@ -105,6 +105,18 @@
     				<div>주문 목록</div>
     			</a>
     			</div>
+    			<div class="col link_box">
+    			<a href="../review/list">
+    				<img src="${pageContext.request.contextPath}/resources/review.png" class="logo_img">
+    				<div>리뷰 목록</div>
+    			</a>
+    			</div>
+    			<div class="col link_box">
+    			<a href="../inquiry/myList">
+    				<img src="${pageContext.request.contextPath}/resources/inquiry.png" class="logo_img">
+    				<div>문의 목록</div>
+    			</a>
+    			</div>
    		 		<div class="col link_box">
    		 		<a href="../Delivery/deliveryAddressList">
    		 			<img src="${pageContext.request.contextPath}/resources/delivery.png" class="logo_img">
@@ -129,6 +141,7 @@
     				<div>판매자</div>
     			</a>
     			</div>
+
     			<sec:authorize access="hasRole('ROLE_관리자')">
     				<div class="col link_box">
     				<a href="admin">

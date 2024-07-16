@@ -24,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 유저 ID로 조회 -->
 	<select id="selectByMemberId" resultMap="memberResultMap">
-		SELECT * FROM MEMBER WHERE MEMBER_ID = #{memberId}
+		SELECT * FROM MEMBER WHERE MEMBER_ID = #{memberId} AND MEMBER_AUTH != '탈퇴'
 	</select>
 	
 	<!-- 유저 ID 중복 체크 -->
@@ -65,33 +65,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</update>
 
 	<!-- 계정 삭제 -->
-	<delete id="deleteMember">
-		DELETE MEMBER WHERE MEMBER_ID = #{memberId}
-	</delete>	
+	<update id="deleteMember">
+		UPDATE MEMBER SET MEMBER_AUTH = '탈퇴' WHERE MEMBER_ID = #{memberId}
+	</update>	
 
 	<!-- 이름과 휴대폰 번호로 ID 찾기 -->
 	<select id="selectByNameAndPhone" parameterType="String" resultType="String">
-		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_NAME = #{memberName} AND MEMBER_PHONE = #{memberPhone}
+		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_NAME = #{memberName} AND MEMBER_PHONE = #{memberPhone} AND MEMBER_AUTH != '탈퇴'
 	</select>
 
 	<!-- 입력한 권한을 가진 모든 유저 id 검색 -->
 	<select id="selectIdByAuth" resultType="String">
-		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_AUTH = #{memberAuth}
+		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_AUTH = #{memberAuth} AND MEMBER_AUTH != '탈퇴'
 	</select>
 	
 	<!-- 이메일로 ID 찾기 -->
 	<select id="selectIdByNameAndEmail" resultType="String">
-		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_EMAIL = #{memberEmail}
+		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_EMAIL = #{memberEmail} AND MEMBER_AUTH != '탈퇴'
 	</select>
 	
 	<!-- ID로 이메일 찾기 -->
 	<select id="selectEmailById" resultType="String">
-		SELECT MEMBER_EMAIL FROM MEMBER WHERE MEMBER_ID = #{memberId}
+		SELECT MEMBER_EMAIL FROM MEMBER WHERE MEMBER_ID = #{memberId} AND MEMBER_AUTH != '탈퇴'
 	</select>
 	
 	<!-- ID와 이메일로 ID 찾기 -->
 	<select id="selectIdByIdAndEmail" resultType="String">
-		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_ID = #{memberId} AND MEMBER_EMAIL = #{memberEmail}
+		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_ID = #{memberId} AND MEMBER_EMAIL = #{memberEmail} AND MEMBER_AUTH != '탈퇴'
 	</select>
 
 	<!-- 판매자 권한 취소(권한을 일반으로 변경, 멤버십 등록된 유저라면 멤버십으로 변경 -->
