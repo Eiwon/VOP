@@ -75,10 +75,13 @@ public class MembershipServiceImple implements MembershipService{
 	    
 		log.info("chargeId ->> " + membershipVO);
 		
+		String memberId = membershipVO.getMemberId();
+		log.info("memberId : " + memberId);
+		
 		res = membershipMapper.insertMembership(membershipVO);
 		
 		// 회원 권한 수정
-		membershipMapper.updateMemberAuthOnInsert(payment.getMemberVO().getMemberId());
+		membershipMapper.updateMemberAuthOnInsert(memberId);
 		
 		return res;
 	}//end registerMembership()
