@@ -5,11 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.web.vop.domain.MemberVO;
 import com.web.vop.persistence.MemberMapper;
 import com.web.vop.persistence.ProductMapper;
+import com.web.vop.persistence.SellerMapper;
 import com.web.vop.util.Constant;
 
 import lombok.extern.log4j.Log4j;
@@ -20,6 +22,9 @@ public class MemberServiceImple implements MemberService{
 
 	@Autowired
 	MemberMapper memberMapper; 
+	
+	@Autowired
+	SellerMapper sellerMapper;
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
@@ -105,9 +110,11 @@ public class MemberServiceImple implements MemberService{
 		return res;
 	} // end updatePw
 
+	@Transactional(value = "transactionManager")
 	@Override
 	public int deleteMember(String memberId) { // È¸¿ø Å»Åð
 		log.info("Member Service deleteMember()");
+		sellerMapper.deleteRequest(memberId);
 		int res = memberMapper.deleteMember(memberId);
 		log.info(res + "Çà »èÁ¦ ¼º°ø");
 		return res;

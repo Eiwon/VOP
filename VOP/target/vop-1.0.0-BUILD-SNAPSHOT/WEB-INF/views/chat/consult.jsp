@@ -105,16 +105,8 @@
 			
 			chatBox.append(chatBody);
 			
-			/* let contentStr = '';
-			let start = 0, end;
-			while(start < content.length){
-				end = Math.min((start + 30), content.length);
-				contentStr += content.substring(start, end) + '<br>';
-				start = end;
-			}
-			chatBox.append(contentStr); */
 			tagReadArea.append(chatBox);
-			tagReadArea.scrollTop = tagReadArea.scrollHeight; // 스크롤의 최상단 값을 최하단 값으로 변경 (스크롤 최대한 내리기)
+			tagReadArea.scrollTop(tagReadArea.prop('scrollHeight')); // 스크롤의 최상단 값을 최하단 값으로 변경 (스크롤 최대한 내리기)
 		}
 		
 		

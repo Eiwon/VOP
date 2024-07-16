@@ -42,19 +42,19 @@
 		<div>
 			<div class="input-group mb-3">
  				<span class="input-group-text">이름</span>
-  				<input type="text" class="form-control" id="receiver_name" value="${paymentWrapper.paymentVO.receiverName}">
+  				<input type="text" class="form-control" id="receiver_name" value="${paymentWrapper.paymentVO.receiverName}" readonly>
 			</div>
 			<div class="input-group mb-3">
  				<span class="input-group-text">배송주소</span>
-  				<input type="text" class="form-control" id="delivery_address" value="${paymentWrapper.paymentVO.deliveryAddress}">
+  				<input type="text" class="form-control" id="delivery_address" value="${paymentWrapper.paymentVO.deliveryAddress}" readonly>
 			</div>
 			<div class="input-group mb-3">
  				<span class="input-group-text">연락처</span>
-  				<input type="text" class="form-control" id="receiver_phone" value="${paymentWrapper.paymentVO.receiverPhone}">
+  				<input type="text" class="form-control" id="receiver_phone" value="${paymentWrapper.paymentVO.receiverPhone}" readonly>
 			</div>
 			<div class="input-group mb-3">
  				<span class="input-group-text">배송 요청사항</span>
-  				<input type="text" class="form-control" id="requirement" value="${paymentWrapper.paymentVO.requirement}">
+  				<input type="text" class="form-control" id="requirement" value="${paymentWrapper.paymentVO.requirement}" readonly>
 			</div>
 		</div>
 	</div>
@@ -67,17 +67,25 @@
 		<c:forEach var="orderViewDTO" items="${paymentWrapper.orderList}">
 			<c:set var="orderVO" value="${orderViewDTO.orderVO }"></c:set>
 			<c:set var="totalPrice" value="${totalPrice + orderVO.productPrice * orderVO.purchaseNum }"/>
-			<div class="order_box">
-				<img src="${orderViewDTO.imgUrl}">
-				<div>
-					<div>${orderVO.productName }</div>
-					<div>${orderVO.purchaseNum } 개</div>
-					<div>${orderVO.productPrice * orderVO.purchaseNum } 원</div>
+			<div class="order_box card mb-3" style="max-width: 540px; margin-left: 8px;">
+				<div class="row g-0">
+					 <div class="col-md-4">
+      					<img src="${orderViewDTO.imgUrl}" class="img-fluid rounded-start">
+   	 				 </div>
+   	 				 <div class="col-md-8">
+     					<div class="card-body">
+        				<h5 class="card-title">${orderVO.productName }</h5>
+        				<p class="card-text">${orderVO.purchaseNum } 개</p>
+        				<p class="card-text">${orderVO.productPrice * orderVO.purchaseNum } 원</p>
+      					</div>
+    				</div>
 				</div>
 			</div>
 		</c:forEach>
 	</div>
-		
+	
+
+
 	<div class="box_info" id="payment_info">
 		<div class="small_header">
 			<h3>결제 정보</h3>
@@ -85,23 +93,23 @@
 		<div>
 			<div class="input-group mb-3">
  				<span class="input-group-text">총 상품 가격</span>
-  				<input type="text" class="form-control" value="${totalPrice} 원">
+  				<input type="text" class="form-control" value="${totalPrice} 원" readonly>
 			</div>
 			<div class="input-group mb-3">
  				<span class="input-group-text">멤버십 할인</span>
-  				<input type="text" class="form-control" id="membership_discount" value="${paymentWrapper.paymentVO.membershipDiscount}">
+  				<input type="text" class="form-control" value="${paymentWrapper.paymentVO.membershipDiscount}" readonly>
 			</div>
 			<div class="input-group mb-3">
  				<span class="input-group-text">쿠폰 할인</span>
-  				<input type="text" class="form-control" id="coupon_discount" value="${paymentWrapper.paymentVO.couponDiscount}">
+  				<input type="text" class="form-control" value="${paymentWrapper.paymentVO.couponDiscount}" readonly>
 			</div>
 			<div class="input-group mb-3">
  				<span class="input-group-text">배송비</span>
-  				<input type="text" class="form-control" id="delivery_price" value="${paymentWrapper.paymentVO.deliveryPrice} 원">
+  				<input type="text" class="form-control" value="${paymentWrapper.paymentVO.deliveryPrice} 원" readonly>
 			</div>
 			<div class="input-group mb-3">
  				<span class="input-group-text">총 결제 금액</span>
-  				<input type="text" class="form-control" id="charge_price" value="${paymentWrapper.paymentVO.chargePrice} 원">
+  				<input type="text" class="form-control" value="${paymentWrapper.paymentVO.chargePrice} 원" readonly>
 			</div>
 		</div>
 	</div>

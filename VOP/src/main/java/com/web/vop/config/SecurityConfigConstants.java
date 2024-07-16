@@ -6,6 +6,7 @@ public interface SecurityConfigConstants {
 	public static final String AUTH_SELLER = "판매자";
 	public static final String AUTH_MEMBERSHIP = "멤버십";
 	public static final String AUTH_NORMAL = "일반";
+	public static final String AUTH_DISABLED = "탈퇴";
 	
 	public static final String ROLE_ADMIN = "ROLE_관리자";
 	public static final String ROLE_SELLER = "ROLE_판매자";
