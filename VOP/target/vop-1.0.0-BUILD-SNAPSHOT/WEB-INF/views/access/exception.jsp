@@ -9,8 +9,7 @@
 <body>
 
 
-	<h1> 에러 발생 !!!!</h1>
-	<a href="#" onclick="window.history.back()">뒤로 가기</a>
+	<h1> 예외 발생!!!!!!</h1>
 
 
 </body>

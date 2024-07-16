@@ -37,13 +37,8 @@ public class AccessController {
 	} // end NoHandlerFoundException
 	
 	@GetMapping("/exception")
-	public String allException(Model model) {
+	public void allException() {
 		log.info("allException");
-		AlertVO alertVO = new AlertVO();
-		alertVO.setAlertMsg("예외 발생!!");
-		alertVO.setRedirectUri("board/main");
-		model.addAttribute("alertVO", alertVO);
-		return Constant.ALERT_PATH;
 	} // end allException
 
 	

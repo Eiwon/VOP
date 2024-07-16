@@ -25,11 +25,14 @@ public class MailAuthenticationConfig {
 		javaMailSender.setPassword(ApiKey.MAIL_AUTH_PW);
 
 		javaMailSender.setHost("smtp.gmail.com");
+		javaMailSender.setPort(587);
+		 
 		Properties property = new Properties();
 		property.put("mail.smtp.auth", true);
 		property.put("mail.transport.protocol", "smtp");
 		property.put("mail.smtp.starttls.enable", true);
 		property.put("mail.smtp.starttls.required", true);
+		property.put("mail.smtp.port", "587");
 		javaMailSender.setJavaMailProperties(property);
 		
 		return javaMailSender;
