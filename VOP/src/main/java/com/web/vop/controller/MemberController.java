@@ -10,9 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +41,9 @@ public class MemberController {
 
 	@Autowired
 	MemberService memberService;
+	
+	@Autowired
+	UserDetailsService userDetailsService;
 	
 	@Autowired
 	MailAuthenticationUtil mailAuthUtil;
@@ -216,7 +222,7 @@ public class MemberController {
 
 	@PreAuthorize("#memberVO.memberId == authentication.principal.username")
 	@PostMapping("/modify")
-	public String modifyPOST(Model model, MemberVO memberVO) {
+	public String modifyPOST(Model model, MemberVO memberVO, @AuthenticationPrincipal UserDetails memberDetails) {
 		log.info("회원 정보 수정 : " + memberVO);
 		AlertVO alertVO = new AlertVO();
 		String newPw = memberVO.getMemberPw();
@@ -226,6 +232,11 @@ public class MemberController {
 		if(res == 1) {
 			alertVO.setAlertMsg("수정 성공");
 			alertVO.setRedirectUri("board/mypage");
+			UserDetails updatedDetails = userDetailsService.loadUserByUsername(memberDetails.getUsername());
+			Authentication authen = new UsernamePasswordAuthenticationToken(
+					updatedDetails, updatedDetails.getPassword(), updatedDetails.getAuthorities());
+			SecurityContextHolder.getContext().setAuthentication(authen);
+			
 		}else {
 			alertVO.setAlertMsg("수정 실패");
 			alertVO.setRedirectUri("member/modify");

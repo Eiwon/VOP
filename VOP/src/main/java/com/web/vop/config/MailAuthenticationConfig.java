@@ -1,8 +1,5 @@
 package com.web.vop.config;
 
-import java.util.HashMap;
-
-import java.util.Map;
 import java.util.Properties;
 
 import org.springframework.context.annotation.Bean;
@@ -10,12 +7,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-import com.web.vop.domain.EmailAuthenticationToken;
 import com.web.vop.util.MailAuthenticationUtil;
 
 @Configuration
 public class MailAuthenticationConfig {
-	
+
+	// JavaMail API를 사용하여 gmail smtp 서버를 통해 메일 송신
 	@Bean
 	public JavaMailSender javaMailSender() {
 		

@@ -11,7 +11,7 @@
 
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
 	
-	<div class="toast instanceAlarm" role="alert">
+	<div class="toast instanceAlarm" role="alert" data-bs-autohide="false">
 		<div class="toast-header">
 			<strong class="me-auto toast_title"></strong>
 	      	<button type="button" class="btn-close" data-bs-dismiss="toast"></button>
@@ -29,7 +29,7 @@
 	    <div class="toast-body">
 	    	<span class="toast_content"></span>
 	    	<div class="mt-2 pt-2 border-top">
-      			<button type="button" class="btn btn-primary btn-sm">바로 이동하기</button>
+      			<button id="btnMove" type="button" class="btn btn-primary btn-sm">바로 이동하기</button>
     		</div>
 	    </div>
 	</div>
@@ -40,81 +40,105 @@
 	<script type="text/javascript">
 	
 	let socketUrl = "ws://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/alarm";
-	let webSocket = new WebSocket(socketUrl);
+	let webSocket = null;
 	let msgHandler = {};
+	let normalToastQ = [];
+	let linkToastQ = [];
+	let normalToast = $('.instanceAlarm');
+	let linkToast = $('.linkedAlarm');
 	
-	// 서버로부터 메시지를 받으면, 해당 메시지의 type에 맞는 함수를 찾아서 실행
-	webSocket.onmessage = function(e){
-		let msg = JSON.parse(e.data);
-		console.log("receive message : " + msg.content);
-		
-		msgHandler[msg.type](msg); // type에 맞는 핸들러를 맵에서 찾아서 실행
-	}; // end webSocket.onmessage
-	
-	// 웹소켓 연결 성공시 호출
-	webSocket.onopen = function(e){
-		console.log("webSocket open");
-	}; // end webSocket.onopen
-	
-	// 웹소켓 연결 종료시 호출
-	webSocket.onclose = function(e){
-		console.log("webSocket close : " + e);
+	$(document).ready(function(){
 		webSocket = new WebSocket(socketUrl);
-	}; // end webSocket.onclose
-	
-	// 웹소켓 에러 발생시 호출
-	webSocket.onerror = function(e){
-		console.log("webSocket error : " + e);
-	}; // end webSocket.onerror
-	
-	
-	
-	// ---------------------메시지 타입에 따라 처리할 함수 설정----------------
-	
-	msgHandler.authUpdateAlarm = function(msg){
-		console.log('권한 변경 메시지 수신');
 		
-		showToast(msg);
+		// 서버로부터 메시지를 받으면, 해당 메시지의 type에 맞는 함수를 찾아서 실행
+		webSocket.onmessage = function(e){
+			let msg = JSON.parse(e.data);
+			console.log("receive message : " + msg.content);
+			
+			msgHandler[msg.type](msg); // type에 맞는 핸들러를 맵에서 찾아서 실행
+		}; // end webSocket.onmessage
 		
-		$.ajax({
-			method : 'GET',
-			url : '../member/reload',
-			success : function(result){
-				console.log('권한 리로드 결과 : ' + result);
+		// 웹소켓 연결 성공시 호출
+		webSocket.onopen = function(e){
+			console.log("webSocket open");
+		}; // end webSocket.onopen
+		
+		// 웹소켓 연결 종료시 호출
+		webSocket.onclose = function(e){
+			console.log("webSocket close : " + e);
+			webSocket = new WebSocket(socketUrl);
+		}; // end webSocket.onclose
+		
+		// 웹소켓 에러 발생시 호출
+		webSocket.onerror = function(e){
+			console.log("webSocket error : " + e);
+		}; // end webSocket.onerror
+		
+		
+		
+		// ---------------------메시지 타입에 따라 처리할 함수 설정----------------
+		
+		msgHandler.authUpdateAlarm = function(msg){
+			console.log('권한 변경 메시지 수신');
+			
+			showToast(msg);
+			
+			$.ajax({
+				method : 'GET',
+				url : '../member/reload',
+				success : function(result){
+					console.log('권한 리로드 결과 : ' + result);
+				}
+			});
+			
+		} // end updateAuthAlarm
+		
+		msgHandler.instanceAlarm = function(msg){
+			console.log('메시지 수신');
+			let redirectUri = msg.callbackInfo;
+			
+			if(redirectUri === undefined || redirectUri === null || redirectUri === ''){
+				if(normalToast.hasClass('hide')){
+					showToast(msg);
+				}else{
+					normalToastQ.push(msg);			
+				}
+			}else{
+				if(linkToast.hasClass('hide')){
+					showToast(msg);
+				}else{
+					linkToastQ.push(msg);			
+				}
 			}
-		});
+		} // end alarm
 		
-	} // end updateAuthAlarm
+		msgHandler.consultRequest = function(msg){
+			console.log('consultRequest 메시지 수신 ' + msg);
+			
+			let req = confirm("1대1 상담 요청 수신. 수락하시겠습니까?");
+			
+			if(req){
+				let targetUrl = '../board/consultAccept?roomId=' + msg.roomId;
+				console.log('onclick : ' + targetUrl);
+				const popupStat = {
+						'url' : targetUrl,
+						'name' : 'popupConsultAdmin',
+						'option' : 'width=900, height=800, top=50, left=400'
+				};
+					
+				// 팝업 창 띄우기
+				let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
+				popup.onbeforeunload = function(){
+					// 팝업 닫힐 때 실행
+					console.log("팝업 닫힘");
+				} // end popup.onbeforeunload
+			}
+			
+		} // end msgHandler.consultRequest
+		
+	});
 	
-	msgHandler.instanceAlarm = function(msg){
-		console.log('메시지 수신');
-		
-		showToast(msg);
-	} // end alarm
 	
-	msgHandler.consultRequest = function(msg){
-		console.log('consultRequest 메시지 수신 ' + msg);
-		
-		let req = confirm("1대1 상담 요청 수신. 수락하시겠습니까?");
-		
-		if(req){
-			let targetUrl = '../board/consultAccept?roomId=' + msg.roomId;
-			console.log('onclick : ' + targetUrl);
-			const popupStat = {
-					'url' : targetUrl,
-					'name' : 'popupConsultAdmin',
-					'option' : 'width=900, height=800, top=50, left=400'
-			};
-				
-			// 팝업 창 띄우기
-			let popup = window.open(popupStat.url, popupStat.name, popupStat.option);
-			popup.onbeforeunload = function(){
-				// 팝업 닫힐 때 실행
-				console.log("팝업 닫힘");
-			} // end popup.onbeforeunload
-		}
-		
-	} // end msgHandler.consultRequest
 	
 	
 	// -------------------------------------------------------------------------------
@@ -122,17 +146,20 @@
 	
 	// 토스트 메시지 출력 (메시지에 redirectUri가 설정되어 있지 않으면 버튼 없는 토스트 출력)
 	function showToast(msg) {
-		let tagToastContainer = $('.toast-container');
-		let toast;
+		let toast, toastQ;
 		let redirectUri = msg.callbackInfo;
-
+		
 		if(redirectUri === undefined || redirectUri === null || redirectUri === ''){
+			// 바로 이동하기 기능이 없는 메시지
 			console.log('normal toast');
-			toast = $('.instanceAlarm');		
+			toast = normalToast;
+			toastQ = normalToastQ;
 		}else {
+			// 바로 이동하기 기능이 있는 메시지
 			console.log('link toast');
-			toast = $('.linkedAlarm');
-			toast.find('button').click(function(){
+			toast = linkToast;
+			toastQ = linkToastQ;
+			toast.find('#btnMove').click(function(){
 				window.open('../' + redirectUri);
 			});
 		}
@@ -140,8 +167,13 @@
 		toast.find('.toast_title').text(msg.title);
 		toast.find('.toast_content').text(msg.content);
 		
+		toast.on('hidden.bs.toast', function(){
+			if(toastQ.length > 0){
+				showToast(toastQ.shift());
+			}
+		});
+		
 		toast.toast('show');
-		//bootstrap.Toast.getOrCreateInstance(toast).show();
 		
 	} // end showToast
 	
