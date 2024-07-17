@@ -138,19 +138,6 @@
                         <input type="hidden" name="productId" value="${orderVO.productId}">
                         <button type="submit" class="d-inline-flex focus-ring focus-ring-primary py-1 px-2 text-decoration-none border rounded-2">리뷰 쓰기</button>
                     </form>
-
-                    <!-- 리뷰 관리 코드 -->
-                    <form action="../review/list" method="get">
-                        <input type="hidden" name="memberId" value="${memberDetails.getUsername()}">
-                        <button type="submit" class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2">리뷰 관리</button>
-                    </form>
-                    
-                    <!-- 문의 리스트 코드 -->
-                    <form action="../inquiry/myList" method="get">
-                        <input type="hidden" name="memberId" value="${memberDetails.getUsername()}">
-                        <input type="hidden" name="productName" value="${orderVO.productName}">
-                        <button type="submit" class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2">문의 리스트</button>
-                    </form>
                     
                     <!-- 판매자 문의 버튼 -->
                     <button class="sellerInquiry d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-3 mr-2">판매자 문의</button>

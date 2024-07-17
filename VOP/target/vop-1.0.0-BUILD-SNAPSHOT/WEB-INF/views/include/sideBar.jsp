@@ -26,6 +26,8 @@
 					<li class="list-group-item"><a href="../board/myInfo">내 정보 수정</a></li>
 					<li class="list-group-item"><a href="../basket/main">장바구니</a></li>
 					<li class="list-group-item"><a href="../order/orderlist">주문 목록</a></li>
+					<li class="list-group-item"><a href="../review/list">리뷰 목록</a></li>
+					<li class="list-group-item"><a href="../inquiry/myList">문의 목록</a></li>
 					<li class="list-group-item"><a href="../Delivery/deliveryAddressList">배송지 관리</a></li>
 					<li class="list-group-item"><a href="../coupon/myCoupon">쿠폰함</a></li>
 					<li class="list-group-item"><a href="../membership/register">멤버십 등록</a></li>

@@ -18,12 +18,16 @@
 <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> 모발일 적용 코드인데 사용하면는 더이상해 사용안함-->
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <jsp:include page="../include/header.jsp"></jsp:include>
+
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
 	integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
-	crossorigin="anonymous" type="text/javascript"></script>
+	crossorigin="anonymous" type="text/javascript">
+</script>
+	
 <script>
 Kakao.init('fc798d4c0b15af3cd0e864357925d0b3');
 </script>
+
 <title>상품 상세 조회</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
@@ -362,6 +366,7 @@ td {
     </div>
 </div>
 
+
 <div class="container">
     <div class="section">
         <h3>상품 리뷰</h3>
@@ -581,10 +586,11 @@ Kakao.Share.createDefaultButton({
 
 //ReviewMap 객체에 show 함수를 정의합니다.
 reviewMap.show = function(page) {
+		  
+	console.log("memberId : " + memberId);
     
     let reviewUrl = '../reviewRest/all/' + productId + '/' + page;
     
-    let likesUrl = '../likes/list/' + productId + '/' + memberId;
     // 실행중인 코드 
     let reviewNUM = [];
     let likesNUM = [];
@@ -609,6 +615,9 @@ reviewMap.show = function(page) {
         },
     });// end ajax
     
+    <sec:authorize access="isAuthenticated()">
+   
+    let likesUrl = '../likes/list/' + productId + '/' + memberId;
     
     $.ajax({
         method: 'GET',
@@ -622,6 +631,8 @@ reviewMap.show = function(page) {
         reviewProcessComments();
         },
     });
+    
+    </sec:authorize>
     
  	// 문의와 답변 데이터를 처리하는 함수
     function reviewProcessComments() {// 여기 비동기 동작 어떻게 처리 하는지 잘모르겠음
@@ -723,7 +734,7 @@ reviewMap.show = function(page) {
 
 $(document).on('click', '.likeButton, .dislikeButton', function() {
 	
-	if (memberId && memberId.trim() !== '') {
+ 	if (memberId && memberId.trim() !== '') { 
 	
     const isLikeButton = $(this).hasClass('likeButton');
     const otherButton = isLikeButton ? $(this).closest('tr').find('.dislikeButton') : $(this).closest('tr').find('.likeButton');
@@ -844,10 +855,10 @@ $(document).on('click', '.likeButton, .dislikeButton', function() {
         }); // end ajax()
     }// end else 
 	
-	} else {
+ 	} else {
 		alert('로그인 후 사용 가능 합니다.');
 		window.location.href = '../member/login';// 나중에 시큐리티 공부해서 적용하기
-	}
+	} 
 }); // end (document).on
 
 

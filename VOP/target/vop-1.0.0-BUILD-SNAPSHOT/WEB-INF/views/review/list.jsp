@@ -89,7 +89,7 @@
 <body>
 
 <div class="container mt-5" style="width: 65%; margin: auto;">
-    <h1>댓글 리스트</h1>
+    <h1>리뷰 리스트</h1>
 
     <c:forEach var="product" items="${productList}">
         <div class="product-box">
@@ -159,10 +159,10 @@
                 data : JSON.stringify(obj),
                 success : function(result) {
                     if(result == 1) {
-                        alert('댓글 삭제 성공!');
+                        alert('리뷰 삭제 성공!');
                         window.location.href = '../review/list?memberId=' + memberId;
                     } else {
-                        alert('댓글 삭제 실패!');
+                        alert('리뷰 삭제 실패!');
                     }
                 }
             });

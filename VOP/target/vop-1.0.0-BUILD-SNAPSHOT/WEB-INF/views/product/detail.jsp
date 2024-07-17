@@ -272,6 +272,30 @@ td {
         width: 100%;
     }
 }
+.pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination .page-item {
+            margin: 0 5px;
+        }
+
+        .pagination .page-link {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ccc;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            text-decoration: none;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #e0e0e0;
+        }
 </style>
 </head>
 <body>
@@ -316,7 +340,7 @@ td {
         <p><span>상품 현황:</span> ${productVO.productState}</p>
         <p><span>상품 재고:</span> ${productVO.productRemains}</p>
         <p><span>상품 보관 장소:</span> ${productVO.productPlace}</p>
-        <p><span>판매자:</span> ${productVO.memberId}</p>
+        <p><span>판매자 :</span> ${productVO.memberId}</p>
         <p><span>현재 구매 시 도착 일자:</span> <time id="current-date"></time></p>
     </div>
     <div class="product-actions">
