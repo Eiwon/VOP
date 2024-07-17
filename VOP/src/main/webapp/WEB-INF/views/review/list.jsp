@@ -159,10 +159,10 @@
                 data : JSON.stringify(obj),
                 success : function(result) {
                     if(result == 1) {
-                        alert('댓글 삭제 성공!');
+                        alert('리뷰 삭제 성공!');
                         window.location.href = '../review/list?memberId=' + memberId;
                     } else {
-                        alert('댓글 삭제 실패!');
+                        alert('리뷰 삭제 실패!');
                     }
                 }
             });
