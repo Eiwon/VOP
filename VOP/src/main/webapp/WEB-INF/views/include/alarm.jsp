@@ -44,8 +44,6 @@
 	let msgHandler = {};
 	let normalToastQ = [];
 	let linkToastQ = [];
-	let normalToast = $('.instanceAlarm');
-	let linkToast = $('.linkedAlarm');
 	
 	$(document).ready(function(){
 		webSocket = new WebSocket(socketUrl);
@@ -98,16 +96,18 @@
 			let redirectUri = msg.callbackInfo;
 			
 			if(redirectUri === undefined || redirectUri === null || redirectUri === ''){
-				if(normalToast.hasClass('hide')){
-					showToast(msg);
-				}else{
+				console.log('nolink');
+				if($('.instanceAlarm').hasClass('show')){
 					normalToastQ.push(msg);			
+				}else{
+					showToast(msg);
 				}
 			}else{
-				if(linkToast.hasClass('hide')){
-					showToast(msg);
-				}else{
+				console.log('link');
+				if($('.linkedAlarm').hasClass('show')){
 					linkToastQ.push(msg);			
+				}else{
+					showToast(msg);
 				}
 			}
 		} // end alarm
@@ -152,12 +152,12 @@
 		if(redirectUri === undefined || redirectUri === null || redirectUri === ''){
 			// 바로 이동하기 기능이 없는 메시지
 			console.log('normal toast');
-			toast = normalToast;
+			toast = $('.instanceAlarm');
 			toastQ = normalToastQ;
 		}else {
 			// 바로 이동하기 기능이 있는 메시지
 			console.log('link toast');
-			toast = linkToast;
+			toast = $('.linkedAlarm');
 			toastQ = linkToastQ;
 			toast.find('#btnMove').click(function(){
 				window.open('../' + redirectUri);
