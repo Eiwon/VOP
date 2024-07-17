@@ -54,7 +54,7 @@
     .btn-container {
         display: flex;
         justify-content: space-between;
-        flex-wrap: wrap;
+        gap: 10px; /* 버튼 사이의 간격 추가 */
     }
 
     .btn {
@@ -64,7 +64,7 @@
         border-radius: 4px;
         transition: background-color 0.3s ease;
         margin-bottom: 5px;
-        width: 100%; /* 각 버튼이 너비 100%를 차지하도록 설정 */
+        flex: 1; /* 버튼들이 가로로 정렬되도록 설정 */
     }
 
     .btn-primary {
@@ -118,7 +118,13 @@
     .btn-icon {
         margin-right: 8px;
     }
+    
+    .wide-input {
+        width: 100%;
+        box-sizing: border-box; /* 패딩과 테두리를 포함하여 너비를 계산 */
+    }
 </style>
+
 </head>
 <body>
     <div class="container">
@@ -164,19 +170,20 @@
                             </tr>
                             <tr>
                                 <td colspan="6">
-                                    <div id="inputContainer_${InquiryVO.inquiryId}" class="inputContainer" style="text-align: center; margin-top: 10px; display: none;">
-                                        <input type="text" id="replyAnswer_${InquiryVO.inquiryId}" placeholder="답글 작성">
-                                        <button class="btn btn-info btnSubmit" data-inquiryid="${InquiryVO.inquiryId}" data-productid="${InquiryVO.productId}">
-                                            작성
-                                        </button>
-                                    </div>
-                                    <div id="modifyContainer_${InquiryVO.inquiryId}" class="modifyContainer" style="text-align: center; margin-top: 10px; display: none;">
-                                        <input type="text" id="modifyAnswer_${InquiryVO.inquiryId}" placeholder="답글 수정">
-                                        <button class="btn btn-info btnModifySubmit" data-inquiryid="${InquiryVO.inquiryId}">
-                                            수정
-                                        </button>
-                                    </div>
-                                </td>
+    								<div id="inputContainer_${InquiryVO.inquiryId}" class="inputContainer" style="text-align: center; margin-top: 10px; display: none;">
+        								<input type="text" id="replyAnswer_${InquiryVO.inquiryId}" placeholder="답글 작성" class="wide-input">
+        									<button class="btn btn-info btnSubmit" data-inquiryid="${InquiryVO.inquiryId}" data-productid="${InquiryVO.productId}">
+            									작성
+        									</button>
+    								</div>
+    								<div id="modifyContainer_${InquiryVO.inquiryId}" class="modifyContainer" style="text-align: center; margin-top: 10px; display: none;">
+        							<input type="text" id="modifyAnswer_${InquiryVO.inquiryId}" placeholder="답글 수정" class="wide-input">
+        							<button class="btn btn-info btnModifySubmit" data-inquiryid="${InquiryVO.inquiryId}">
+            							수정
+        							</button>
+    							</div>
+							</td>
+
                             </tr>
                         </c:forEach>
                     </c:when>
