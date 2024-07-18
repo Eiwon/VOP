@@ -1,7 +1,6 @@
 package com.web.vop.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,11 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.vop.domain.LikesVO;
-import com.web.vop.domain.ReviewVO;
 import com.web.vop.service.LikesService;
-import com.web.vop.socket.AlarmHandler;
 
-import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 @RestController

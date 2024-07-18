@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,22 +33,11 @@ public class AlarmHandler extends TextWebSocketHandler{
 	Map<String, WebSocketSession> alarmConnMap;
 	
 	private static final String TYPE_INSTANCE = "instanceAlarm";
-	private static final String TYPE_ALERT = "alert";
 	private static final String TYPE_AUTH_UPDATE = "authUpdateAlarm";
+	
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-//		log.info("socket message received : " + message.getPayload());
-//		MessageVO messageVO = convertMsg(message.getPayload());
-//		
-//		MessageVO returnMsg = null;
-//    	String msgType = messageVO.getType();
-//    	String memberId = session.getPrincipal().getName();
-//    	messageVO.setWriterId(memberId);
-//    	
-//    	if(msgType.equals(TYPE_ALERT)) {
-//    		broadcast(messageVO);
-//    	}
-//		
+
 	} // end handleTextMessage
 	
 	@Override
@@ -128,6 +116,7 @@ public class AlarmHandler extends TextWebSocketHandler{
 		
 	} // end unicast
 	
+	// 해당 유저에게 권한 변경 알림 전송 (instanceAlarm과 동일하지만 수신 즉시 권한 최신화가 이루어짐)
 	public void sendAuthUpdateAlarm(String memberId, String content) {
 		MessageVO returnMsg = new MessageVO();
 		returnMsg.setReceiverId(memberId);
@@ -137,6 +126,7 @@ public class AlarmHandler extends TextWebSocketHandler{
 		unicast(returnMsg);
 	} // end sendAuthUpdateAlarm
 	
+	// 해당 유저에게 일반 토스트 메시지 전송 (returnUri은 컨트롤러 이름부터 입력, null이면 바로가기 버튼이 없는 토스트 출력)
 	public void sendInstanceAlarm(String receiverId, String title, String content, String returnUri) {
 		MessageVO returnMsg = new MessageVO();
 		returnMsg.setType(TYPE_INSTANCE);
@@ -147,6 +137,7 @@ public class AlarmHandler extends TextWebSocketHandler{
 		unicast(returnMsg);
 	} // end sendInstanceAlarm
 	
+	// productId로부터 판매자를 검색하여 instanceAlarm 송신
 	public void sendInstanceAlarm(int productId, String title, String content, String returnUri) {
 		MessageVO returnMsg = new MessageVO();
 		String receiverId = messageService.getSellerIdOf(productId);

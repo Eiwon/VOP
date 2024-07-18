@@ -282,7 +282,8 @@ public class MemberController {
 			memberService.deleteMember(memberDetails.getUsername());
 			alertVO.setAlertMsg("회원 탈퇴되었습니다.");
 			alertVO.setRedirectUri("board/main");
-			// 인증된 사용자인지 여부를 false로 지정
+			// 시큐리티의 사용자 인증 정보는 Security context의 authentication 객체에 저장됨
+			// 해당 객체의 인증 여부를 false로 지정
 			SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
 			break;
 		case 101 : 

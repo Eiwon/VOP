@@ -23,7 +23,7 @@ import lombok.extern.log4j.Log4j;
 public class MailAuthenticationUtil {
 	
 	// 메일로 보낸 인증번호를 유저가 입력할 때까지 저장하기 위한 맵
-	// key : email, value : 발송된 인증 값
+	// key : email, value : 발송된 인증 값 + 만료시간
 	private Map<String, EmailAuthenticationToken> emailAuthMap;
 	
 	@Autowired

@@ -19,8 +19,8 @@ public class SecurityAccessDeniedHandler implements AccessDeniedHandler{
 		String redirectUri = request.getContextPath() + "/access/denied";
 		// 기본값 : "액세스가 거부되었습니다" alert 띄운 후 뒤로가기 실행시키는 페이지로 이동
 		
-		log.info(request.getRequestURI()); // 접근 시도한 uri    ex) "/vop/seller/admin"
-		String accessUri = request.getRequestURI();
+		String accessUri = request.getRequestURI(); // 접근 시도한 uri    ex) "/vop/seller/admin"
+		log.info(accessUri); 
 		// 여기서 uri에 따라 처리?
 		
 		String[] splitUri = accessUri.split("[/?]"); // / 또는 ? 기준으로 문자열 자르기

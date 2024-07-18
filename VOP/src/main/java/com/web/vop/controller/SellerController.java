@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,9 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.socket.WebSocketHandler;
 
-import com.amazonaws.services.accessanalyzer.model.AccessDeniedException;
 import com.web.vop.domain.AlertVO;
-import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.PagingListDTO;
 import com.web.vop.domain.SellerRequestDTO;
 import com.web.vop.domain.SellerVO;
@@ -100,38 +97,6 @@ public class SellerController {
 		return "redirect:../product/myProduct";
 	} // end listProductGET
 	
-
-//	// 자신의 판매자 권한 요청 조회
-//	@GetMapping("/mySellerReq")
-//	@ResponseBody
-//	public ResponseEntity<SellerVO> getMyRequest(@AuthenticationPrincipal MemberDetails memberDetails){
-//		log.info("내 권한요청 조회");
-//		String memberId = memberDetails.getUsername();
-//		SellerVO result = sellerService.getMyRequest(memberId);
-//			
-//		return new ResponseEntity<SellerVO>(result, HttpStatus.OK);
-//	} // end getMyRequest
-		
-		
-//	// 판매자 권한 요청 등록
-//	@PostMapping("/registerReq")
-//	@ResponseBody
-//	public ResponseEntity<Integer> registerRequest(@RequestBody SellerVO sellerVO) {
-//		log.info("요청 등록 : " + sellerVO);
-//		int res = sellerService.registerRequest(sellerVO);
-//
-//		return new ResponseEntity<Integer>(res, HttpStatus.OK);
-//	} // end registerRequest
-		
-//	// 판매자 권한 요청 수정(유저)
-//	@PutMapping("/updateReq")
-//	@ResponseBody
-//	public ResponseEntity<Integer> updateRequest(@RequestBody SellerVO sellerVO) {
-//		log.info("요청 수정 : " + sellerVO);
-//		int res = sellerService.updateMemberContent(sellerVO);
-//
-//		return new ResponseEntity<Integer>(res, HttpStatus.OK);
-//	} // end updateRequest
 
 	// 판매자 권한 요청 승인/거절(관리자)
 	@PutMapping("/approval")

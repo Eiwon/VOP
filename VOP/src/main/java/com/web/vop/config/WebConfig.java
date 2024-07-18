@@ -1,6 +1,5 @@
 package com.web.vop.config;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration.Dynamic;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
