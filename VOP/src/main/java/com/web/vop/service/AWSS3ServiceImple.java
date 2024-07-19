@@ -2,9 +2,7 @@ package com.web.vop.service;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -14,7 +12,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.services.migrationhubstrategyrecommendations.model.S3Object;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;

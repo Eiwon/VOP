@@ -1,6 +1,5 @@
 package com.web.vop.service;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,14 +7,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.web.vop.domain.CouponPocketVO;
 import com.web.vop.domain.CouponVO;
 import com.web.vop.domain.MyCouponVO;
 import com.web.vop.persistence.CouponMapper;
 import com.web.vop.persistence.CouponPocketMapper;
 import com.web.vop.util.Constant;
 import com.web.vop.util.PageMaker;
-import com.web.vop.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 

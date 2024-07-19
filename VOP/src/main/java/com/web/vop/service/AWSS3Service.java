@@ -1,7 +1,6 @@
 package com.web.vop.service;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;

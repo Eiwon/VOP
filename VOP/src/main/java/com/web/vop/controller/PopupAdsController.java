@@ -125,6 +125,7 @@ public class PopupAdsController {
 	} // end showPopupAds
 	
 	
+	@SuppressWarnings("unchecked")
 	@GetMapping("/blockPopup")
 	@ResponseBody
 	public ResponseEntity<Integer> blockPopup(int messageId, HttpServletResponse response, @CookieValue(name = "blockPopup", required = false) String cookie) {
@@ -162,6 +163,7 @@ public class PopupAdsController {
 		return new ResponseEntity<Integer>(1, HttpStatus.OK);
 	} // end blockPopup
 	
+	@SuppressWarnings("unchecked")
 	@GetMapping("/myPopupAds")
 	@ResponseBody
 	public ResponseEntity<List<Integer>> getPopupAds(

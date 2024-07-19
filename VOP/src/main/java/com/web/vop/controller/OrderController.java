@@ -9,16 +9,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.web.vop.domain.MemberDetails;
-import com.web.vop.domain.OrderVO;
 import com.web.vop.domain.OrderViewDTO;
 import com.web.vop.service.AWSS3Service;
 import com.web.vop.service.OrderService;
-import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 
 import lombok.extern.log4j.Log4j;

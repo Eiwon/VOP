@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.MemberVO;
 import com.web.vop.domain.MembershipVO;
-import com.web.vop.domain.PaymentVO;
 import com.web.vop.domain.PaymentWrapper;
 import com.web.vop.persistence.MemberMapper;
 import com.web.vop.persistence.MembershipMapper;

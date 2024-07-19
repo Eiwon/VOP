@@ -3,10 +3,8 @@ package com.web.vop.persistence;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import com.web.vop.domain.ImageVO;
-import com.web.vop.domain.ProductVO;
 
 @Mapper
 public interface ImageMapper {

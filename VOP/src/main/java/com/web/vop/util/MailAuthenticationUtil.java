@@ -4,17 +4,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.stereotype.Service;
 
-import com.web.vop.config.ApiKey;
 import com.web.vop.domain.EmailAuthenticationToken;
 
 import lombok.extern.log4j.Log4j;

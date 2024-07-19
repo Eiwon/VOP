@@ -1,14 +1,11 @@
 package com.web.vop.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.ProductDetailsDTO;
@@ -17,7 +14,6 @@ import com.web.vop.domain.ProductVO;
 import com.web.vop.persistence.ImageMapper;
 import com.web.vop.persistence.ProductMapper;
 import com.web.vop.util.Constant;
-import com.web.vop.util.FileAnalyzerUtil;
 import com.web.vop.util.PageMaker;
 import com.web.vop.util.Pagination;
 

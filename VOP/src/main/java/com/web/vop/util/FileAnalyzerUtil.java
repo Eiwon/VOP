@@ -1,18 +1,8 @@
 package com.web.vop.util;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.UUID;
 
-import javax.imageio.ImageIO;
-
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.FileUrlResource;
-import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.web.vop.domain.ImageVO;

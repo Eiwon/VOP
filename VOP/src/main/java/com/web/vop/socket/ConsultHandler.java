@@ -2,32 +2,21 @@ package com.web.vop.socket;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.StringUtils;
-import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.vop.domain.ChatMessageVO;
 import com.web.vop.domain.ChatRoom;
-import com.web.vop.domain.MessageVO;
 import com.web.vop.service.MemberService;
 
 import lombok.extern.log4j.Log4j;
@@ -300,7 +289,7 @@ public class ConsultHandler extends AbstractWebSocketHandler {
 		return jsonMsg;
 	} // end convertMsg
 	
-	private String getAuthority(WebSocketSession session) {
-		return ((Authentication)session.getPrincipal()).getAuthorities().iterator().next().getAuthority();
-	} // end getAuthority
+//	private String getAuthority(WebSocketSession session) {
+//		return ((Authentication)session.getPrincipal()).getAuthorities().iterator().next().getAuthority();
+//	} // end getAuthority
 }

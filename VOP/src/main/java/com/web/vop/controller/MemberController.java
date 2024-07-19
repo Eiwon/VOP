@@ -3,12 +3,9 @@ package com.web.vop.controller;
 
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,15 +17,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.web.vop.domain.AlertVO;
-import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.MemberVO;
 import com.web.vop.service.MemberService;
-import com.web.vop.service.UserDetailsServiceImple;
 import com.web.vop.util.Constant;
 import com.web.vop.util.MailAuthenticationUtil;
 
@@ -225,7 +218,6 @@ public class MemberController {
 	public String modifyPOST(Model model, MemberVO memberVO, @AuthenticationPrincipal UserDetails memberDetails) {
 		log.info("회원 정보 수정 : " + memberVO);
 		AlertVO alertVO = new AlertVO();
-		String newPw = memberVO.getMemberPw();
 		
 		int res = memberService.updateMember(memberVO);
 		

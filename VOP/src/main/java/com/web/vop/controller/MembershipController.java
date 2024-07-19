@@ -1,7 +1,5 @@
 package com.web.vop.controller;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,13 +8,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.amazonaws.services.transfer.model.UserDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.PaymentWrapper;
 import com.web.vop.service.MembershipService;
-import com.web.vop.util.PaymentAPIUtil;
 
 import lombok.extern.log4j.Log4j;
 

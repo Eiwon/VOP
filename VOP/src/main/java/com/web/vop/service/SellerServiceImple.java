@@ -6,14 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.web.vop.domain.MessageVO;
 import com.web.vop.domain.SellerRequestDTO;
 import com.web.vop.domain.SellerVO;
 import com.web.vop.persistence.MemberMapper;
 import com.web.vop.persistence.SellerMapper;
 import com.web.vop.util.Constant;
 import com.web.vop.util.PageMaker;
-import com.web.vop.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 

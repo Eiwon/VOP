@@ -13,7 +13,6 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.vop.domain.MessageVO;
 import com.web.vop.service.MessageService;
@@ -149,17 +148,17 @@ public class AlarmHandler extends TextWebSocketHandler{
 		unicast(returnMsg);
 	} // end sendInstanceAlarm
 	
-	private MessageVO convertMsg(String jsonMsg) {
-		MessageVO message = null;
-		try {
-			message = objectMapper.readValue(jsonMsg, MessageVO.class);
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-		return message;
-	} // end convertMsg
+//	private MessageVO convertMsg(String jsonMsg) {
+//		MessageVO message = null;
+//		try {
+//			message = objectMapper.readValue(jsonMsg, MessageVO.class);
+//		} catch (JsonMappingException e) {
+//			e.printStackTrace();
+//		} catch (JsonProcessingException e) {
+//			e.printStackTrace();
+//		}
+//		return message;
+//	} // end convertMsg
 	
 	private TextMessage convertMsg(MessageVO message) {
 		TextMessage jsonMsg = null;

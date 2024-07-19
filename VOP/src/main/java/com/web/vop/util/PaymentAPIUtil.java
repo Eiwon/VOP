@@ -39,6 +39,7 @@ public class PaymentAPIUtil {
 	// 결제 취소 URL
 	private String CANCEL_PAYMENT_URL = "https://api.iamport.kr/payments/cancel";
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private String getAccessToken() {
 		log.info("토큰 발급");
 		String accessToken = null;
@@ -72,6 +73,7 @@ public class PaymentAPIUtil {
 		return accessToken;
 	} // end getAccessToken;
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public int getPaymentAmount(String impUid) {
 		log.info("결제 금액 조회 GET ");
 		String accessToken = getAccessToken();
@@ -90,6 +92,7 @@ public class PaymentAPIUtil {
 		return chargePrice;
 	} // end getPaymentAmount
 	
+	@SuppressWarnings("rawtypes")
 	public void cancelPayment(String impUid) {
 		log.info("결제 취소 POST");
 		String accessToken = getAccessToken();

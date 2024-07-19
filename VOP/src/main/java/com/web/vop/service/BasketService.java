@@ -2,11 +2,9 @@ package com.web.vop.service;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 
 import com.web.vop.domain.BasketDTO;
 import com.web.vop.domain.BasketVO;
-import com.web.vop.util.Pagination;
 
 public interface BasketService {
 	

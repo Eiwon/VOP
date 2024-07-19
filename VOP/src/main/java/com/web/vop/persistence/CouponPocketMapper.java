@@ -1,13 +1,11 @@
 package com.web.vop.persistence;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import com.web.vop.domain.CouponPocketVO;
 import com.web.vop.domain.MyCouponVO;
 
 @Mapper

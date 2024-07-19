@@ -1,6 +1,5 @@
 package com.web.vop.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,14 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,24 +20,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.socket.WebSocketHandler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.vop.domain.AlertVO;
-import com.web.vop.domain.BasketVO;
 import com.web.vop.domain.ImageVO;
 import com.web.vop.domain.MemberDetails;
 import com.web.vop.domain.PagingListDTO;
 import com.web.vop.domain.ProductDetailsDTO;
 import com.web.vop.domain.ProductPreviewDTO;
 import com.web.vop.domain.ProductVO;
-import com.web.vop.domain.SellerVO;
 import com.web.vop.service.AWSS3Service;
-import com.web.vop.service.ImageService;
 import com.web.vop.service.ProductService;
 import com.web.vop.socket.AlarmHandler;
 import com.web.vop.util.Constant;

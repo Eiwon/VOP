@@ -7,17 +7,14 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.WebSocketHandler;
 
 import com.web.vop.domain.DeliveryExpectDTO;
 import com.web.vop.domain.DeliveryMsg;
 import com.web.vop.domain.MembershipExpiryDTO;
 import com.web.vop.persistence.MembershipMapper;
 import com.web.vop.persistence.OrderMapper;
-import com.web.vop.socket.AlarmHandler;
 import com.web.vop.util.MailAuthenticationUtil;
 
 import lombok.extern.log4j.Log4j;

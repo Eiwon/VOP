@@ -2,13 +2,9 @@ package com.web.vop.service;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
-
-import com.web.vop.domain.CouponPocketVO;
 import com.web.vop.domain.CouponVO;
 import com.web.vop.domain.MyCouponVO;
 import com.web.vop.util.PageMaker;
-import com.web.vop.util.Pagination;
 
 public interface CouponService {
 

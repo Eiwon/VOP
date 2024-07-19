@@ -4,12 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.web.vop.domain.InquiryDTO;
 import com.web.vop.domain.InquiryVO;
 import com.web.vop.domain.ProductVO;
-import com.web.vop.persistence.AnswerMapper;
 import com.web.vop.persistence.InquiryMapper;
 import com.web.vop.persistence.ProductMapper;
 import com.web.vop.util.PageMaker;
