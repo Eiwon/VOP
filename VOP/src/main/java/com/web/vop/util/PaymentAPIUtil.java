@@ -20,9 +20,12 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class PaymentAPIUtil {
 
-	// api 정보 확인 주소 : https://developers.portone.io/api/rest-v1/auth
+	/* api 정보 확인 주소 : https://developers.portone.io/api/rest-v1/auth
+	* 어떤 url과 메소드로 어떤 데이터를 줘야하는지 확인 가능
+	* 클라이언트 측에선 ajax로 보내면 간단하지만, 서버 측은 java라 다른 기능을 써야합니다 
+	*/
 	
-	// REST Template 
+	// REST Template (자바에서 REST 요청을 보내기 위한 클래스)
 	@Autowired
 	public RestTemplate restTemplate;
 	
@@ -52,7 +55,7 @@ public class PaymentAPIUtil {
 		body.put("imp_key", ApiKey.PAYMENT_API_KEY);
 		body.put("imp_secret", ApiKey.PAYMENT_SECRET_KEY);
 		
-		// 맵 객체를 json 타입으로 변환
+		// API에선 JSON을 요구하니 JSON으로 변환
 		String jsonBody = null;
 		try {
 			jsonBody = objectMapper.writeValueAsString(body);

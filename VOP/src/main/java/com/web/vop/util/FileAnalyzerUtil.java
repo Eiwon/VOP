@@ -9,6 +9,9 @@ import com.web.vop.domain.ImageVO;
 
 import lombok.extern.log4j.Log4j;
 
+/* 강사님이 준 파일 업로드 코드인데 S3에 저장하면 필요가 없어서
+* 파일 이름 추출하는 기능만 썼습니다
+*/
 @Log4j
 public class FileAnalyzerUtil {
 	 

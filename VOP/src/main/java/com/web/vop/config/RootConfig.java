@@ -54,6 +54,7 @@ public class RootConfig {
       return new DataSourceTransactionManager(dataSource());
    }
    
+   // 우리 DB에 자동로그인 토큰을 저장하도록 설정 (자동 로그인 테이블은 security에서 정해준 대로 만들어야함)
    @Bean
    public PersistentTokenRepository tokenRepository() {
 	   JdbcTokenRepositoryImpl tokenRepositoryImple = new JdbcTokenRepositoryImpl();
