@@ -47,13 +47,13 @@ public class ProductMapperTest {
 			//updateReviewAvg(productId, "0");
 			//updateReviewAvgNew(productId, (float) 1.5);
 			//updateReviewNum(productId, 0);
-			//insertProduct(productVO);
+			insertProduct(productVO);
 			//insertProductWithThumbnail(productVO);
 			//selectByNameNCategory(pagination);
 			//selectByNameNCategoryCnt(pagination);
-			//selectByMemberId(memberId, pagination);
+			selectByMemberId(memberId, pagination);
 			//selectByMemberIdCnt(memberId);
-			//updateState(productState, productId);
+			updateState(productState, productId);
 			//selectStateByProductId(productId);
 			//deleteProduct(productId);
 			//selectTopProductByCategory();

@@ -7,7 +7,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<resultMap type="com.web.vop.domain.ReviewVO"
       id="reviewResultMap">
-      
       <id property="reviewId" column="REVIEW_ID" /> 
       <result property="memberId" column="MEMBER_ID" />
       <result property="productId" column="PRODUCT_ID" />
@@ -17,7 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="reviewLike" column="REVIEW_LIKE"/>
       <result property="reviewDislike" column="REVIEW_DISLIKE"/>
       </resultMap>
-   
+      
    <!-- 댓글(리뷰) 입력 -->
    <insert id="insertReview">
       INSERT INTO REVIEW (REVIEW_ID, MEMBER_ID, PRODUCT_ID, REVIEW_CONTENT,

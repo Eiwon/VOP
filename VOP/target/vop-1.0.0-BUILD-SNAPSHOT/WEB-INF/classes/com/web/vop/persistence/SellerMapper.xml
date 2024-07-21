@@ -7,7 +7,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
    <resultMap type="com.web.vop.domain.SellerVO"
       id="sellerResultMap">
-      
       <id property="memberId" column="MEMBER_ID" /> 
       <result property="businessName" column="BUSINESS_NAME" />
       <result property="requestTime" column="REQUEST_TIME"/>
@@ -17,7 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </resultMap>
    
    <resultMap type="com.web.vop.domain.SellerRequestDTO" id="sellerRequestResultMap">
-   		<association property="sellerVO" javaType="com.web.vop.domain.SellerVO" 
+   		<association property="sellerVO" javaType="com.web.vop.domain.MemberVO" 
    			resultMap="com.web.vop.persistence.SellerMapper.sellerResultMap"/>
    		<association property="memberVO" javaType="com.web.vop.domain.MemberVO" 
    			resultMap="com.web.vop.persistence.MemberMapper.memberResultMap"/>

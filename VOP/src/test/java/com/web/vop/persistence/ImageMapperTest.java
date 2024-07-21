@@ -36,10 +36,10 @@ public class ImageMapperTest {
 	    int imgId = imageVO.getImgId();
 	    int productId = imageVO.getProductId();
 
-//	    selectByImgIdTest(imgId);
+	    selectByImgIdTest(imgId);
 //	    insertImgTest(imageVO);
 //	    insertProductDetailsImgTest(imageVO);
-//	    selectByProductIdTest(productId);
+	    selectByProductIdTest(productId);
 //	    selectImgPathByImgIdTest(imgId);
 //	    selectImgIdByProductIdTest(productId);
 //	    selectAllByProductIdTest(productId);

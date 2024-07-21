@@ -39,7 +39,7 @@ public class CouponMapperTest {
 		couponVO.setPublishing(publishing);
 		
 //		insertCouponTest(couponVO);
-//		selectAllCouponTest(pagination);
+		selectAllCouponTest(pagination);
 //		selectAllCouponCntTest();
 //		deleteCouponByIdTest(couponId);
 //		selectByIdTest(couponId);
