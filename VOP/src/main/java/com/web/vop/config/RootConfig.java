@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.amazonaws.services.glue.model.MySQLCatalogSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -30,7 +31,10 @@ public class RootConfig {
    @Bean // 스프링 bean으로 설정
    public DataSource dataSource() { // DataSource 객체 리턴 메서드
       HikariConfig config = new HikariConfig(); // 설정 객체
+      
       config.setDriverClassName("oracle.jdbc.OracleDriver"); // jdbc 드라이버 정보
+      //config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+      
       config.setJdbcUrl("jdbc:oracle:thin:@vop-master.cd26qugoeupc.ap-northeast-2.rds.amazonaws.com:1521:orcl"); // DB 연결 url
       config.setUsername("vopmaster"); // DB 사용자 아이디
       config.setPassword("vopmaster"); // DB 사용자 비밀번호
