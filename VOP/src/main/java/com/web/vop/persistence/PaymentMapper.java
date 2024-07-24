@@ -14,6 +14,8 @@ public interface PaymentMapper {
 	// paymentId 생성
 	public int selectNextPaymentId();
 	
+	public int updatePaymentSeq();
+	
 	// 결제 결과 등록
 	public int insertPayment(PaymentVO paymentVO) throws DataIntegrityViolationException;
 	

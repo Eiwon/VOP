@@ -38,7 +38,7 @@ public class InquiryMapperTest {
 //        insertInquiryTest(inquiryVO);
 //        selectListByInquiryTest(productId);
 //        selectListByInquiryMemberIdPagingNewTest(memberId, pagination);
-//        selectListByInquiryMemberIdPagingTest(memberId, pagination);
+        selectListByInquiryMemberIdPagingTest(memberId, pagination);
 //        selectListByInquiryMemberIdCntTest(memberId);
 //        selectListByInquiryPagingTest(productId, pagination);
 //        selectListByInquiryCntTest(productId);

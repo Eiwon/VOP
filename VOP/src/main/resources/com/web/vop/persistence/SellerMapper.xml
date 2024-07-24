@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		SELECT MEMBER_ID, BUSINESS_NAME, REQUEST_TIME, REQUEST_CONTENT, REQUEST_STATE FROM (
    		SELECT SELLER.*, ROW_NUMBER() OVER(ORDER BY REQUEST_TIME) AS RN FROM SELLER
    		WHERE REQUEST_STATE = #{requestState}
-   		) WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+   		) S WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
    </select>
    
    <!-- 모든 판매자 권한 요청 수 조회 -->
@@ -42,12 +42,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 요청 등록 -->
    <insert id="insertRequest">
-   		INSERT INTO SELLER VALUES (#{memberId}, #{businessName}, SYSDATE, #{requestContent}, #{requestState}, NULL)
+<!--    		INSERT INTO SELLER VALUES (#{memberId}, #{businessName}, SYSDATE, #{requestContent}, #{requestState}, NULL)
+ -->
+ 	INSERT INTO SELLER VALUES (#{memberId}, #{businessName}, CURRENT_TIMESTAMP(), #{requestContent}, #{requestState}, NULL)
+ 	
    </insert>
    
    <!-- 요청 수정(유저) -->
    <update id="updateMemberContent">
-   		UPDATE SELLER SET BUSINESS_NAME = #{businessName}, REQUEST_TIME = SYSDATE, 
+   		UPDATE SELLER SET BUSINESS_NAME = #{businessName}, REQUEST_TIME = CURRENT_TIMESTAMP(), 
    		REQUEST_CONTENT = #{requestContent}, REQUEST_STATE = #{requestState} WHERE MEMBER_ID = #{memberId}
    </update>
    

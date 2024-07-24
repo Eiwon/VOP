@@ -44,7 +44,7 @@ public class MemberMapperTest {
 //		updateMemberAuth(memberVO.getMemberId(), memberVO.getMemberAuth());
 //		selectAuthById(memberVO.getMemberId());
 //		selectByPhone(memberVO.getMemberPhone());
-//		updateMemberPw(memberId, memberPw);
+		updateMemberPw(memberId, memberPw);
 //		deleteMember(memberId);
 //		selectByNameAndPhone(memberVO.getMemberName(), memberVO.getMemberEmail());
 //		selectIdByAuth("¿œπ›");

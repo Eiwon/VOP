@@ -31,6 +31,9 @@
 	display: flex;
 	margin: 20px;
 }
+.product_num {
+	text-align: center;
+}
 
 </style>
 <title>장바구니</title>

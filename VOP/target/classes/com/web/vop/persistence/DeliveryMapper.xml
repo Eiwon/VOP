@@ -56,9 +56,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 배송지 등록 -->
    <insert id="insertDelivery"> 
-   		INSERT INTO DELIVERY
+   		<!-- INSERT INTO DELIVERY
    		VALUES (
    			DELIVERY_SEQ.NEXTVAL, #{memberId}, #{receiverName}, #{receiverAddress},
+   			#{receiverPhone}, #{requirement}, #{deliveryAddressDetails}, #{isDefault}
+   		) -->
+   		INSERT INTO DELIVERY
+   		VALUES (
+   			0, #{memberId}, #{receiverName}, #{receiverAddress},
    			#{receiverPhone}, #{requirement}, #{deliveryAddressDetails}, #{isDefault}
    		)
    </insert>
@@ -117,7 +122,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 배송지(delivery.jsp) 조회 -->
     <select id="selectDeliveryList" resultMap="DeliveryListResultMap">
-        SELECT 
+        <!-- SELECT 
         p.PAYMENT_ID as PAYMENT_ID,
         o.PRODUCT_NAME as PRODUCT_NAME,
         p.RECEIVER_NAME as RECEIVER_NAME,
@@ -128,6 +133,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	PAYMENT p
    		 JOIN 
         	"ORDER" o ON p.PAYMENT_ID = o.PAYMENT_ID
+    	WHERE 
+        	p.PAYMENT_ID = #{paymentId} -->
+        SELECT 
+        p.PAYMENT_ID as PAYMENT_ID,
+        o.PRODUCT_NAME as PRODUCT_NAME,
+        p.RECEIVER_NAME as RECEIVER_NAME,
+        p.DELIVERY_ADDRESS as DELIVERY_ADDRESS,
+        p.REQUIREMENT as REQUIREMENT,
+        o.EXPECT_DELIVERY_DATE as EXPECT_DELIVERY_DATE
+    	FROM 
+        	PAYMENT p
+   		 JOIN 
+        	`ORDER` o ON p.PAYMENT_ID = o.PAYMENT_ID
     	WHERE 
         	p.PAYMENT_ID = #{paymentId}
     </select>  

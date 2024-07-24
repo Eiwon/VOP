@@ -64,6 +64,7 @@ public class PaymentServiceImple implements PaymentService {
 	@Override
 	public int getNewPaymentId() {
 		log.info("getNewPaymentId()");
+		paymentMapper.updatePaymentSeq();
 		return paymentMapper.selectNextPaymentId();
 	} // end getNewPaymentId
 

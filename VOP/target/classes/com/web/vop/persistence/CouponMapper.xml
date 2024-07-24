@@ -16,7 +16,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <!-- 신규 쿠폰 등록 -->
    <insert id="insertCoupon">
    		INSERT INTO COUPON VALUES (
-   		COUPON_SEQ.NEXTVAL, #{couponName}, #{discount}, SYSDATE, 0)
+   		0, #{couponName}, #{discount}, CURRENT_TIMESTAMP(), 0)
+   		<!-- INSERT INTO COUPON VALUES (
+   		COUPON_SEQ.NEXTVAL, #{couponName}, #{discount}, SYSDATE, 0) -->
    </insert>
    
    <!-- 모든 쿠폰 조회 (페이징) -->
@@ -24,7 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		SELECT * FROM (
    			SELECT COUPON.*, ROW_NUMBER() OVER (ORDER BY COUPON_ID DESC) RN 
    			FROM COUPON
-   		) WHERE RN BETWEEN #{start} AND #{end}
+   		) C WHERE RN BETWEEN #{start} AND #{end}
    </select>
    
    <!-- 모든 쿠폰 수 조회 -->

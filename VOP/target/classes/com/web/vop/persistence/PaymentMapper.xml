@@ -22,15 +22,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
 	<!-- paymentId 생성 -->
 	<select id="selectNextPaymentId" resultType="Integer">
-		SELECT PAYMENT_SEQ.NEXTVAL FROM DUAL
+		SELECT CURRVAL FROM SEQUENCE WHERE NAME = 'PAYMENT'
+		<!-- SELECT PAYMENT_SEQ.NEXTVAL FROM DUAL -->
 	</select>
+	
+	<update id="updatePaymentSeq">
+		UPDATE SEQUENCE SET CURRVAL = CURRVAL + 1 WHERE NAME = 'PAYMENT'
+	</update>
 	
 	<!-- 결제 결과 등록 -->
 	<insert id="insertPayment">
-		INSERT INTO PAYMENT VALUES (
+		<!-- INSERT INTO PAYMENT VALUES (
 			#{paymentId}, #{memberId}, #{deliveryAddress}, #{receiverName}, #{receiverPhone},
 			#{requirement}, #{membershipDiscount}, #{couponDiscount}, #{deliveryPrice}, #{chargePrice}, #{chargeId}
-		)
+		) -->
 	</insert>
 	
 	<!-- memberId와 paymentId로 결제 결과 검색 -->

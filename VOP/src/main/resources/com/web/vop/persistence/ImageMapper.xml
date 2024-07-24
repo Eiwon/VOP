@@ -24,21 +24,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 이미지 등록 -->
    <insert id="insertImg">
-   		INSERT INTO IMAGE VALUES(
+   		<!-- INSERT INTO IMAGE VALUES(
    		IMAGE_SEQ.NEXTVAL, #{productId}, #{imgPath}, #{imgRealName}, #{imgChangeName}, #{imgExtension}
+   		) -->
+   		INSERT INTO IMAGE VALUES(
+   		0, #{productId}, #{imgPath}, #{imgRealName}, #{imgChangeName}, #{imgExtension}
    		)
    </insert>
    
    <!-- 상품 상세정보 이미지 등록 -->
    <insert id="insertProductDetailsImg">
-   		INSERT INTO IMAGE VALUES(
+   		<!-- INSERT INTO IMAGE VALUES(
    		IMAGE_SEQ.NEXTVAL, PRODUCT_SEQ.CURRVAL, #{imgPath}, #{imgRealName}, #{imgChangeName}, #{imgExtension}
+   		) -->
+   		INSERT INTO IMAGE VALUES(
+   		0, (SELECT MAX(PRODUCT_ID) FROM PRODUCT), #{imgPath}, #{imgRealName}, #{imgChangeName}, #{imgExtension}
    		)
    </insert>
    
    <!-- 최근에 등록한 이미지 id 검색 -->    
    <select id="selectRecentImgId" resultType="Integer">
-   		SELECT IMAGE_SEQ.CURRVAL FROM DUAL
+   		<!-- SELECT IMAGE_SEQ.CURRVAL FROM DUAL -->
+   		SELECT MAX(IMG_ID) FROM IMAGE;
    </select>
    
    <!-- productId로 이미지 검색 -->

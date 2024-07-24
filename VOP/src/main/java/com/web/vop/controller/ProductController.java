@@ -378,7 +378,7 @@ public class ProductController {
 	
 	// 상품 등록한 사람만 요청 가능
 	@PreAuthorize("#productVO.memberId == authentication.principal.username")
-	// 상품 삭제 요청 등록 (삭제 가능한 상태면 삭제)
+	// 상품 삭제 요청 등록
 	@DeleteMapping("/request")
 	@ResponseBody
 	public ResponseEntity<Integer> deleteRequestProduct(@RequestBody ProductVO productVO) {

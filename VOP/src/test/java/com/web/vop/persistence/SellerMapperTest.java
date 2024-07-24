@@ -36,7 +36,7 @@ public class SellerMapperTest {
         sellerVO.setRequestState(requestState);
         sellerVO.setRefuseMsg("1234");
         
-//        selectRequestByStateTest(requestState, pagination);
+        selectRequestByStateTest(requestState, pagination);
 //        selectRequestByStateCntTest(requestState);
 //        selectRequestByIdTest(memberId);
 //        insertRequestTest(sellerVO);

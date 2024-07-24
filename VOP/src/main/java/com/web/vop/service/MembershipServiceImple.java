@@ -32,6 +32,7 @@ public class MembershipServiceImple implements MembershipService{
 	@Override
 	public int getNextMembershipId() { // membershipId »ý¼º
 		log.info("getNextMembershipId()");
+		paymentMapper.updatePaymentSeq();
 		return  paymentMapper.selectNextPaymentId();
 	}
 

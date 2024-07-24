@@ -32,10 +32,10 @@ public class RootConfig {
    public DataSource dataSource() { // DataSource 객체 리턴 메서드
       HikariConfig config = new HikariConfig(); // 설정 객체
       
-      config.setDriverClassName("oracle.jdbc.OracleDriver"); // jdbc 드라이버 정보
-      //config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+      //config.setDriverClassName("oracle.jdbc.OracleDriver"); // jdbc 드라이버 정보
+      config.setDriverClassName("com.mysql.cj.jdbc.Driver");
       
-      config.setJdbcUrl("jdbc:oracle:thin:@vop-master.cd26qugoeupc.ap-northeast-2.rds.amazonaws.com:1521:orcl"); // DB 연결 url
+      config.setJdbcUrl("jdbc:mysql://mysql-vop.cd26qugoeupc.ap-northeast-2.rds.amazonaws.com:3306/vopmaster"); // DB 연결 url
       config.setUsername("vopmaster"); // DB 사용자 아이디
       config.setPassword("vopmaster"); // DB 사용자 비밀번호
       
@@ -58,6 +58,7 @@ public class RootConfig {
       return new DataSourceTransactionManager(dataSource());
    }
    
+   // 우리 DB에 자동로그인 토큰을 저장하도록 설정 (자동 로그인 테이블은 security에서 정해준 대로 만들어야함)
    @Bean
    public PersistentTokenRepository tokenRepository() {
 	   JdbcTokenRepositoryImpl tokenRepositoryImple = new JdbcTokenRepositoryImpl();
