@@ -218,7 +218,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- productId로 상품 삭제 -->
 	<delete id="deleteProduct">
-		DELETE PRODUCT WHERE PRODUCT_ID = #{productId}
+		DELETE FROM PRODUCT WHERE PRODUCT_ID = #{productId}
 	</delete>
 	
 	<!-- 카테고리별 최다 리뷰 5개 상품 검색 -->

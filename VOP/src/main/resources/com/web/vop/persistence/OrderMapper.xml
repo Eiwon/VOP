@@ -88,7 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 주문 목록 삭제 -->
 	<delete id="deleteOrderListByOrderId">
 		<!-- DELETE "ORDER" WHERE ORDER_ID = #{orderId} -->
-		DELETE `ORDER` WHERE ORDER_ID = #{orderId}
+		DELETE FROM `ORDER` WHERE ORDER_ID = #{orderId}
 	</delete>
 	
 	

@@ -61,7 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 요청 삭제 -->
    <delete id="deleteRequest">
-   		DELETE SELLER WHERE MEMBER_ID = #{memberId}
+   		DELETE FROM SELLER WHERE MEMBER_ID = #{memberId}
    </delete>
    
    <!-- 판매자 권한 요청 상세정보 조회 -->

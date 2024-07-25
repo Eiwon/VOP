@@ -60,9 +60,13 @@ public class AlarmHandler extends TextWebSocketHandler{
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		log.info("socket close");
+		try {
 		String memberId = session.getPrincipal().getName();
 		log.info("연결 종료 유저 id : " + memberId);
 		alarmConnMap.remove(memberId);
+		}catch (NullPointerException e) {
+			
+		}
 	} // end afterConnectionClosed
 	
 	

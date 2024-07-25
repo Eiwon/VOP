@@ -36,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 쿠폰 삭제 -->
    <delete id="deleteCouponById">
-   		DELETE COUPON WHERE COUPON_ID = #{couponId}
+   		DELETE FROM COUPON WHERE COUPON_ID = #{couponId}
    </delete>
    
    <!-- id로 쿠폰 검색 -->

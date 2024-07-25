@@ -234,7 +234,7 @@ body {
     <div class="user_container" id="box_login">
     	<sec:authorize access="isAuthenticated()">
     		<div style="font-size: 15px; margin-right: 15px;">
-    			${memberDetails.authorities[0].authority.substring(5) }<br>
+    			<span>${memberDetails.authorities[0].authority.substring(5) }</span><br>
     			${memberDetails.memberVO.memberName } 님
     		</div>
     		<form action="../member/logout" method="POST">

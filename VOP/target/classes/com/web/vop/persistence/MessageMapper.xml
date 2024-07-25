@@ -30,12 +30,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 지정 메시지 삭제 -->
    <delete id="deleteById">
-   		DELETE MESSAGE WHERE MESSAGE_ID = #{messageId}
+   		DELETE FROM MESSAGE WHERE MESSAGE_ID = #{messageId}
    </delete>
    
    <!-- 지정 유저에 대한 메시지 삭제 -->
    <delete id="deleteByReceiverId">
-   		DELETE MESSAGE WHERE RECEIVER_ID = #{receiverId}
+   		DELETE FROM MESSAGE WHERE RECEIVER_ID = #{receiverId}
    </delete>
    
    <!-- 모든 팝업 광고 검색 -->

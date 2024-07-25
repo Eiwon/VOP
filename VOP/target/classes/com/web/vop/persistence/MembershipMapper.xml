@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- membershipId 생성 -->
 	<select id="selectNextMembershipId" resultType="Integer">
-		SELECT MEMBERSHIP_SEQ.NEXTVAL FROM DUAL
+		<!-- SELECT MEMBERSHIP_SEQ.NEXTVAL FROM DUAL -->
 	</select>
    
    <!-- 멤버십 결제 등록 -->
@@ -63,7 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 멤버십 삭제(해지) -->
 	<delete id="deleteMembership">
-		DELETE MEMBERSHIP WHERE MEMBER_ID = #{memberId}
+		DELETE FROM MEMBERSHIP WHERE MEMBER_ID = #{memberId}
 	</delete>	
 	
 	<!-- 멤버십 삭제 시 권한 업데이트 -->

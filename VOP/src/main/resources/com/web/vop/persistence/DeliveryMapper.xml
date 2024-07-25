@@ -83,7 +83,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 배송지 삭제 -->
 	<delete id="deleteDelivery">
-		DELETE DELIVERY WHERE DELIVERY_ID = #{deliveryId}
+		DELETE FROM DELIVERY WHERE DELIVERY_ID = #{deliveryId}
 	</delete>
    
    <!--  배송지 상세 조회 (주문목록) by memberId-->
