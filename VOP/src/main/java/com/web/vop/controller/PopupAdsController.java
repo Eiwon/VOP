@@ -183,6 +183,7 @@ public class PopupAdsController {
 		}
 		// ¸ðµç ÆË¾÷±¤°í id ºÒ·¯¿À±â
 		List<Integer> popupAdsList = messageService.getMyPopupId(memberId);
+		
 		int popupAdsLen = popupAdsList.size();
 		if(blockList == null) {
 			return new ResponseEntity<List<Integer>>(popupAdsList, HttpStatus.OK);

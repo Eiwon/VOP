@@ -50,25 +50,23 @@ public class AlarmHandler extends TextWebSocketHandler{
 		alarmConnMap.put(memberId, session);
 		log.info("접속 중인 유저 : " + alarmConnMap);
 		
-		List<MessageVO> messageList = messageService.getMyMessage(memberId);
-		// 연결이 끊어진 동안 못 받은 메시지 검색
-		messageService.removeByReceiverId(memberId);
-		// 가져온 메시지는 DB에서 삭제 (전송 실패시 다시 DB에 등록)
-		log.info("내 메세지 : " + messageList);
-		if(messageList != null) {
-			for(MessageVO vo : messageList) { // 전부 송신
-				vo.setReceiverId(memberId); // receiverId 값이 all인 메시지도 있으므로 receiver 재설정
-				unicast(vo);
-			}
+		List<MessageVO> messageList = messageService.getMyMessage(memberId); // 연결이 끊어진 동안 못 받은 메시지 검색
+		messageService.removeByReceiverId(memberId); // 가져온 메시지는 DB에서 삭제
+		for(MessageVO vo : messageList) { // 전부 송신
+			unicast(vo);
 		}
 	} // end afterConnectionEstablished
 	
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		log.info("socket close");
+		try {
 		String memberId = session.getPrincipal().getName();
 		log.info("연결 종료 유저 id : " + memberId);
 		alarmConnMap.remove(memberId);
+		}catch (NullPointerException e) {
+			
+		}
 	} // end afterConnectionClosed
 	
 	
@@ -109,7 +107,6 @@ public class AlarmHandler extends TextWebSocketHandler{
 			}
 		} // end 접속 중인 유저 송신
 		
-		// 접속 중이 아니면 db에 메시지 저장
 		log.info("저장할 메시지 정보 : " + message);
 		messageService.registerMessage(message);
 		

@@ -32,7 +32,8 @@ public class MembershipServiceImple implements MembershipService{
 	@Override
 	public int getNextMembershipId() { // membershipId 생성
 		log.info("getNextMembershipId()");
-		return  paymentMapper.selectNextPaymentId();
+		paymentMapper.updatePaymentSeq();
+		return paymentMapper.selectNextPaymentId();
 	}
 
 	
@@ -45,7 +46,9 @@ public class MembershipServiceImple implements MembershipService{
 		int membershipId = 0; // int 타입 변수 초기화
 		
 		// 새 membershipId 생성
-		membershipId = membershipMapper.selectNextMembershipId();
+		paymentMapper.updatePaymentSeq();
+		membershipId = paymentMapper.selectNextPaymentId();
+		//membershipId = membershipMapper.selectNextMembershipId();
 		log.info("membershipId : " + membershipId);
 		
 		vo.setMembershipId(membershipId);

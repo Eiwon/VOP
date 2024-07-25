@@ -18,10 +18,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 댓댓글(답변) 입력 -->
    <insert id="insertAnswer">
-      INSERT INTO ANSWER (ANSWER_ID, MEMBER_ID, PRODUCT_ID, ANSWER_CONTENT
+   	  INSERT INTO ANSWER (ANSWER_ID, MEMBER_ID, PRODUCT_ID, ANSWER_CONTENT
+      , ANSWER_DATE_CREATED, INQUIRY_ID)
+      VALUES (0, #{memberId}, #{productId}, #{answerContent}
+      , CURRENT_TIMESTAMP(), #{inquiryId})
+      <!-- INSERT INTO ANSWER (ANSWER_ID, MEMBER_ID, PRODUCT_ID, ANSWER_CONTENT
       , ANSWER_DATE_CREATED, INQUIRY_ID)
       VALUES (ANSWER_SEQ.NEXTVAL, #{memberId}, #{productId}, #{answerContent}
-      , SYSDATE, #{inquiryId})
+      , SYSDATE, #{inquiryId}) -->
    </insert>
    
    <!-- 댓댓글(답변) 전체 검색 -->

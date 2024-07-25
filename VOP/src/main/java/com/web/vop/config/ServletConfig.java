@@ -28,6 +28,7 @@ public class ServletConfig implements WebMvcConfigurer {
    }
 
    // ResourceHandlers 설정 메서드
+   // 이미지 파일을 저장한 폴더 이름이 resources 이어야했던 이유
    @Override
    public void addResourceHandlers(ResourceHandlerRegistry registry) {
       // resources 디렉토리 설정

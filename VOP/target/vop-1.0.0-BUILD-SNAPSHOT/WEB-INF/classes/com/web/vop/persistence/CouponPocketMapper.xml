@@ -32,18 +32,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- memberId로 사용 가능한 쿠폰 조회 -->
    <select id="selectUsableByMemberId" resultMap="myCouponResultMap">
-   		SELECT MY.COUPON_ID, COUPON.COUPON_NAME, COUPON.DISCOUNT, MY.EXPIRATION_DATE, MY.IS_USED 
+   		<!-- SELECT MY.COUPON_ID, COUPON.COUPON_NAME, COUPON.DISCOUNT, MY.EXPIRATION_DATE, MY.IS_USED 
    		FROM (
    		SELECT * FROM COUPON_POCKET WHERE MEMBER_ID = #{memberId} AND IS_USED = 0 AND 
             EXPIRATION_DATE >= SYSDATE
+   		) MY LEFT JOIN COUPON 
+   		ON MY.COUPON_ID = COUPON.COUPON_ID -->
+   		SELECT MY.COUPON_ID, COUPON.COUPON_NAME, COUPON.DISCOUNT, MY.EXPIRATION_DATE, MY.IS_USED 
+   		FROM (
+   		SELECT * FROM COUPON_POCKET WHERE MEMBER_ID = #{memberId} AND IS_USED = 0 AND 
+            EXPIRATION_DATE >= CURRENT_TIMESTAMP()
    		) MY LEFT JOIN COUPON 
    		ON MY.COUPON_ID = COUPON.COUPON_ID
    </select>
    
    <!-- 쿠폰 추가 -->
    <insert id="insertCouponPocket">
-   		INSERT INTO COUPON_POCKET VALUES (
+   		<!-- INSERT INTO COUPON_POCKET VALUES (
    			#{memberId}, #{couponId}, 0, SYSDATE +14
+   		) -->
+   		INSERT INTO COUPON_POCKET VALUES (
+   			#{memberId}, #{couponId}, 0, DATE_ADD(NOW(), INTERVAL 14 DAY)
    		)
    </insert>
    
@@ -55,7 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <!-- 지정 쿠폰 삭제 -->
    <delete id="deleteCouponById">
-   		DELETE COUPON_POCKET WHERE COUPON_ID = #{couponId} AND MEMBER_ID = #{memberId}
+   		DELETE FROM COUPON_POCKET WHERE COUPON_ID = #{couponId} AND MEMBER_ID = #{memberId}
    </delete>
    
    <!-- 보유 중인 쿠폰인지 확인 -->

@@ -31,9 +31,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 댓글(문의) 입력 -->
    <insert id="insertInquiry">
-      INSERT INTO INQUIRY 
+      <!-- INSERT INTO INQUIRY 
       (INQUIRY_ID, MEMBER_ID, PRODUCT_ID, INQUIRY_CONTENT, INQUIRY_DATE_CREATED)
-	  VALUES (INQUIRY_SEQ.NEXTVAL , #{memberId}, #{productId}, #{inquiryContent}, SYSDATE)
+	  VALUES (INQUIRY_SEQ.NEXTVAL , #{memberId}, #{productId}, #{inquiryContent}, SYSDATE) -->
+	  INSERT INTO INQUIRY 
+      (INQUIRY_ID, MEMBER_ID, PRODUCT_ID, INQUIRY_CONTENT, INQUIRY_DATE_CREATED)
+	  VALUES (0, #{memberId}, #{productId}, #{inquiryContent}, CURRENT_TIMESTAMP())
    </insert>
    
     <!-- 댓글(문의) 전체 검색 -->
@@ -48,7 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     	SELECT * FROM (
         	SELECT INQUIRY.*, ROW_NUMBER() OVER (ORDER BY INQUIRY_ID DESC) RN
         	FROM INQUIRY
-   		)
+   		) I
     	WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
 	</select>
 	
@@ -63,7 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	SELECT INQUIRY.*, ROW_NUMBER() OVER (ORDER BY INQUIRY_ID DESC) RN
         	FROM INQUIRY
         	WHERE PRODUCT_ID = #{productId}
-   		)
+   		) I
     	WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
 	</select>
 	
@@ -73,7 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	SELECT INQUIRY.*, ROW_NUMBER() OVER (ORDER BY INQUIRY_ID DESC) RN
         	FROM INQUIRY
         	WHERE MEMBER_ID = #{memberId}
-   		)
+   		) I
     	WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
 	</select>
 	

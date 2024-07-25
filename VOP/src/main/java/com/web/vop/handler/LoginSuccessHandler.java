@@ -15,7 +15,6 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
-
 	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

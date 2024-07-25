@@ -53,10 +53,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 		http.authorizeRequests()
 			.antMatchers(ANONYMOUS_ONLY).anonymous()
 			.antMatchers(PERMIT_ALL).permitAll()
-			.antMatchers(NORMAL_OVER).authenticated()
-			.antMatchers(ADMIN_ONLY).hasAuthority(ROLE_ADMIN)
+			.antMatchers(AUTHENTICATED).authenticated()
+			.antMatchers(ADMIN_ONLY).hasRole(AUTH_ADMIN)
 			.antMatchers(SELLER_OVER).hasRole(AUTH_SELLER)
-			//.antMatchers("/membership/**").hasRole(AUTH_MEMBERSHIP)
 			.expressionHandler(expressionHandler());
 		// hasRole("권한") : 특정 권한이 있는지 체크 (권한 계층 적용)
 		// hasAnyRole("권한1", "권한2", ...) : 목록 중 하나의 권한이라도 있는지 체크
@@ -107,6 +106,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Secu
 		// header 정보에 xssProtection 기능 설정 
 		// (우리 사이트에서 script를 사용하여 페이지를 이동할 수 없도록 설정)
 		http.headers().xssProtection().block(true);
+		
 		// 위의 XSS protection에 예외 설정
 		http.headers()
 			.contentSecurityPolicy("script-src " + PERMIT_SCRIPT_SRC)

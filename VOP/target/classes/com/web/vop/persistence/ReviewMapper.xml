@@ -19,10 +19,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       
    <!-- 댓글(리뷰) 입력 -->
    <insert id="insertReview">
-      INSERT INTO REVIEW (REVIEW_ID, MEMBER_ID, PRODUCT_ID, REVIEW_CONTENT,
+      <!-- INSERT INTO REVIEW (REVIEW_ID, MEMBER_ID, PRODUCT_ID, REVIEW_CONTENT,
        REVIEW_DATE_CREATED, REVIEW_STAR, REVIEW_LIKE, REVIEW_DISLIKE)
       VALUES (REVIEW_SEQ.NEXTVAL, #{memberId}, #{productId}, 
-      #{reviewContent}, SYSDATE, #{reviewStar}, 0, 0)<!--나중에 0추가 이미지 0 좋아요는 댓글 작성 하는 사람 이외 다른 사람이 수정 해야 한다. -->
+      #{reviewContent}, SYSDATE, #{reviewStar}, 0, 0) --><!--나중에 0추가 이미지 0 좋아요는 댓글 작성 하는 사람 이외 다른 사람이 수정 해야 한다. -->
+   	  INSERT INTO REVIEW (REVIEW_ID, MEMBER_ID, PRODUCT_ID, REVIEW_CONTENT,
+       REVIEW_DATE_CREATED, REVIEW_STAR, REVIEW_LIKE, REVIEW_DISLIKE)
+      VALUES (0, #{memberId}, #{productId}, 
+      #{reviewContent}, CURRENT_TIMESTAMP(), #{reviewStar}, 0, 0)
+   
    </insert>
    
    <!-- 댓글(리뷰) productId 그리고 memberId통해 검색 -->
@@ -43,7 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	SELECT REVIEW.*, ROW_NUMBER() OVER (ORDER BY REVIEW_ID DESC) RN
         	FROM REVIEW
         	WHERE PRODUCT_ID = #{productId}
-   		)
+   		) R
     	WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
    </select>
    
